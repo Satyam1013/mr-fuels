@@ -1,0 +1,9 @@
+node_modules
+package-lock.json
+.env
+.editorconfig
+tsconfig.json
+prettier.config.js
+docker-compose.yml
+.nvmrc
+jest.config.js
