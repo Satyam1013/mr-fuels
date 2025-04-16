@@ -1,0 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, JwtFromRequestFunction, Strategy } from "passport-jwt";
+import { ConfigService } from "@nestjs/config";
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private configService: ConfigService) {
+    super({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      jwtFromRequest:
+        ExtractJwt.fromAuthHeaderAsBearerToken() as JwtFromRequestFunction,
+      secretOrKey:
+        configService.get<string>("JWT_SECRET") ?? process.env.JWT_SECRET ?? "",
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async validate(payload: { sub: string; username: string; role: string }) {
+    if (!payload || !payload.sub) {
+      throw new UnauthorizedException("Invalid token");
+    }
+
+    return {
+      userId: payload.sub,
+      username: payload.username,
+      role: payload.role,
+    };
+  }
+}
