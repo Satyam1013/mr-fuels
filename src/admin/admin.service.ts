@@ -3,19 +3,20 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "src/user/user.schema";
+import { CreateUserDto, UpdateUserDto } from "src/auth/create-user.dto";
 
 @Injectable()
 export class AdminService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async createUser(userData: Partial<User>) {
+  async createUser(userData: CreateUserDto) {
     try {
       if (!userData.password) {
         throw new Error("Password is required");
       }
-
       const hashed = await bcrypt.hash(userData.password, 10);
       const newUser = new this.userModel({ ...userData, password: hashed });
+
       return await newUser.save();
     } catch (error) {
       console.error("Error in createUser:", error);
@@ -23,7 +24,7 @@ export class AdminService {
     }
   }
 
-  async updateUser(id: string, updates: Partial<User>) {
+  async updateUser(id: string, updates: UpdateUserDto) {
     try {
       if (updates.password) {
         updates.password = await bcrypt.hash(updates.password, 10);

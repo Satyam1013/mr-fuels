@@ -43,13 +43,15 @@ export class AuthService {
   // Admin Login
   async adminLogin(email: string, password: string) {
     try {
-      const admin = await this.adminModel.findOne({ email });
+      const admin = await this.adminModel.findOne({
+        email,
+      });
       if (!admin) throw new UnauthorizedException("Admin not found");
 
       const valid = await bcrypt.compare(password, admin.password);
       if (!valid) throw new UnauthorizedException("Invalid password");
 
-      const payload = { email: admin.email, sub: admin._id, role: "ADMIN" };
+      const payload = { email: admin.email, sub: admin._id };
       return {
         message: "Admin logged in",
         access_token: this.jwtService.sign(payload),

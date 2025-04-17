@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 import { UserRole } from "src/user/user.schema";
@@ -6,7 +5,7 @@ import { UserRole } from "src/user/user.schema";
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  email: string;
 
   @IsString()
   @IsNotEmpty()

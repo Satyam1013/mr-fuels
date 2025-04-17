@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, JwtFromRequestFunction, Strategy } from "passport-jwt";
@@ -9,7 +8,6 @@ import { ConfigService } from "@nestjs/config";
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
     super({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       jwtFromRequest:
         ExtractJwt.fromAuthHeaderAsBearerToken() as JwtFromRequestFunction,
       secretOrKey:
