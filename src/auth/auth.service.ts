@@ -1,78 +1,91 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
-  Injectable,
-  UnauthorizedException,
   ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { AdminService } from "../admin/admin.service";
-import * as bcrypt from "bcryptjs";
-import { User, UserDocument, UserRole } from "src/user/user.schema";
 import { InjectModel } from "@nestjs/mongoose";
+import * as bcrypt from "bcrypt";
+import { User, UserDocument, UserRole } from "src/user/user.schema";
+import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
+import { Admin, AdminDocument } from "src/admin/admin.schema";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private adminService: AdminService,
-    private jwtService: JwtService,
+    @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private jwtService: JwtService,
   ) {}
 
   // Admin Signup
   async adminSignup(email: string, password: string) {
-    const existing = await this.adminService.findByEmail(email);
-    if (existing) throw new ForbiddenException("Admin already exists");
+    try {
+      const existing = await this.adminModel.findOne({ email });
+      if (existing) throw new ForbiddenException("Admin already exists");
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const admin = await this.adminService.createUser({
-      email,
-      password: hashedPassword,
-    });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const admin = new this.adminModel({ email, password: hashedPassword });
+      await admin.save();
 
-    return {
-      message: "Admin created successfully",
-      admin: { email: admin.email },
-    };
+      return {
+        message: "Admin created successfully",
+        admin: { email: admin.email },
+      };
+    } catch (error) {
+      console.error("Error in adminSignup:", error);
+      throw new InternalServerErrorException("Failed to signup admin");
+    }
   }
 
   // Admin Login
   async adminLogin(email: string, password: string) {
-    const admin = await this.adminService.findByEmail(email);
-    if (!admin) throw new UnauthorizedException("Admin not found");
+    try {
+      const admin = await this.adminModel.findOne({ email });
+      if (!admin) throw new UnauthorizedException("Admin not found");
 
-    const valid = await bcrypt.compare(password, admin.password);
-    if (!valid) throw new UnauthorizedException("Invalid password");
+      const valid = await bcrypt.compare(password, admin.password);
+      if (!valid) throw new UnauthorizedException("Invalid password");
 
-    const payload = { email: admin.email, sub: admin._id, role: admin.role };
-    return {
-      message: "Admin logged in",
-      access_token: this.jwtService.sign(payload),
-    };
+      const payload = { email: admin.email, sub: admin._id, role: "ADMIN" };
+      return {
+        message: "Admin logged in",
+        access_token: this.jwtService.sign(payload),
+      };
+    } catch (error) {
+      console.error("Error in adminLogin:", error);
+      throw new InternalServerErrorException("Failed to login admin");
+    }
   }
 
   // Manager Login
   async managerLogin(username: string, password: string) {
-    const manager = await this.adminService.findByUsername(username);
-    if (!manager) throw new UnauthorizedException("Manager not found");
+    try {
+      const manager = await this.userModel.findOne({ username });
+      if (!manager) throw new UnauthorizedException("Manager not found");
 
-    const valid = await bcrypt.compare(password, manager.password);
-    if (!valid) throw new UnauthorizedException("Invalid password");
+      const valid = await bcrypt.compare(password, manager.password);
+      if (!valid) throw new UnauthorizedException("Invalid password");
 
-    if (manager.role !== UserRole.MANAGER)
-      throw new ForbiddenException("Not a manager account");
+      if (manager.role !== UserRole.MANAGER) {
+        throw new ForbiddenException("Not a manager account");
+      }
 
-    const payload = {
-      username: manager.username,
-      sub: manager._id,
-      role: manager.role,
-    };
+      const payload = {
+        username: manager.username,
+        sub: manager._id,
+        role: manager.role,
+      };
 
-    return {
-      message: "Manager logged in",
-      access_token: this.jwtService.sign(payload),
-    };
+      return {
+        message: "Manager logged in",
+        access_token: this.jwtService.sign(payload),
+      };
+    } catch (error) {
+      console.error("Error in managerLogin:", error);
+      throw new InternalServerErrorException("Failed to login manager");
+    }
   }
 }

@@ -1,45 +1,46 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from "bcrypt";
-import { User, UserDocument, UserRole } from "src/user/user.schema";
+import { User, UserDocument } from "src/user/user.schema";
 
 @Injectable()
 export class AdminService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async createUser(userData: Partial<User>) {
-    if (!userData.password) {
-      throw new Error("Password is required");
+    try {
+      if (!userData.password) {
+        throw new Error("Password is required");
+      }
+
+      const hashed = await bcrypt.hash(userData.password, 10);
+      const newUser = new this.userModel({ ...userData, password: hashed });
+      return await newUser.save();
+    } catch (error) {
+      console.error("Error in createUser:", error);
+      throw new InternalServerErrorException("Failed to create user");
     }
-    const hashed = await bcrypt.hash(userData.password, 10);
-    const newUser = new this.userModel({ ...userData, password: hashed });
-    return newUser.save();
   }
 
   async updateUser(id: string, updates: Partial<User>) {
-    if (updates.password) {
-      updates.password = await bcrypt.hash(updates.password, 10);
+    try {
+      if (updates.password) {
+        updates.password = await bcrypt.hash(updates.password, 10);
+      }
+      return await this.userModel.findByIdAndUpdate(id, updates, { new: true });
+    } catch (error) {
+      console.error("Error in updateUser:", error);
+      throw new InternalServerErrorException("Failed to update user");
     }
-    return this.userModel.findByIdAndUpdate(id, updates, { new: true });
   }
 
   async deleteUser(id: string) {
-    return this.userModel.findByIdAndDelete(id);
-  }
-
-  async findAllUsersByRole(role: string) {
-    if (!(role in UserRole)) {
-      throw new Error("Invalid role");
+    try {
+      return await this.userModel.findByIdAndDelete(id);
+    } catch (error) {
+      console.error("Error in deleteUser:", error);
+      throw new InternalServerErrorException("Failed to delete user");
     }
-    return this.userModel.find({ role });
-  }
-
-  async findByEmail(email: string) {
-    return await this.userModel.findOne({ email });
-  }
-
-  async findByUsername(username: string) {
-    return this.userModel.findOne({ username });
   }
 }
