@@ -70,6 +70,10 @@ let MachineService = class MachineService {
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
+            const existingReading = machine.readings.find((r) => r.date.toDateString() === tomorrow.toDateString());
+            if (existingReading) {
+                throw new common_1.ConflictException("Reading for this date already exists");
+            }
             machine.readings.push({
                 date: tomorrow,
                 reading: startDayReading,
@@ -78,7 +82,6 @@ let MachineService = class MachineService {
         }
         catch (err) {
             console.error("Error updating reading", err);
-            throw new common_1.InternalServerErrorException("Failed to update reading");
         }
     }
 };

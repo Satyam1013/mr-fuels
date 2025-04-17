@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -6,6 +7,7 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Machine, MachineDocument } from "./machine.schema";
+import { CreateMachineDto, UpdateMachineDto } from "./machine.dto";
 
 @Injectable()
 export class MachineService {
@@ -13,7 +15,7 @@ export class MachineService {
     @InjectModel(Machine.name) private machineModel: Model<MachineDocument>,
   ) {}
 
-  async createMachine(data: Partial<Machine>) {
+  async createMachine(data: CreateMachineDto) {
     try {
       const machine = new this.machineModel(data);
       return await machine.save();
@@ -23,7 +25,7 @@ export class MachineService {
     }
   }
 
-  async updateMachine(id: string, updates: Partial<Machine>) {
+  async updateMachine(id: string, updates: UpdateMachineDto) {
     try {
       const updated = await this.machineModel.findByIdAndUpdate(id, updates, {
         new: true,
@@ -62,6 +64,16 @@ export class MachineService {
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(0, 0, 0, 0); // normalize to midnight
 
+      // ✅ Check for existing reading on the same date
+      const existingReading = machine.readings.find(
+        (r) => r.date.toDateString() === tomorrow.toDateString(),
+      );
+
+      if (existingReading) {
+        throw new ConflictException("Reading for this date already exists");
+      }
+
+      // ✅ Push new reading if not exists
       machine.readings.push({
         date: tomorrow,
         reading: startDayReading,
@@ -70,7 +82,6 @@ export class MachineService {
       return await machine.save();
     } catch (err) {
       console.error("Error updating reading", err);
-      throw new InternalServerErrorException("Failed to update reading");
     }
   }
 }

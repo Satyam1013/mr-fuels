@@ -9,6 +9,7 @@ export declare class Machine {
     machineNo: string;
     nozzleNo: string;
     fuelType: FuelType;
+    isActive: boolean;
     readings: {
         date: Date;
         reading: number;

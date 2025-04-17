@@ -23,9 +23,9 @@ export declare class MachineController {
     }> & {
         __v: number;
     })[]>;
-    updateReading(id: string, data: UpdateReadingDto): Promise<import("mongoose").Document<unknown, {}, import("./machine.schema").MachineDocument> & import("./machine.schema").Machine & import("mongoose").Document<unknown, any, any> & Required<{
+    updateReading(id: string, data: UpdateReadingDto): Promise<(import("mongoose").Document<unknown, {}, import("./machine.schema").MachineDocument> & import("./machine.schema").Machine & import("mongoose").Document<unknown, any, any> & Required<{
         _id: unknown;
     }> & {
         __v: number;
-    }>;
+    }) | undefined>;
 }

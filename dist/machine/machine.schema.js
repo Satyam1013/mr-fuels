@@ -33,6 +33,10 @@ __decorate([
     __metadata("design:type", String)
 ], Machine.prototype, "fuelType", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ default: true }),
+    __metadata("design:type", Boolean)
+], Machine.prototype, "isActive", void 0);
+__decorate([
     (0, mongoose_1.Prop)({
         type: [
             {

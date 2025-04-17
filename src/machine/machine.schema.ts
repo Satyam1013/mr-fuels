@@ -20,6 +20,9 @@ export class Machine {
   @Prop({ required: true, enum: FuelType })
   fuelType: FuelType;
 
+  @Prop({ default: true })
+  isActive: boolean;
+
   @Prop({
     type: [
       {
