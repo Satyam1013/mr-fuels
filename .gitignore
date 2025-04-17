@@ -7,4 +7,3 @@ prettier.config.js
 docker-compose.yml
 .nvmrc
 jest.config.js
-dist
