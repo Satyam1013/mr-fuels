@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { MachineModule } from "./machine/machine.module";
 import { FuelPriceModule } from "./fuel-price/fuel-price.module";
+import { PumpDataModule } from "./pump-data/pump-data.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FuelPriceModule } from "./fuel-price/fuel-price.module";
     AuthModule,
     MachineModule,
     FuelPriceModule,
+    PumpDataModule,
   ],
 })
 export class AppModule {}

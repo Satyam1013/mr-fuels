@@ -14,6 +14,7 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const machine_module_1 = require("./machine/machine.module");
 const fuel_price_module_1 = require("./fuel-price/fuel-price.module");
+const pump_data_module_1 = require("./pump-data/pump-data.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             machine_module_1.MachineModule,
             fuel_price_module_1.FuelPriceModule,
+            pump_data_module_1.PumpDataModule,
         ],
     })
 ], AppModule);
