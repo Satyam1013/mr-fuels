@@ -6,6 +6,7 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { FuelPrice, FuelPriceDocument } from "./fuel-price.schema";
+import { UpdateFuelPriceDto } from "./fuel-price.dto";
 
 @Injectable()
 export class FuelPriceService {
@@ -20,7 +21,7 @@ export class FuelPriceService {
     return existing;
   }
 
-  async updatePrice(updates: Partial<FuelPrice>) {
+  async updatePrice(updates: UpdateFuelPriceDto) {
     try {
       const fuelPrice = await this.fuelPriceModel.findOne();
       if (!fuelPrice) {
