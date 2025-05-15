@@ -22,10 +22,6 @@ exports.User = User;
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
-    __metadata("design:type", String)
 ], User.prototype, "username", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
@@ -39,6 +35,14 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true, enum: UserRole }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "aadharImage", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], User.prototype, "shift", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);

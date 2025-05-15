@@ -11,6 +11,7 @@ import { User, UserDocument, UserRole } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Admin, AdminDocument } from "src/admin/admin.schema";
+import { CreateAdminDto, CreateUserDto } from "./create-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -20,38 +21,98 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // Admin Signup
-  async adminSignup(email: string, password: string) {
+  async adminSignup(body: CreateAdminDto) {
     try {
-      const existing = await this.adminModel.findOne({ email });
+      const {
+        businessEmail,
+        password,
+        businessName,
+        mobileNo,
+        tankCapacity,
+        machines,
+      } = body;
+
+      const existing = await this.adminModel.findOne({ businessEmail });
       if (existing) throw new ForbiddenException("Admin already exists");
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const admin = new this.adminModel({ email, password: hashedPassword });
+
+      const admin = new this.adminModel({
+        businessEmail,
+        password: hashedPassword,
+        businessName,
+        mobileNo,
+        tankCapacity,
+        machines,
+        managers: [],
+      });
+
       await admin.save();
 
       return {
         message: "Admin created successfully",
-        admin: { email: admin.email },
+        admin: {
+          businessEmail,
+          businessName,
+          mobileNo,
+        },
       };
     } catch (error) {
       console.error("Error in adminSignup:", error);
       throw new InternalServerErrorException("Failed to signup admin");
     }
   }
+  async createManager(body: CreateUserDto) {
+    try {
+      const { username, password, mobile, role, aadharImage, shift } = body;
 
-  // Admin Login
+      if (role !== UserRole.MANAGER) {
+        throw new ForbiddenException(
+          "Only managers can be created from this route",
+        );
+      }
+
+      const existingUser = await this.userModel.findOne({ username });
+      if (existingUser) throw new ForbiddenException("Manager already exists");
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const manager = await this.userModel.create({
+        username,
+        password: hashedPassword,
+        mobile,
+        role,
+        aadharImage,
+        shift,
+      });
+
+      return {
+        message: "Manager created successfully",
+        manager: {
+          username: manager.username,
+          mobile: manager.mobile,
+          role: manager.role,
+          aadharImage: manager.aadharImage,
+          shift: manager.shift,
+        },
+      };
+    } catch (error) {
+      console.error("Error in createManager:", error);
+      throw new InternalServerErrorException("Failed to create manager");
+    }
+  }
+
   async adminLogin(email: string, password: string) {
     try {
       const admin = await this.adminModel.findOne({
-        email,
+        businessEmail: email,
       });
       if (!admin) throw new UnauthorizedException("Admin not found");
 
       const valid = await bcrypt.compare(password, admin.password);
       if (!valid) throw new UnauthorizedException("Invalid password");
 
-      const payload = { email: admin.email, sub: admin._id };
+      const payload = { email: admin.businessEmail, sub: admin._id };
       return {
         message: "Admin logged in",
         access_token: this.jwtService.sign(payload),
@@ -62,7 +123,6 @@ export class AuthService {
     }
   }
 
-  // Manager Login
   async managerLogin(username: string, password: string) {
     try {
       const manager = await this.userModel.findOne({ username });
@@ -76,14 +136,21 @@ export class AuthService {
       }
 
       const payload = {
-        username: manager.username,
         sub: manager._id,
+        username: manager.username,
         role: manager.role,
       };
 
       return {
         message: "Manager logged in",
         access_token: this.jwtService.sign(payload),
+        manager: {
+          username: manager.username,
+          mobile: manager.mobile,
+          role: manager.role,
+          shift: manager.shift,
+          aadharImage: manager.aadharImage,
+        },
       };
     } catch (error) {
       console.error("Error in managerLogin:", error);

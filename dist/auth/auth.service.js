@@ -59,17 +59,30 @@ let AuthService = class AuthService {
         this.userModel = userModel;
         this.jwtService = jwtService;
     }
-    async adminSignup(email, password) {
+    async adminSignup(body) {
         try {
-            const existing = await this.adminModel.findOne({ email });
+            const { businessEmail, password, businessName, mobileNo, tankCapacity, machines, } = body;
+            const existing = await this.adminModel.findOne({ businessEmail });
             if (existing)
                 throw new common_1.ForbiddenException("Admin already exists");
             const hashedPassword = await bcrypt.hash(password, 10);
-            const admin = new this.adminModel({ email, password: hashedPassword });
+            const admin = new this.adminModel({
+                businessEmail,
+                password: hashedPassword,
+                businessName,
+                mobileNo,
+                tankCapacity,
+                machines,
+                managers: [],
+            });
             await admin.save();
             return {
                 message: "Admin created successfully",
-                admin: { email: admin.email },
+                admin: {
+                    businessEmail,
+                    businessName,
+                    mobileNo,
+                },
             };
         }
         catch (error) {
@@ -77,17 +90,51 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException("Failed to signup admin");
         }
     }
+    async createManager(body) {
+        try {
+            const { username, password, mobile, role, aadharImage, shift } = body;
+            if (role !== user_schema_1.UserRole.MANAGER) {
+                throw new common_1.ForbiddenException("Only managers can be created from this route");
+            }
+            const existingUser = await this.userModel.findOne({ username });
+            if (existingUser)
+                throw new common_1.ForbiddenException("Manager already exists");
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const manager = await this.userModel.create({
+                username,
+                password: hashedPassword,
+                mobile,
+                role,
+                aadharImage,
+                shift,
+            });
+            return {
+                message: "Manager created successfully",
+                manager: {
+                    username: manager.username,
+                    mobile: manager.mobile,
+                    role: manager.role,
+                    aadharImage: manager.aadharImage,
+                    shift: manager.shift,
+                },
+            };
+        }
+        catch (error) {
+            console.error("Error in createManager:", error);
+            throw new common_1.InternalServerErrorException("Failed to create manager");
+        }
+    }
     async adminLogin(email, password) {
         try {
             const admin = await this.adminModel.findOne({
-                email,
+                businessEmail: email,
             });
             if (!admin)
                 throw new common_1.UnauthorizedException("Admin not found");
             const valid = await bcrypt.compare(password, admin.password);
             if (!valid)
                 throw new common_1.UnauthorizedException("Invalid password");
-            const payload = { email: admin.email, sub: admin._id };
+            const payload = { email: admin.businessEmail, sub: admin._id };
             return {
                 message: "Admin logged in",
                 access_token: this.jwtService.sign(payload),
@@ -110,13 +157,20 @@ let AuthService = class AuthService {
                 throw new common_1.ForbiddenException("Not a manager account");
             }
             const payload = {
-                username: manager.username,
                 sub: manager._id,
+                username: manager.username,
                 role: manager.role,
             };
             return {
                 message: "Manager logged in",
                 access_token: this.jwtService.sign(payload),
+                manager: {
+                    username: manager.username,
+                    mobile: manager.mobile,
+                    role: manager.role,
+                    shift: manager.shift,
+                    aadharImage: manager.aadharImage,
+                },
             };
         }
         catch (error) {
