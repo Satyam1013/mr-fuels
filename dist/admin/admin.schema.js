@@ -28,22 +28,34 @@ __decorate([
 ], Admin.prototype, "businessEmail", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Admin.prototype, "mobileNo", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [{ type: Object }] }),
+    (0, mongoose_1.Prop)({
+        type: [
+            {
+                type: { type: String, required: true },
+                number: { type: Number, required: true },
+            },
+        ],
+    }),
     __metadata("design:type", Array)
 ], Admin.prototype, "tankCapacity", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: [
             {
-                machineNo: Number,
-                nozel: String,
+                machineNo: { type: String, required: true },
+                nozzleCount: { type: Number, required: true },
+                nozzles: [
+                    {
+                        nozzleType: { type: String, required: true },
+                    },
+                ],
             },
         ],
     }),

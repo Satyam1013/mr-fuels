@@ -1,24 +1,32 @@
 import { UserRole } from "src/user/user.schema";
 export declare class CreateUserDto {
-    username: string;
-    password: string;
-    mobile: string;
+    managerName: string;
+    managerPassword: string;
+    managerMobile: string;
+    shift: string;
     role: UserRole;
-    aadharImage: string;
-    shift: number;
 }
 declare const UpdateUserDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateUserDto>>;
 export declare class UpdateUserDto extends UpdateUserDto_base {
 }
+export declare class NozzleDto {
+    nozzleType: string;
+}
+export declare class MachineDto {
+    machineNo: string;
+    nozzleCount: number;
+    nozzles: NozzleDto[];
+}
+export declare class TankDto {
+    type: string;
+    number: number;
+}
 export declare class CreateAdminDto {
     businessName: string;
     businessEmail: string;
-    mobileNo: number;
+    mobileNo: string;
     password: string;
-    tankCapacity: Record<string, string>[];
-    machines: {
-        machineNo: number;
-        nozel: string;
-    }[];
+    tankCapacity: TankDto[];
+    machines: MachineDto[];
 }
 export {};

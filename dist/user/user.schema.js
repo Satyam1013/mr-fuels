@@ -22,27 +22,23 @@ exports.User = User;
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
+], User.prototype, "managerName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], User.prototype, "password", void 0);
+], User.prototype, "managerPassword", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], User.prototype, "mobile", void 0);
+], User.prototype, "managerMobile", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: UserRole }),
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], User.prototype, "shift", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: UserRole.MANAGER }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], User.prototype, "aadharImage", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
-], User.prototype, "shift", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);

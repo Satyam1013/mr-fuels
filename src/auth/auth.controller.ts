@@ -12,20 +12,23 @@ export class AuthController {
   }
 
   @Post("admin/login")
-  adminLogin(@Body("email") email: string, @Body("password") password: string) {
-    return this.authService.adminLogin(email, password);
-  }
-
-  @Post("manager/login")
-  managerLogin(
-    @Body("username") username: string,
+  adminLogin(
+    @Body("mobileNo") mobileNo: string,
     @Body("password") password: string,
   ) {
-    return this.authService.managerLogin(username, password);
+    return this.authService.adminLogin(mobileNo, password);
   }
 
   @Post("manager/create")
   createManager(@Body() body: CreateUserDto) {
     return this.authService.createManager(body);
+  }
+
+  @Post("manager/login")
+  managerLogin(
+    @Body("managerName") managerName: string,
+    @Body("managerPassword") managerPassword: string,
+  ) {
+    return this.authService.managerLogin(managerName, managerPassword);
   }
 }

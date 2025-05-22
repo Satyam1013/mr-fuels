@@ -1,4 +1,4 @@
-import { UserDocument, UserRole } from "src/user/user.schema";
+import { UserDocument } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { AdminDocument } from "src/admin/admin.schema";
@@ -13,32 +13,28 @@ export declare class AuthService {
         admin: {
             businessEmail: string;
             businessName: string;
-            mobileNo: number;
+            mobileNo: string;
         };
+    }>;
+    adminLogin(mobileNo: string, password: string): Promise<{
+        message: string;
+        access_token: string;
     }>;
     createManager(body: CreateUserDto): Promise<{
         message: string;
         manager: {
-            username: string;
-            mobile: string;
-            role: UserRole;
-            aadharImage: string;
-            shift: number;
+            managerName: string;
+            managerMobile: string;
+            shift: string;
         };
     }>;
-    adminLogin(email: string, password: string): Promise<{
-        message: string;
-        access_token: string;
-    }>;
-    managerLogin(username: string, password: string): Promise<{
+    managerLogin(managerName: string, managerPassword: string): Promise<{
         message: string;
         access_token: string;
         manager: {
-            username: string;
-            mobile: string;
-            role: UserRole.MANAGER;
-            shift: number;
-            aadharImage: string;
+            managerName: string;
+            managerMobile: string;
+            shift: string;
         };
     }>;
 }

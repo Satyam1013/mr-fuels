@@ -5,12 +5,11 @@ export declare enum UserRole {
     STAFF = "STAFF"
 }
 export declare class User {
-    username: string;
-    password: string;
-    mobile: string;
+    managerName: string;
+    managerPassword: string;
+    managerMobile: string;
+    shift: string;
     role: UserRole;
-    aadharImage: string;
-    shift: number;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, Document<unknown, any, User> & User & {
     _id: import("mongoose").Types.ObjectId;

@@ -1,51 +1,84 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 import { UserRole } from "src/user/user.schema";
+import { Type } from "class-transformer";
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
+  managerName: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  managerPassword: string;
 
   @IsString()
   @IsNotEmpty()
-  mobile: string;
+  managerMobile: string;
+
+  @IsString()
+  @IsNotEmpty()
+  shift: string;
 
   @IsEnum(UserRole)
   role: UserRole;
-
-  @IsString()
-  @IsNotEmpty()
-  aadharImage: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  shift: number;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
+export class NozzleDto {
+  @IsString()
+  nozzleType: string;
+}
+
+export class MachineDto {
+  @IsString()
+  machineNo: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  nozzleCount: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => NozzleDto)
+  nozzles: NozzleDto[];
+}
+
+export class TankDto {
+  @IsString()
+  type: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  number: number;
+}
+
 export class CreateAdminDto {
   @IsString()
-  @IsNotEmpty()
   businessName: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsEmail()
   businessEmail: string;
 
-  @IsNotEmpty()
-  mobileNo: number;
+  @IsString()
+  mobileNo: string;
 
   @IsString()
-  @IsNotEmpty()
   password: string;
 
-  tankCapacity: Record<string, string>[];
+  @ValidateNested({ each: true })
+  @Type(() => TankDto)
+  tankCapacity: TankDto[];
 
-  machines: { machineNo: number; nozel: string }[];
+  @ValidateNested({ each: true })
+  @Type(() => MachineDto)
+  machines: MachineDto[];
 }

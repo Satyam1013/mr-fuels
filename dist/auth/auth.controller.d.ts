@@ -8,32 +8,28 @@ export declare class AuthController {
         admin: {
             businessEmail: string;
             businessName: string;
-            mobileNo: number;
+            mobileNo: string;
         };
     }>;
-    adminLogin(email: string, password: string): Promise<{
+    adminLogin(mobileNo: string, password: string): Promise<{
         message: string;
         access_token: string;
-    }>;
-    managerLogin(username: string, password: string): Promise<{
-        message: string;
-        access_token: string;
-        manager: {
-            username: string;
-            mobile: string;
-            role: import("../user/user.schema").UserRole.MANAGER;
-            shift: number;
-            aadharImage: string;
-        };
     }>;
     createManager(body: CreateUserDto): Promise<{
         message: string;
         manager: {
-            username: string;
-            mobile: string;
-            role: import("../user/user.schema").UserRole;
-            aadharImage: string;
-            shift: number;
+            managerName: string;
+            managerMobile: string;
+            shift: string;
+        };
+    }>;
+    managerLogin(managerName: string, managerPassword: string): Promise<{
+        message: string;
+        access_token: string;
+        manager: {
+            managerName: string;
+            managerMobile: string;
+            shift: string;
         };
     }>;
 }

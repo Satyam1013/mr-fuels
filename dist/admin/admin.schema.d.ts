@@ -1,15 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { User } from "src/user/user.schema";
 export type AdminDocument = Admin & Document;
 export declare class Admin {
     businessName: string;
     businessEmail: string;
-    mobileNo: number;
+    mobileNo: string;
     password: string;
-    tankCapacity: Record<string, string>[];
+    tankCapacity: {
+        type: string;
+        number: number;
+    }[];
     machines: {
-        machineNo: number;
-        nozel: string;
+        machineNo: string;
+        nozzleCount: number;
+        nozzles: {
+            nozzleType: string;
+        }[];
     }[];
     managers: User[];
     _id: any;

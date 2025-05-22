@@ -62,57 +62,16 @@ export class AuthService {
       throw new InternalServerErrorException("Failed to signup admin");
     }
   }
-  async createManager(body: CreateUserDto) {
+
+  async adminLogin(mobileNo: string, password: string) {
     try {
-      const { username, password, mobile, role, aadharImage, shift } = body;
-
-      if (role !== UserRole.MANAGER) {
-        throw new ForbiddenException(
-          "Only managers can be created from this route",
-        );
-      }
-
-      const existingUser = await this.userModel.findOne({ username });
-      if (existingUser) throw new ForbiddenException("Manager already exists");
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const manager = await this.userModel.create({
-        username,
-        password: hashedPassword,
-        mobile,
-        role,
-        aadharImage,
-        shift,
-      });
-
-      return {
-        message: "Manager created successfully",
-        manager: {
-          username: manager.username,
-          mobile: manager.mobile,
-          role: manager.role,
-          aadharImage: manager.aadharImage,
-          shift: manager.shift,
-        },
-      };
-    } catch (error) {
-      console.error("Error in createManager:", error);
-      throw new InternalServerErrorException("Failed to create manager");
-    }
-  }
-
-  async adminLogin(email: string, password: string) {
-    try {
-      const admin = await this.adminModel.findOne({
-        businessEmail: email,
-      });
+      const admin = await this.adminModel.findOne({ mobileNo });
       if (!admin) throw new UnauthorizedException("Admin not found");
 
       const valid = await bcrypt.compare(password, admin.password);
       if (!valid) throw new UnauthorizedException("Invalid password");
 
-      const payload = { email: admin.businessEmail, sub: admin._id };
+      const payload = { mobileNo: admin.mobileNo, sub: admin._id };
       return {
         message: "Admin logged in",
         access_token: this.jwtService.sign(payload),
@@ -123,12 +82,52 @@ export class AuthService {
     }
   }
 
-  async managerLogin(username: string, password: string) {
+  async createManager(body: CreateUserDto) {
     try {
-      const manager = await this.userModel.findOne({ username });
+      const { managerName, managerPassword, managerMobile, shift, role } = body;
+
+      if (role !== UserRole.MANAGER) {
+        throw new ForbiddenException("Only managers can be created");
+      }
+
+      const existing = await this.userModel.findOne({ managerName });
+      if (existing) {
+        throw new ForbiddenException("Manager already exists");
+      }
+
+      const hashedPassword = await bcrypt.hash(managerPassword, 10);
+
+      const manager = await this.userModel.create({
+        managerName,
+        managerPassword: hashedPassword,
+        managerMobile,
+        shift,
+        role,
+      });
+
+      return {
+        message: "Manager created successfully",
+        manager: {
+          managerName: manager.managerName,
+          managerMobile: manager.managerMobile,
+          shift: manager.shift,
+        },
+      };
+    } catch (error) {
+      console.error("Error in createManager:", error);
+      throw new InternalServerErrorException("Failed to create manager");
+    }
+  }
+
+  async managerLogin(managerName: string, managerPassword: string) {
+    try {
+      const manager = await this.userModel.findOne({ managerName });
       if (!manager) throw new UnauthorizedException("Manager not found");
 
-      const valid = await bcrypt.compare(password, manager.password);
+      const valid = await bcrypt.compare(
+        managerPassword,
+        manager.managerPassword,
+      );
       if (!valid) throw new UnauthorizedException("Invalid password");
 
       if (manager.role !== UserRole.MANAGER) {
@@ -137,7 +136,7 @@ export class AuthService {
 
       const payload = {
         sub: manager._id,
-        username: manager.username,
+        managerName: manager.managerName,
         role: manager.role,
       };
 
@@ -145,11 +144,9 @@ export class AuthService {
         message: "Manager logged in",
         access_token: this.jwtService.sign(payload),
         manager: {
-          username: manager.username,
-          mobile: manager.mobile,
-          role: manager.role,
+          managerName: manager.managerName,
+          managerMobile: manager.managerMobile,
           shift: manager.shift,
-          aadharImage: manager.aadharImage,
         },
       };
     } catch (error) {

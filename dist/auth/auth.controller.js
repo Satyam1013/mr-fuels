@@ -23,14 +23,14 @@ let AuthController = class AuthController {
     adminSignup(body) {
         return this.authService.adminSignup(body);
     }
-    adminLogin(email, password) {
-        return this.authService.adminLogin(email, password);
-    }
-    managerLogin(username, password) {
-        return this.authService.managerLogin(username, password);
+    adminLogin(mobileNo, password) {
+        return this.authService.adminLogin(mobileNo, password);
     }
     createManager(body) {
         return this.authService.createManager(body);
+    }
+    managerLogin(managerName, managerPassword) {
+        return this.authService.managerLogin(managerName, managerPassword);
     }
 };
 exports.AuthController = AuthController;
@@ -43,20 +43,12 @@ __decorate([
 ], AuthController.prototype, "adminSignup", null);
 __decorate([
     (0, common_1.Post)("admin/login"),
-    __param(0, (0, common_1.Body)("email")),
+    __param(0, (0, common_1.Body)("mobileNo")),
     __param(1, (0, common_1.Body)("password")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "adminLogin", null);
-__decorate([
-    (0, common_1.Post)("manager/login"),
-    __param(0, (0, common_1.Body)("username")),
-    __param(1, (0, common_1.Body)("password")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "managerLogin", null);
 __decorate([
     (0, common_1.Post)("manager/create"),
     __param(0, (0, common_1.Body)()),
@@ -64,6 +56,14 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "createManager", null);
+__decorate([
+    (0, common_1.Post)("manager/login"),
+    __param(0, (0, common_1.Body)("managerName")),
+    __param(1, (0, common_1.Body)("managerPassword")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "managerLogin", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

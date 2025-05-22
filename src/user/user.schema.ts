@@ -11,22 +11,19 @@ export enum UserRole {
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
-  username: string;
+  managerName: string;
 
   @Prop({ required: true })
-  password: string;
+  managerPassword: string;
 
   @Prop({ required: true })
-  mobile: string;
+  managerMobile: string;
 
-  @Prop({ required: true, enum: UserRole })
+  @Prop({ required: true })
+  shift: string;
+
+  @Prop({ default: UserRole.MANAGER })
   role: UserRole;
-
-  @Prop()
-  aadharImage: string;
-
-  @Prop()
-  shift: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
