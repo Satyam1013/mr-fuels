@@ -1,5 +1,5 @@
 import { AuthService } from "./auth.service";
-import { CreateAdminDto, CreateUserDto } from "./create-user.dto";
+import { CreateAdminDto } from "./create-user.dto";
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -15,7 +15,7 @@ export declare class AuthController {
         message: string;
         access_token: string;
     }>;
-    createManager(body: CreateUserDto): Promise<{
+    createManager(body: any): Promise<{
         message: string;
         manager: {
             managerName: string;

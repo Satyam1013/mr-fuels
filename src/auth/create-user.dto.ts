@@ -1,38 +1,43 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
+  IsArray,
   IsEmail,
-  IsEnum,
-  IsNotEmpty,
   IsNumber,
+  IsObject,
   IsString,
   ValidateNested,
 } from "class-validator";
-import { PartialType } from "@nestjs/mapped-types";
-import { UserRole } from "src/user/user.schema";
 import { Type } from "class-transformer";
 
-export class CreateUserDto {
+export class FuelDto {
   @IsString()
-  @IsNotEmpty()
-  managerName: string;
+  value: string;
 
-  @IsString()
-  @IsNotEmpty()
-  managerPassword: string;
+  @IsNumber()
+  @Type(() => Number)
+  kl: number;
 
-  @IsString()
-  @IsNotEmpty()
-  managerMobile: string;
-
-  @IsString()
-  @IsNotEmpty()
-  shift: string;
-
-  @IsEnum(UserRole)
-  role: UserRole;
+  @IsObject()
+  pdf: object;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class BusinessDetailsDto {
+  @IsString()
+  businessName: string;
+
+  @IsEmail()
+  businessEmail: string;
+
+  @IsString()
+  businessPhoneNo: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  fuelTypes: string[];
+
+  @ValidateNested({ each: true })
+  @Type(() => FuelDto)
+  fuels: FuelDto[];
+}
 
 export class NozzleDto {
   @IsString()
@@ -40,8 +45,9 @@ export class NozzleDto {
 }
 
 export class MachineDto {
-  @IsString()
-  machineNo: string;
+  @IsNumber()
+  @Type(() => Number)
+  machineNo: number;
 
   @IsNumber()
   @Type(() => Number)
@@ -52,33 +58,82 @@ export class MachineDto {
   nozzles: NozzleDto[];
 }
 
-export class TankDto {
-  @IsString()
-  type: string;
-
+export class MachineDetailsDto {
   @IsNumber()
   @Type(() => Number)
-  number: number;
-}
-
-export class CreateAdminDto {
-  @IsString()
-  businessName: string;
-
-  @IsEmail()
-  businessEmail: string;
-
-  @IsString()
-  mobileNo: string;
-
-  @IsString()
-  password: string;
-
-  @ValidateNested({ each: true })
-  @Type(() => TankDto)
-  tankCapacity: TankDto[];
+  numberOfMachines: number;
 
   @ValidateNested({ each: true })
   @Type(() => MachineDto)
   machines: MachineDto[];
+}
+
+export class PumpDetailsDto {
+  @IsArray()
+  @IsString({ each: true })
+  businessUpiApps: string[];
+
+  @IsString()
+  swipeStatement: string;
+
+  @IsString()
+  bankDeposit: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  noOfEmployeeShifts: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  shiftDetails: number;
+}
+
+export class ManagerDto {
+  @IsString()
+  name: string;
+
+  @IsString()
+  mobile: string;
+
+  @IsObject()
+  aadhar: object;
+
+  @IsNumber()
+  @Type(() => Number)
+  shift: number;
+
+  @IsString()
+  password: string;
+}
+
+export class ManagerDetailsDto {
+  @IsNumber()
+  @Type(() => Number)
+  numberOfManagers: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => ManagerDto)
+  @IsArray()
+  managers: ManagerDto[];
+}
+
+export class CreateAdminDto {
+  @ValidateNested()
+  @Type(() => BusinessDetailsDto)
+  businessDetails: BusinessDetailsDto;
+
+  @ValidateNested()
+  @Type(() => MachineDetailsDto)
+  machineDetails: MachineDetailsDto;
+
+  @ValidateNested()
+  @Type(() => PumpDetailsDto)
+  pumpDetails: PumpDetailsDto;
+
+  @ValidateNested()
+  @Type(() => ManagerDetailsDto)
+  managerDetails: ManagerDetailsDto;
+
+  @IsString()
+  adminPassword: string;
 }

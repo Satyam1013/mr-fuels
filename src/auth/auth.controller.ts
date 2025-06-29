@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateAdminDto, CreateUserDto } from "./create-user.dto";
+import { CreateAdminDto } from "./create-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post("manager/create")
-  createManager(@Body() body: CreateUserDto) {
+  createManager(@Body() body: any) {
     return this.authService.createManager(body);
   }
 

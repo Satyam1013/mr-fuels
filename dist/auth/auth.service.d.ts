@@ -2,7 +2,7 @@ import { UserDocument } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { AdminDocument } from "src/admin/admin.schema";
-import { CreateAdminDto, CreateUserDto } from "./create-user.dto";
+import { CreateAdminDto } from "./create-user.dto";
 export declare class AuthService {
     private adminModel;
     private userModel;
@@ -20,7 +20,7 @@ export declare class AuthService {
         message: string;
         access_token: string;
     }>;
-    createManager(body: CreateUserDto): Promise<{
+    createManager(body: any): Promise<{
         message: string;
         manager: {
             managerName: string;

@@ -1,56 +1,34 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { Document } from "mongoose";
-import { User } from "src/user/user.schema";
+import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
-export type AdminDocument = Admin & Document;
+@Schema()
+export class Manager {
+  @Prop({ required: true }) name: string;
+  @Prop({ required: true }) mobile: string;
+  @Prop({ required: true, type: Object }) aadhar: object;
+  @Prop({ required: true }) shift: number;
+  @Prop({ required: true }) password: string;
+}
 
 @Schema()
 export class Admin {
-  @Prop({ required: true })
-  businessName: string;
+  @Prop({ required: true }) businessName: string;
+  @Prop({ required: true }) businessEmail: string;
+  @Prop({ required: true }) mobileNo: string;
+  @Prop({ required: true }) fuelTypes: string[];
+  @Prop({ required: true, type: Object }) fuels: any[];
+  @Prop({ required: true, type: Object }) machines: any[];
+  @Prop({ required: true }) businessUpiApps: string[];
+  @Prop() swipeStatement: string;
+  @Prop() bankDeposit: string;
+  @Prop() noOfEmployeeShifts: number;
+  @Prop() shiftDetails: number;
 
-  @Prop({ required: true, unique: true })
-  businessEmail: string;
+  @Prop({ type: [Manager], required: true })
+  managers: Manager[];
 
-  @Prop({ required: true })
-  mobileNo: string; // Should be string to allow numbers like "1234567890"
-
-  @Prop({ required: true })
-  password: string;
-
-  @Prop({
-    type: [
-      {
-        type: { type: String, required: true },
-        number: { type: Number, required: true },
-      },
-    ],
-  })
-  tankCapacity: { type: string; number: number }[];
-
-  @Prop({
-    type: [
-      {
-        machineNo: { type: String, required: true },
-        nozzleCount: { type: Number, required: true },
-        nozzles: [
-          {
-            nozzleType: { type: String, required: true },
-          },
-        ],
-      },
-    ],
-  })
-  machines: {
-    machineNo: string;
-    nozzleCount: number;
-    nozzles: { nozzleType: string }[];
-  }[];
-
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] })
-  managers: User[];
-
-  _id: any;
+  @Prop({ required: true }) password: string;
 }
 
+export type AdminDocument = Admin & Document;
 export const AdminSchema = SchemaFactory.createForClass(Admin);

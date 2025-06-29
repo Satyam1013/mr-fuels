@@ -8,13 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminSchema = exports.Admin = void 0;
+exports.AdminSchema = exports.Admin = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = __importDefault(require("mongoose"));
+let Manager = class Manager {
+};
+exports.Manager = Manager;
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Manager.prototype, "name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Manager.prototype, "mobile", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, type: Object }),
+    __metadata("design:type", Object)
+], Manager.prototype, "aadhar", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Manager.prototype, "shift", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Manager.prototype, "password", void 0);
+exports.Manager = Manager = __decorate([
+    (0, mongoose_1.Schema)()
+], Manager);
 let Admin = class Admin {
 };
 exports.Admin = Admin;
@@ -23,7 +45,7 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "businessName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "businessEmail", void 0);
 __decorate([
@@ -32,39 +54,44 @@ __decorate([
 ], Admin.prototype, "mobileNo", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Admin.prototype, "password", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
-        type: [
-            {
-                type: { type: String, required: true },
-                number: { type: Number, required: true },
-            },
-        ],
-    }),
     __metadata("design:type", Array)
-], Admin.prototype, "tankCapacity", void 0);
+], Admin.prototype, "fuelTypes", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({
-        type: [
-            {
-                machineNo: { type: String, required: true },
-                nozzleCount: { type: Number, required: true },
-                nozzles: [
-                    {
-                        nozzleType: { type: String, required: true },
-                    },
-                ],
-            },
-        ],
-    }),
+    (0, mongoose_1.Prop)({ required: true, type: Object }),
+    __metadata("design:type", Array)
+], Admin.prototype, "fuels", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, type: Object }),
     __metadata("design:type", Array)
 ], Admin.prototype, "machines", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.default.Schema.Types.ObjectId, ref: "User" }] }),
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Array)
+], Admin.prototype, "businessUpiApps", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Admin.prototype, "swipeStatement", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Admin.prototype, "bankDeposit", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Admin.prototype, "noOfEmployeeShifts", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Admin.prototype, "shiftDetails", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [Manager], required: true }),
     __metadata("design:type", Array)
 ], Admin.prototype, "managers", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Admin.prototype, "password", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)()
 ], Admin);

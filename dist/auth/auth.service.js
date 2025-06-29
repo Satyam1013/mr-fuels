@@ -61,27 +61,41 @@ let AuthService = class AuthService {
     }
     async adminSignup(body) {
         try {
-            const { businessEmail, password, businessName, mobileNo, tankCapacity, machines, } = body;
-            const existing = await this.adminModel.findOne({ businessEmail });
+            const { businessDetails, machineDetails, pumpDetails, managerDetails, adminPassword, } = body;
+            const existing = await this.adminModel.findOne({
+                businessEmail: businessDetails.businessEmail,
+            });
             if (existing)
                 throw new common_1.ForbiddenException("Admin already exists");
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(adminPassword, 10);
             const admin = new this.adminModel({
-                businessEmail,
+                businessEmail: businessDetails.businessEmail,
+                businessName: businessDetails.businessName,
+                mobileNo: businessDetails.businessPhoneNo,
+                fuelTypes: businessDetails.fuelTypes,
+                fuels: businessDetails.fuels,
+                machines: machineDetails.machines,
+                businessUpiApps: pumpDetails.businessUpiApps,
+                swipeStatement: pumpDetails.swipeStatement,
+                bankDeposit: pumpDetails.bankDeposit,
+                noOfEmployeeShifts: pumpDetails.noOfEmployeeShifts,
+                shiftDetails: pumpDetails.shiftDetails,
+                managers: managerDetails.managers.map((m) => ({
+                    name: m.name,
+                    mobile: m.mobile,
+                    aadhar: m.aadhar,
+                    shift: m.shift,
+                    password: m.password,
+                })),
                 password: hashedPassword,
-                businessName,
-                mobileNo,
-                tankCapacity,
-                machines,
-                managers: [],
             });
             await admin.save();
             return {
                 message: "Admin created successfully",
                 admin: {
-                    businessEmail,
-                    businessName,
-                    mobileNo,
+                    businessEmail: businessDetails.businessEmail,
+                    businessName: businessDetails.businessName,
+                    mobileNo: businessDetails.businessPhoneNo,
                 },
             };
         }

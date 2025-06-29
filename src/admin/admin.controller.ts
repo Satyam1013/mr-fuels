@@ -8,7 +8,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminService } from "./admin.service";
-import { CreateUserDto, UpdateUserDto } from "src/auth/create-user.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 
 @UseGuards(AuthGuard)
@@ -17,12 +16,12 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post("create-user")
-  createUser(@Body() userData: CreateUserDto) {
+  createUser(@Body() userData: any) {
     return this.adminService.createUser(userData);
   }
 
   @Patch("update-user/:id")
-  updateUser(@Param("id") id: string, @Body() userData: UpdateUserDto) {
+  updateUser(@Param("id") id: string, @Body() userData: any) {
     return this.adminService.updateUser(id, userData);
   }
 
