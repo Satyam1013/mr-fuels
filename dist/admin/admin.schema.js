@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", String)
 ], Manager.prototype, "mobile", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ type: Object }),
     __metadata("design:type", Object)
 ], Manager.prototype, "aadhar", void 0);
 __decorate([

@@ -3,7 +3,7 @@ export declare class Manager {
     _id: Types.ObjectId;
     name: string;
     mobile: string;
-    aadhar?: any;
+    aadhar: object;
     shift: number;
     password: string;
 }

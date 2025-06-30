@@ -102,7 +102,7 @@ export class ManagerDto {
 
   @IsOptional()
   @IsObject()
-  aadhar: object;
+  aadhar?: object;
 
   @IsString()
   password: string;

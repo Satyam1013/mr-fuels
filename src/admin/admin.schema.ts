@@ -9,7 +9,7 @@ export class Manager {
 
   @Prop({ required: true }) mobile: string;
 
-  @Prop() aadhar?: any;
+  @Prop({ type: Object }) aadhar: object;
 
   @Prop({ required: true }) shift: number;
 
