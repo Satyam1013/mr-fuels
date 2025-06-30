@@ -8,7 +8,6 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
-import { User, UserDocument } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Admin, AdminDocument } from "src/admin/admin.schema";
@@ -19,10 +18,10 @@ import { ConfigService } from "@nestjs/config";
 export class AuthService {
   constructor(
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
+
   async adminSignup(body: CreateAdminDto) {
     try {
       const {

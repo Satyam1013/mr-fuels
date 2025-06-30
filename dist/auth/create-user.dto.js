@@ -134,6 +134,7 @@ __decorate([
     __metadata("design:type", Number)
 ], ManagerDto.prototype, "shift", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], ManagerDto.prototype, "aadhar", void 0);

@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
@@ -99,6 +100,7 @@ export class ManagerDto {
   @Type(() => Number)
   shift: number;
 
+  @IsOptional()
   @IsObject()
   aadhar: object;
 

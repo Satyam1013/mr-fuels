@@ -1,4 +1,3 @@
-import { UserDocument } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { AdminDocument } from "src/admin/admin.schema";
@@ -6,10 +5,9 @@ import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
 export declare class AuthService {
     private adminModel;
-    private userModel;
     private jwtService;
     private configService;
-    constructor(adminModel: Model<AdminDocument>, userModel: Model<UserDocument>, jwtService: JwtService, configService: ConfigService);
+    constructor(adminModel: Model<AdminDocument>, jwtService: JwtService, configService: ConfigService);
     adminSignup(body: CreateAdminDto): Promise<{
         message: string;
         admin: {
