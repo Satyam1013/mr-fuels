@@ -5,9 +5,9 @@ exports.uploadPdfToCloudinary = uploadPdfToCloudinary;
 exports.uploadPdfBufferToCloudinary = uploadPdfBufferToCloudinary;
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
-    cloud_name: "diwrfhagt",
-    api_key: "338948144218659",
-    api_secret: "NB7qF_AA3B1zDkw9RLyZkNTXNJ4",
+    cloud_name: "dcoegle2h",
+    api_key: "221669619162474",
+    api_secret: "X0TGO6zw4I8PlmjeTdntYkGPplI",
 });
 async function uploadPdfToCloudinary(filePath) {
     try {

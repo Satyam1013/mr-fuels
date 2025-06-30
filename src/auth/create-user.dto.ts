@@ -99,6 +99,9 @@ export class ManagerDto {
   @Type(() => Number)
   shift: number;
 
+  @IsObject()
+  aadhar: object;
+
   @IsString()
   password: string;
 }

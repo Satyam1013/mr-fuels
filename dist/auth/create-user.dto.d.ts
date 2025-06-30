@@ -33,6 +33,7 @@ export declare class ManagerDto {
     name: string;
     mobile: string;
     shift: number;
+    aadhar: object;
     password: string;
 }
 export declare class CreateAdminDto {

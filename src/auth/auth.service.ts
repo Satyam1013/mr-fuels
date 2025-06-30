@@ -80,6 +80,7 @@ export class AuthService {
           name: m.name,
           mobile: m.mobile,
           shift: m.shift,
+          aadhar: m.aadhar,
           password: await bcrypt.hash(m.password, 10),
         })),
       );

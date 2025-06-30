@@ -28,6 +28,10 @@ __decorate([
     __metadata("design:type", String)
 ], Manager.prototype, "mobile", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true, type: Object }),
+    __metadata("design:type", Object)
+], Manager.prototype, "aadhar", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Manager.prototype, "shift", void 0);
