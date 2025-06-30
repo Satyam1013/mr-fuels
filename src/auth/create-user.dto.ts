@@ -95,26 +95,12 @@ export class ManagerDto {
   @IsString()
   mobile: string;
 
-  @IsObject()
-  aadhar: object;
-
   @IsNumber()
   @Type(() => Number)
   shift: number;
 
   @IsString()
   password: string;
-}
-
-export class ManagerDetailsDto {
-  @IsNumber()
-  @Type(() => Number)
-  numberOfManagers: number;
-
-  @ValidateNested({ each: true })
-  @Type(() => ManagerDto)
-  @IsArray()
-  managers: ManagerDto[];
 }
 
 export class CreateAdminDto {
@@ -130,9 +116,10 @@ export class CreateAdminDto {
   @Type(() => PumpDetailsDto)
   pumpDetails: PumpDetailsDto;
 
-  @ValidateNested()
-  @Type(() => ManagerDetailsDto)
-  managerDetails: ManagerDetailsDto;
+  @ValidateNested({ each: true })
+  @Type(() => ManagerDto)
+  @IsArray()
+  managers: ManagerDto[];
 
   @IsString()
   adminPassword: string;

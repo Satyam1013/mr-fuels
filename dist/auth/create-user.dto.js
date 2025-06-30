@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateAdminDto = exports.ManagerDetailsDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
+exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class FuelDto {
@@ -129,10 +129,6 @@ __decorate([
     __metadata("design:type", String)
 ], ManagerDto.prototype, "mobile", void 0);
 __decorate([
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], ManagerDto.prototype, "aadhar", void 0);
-__decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
@@ -141,20 +137,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ManagerDto.prototype, "password", void 0);
-class ManagerDetailsDto {
-}
-exports.ManagerDetailsDto = ManagerDetailsDto;
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], ManagerDetailsDto.prototype, "numberOfManagers", void 0);
-__decorate([
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => ManagerDto),
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], ManagerDetailsDto.prototype, "managers", void 0);
 class CreateAdminDto {
 }
 exports.CreateAdminDto = CreateAdminDto;
@@ -174,10 +156,11 @@ __decorate([
     __metadata("design:type", PumpDetailsDto)
 ], CreateAdminDto.prototype, "pumpDetails", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => ManagerDetailsDto),
-    __metadata("design:type", ManagerDetailsDto)
-], CreateAdminDto.prototype, "managerDetails", void 0);
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => ManagerDto),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], CreateAdminDto.prototype, "managers", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

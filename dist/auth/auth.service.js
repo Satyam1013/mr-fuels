@@ -63,13 +63,37 @@ let AuthService = class AuthService {
     }
     async adminSignup(body) {
         try {
-            const { businessDetails, machineDetails, pumpDetails, managerDetails, adminPassword, } = body;
-            const existing = await this.adminModel.findOne({
+            const { businessDetails, machineDetails, pumpDetails, managers, adminPassword, } = body;
+            const existingEmail = await this.adminModel.findOne({
                 businessEmail: businessDetails.businessEmail,
             });
-            if (existing)
+            if (existingEmail)
                 throw new common_1.ForbiddenException("Admin already exists");
+            const existingMobile = await this.adminModel.findOne({
+                mobileNo: businessDetails.businessPhoneNo,
+            });
+            if (existingMobile)
+                throw new common_1.ForbiddenException("Mobile number already in use by another admin");
+            const managerMobiles = managers.map((m) => m.mobile);
+            if (new Set(managerMobiles).size !== managerMobiles.length) {
+                throw new common_1.ForbiddenException("Manager mobile numbers must be unique");
+            }
+            if (managerMobiles.includes(businessDetails.businessPhoneNo)) {
+                throw new common_1.ForbiddenException("A manager cannot have the same mobile number as the admin");
+            }
+            const usedInOtherAdmins = await this.adminModel.find({
+                "managers.mobile": { $in: managerMobiles },
+            });
+            if (usedInOtherAdmins.length > 0) {
+                throw new common_1.ForbiddenException("One or more manager mobile numbers are already in use");
+            }
             const hashedPassword = await bcrypt.hash(adminPassword, 10);
+            const managersWithHashedPasswords = await Promise.all(managers.map(async (m) => ({
+                name: m.name,
+                mobile: m.mobile,
+                shift: m.shift,
+                password: await bcrypt.hash(m.password, 10),
+            })));
             const admin = new this.adminModel({
                 businessEmail: businessDetails.businessEmail,
                 businessName: businessDetails.businessName,
@@ -82,14 +106,10 @@ let AuthService = class AuthService {
                 bankDeposit: pumpDetails.bankDeposit,
                 noOfEmployeeShifts: pumpDetails.noOfEmployeeShifts,
                 shiftDetails: pumpDetails.shiftDetails,
-                managers: managerDetails.managers.map((m) => ({
-                    name: m.name,
-                    mobile: m.mobile,
-                    aadhar: m.aadhar,
-                    shift: m.shift,
-                    password: m.password,
-                })),
+                managers: managersWithHashedPasswords,
                 password: hashedPassword,
+                planType: "free",
+                planExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             });
             await admin.save();
             return {
@@ -136,29 +156,37 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException("Failed to login admin");
         }
     }
-    async managerLogin(managerName, managerPassword) {
+    async managerLogin(mobileNo, managerPassword) {
         try {
-            const manager = await this.userModel.findOne({ managerName });
+            const admin = await this.adminModel.findOne({
+                "managers.mobile": mobileNo,
+            });
+            if (!admin)
+                throw new common_1.UnauthorizedException("Manager not found");
+            const manager = admin.managers.find((m) => m.mobile === mobileNo);
             if (!manager)
                 throw new common_1.UnauthorizedException("Manager not found");
-            const valid = await bcrypt.compare(managerPassword, manager.managerPassword);
+            const valid = await bcrypt.compare(managerPassword, manager.password);
             if (!valid)
                 throw new common_1.UnauthorizedException("Invalid password");
-            if (manager.role !== user_schema_1.UserRole.MANAGER) {
-                throw new common_1.ForbiddenException("Not a manager account");
-            }
             const payload = {
-                sub: manager._id,
-                managerName: manager.managerName,
-                role: manager.role,
+                sub: admin._id,
+                mobileNo: manager.mobile,
+                shift: manager.shift,
+                role: "manager",
             };
+            const token = this.jwtService.sign(payload, {
+                secret: this.configService.get("JWT_SECRET"),
+                expiresIn: "1h",
+            });
             return {
                 message: "Manager logged in",
-                access_token: this.jwtService.sign(payload),
+                access_token: token,
                 manager: {
-                    managerName: manager.managerName,
-                    managerMobile: manager.managerMobile,
+                    name: manager.name,
+                    mobile: manager.mobile,
                     shift: manager.shift,
+                    businessEmail: admin.businessEmail,
                 },
             };
         }

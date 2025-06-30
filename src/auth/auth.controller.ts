@@ -21,10 +21,10 @@ export class AuthController {
 
   @Post("manager/login")
   managerLogin(
-    @Body("managerName") managerName: string,
+    @Body("mobileNo") mobileNo: string,
     @Body("managerPassword") managerPassword: string,
   ) {
-    return this.authService.managerLogin(managerName, managerPassword);
+    return this.authService.managerLogin(mobileNo, managerPassword);
   }
 
   @Post("refresh-token")

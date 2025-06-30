@@ -23,13 +23,14 @@ export declare class AuthService {
         access_token: string;
         refresh_token: string;
     }>;
-    managerLogin(managerName: string, managerPassword: string): Promise<{
+    managerLogin(mobileNo: string, managerPassword: string): Promise<{
         message: string;
         access_token: string;
         manager: {
-            managerName: string;
-            managerMobile: string;
-            shift: string;
+            name: string;
+            mobile: string;
+            shift: number;
+            businessEmail: string;
         };
     }>;
     refreshAccessToken(refreshToken: string): Promise<{

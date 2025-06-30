@@ -6,6 +6,7 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UserModule } from "src/user/user.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { PlanSchedulerService } from "src/common/plan-scheduler.service";
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     UserModule,
     forwardRef(() => AdminModule),
   ],
-  providers: [AuthService],
+  providers: [AuthService, PlanSchedulerService],
   controllers: [AuthController],
   exports: [JwtModule, AuthService],
 })

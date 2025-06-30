@@ -1,8 +1,8 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 export declare class Manager {
+    _id: Types.ObjectId;
     name: string;
     mobile: string;
-    aadhar: object;
     shift: number;
     password: string;
 }
@@ -21,14 +21,16 @@ export declare class Admin {
     managers: Manager[];
     password: string;
     refreshToken?: string;
+    planType: "free" | "paid";
+    planExpiresAt: Date;
 }
 export type AdminDocument = Admin & Document;
 export declare const AdminSchema: import("mongoose").Schema<Admin, import("mongoose").Model<Admin, any, any, any, Document<unknown, any, Admin> & Admin & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 } & {
     __v: number;
 }, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Admin, Document<unknown, {}, import("mongoose").FlatRecord<Admin>> & import("mongoose").FlatRecord<Admin> & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 } & {
     __v: number;
 }>;

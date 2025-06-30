@@ -11,9 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminSchema = exports.Admin = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let Manager = class Manager {
 };
 exports.Manager = Manager;
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, auto: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Manager.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
@@ -22,10 +27,6 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Manager.prototype, "mobile", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true, type: Object }),
-    __metadata("design:type", Object)
-], Manager.prototype, "aadhar", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
@@ -45,11 +46,11 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "businessName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "businessEmail", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "mobileNo", void 0);
 __decorate([
@@ -96,6 +97,14 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Admin.prototype, "refreshToken", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, enum: ["free", "paid"], default: "free" }),
+    __metadata("design:type", String)
+], Admin.prototype, "planType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], Admin.prototype, "planExpiresAt", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)()
 ], Admin);

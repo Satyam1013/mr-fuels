@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
-import { User, UserDocument, UserRole } from "src/user/user.schema";
+import { User, UserDocument } from "src/user/user.schema";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Admin, AdminDocument } from "src/admin/admin.schema";
@@ -23,25 +23,68 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
-
   async adminSignup(body: CreateAdminDto) {
     try {
       const {
         businessDetails,
         machineDetails,
         pumpDetails,
-        managerDetails,
+        managers,
         adminPassword,
       } = body;
 
-      const existing = await this.adminModel.findOne({
+      // 1. Check if admin email already exists
+      const existingEmail = await this.adminModel.findOne({
         businessEmail: businessDetails.businessEmail,
       });
+      if (existingEmail) throw new ForbiddenException("Admin already exists");
 
-      if (existing) throw new ForbiddenException("Admin already exists");
+      // 2. Check if admin mobile number already used
+      const existingMobile = await this.adminModel.findOne({
+        mobileNo: businessDetails.businessPhoneNo,
+      });
+      if (existingMobile)
+        throw new ForbiddenException(
+          "Mobile number already in use by another admin",
+        );
 
+      // 3. Check manager mobile uniqueness among themselves
+      const managerMobiles = managers.map((m) => m.mobile);
+      if (new Set(managerMobiles).size !== managerMobiles.length) {
+        throw new ForbiddenException("Manager mobile numbers must be unique");
+      }
+
+      // 4. Check if any manager has same mobile as admin
+      if (managerMobiles.includes(businessDetails.businessPhoneNo)) {
+        throw new ForbiddenException(
+          "A manager cannot have the same mobile number as the admin",
+        );
+      }
+
+      // 5. Check if any manager's mobile already used in another admin's manager
+      const usedInOtherAdmins = await this.adminModel.find({
+        "managers.mobile": { $in: managerMobiles },
+      });
+      if (usedInOtherAdmins.length > 0) {
+        throw new ForbiddenException(
+          "One or more manager mobile numbers are already in use",
+        );
+      }
+
+      // 6. Hash admin password
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
+      // 7. Hash each manager's password
+      const managersWithHashedPasswords = await Promise.all(
+        managers.map(async (m) => ({
+          name: m.name,
+          mobile: m.mobile,
+          shift: m.shift,
+          password: await bcrypt.hash(m.password, 10),
+        })),
+      );
+
+      // 8. Create new admin document
       const admin = new this.adminModel({
         businessEmail: businessDetails.businessEmail,
         businessName: businessDetails.businessName,
@@ -54,14 +97,10 @@ export class AuthService {
         bankDeposit: pumpDetails.bankDeposit,
         noOfEmployeeShifts: pumpDetails.noOfEmployeeShifts,
         shiftDetails: pumpDetails.shiftDetails,
-        managers: managerDetails.managers.map((m) => ({
-          name: m.name,
-          mobile: m.mobile,
-          aadhar: m.aadhar,
-          shift: m.shift,
-          password: m.password,
-        })),
+        managers: managersWithHashedPasswords,
         password: hashedPassword,
+        planType: "free",
+        planExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
       });
 
       await admin.save();
@@ -115,34 +154,42 @@ export class AuthService {
     }
   }
 
-  async managerLogin(managerName: string, managerPassword: string) {
+  async managerLogin(mobileNo: string, managerPassword: string) {
     try {
-      const manager = await this.userModel.findOne({ managerName });
+      // Find admin who has this manager
+      const admin = await this.adminModel.findOne({
+        "managers.mobile": mobileNo,
+      });
+      if (!admin) throw new UnauthorizedException("Manager not found");
+
+      // Get the matching manager
+      const manager = admin.managers.find((m) => m.mobile === mobileNo);
       if (!manager) throw new UnauthorizedException("Manager not found");
 
-      const valid = await bcrypt.compare(
-        managerPassword,
-        manager.managerPassword,
-      );
+      // Compare password
+      const valid = await bcrypt.compare(managerPassword, manager.password);
       if (!valid) throw new UnauthorizedException("Invalid password");
 
-      if (manager.role !== UserRole.MANAGER) {
-        throw new ForbiddenException("Not a manager account");
-      }
-
       const payload = {
-        sub: manager._id,
-        managerName: manager.managerName,
-        role: manager.role,
+        sub: admin._id, // or use manager._id if each manager has a unique ID (not in your current schema)
+        mobileNo: manager.mobile,
+        shift: manager.shift,
+        role: "manager",
       };
+
+      const token = this.jwtService.sign(payload, {
+        secret: this.configService.get("JWT_SECRET"),
+        expiresIn: "1h",
+      });
 
       return {
         message: "Manager logged in",
-        access_token: this.jwtService.sign(payload),
+        access_token: token,
         manager: {
-          managerName: manager.managerName,
-          managerMobile: manager.managerMobile,
+          name: manager.name,
+          mobile: manager.mobile,
           shift: manager.shift,
+          businessEmail: admin.businessEmail,
         },
       };
     } catch (error) {

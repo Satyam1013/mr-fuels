@@ -26,8 +26,8 @@ let AuthController = class AuthController {
     adminLogin(mobileNo, password) {
         return this.authService.adminLogin(mobileNo, password);
     }
-    managerLogin(managerName, managerPassword) {
-        return this.authService.managerLogin(managerName, managerPassword);
+    managerLogin(mobileNo, managerPassword) {
+        return this.authService.managerLogin(mobileNo, managerPassword);
     }
     refreshAccessToken(refreshToken) {
         return this.authService.refreshAccessToken(refreshToken);
@@ -51,7 +51,7 @@ __decorate([
 ], AuthController.prototype, "adminLogin", null);
 __decorate([
     (0, common_1.Post)("manager/login"),
-    __param(0, (0, common_1.Body)("managerName")),
+    __param(0, (0, common_1.Body)("mobileNo")),
     __param(1, (0, common_1.Body)("managerPassword")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
