@@ -19,16 +19,16 @@ export class AuthController {
     return this.authService.adminLogin(mobileNo, password);
   }
 
-  @Post("manager/create")
-  createManager(@Body() body: any) {
-    return this.authService.createManager(body);
-  }
-
   @Post("manager/login")
   managerLogin(
     @Body("managerName") managerName: string,
     @Body("managerPassword") managerPassword: string,
   ) {
     return this.authService.managerLogin(managerName, managerPassword);
+  }
+
+  @Post("refresh-token")
+  refreshAccessToken(@Body("refresh_token") refreshToken: string) {
+    return this.authService.refreshAccessToken(refreshToken);
   }
 }

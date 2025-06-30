@@ -3,11 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { AdminDocument } from "src/admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
+import { ConfigService } from "@nestjs/config";
 export declare class AuthService {
     private adminModel;
     private userModel;
     private jwtService;
-    constructor(adminModel: Model<AdminDocument>, userModel: Model<UserDocument>, jwtService: JwtService);
+    private configService;
+    constructor(adminModel: Model<AdminDocument>, userModel: Model<UserDocument>, jwtService: JwtService, configService: ConfigService);
     adminSignup(body: CreateAdminDto): Promise<{
         message: string;
         admin: {
@@ -19,14 +21,7 @@ export declare class AuthService {
     adminLogin(mobileNo: string, password: string): Promise<{
         message: string;
         access_token: string;
-    }>;
-    createManager(body: any): Promise<{
-        message: string;
-        manager: {
-            managerName: string;
-            managerMobile: string;
-            shift: string;
-        };
+        refresh_token: string;
     }>;
     managerLogin(managerName: string, managerPassword: string): Promise<{
         message: string;
@@ -36,5 +31,8 @@ export declare class AuthService {
             managerMobile: string;
             shift: string;
         };
+    }>;
+    refreshAccessToken(refreshToken: string): Promise<{
+        access_token: string;
     }>;
 }

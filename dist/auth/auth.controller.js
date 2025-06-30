@@ -26,11 +26,11 @@ let AuthController = class AuthController {
     adminLogin(mobileNo, password) {
         return this.authService.adminLogin(mobileNo, password);
     }
-    createManager(body) {
-        return this.authService.createManager(body);
-    }
     managerLogin(managerName, managerPassword) {
         return this.authService.managerLogin(managerName, managerPassword);
+    }
+    refreshAccessToken(refreshToken) {
+        return this.authService.refreshAccessToken(refreshToken);
     }
 };
 exports.AuthController = AuthController;
@@ -50,13 +50,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "adminLogin", null);
 __decorate([
-    (0, common_1.Post)("manager/create"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "createManager", null);
-__decorate([
     (0, common_1.Post)("manager/login"),
     __param(0, (0, common_1.Body)("managerName")),
     __param(1, (0, common_1.Body)("managerPassword")),
@@ -64,6 +57,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "managerLogin", null);
+__decorate([
+    (0, common_1.Post)("refresh-token"),
+    __param(0, (0, common_1.Body)("refresh_token")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "refreshAccessToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

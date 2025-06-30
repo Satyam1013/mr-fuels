@@ -53,11 +53,13 @@ const user_schema_1 = require("../user/user.schema");
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_2 = require("mongoose");
 const admin_schema_1 = require("../admin/admin.schema");
+const config_1 = require("@nestjs/config");
 let AuthService = class AuthService {
-    constructor(adminModel, userModel, jwtService) {
+    constructor(adminModel, userModel, jwtService, configService) {
         this.adminModel = adminModel;
         this.userModel = userModel;
         this.jwtService = jwtService;
+        this.configService = configService;
     }
     async adminSignup(body) {
         try {
@@ -112,47 +114,26 @@ let AuthService = class AuthService {
             const valid = await bcrypt.compare(password, admin.password);
             if (!valid)
                 throw new common_1.UnauthorizedException("Invalid password");
-            const payload = { mobileNo: admin.mobileNo, sub: admin._id };
+            const payload = { sub: admin._id, mobileNo: admin.mobileNo };
+            const access_token = this.jwtService.sign(payload, {
+                secret: this.configService.get("JWT_SECRET"),
+                expiresIn: "1h",
+            });
+            const refresh_token = this.jwtService.sign(payload, {
+                secret: this.configService.get("JWT_REFRESH_SECRET"),
+                expiresIn: "7d",
+            });
+            admin.refreshToken = refresh_token;
+            await admin.save();
             return {
                 message: "Admin logged in",
-                access_token: this.jwtService.sign(payload),
+                access_token,
+                refresh_token,
             };
         }
         catch (error) {
             console.error("Error in adminLogin:", error);
             throw new common_1.InternalServerErrorException("Failed to login admin");
-        }
-    }
-    async createManager(body) {
-        try {
-            const { managerName, managerPassword, managerMobile, shift, role } = body;
-            if (role !== user_schema_1.UserRole.MANAGER) {
-                throw new common_1.ForbiddenException("Only managers can be created");
-            }
-            const existing = await this.userModel.findOne({ managerName });
-            if (existing) {
-                throw new common_1.ForbiddenException("Manager already exists");
-            }
-            const hashedPassword = await bcrypt.hash(managerPassword, 10);
-            const manager = await this.userModel.create({
-                managerName,
-                managerPassword: hashedPassword,
-                managerMobile,
-                shift,
-                role,
-            });
-            return {
-                message: "Manager created successfully",
-                manager: {
-                    managerName: manager.managerName,
-                    managerMobile: manager.managerMobile,
-                    shift: manager.shift,
-                },
-            };
-        }
-        catch (error) {
-            console.error("Error in createManager:", error);
-            throw new common_1.InternalServerErrorException("Failed to create manager");
         }
     }
     async managerLogin(managerName, managerPassword) {
@@ -186,6 +167,28 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException("Failed to login manager");
         }
     }
+    async refreshAccessToken(refreshToken) {
+        try {
+            const payload = this.jwtService.verify(refreshToken, {
+                secret: this.configService.get("JWT_REFRESH_SECRET"),
+            });
+            const admin = await this.adminModel.findById(payload.sub);
+            if (!admin || admin.refreshToken !== refreshToken) {
+                throw new common_1.UnauthorizedException("Invalid refresh token");
+            }
+            const newAccessToken = this.jwtService.sign({ sub: admin._id, mobileNo: admin.mobileNo }, {
+                secret: this.configService.get("JWT_SECRET"),
+                expiresIn: "1h",
+            });
+            return {
+                access_token: newAccessToken,
+            };
+        }
+        catch (error) {
+            console.error("Error refreshing token:", error);
+            throw new common_1.UnauthorizedException("Invalid or expired refresh token");
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
@@ -194,6 +197,7 @@ exports.AuthService = AuthService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        config_1.ConfigService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

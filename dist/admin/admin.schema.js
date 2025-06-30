@@ -92,6 +92,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "password", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Admin.prototype, "refreshToken", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)()
 ], Admin);

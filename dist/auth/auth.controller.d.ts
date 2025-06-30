@@ -14,14 +14,7 @@ export declare class AuthController {
     adminLogin(mobileNo: string, password: string): Promise<{
         message: string;
         access_token: string;
-    }>;
-    createManager(body: any): Promise<{
-        message: string;
-        manager: {
-            managerName: string;
-            managerMobile: string;
-            shift: string;
-        };
+        refresh_token: string;
     }>;
     managerLogin(managerName: string, managerPassword: string): Promise<{
         message: string;
@@ -31,5 +24,8 @@ export declare class AuthController {
             managerMobile: string;
             shift: string;
         };
+    }>;
+    refreshAccessToken(refreshToken: string): Promise<{
+        access_token: string;
     }>;
 }

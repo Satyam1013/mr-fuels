@@ -28,6 +28,8 @@ export class Admin {
   managers: Manager[];
 
   @Prop({ required: true }) password: string;
+
+  @Prop() refreshToken?: string;
 }
 
 export type AdminDocument = Admin & Document;

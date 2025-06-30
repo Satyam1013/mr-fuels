@@ -20,6 +20,7 @@ export declare class Admin {
     shiftDetails: number;
     managers: Manager[];
     password: string;
+    refreshToken?: string;
 }
 export type AdminDocument = Admin & Document;
 export declare const AdminSchema: import("mongoose").Schema<Admin, import("mongoose").Model<Admin, any, any, any, Document<unknown, any, Admin> & Admin & {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   ForbiddenException,
@@ -12,6 +13,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Admin, AdminDocument } from "src/admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,9 @@ export class AuthService {
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
+
   async adminSignup(body: CreateAdminDto) {
     try {
       const {
@@ -84,51 +88,30 @@ export class AuthService {
       const valid = await bcrypt.compare(password, admin.password);
       if (!valid) throw new UnauthorizedException("Invalid password");
 
-      const payload = { mobileNo: admin.mobileNo, sub: admin._id };
+      const payload = { sub: admin._id, mobileNo: admin.mobileNo };
+
+      const access_token = this.jwtService.sign(payload, {
+        secret: this.configService.get("JWT_SECRET"),
+        expiresIn: "1h",
+      });
+
+      const refresh_token = this.jwtService.sign(payload, {
+        secret: this.configService.get("JWT_REFRESH_SECRET"),
+        expiresIn: "7d",
+      });
+
+      // Save refresh token to DB
+      admin.refreshToken = refresh_token;
+      await admin.save();
+
       return {
         message: "Admin logged in",
-        access_token: this.jwtService.sign(payload),
+        access_token,
+        refresh_token,
       };
     } catch (error) {
       console.error("Error in adminLogin:", error);
       throw new InternalServerErrorException("Failed to login admin");
-    }
-  }
-
-  async createManager(body: any) {
-    try {
-      const { managerName, managerPassword, managerMobile, shift, role } = body;
-
-      if (role !== UserRole.MANAGER) {
-        throw new ForbiddenException("Only managers can be created");
-      }
-
-      const existing = await this.userModel.findOne({ managerName });
-      if (existing) {
-        throw new ForbiddenException("Manager already exists");
-      }
-
-      const hashedPassword = await bcrypt.hash(managerPassword, 10);
-
-      const manager = await this.userModel.create({
-        managerName,
-        managerPassword: hashedPassword,
-        managerMobile,
-        shift,
-        role,
-      });
-
-      return {
-        message: "Manager created successfully",
-        manager: {
-          managerName: manager.managerName,
-          managerMobile: manager.managerMobile,
-          shift: manager.shift,
-        },
-      };
-    } catch (error) {
-      console.error("Error in createManager:", error);
-      throw new InternalServerErrorException("Failed to create manager");
     }
   }
 
@@ -165,6 +148,35 @@ export class AuthService {
     } catch (error) {
       console.error("Error in managerLogin:", error);
       throw new InternalServerErrorException("Failed to login manager");
+    }
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get("JWT_REFRESH_SECRET"),
+      });
+
+      const admin = await this.adminModel.findById(payload.sub);
+
+      if (!admin || admin.refreshToken !== refreshToken) {
+        throw new UnauthorizedException("Invalid refresh token");
+      }
+
+      const newAccessToken = this.jwtService.sign(
+        { sub: admin._id, mobileNo: admin.mobileNo },
+        {
+          secret: this.configService.get("JWT_SECRET"),
+          expiresIn: "1h",
+        },
+      );
+
+      return {
+        access_token: newAccessToken,
+      };
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      throw new UnauthorizedException("Invalid or expired refresh token");
     }
   }
 }
