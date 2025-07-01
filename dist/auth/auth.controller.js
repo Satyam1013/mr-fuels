@@ -29,6 +29,9 @@ let AuthController = class AuthController {
     refreshAccessToken(refreshToken) {
         return this.authService.refreshAccessToken(refreshToken);
     }
+    logout(body) {
+        return this.authService.logout(body.mobileNo, body.role);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -52,6 +55,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshAccessToken", null);
+__decorate([
+    (0, common_1.Post)("logout"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

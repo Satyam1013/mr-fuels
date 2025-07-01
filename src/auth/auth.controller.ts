@@ -20,4 +20,9 @@ export class AuthController {
   refreshAccessToken(@Body("refresh_token") refreshToken: string) {
     return this.authService.refreshAccessToken(refreshToken);
   }
+
+  @Post("logout")
+  logout(@Body() body: { mobileNo: string; role: "admin" | "manager" }) {
+    return this.authService.logout(body.mobileNo, body.role);
+  }
 }

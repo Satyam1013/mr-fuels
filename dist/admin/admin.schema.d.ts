@@ -6,6 +6,7 @@ export declare class Manager {
     aadhar: object;
     shift: number;
     password: string;
+    refreshToken?: string | null;
 }
 export declare class Admin {
     businessName: string;
@@ -21,7 +22,7 @@ export declare class Admin {
     shiftDetails: number;
     managers: Manager[];
     password: string;
-    refreshToken?: string;
+    refreshToken?: string | null;
     planType: "free" | "paid";
     planExpiresAt: Date;
 }

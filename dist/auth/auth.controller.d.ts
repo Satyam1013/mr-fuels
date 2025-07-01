@@ -43,4 +43,10 @@ export declare class AuthController {
     refreshAccessToken(refreshToken: string): Promise<{
         access_token: string;
     }>;
+    logout(body: {
+        mobileNo: string;
+        role: "admin" | "manager";
+    }): Promise<{
+        message: string;
+    }>;
 }

@@ -48,4 +48,7 @@ export declare class AuthService {
     refreshAccessToken(refreshToken: string): Promise<{
         access_token: string;
     }>;
+    logout(mobileNo: string, role: "admin" | "manager"): Promise<{
+        message: string;
+    }>;
 }

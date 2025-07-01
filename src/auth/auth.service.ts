@@ -256,4 +256,41 @@ export class AuthService {
       throw new UnauthorizedException("Invalid or expired refresh token");
     }
   }
+
+  async logout(mobileNo: string, role: "admin" | "manager") {
+    try {
+      if (role === "admin") {
+        const admin = await this.adminModel.findOne({ mobileNo });
+        if (!admin) throw new UnauthorizedException("Admin not found");
+
+        admin.refreshToken = null;
+        await admin.save();
+        return { message: "Admin logged out successfully" };
+      }
+
+      if (role === "manager") {
+        const result = await this.adminModel.updateOne(
+          { "managers.mobile": mobileNo },
+          {
+            $set: {
+              "managers.$.refreshToken": null,
+            },
+          },
+        );
+
+        if (result.modifiedCount === 0) {
+          throw new UnauthorizedException(
+            "Manager not found or already logged out",
+          );
+        }
+
+        return { message: "Manager logged out successfully" };
+      }
+
+      throw new UnauthorizedException("Invalid role");
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw new InternalServerErrorException("Logout failed");
+    }
+  }
 }
