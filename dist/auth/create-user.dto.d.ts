@@ -43,3 +43,7 @@ export declare class CreateAdminDto {
     managers: ManagerDto[];
     adminPassword: string;
 }
+export declare class LoginDto {
+    mobileNo: string;
+    password: string;
+}

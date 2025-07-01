@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
+exports.LoginDto = exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class FuelDto {
@@ -170,4 +170,15 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateAdminDto.prototype, "adminPassword", void 0);
+class LoginDto {
+}
+exports.LoginDto = LoginDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], LoginDto.prototype, "mobileNo", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], LoginDto.prototype, "password", void 0);
 //# sourceMappingURL=create-user.dto.js.map

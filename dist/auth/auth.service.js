@@ -125,15 +125,56 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException("Failed to signup admin");
         }
     }
-    async adminLogin(mobileNo, password) {
+    async login(mobileNo, password) {
         try {
             const admin = await this.adminModel.findOne({ mobileNo });
-            if (!admin)
-                throw new common_1.UnauthorizedException("Admin not found");
-            const valid = await bcrypt.compare(password, admin.password);
-            if (!valid)
+            if (admin) {
+                const isValid = await bcrypt.compare(password, admin.password);
+                if (!isValid)
+                    throw new common_1.UnauthorizedException("Invalid password");
+                const payload = { sub: admin._id, mobileNo, role: "admin" };
+                const access_token = this.jwtService.sign(payload, {
+                    secret: this.configService.get("JWT_SECRET"),
+                    expiresIn: "1h",
+                });
+                const refresh_token = this.jwtService.sign(payload, {
+                    secret: this.configService.get("JWT_REFRESH_SECRET"),
+                    expiresIn: "7d",
+                });
+                admin.refreshToken = refresh_token;
+                await admin.save();
+                return {
+                    message: "Admin logged in",
+                    access_token,
+                    refresh_token,
+                    role: "admin",
+                    admin: {
+                        businessEmail: admin.businessEmail,
+                        businessName: admin.businessName,
+                        plan: admin.planType,
+                        planExpiresAt: admin.planExpiresAt,
+                        mobileNo: admin.mobileNo,
+                    },
+                };
+            }
+            const adminWithManager = await this.adminModel.findOne({
+                "managers.mobile": mobileNo,
+            });
+            if (!adminWithManager)
+                throw new common_1.UnauthorizedException("User not found");
+            const manager = adminWithManager.managers.find((m) => m.mobile === mobileNo);
+            if (!manager)
+                throw new common_1.UnauthorizedException("Manager not found");
+            const isValidManagerPassword = await bcrypt.compare(password, manager.password);
+            if (!isValidManagerPassword)
                 throw new common_1.UnauthorizedException("Invalid password");
-            const payload = { sub: admin._id, mobileNo: admin.mobileNo };
+            const payload = {
+                sub: manager.mobile,
+                role: "manager",
+                mobileNo,
+                shift: manager.shift,
+                adminId: adminWithManager._id,
+            };
             const access_token = this.jwtService.sign(payload, {
                 secret: this.configService.get("JWT_SECRET"),
                 expiresIn: "1h",
@@ -142,56 +183,33 @@ let AuthService = class AuthService {
                 secret: this.configService.get("JWT_REFRESH_SECRET"),
                 expiresIn: "7d",
             });
-            admin.refreshToken = refresh_token;
-            await admin.save();
-            return {
-                message: "Admin logged in",
-                access_token,
-                refresh_token,
-            };
-        }
-        catch (error) {
-            console.error("Error in adminLogin:", error);
-            throw new common_1.InternalServerErrorException("Failed to login admin");
-        }
-    }
-    async managerLogin(mobileNo, managerPassword) {
-        try {
-            const admin = await this.adminModel.findOne({
+            await this.adminModel.updateOne({
+                _id: adminWithManager._id,
                 "managers.mobile": mobileNo,
-            });
-            if (!admin)
-                throw new common_1.UnauthorizedException("Manager not found");
-            const manager = admin.managers.find((m) => m.mobile === mobileNo);
-            if (!manager)
-                throw new common_1.UnauthorizedException("Manager not found");
-            const valid = await bcrypt.compare(managerPassword, manager.password);
-            if (!valid)
-                throw new common_1.UnauthorizedException("Invalid password");
-            const payload = {
-                sub: admin._id,
-                mobileNo: manager.mobile,
-                shift: manager.shift,
-                role: "manager",
-            };
-            const token = this.jwtService.sign(payload, {
-                secret: this.configService.get("JWT_SECRET"),
-                expiresIn: "1h",
+            }, {
+                $set: {
+                    "managers.$.refreshToken": refresh_token,
+                },
             });
             return {
                 message: "Manager logged in",
-                access_token: token,
+                access_token,
+                refresh_token,
+                role: "manager",
                 manager: {
                     name: manager.name,
-                    mobile: manager.mobile,
                     shift: manager.shift,
-                    businessEmail: admin.businessEmail,
+                    businessEmail: adminWithManager.businessEmail,
+                    businessName: adminWithManager.businessName,
+                    plan: adminWithManager.planType,
+                    planExpiresAt: adminWithManager.planExpiresAt,
+                    mobileNo: manager.mobile,
                 },
             };
         }
         catch (error) {
-            console.error("Error in managerLogin:", error);
-            throw new common_1.InternalServerErrorException("Failed to login manager");
+            console.error("Unified login error:", error);
+            throw new common_1.InternalServerErrorException("Login failed");
         }
     }
     async refreshAccessToken(refreshToken) {

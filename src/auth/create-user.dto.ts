@@ -129,3 +129,11 @@ export class CreateAdminDto {
   @IsString()
   adminPassword: string;
 }
+
+export class LoginDto {
+  @IsString()
+  mobileNo: string;
+
+  @IsString()
+  password: string;
+}

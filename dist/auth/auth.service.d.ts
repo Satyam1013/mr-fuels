@@ -16,20 +16,34 @@ export declare class AuthService {
             mobileNo: string;
         };
     }>;
-    adminLogin(mobileNo: string, password: string): Promise<{
+    login(mobileNo: string, password: string): Promise<{
         message: string;
         access_token: string;
         refresh_token: string;
-    }>;
-    managerLogin(mobileNo: string, managerPassword: string): Promise<{
+        role: string;
+        admin: {
+            businessEmail: string;
+            businessName: string;
+            plan: "free" | "paid";
+            planExpiresAt: Date;
+            mobileNo: string;
+        };
+        manager?: undefined;
+    } | {
         message: string;
         access_token: string;
+        refresh_token: string;
+        role: string;
         manager: {
             name: string;
-            mobile: string;
             shift: number;
             businessEmail: string;
+            businessName: string;
+            plan: "free" | "paid";
+            planExpiresAt: Date;
+            mobileNo: string;
         };
+        admin?: undefined;
     }>;
     refreshAccessToken(refreshToken: string): Promise<{
         access_token: string;

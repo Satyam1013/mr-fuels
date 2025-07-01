@@ -23,11 +23,8 @@ let AuthController = class AuthController {
     adminSignup(body) {
         return this.authService.adminSignup(body);
     }
-    adminLogin(mobileNo, password) {
-        return this.authService.adminLogin(mobileNo, password);
-    }
-    managerLogin(mobileNo, managerPassword) {
-        return this.authService.managerLogin(mobileNo, managerPassword);
+    login(body) {
+        return this.authService.login(body.mobileNo, body.password);
     }
     refreshAccessToken(refreshToken) {
         return this.authService.refreshAccessToken(refreshToken);
@@ -42,21 +39,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "adminSignup", null);
 __decorate([
-    (0, common_1.Post)("admin/login"),
-    __param(0, (0, common_1.Body)("mobileNo")),
-    __param(1, (0, common_1.Body)("password")),
+    (0, common_1.Post)("login"),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [create_user_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "adminLogin", null);
-__decorate([
-    (0, common_1.Post)("manager/login"),
-    __param(0, (0, common_1.Body)("mobileNo")),
-    __param(1, (0, common_1.Body)("managerPassword")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "managerLogin", null);
+], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)("refresh-token"),
     __param(0, (0, common_1.Body)("refresh_token")),

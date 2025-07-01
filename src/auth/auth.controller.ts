@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateAdminDto } from "./create-user.dto";
+import { CreateAdminDto, LoginDto } from "./create-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -11,20 +11,9 @@ export class AuthController {
     return this.authService.adminSignup(body);
   }
 
-  @Post("admin/login")
-  adminLogin(
-    @Body("mobileNo") mobileNo: string,
-    @Body("password") password: string,
-  ) {
-    return this.authService.adminLogin(mobileNo, password);
-  }
-
-  @Post("manager/login")
-  managerLogin(
-    @Body("mobileNo") mobileNo: string,
-    @Body("managerPassword") managerPassword: string,
-  ) {
-    return this.authService.managerLogin(mobileNo, managerPassword);
+  @Post("login")
+  login(@Body() body: LoginDto) {
+    return this.authService.login(body.mobileNo, body.password);
   }
 
   @Post("refresh-token")
