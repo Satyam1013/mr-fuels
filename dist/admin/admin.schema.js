@@ -40,7 +40,7 @@ __decorate([
     __metadata("design:type", String)
 ], Manager.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ type: String, default: null }),
     __metadata("design:type", Object)
 ], Manager.prototype, "refreshToken", void 0);
 exports.Manager = Manager = __decorate([
@@ -102,7 +102,7 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ type: String, default: null }),
     __metadata("design:type", Object)
 ], Admin.prototype, "refreshToken", void 0);
 __decorate([

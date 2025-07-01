@@ -15,7 +15,8 @@ export class Manager {
 
   @Prop({ required: true }) password: string;
 
-  @Prop() refreshToken?: string | null;
+  @Prop({ type: String, default: null }) // ✅ Fix
+  refreshToken?: string | null;
 }
 
 @Schema()
@@ -37,7 +38,8 @@ export class Admin {
 
   @Prop({ required: true }) password: string;
 
-  @Prop() refreshToken?: string | null;
+  @Prop({ type: String, default: null }) // ✅ Fix
+  refreshToken?: string | null;
 
   @Prop({ type: String, enum: ["free", "paid"], default: "free" })
   planType: "free" | "paid";
