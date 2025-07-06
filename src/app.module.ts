@@ -14,7 +14,7 @@ import { PlanSchedulerService } from "./common/plan-scheduler.service"; // Adjus
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI!),
-    ScheduleModule.forRoot(), // 👈 Enable scheduling
+    ScheduleModule.forRoot(),
     AdminModule,
     AuthModule,
     MachineModule,
