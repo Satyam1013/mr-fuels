@@ -58,6 +58,9 @@ export class Admin {
 
   @Prop({ type: Date, default: Date.now })
   startDate: Date;
+
+  @Prop({ type: Date })
+  planExpiresAt: Date;
 }
 
 export type AdminDocument = Admin & Document;

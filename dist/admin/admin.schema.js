@@ -129,6 +129,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Date, default: Date.now }),
     __metadata("design:type", Date)
 ], Admin.prototype, "startDate", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], Admin.prototype, "planExpiresAt", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)()
 ], Admin);

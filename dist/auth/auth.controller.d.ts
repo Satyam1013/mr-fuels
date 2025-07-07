@@ -16,7 +16,7 @@ export declare class AuthController {
         access_token: string;
         refresh_token: string;
         role: string;
-        admin: {
+        data: {
             businessEmail: string;
             businessName: string;
             mobileNo: string;
@@ -26,14 +26,15 @@ export declare class AuthController {
             freeTrialAttempt: boolean;
             paidUser: boolean;
             activeAccount: boolean;
+            name?: undefined;
+            shift?: undefined;
         };
-        manager?: undefined;
     } | {
         message: string;
         access_token: string;
         refresh_token: string;
         role: string;
-        manager: {
+        data: {
             name: string;
             shift: number;
             businessEmail: string;
@@ -43,8 +44,9 @@ export declare class AuthController {
             freeTrial: boolean;
             paidUser: boolean;
             activeAccount: boolean;
+            startDate?: undefined;
+            freeTrialAttempt?: undefined;
         };
-        admin?: undefined;
     }>;
     refreshAccessToken(refreshToken: string): Promise<{
         access_token: string;

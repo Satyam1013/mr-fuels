@@ -152,7 +152,7 @@ let AuthService = class AuthService {
                     access_token,
                     refresh_token,
                     role: "admin",
-                    admin: {
+                    data: {
                         businessEmail: admin.businessEmail,
                         businessName: admin.businessName,
                         mobileNo: admin.mobileNo,
@@ -204,7 +204,7 @@ let AuthService = class AuthService {
                 access_token,
                 refresh_token,
                 role: "manager",
-                manager: {
+                data: {
                     name: manager.name,
                     shift: manager.shift,
                     businessEmail: adminWithManager.businessEmail,
