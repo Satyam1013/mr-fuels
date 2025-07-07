@@ -13,7 +13,6 @@ const admin_module_1 = require("../admin/admin.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const config_1 = require("@nestjs/config");
-const plan_scheduler_service_1 = require("../common/plan-scheduler.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -31,7 +30,7 @@ exports.AuthModule = AuthModule = __decorate([
             }),
             (0, common_1.forwardRef)(() => admin_module_1.AdminModule),
         ],
-        providers: [auth_service_1.AuthService, plan_scheduler_service_1.PlanSchedulerService],
+        providers: [auth_service_1.AuthService],
         controllers: [auth_controller_1.AuthController],
         exports: [jwt_1.JwtModule, auth_service_1.AuthService],
     })

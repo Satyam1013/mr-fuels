@@ -101,7 +101,6 @@ export class AuthService {
         password: hashedPassword,
 
         planType: "free",
-        planExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         freeTrial: false,
         freeTrialAttempt: false,
         paidUser: false,
@@ -158,7 +157,6 @@ export class AuthService {
             businessName: admin.businessName,
             mobileNo: admin.mobileNo,
             plan: admin.planType,
-            planExpiresAt: admin.planExpiresAt,
             startDate: admin.startDate,
             freeTrial: admin.freeTrial,
             freeTrialAttempt: admin.freeTrialAttempt,
@@ -230,7 +228,6 @@ export class AuthService {
           businessName: adminWithManager.businessName,
           mobileNo: manager.mobile,
           plan: adminWithManager.planType,
-          planExpiresAt: adminWithManager.planExpiresAt,
           freeTrial: adminWithManager.freeTrial,
           paidUser: adminWithManager.paidUser,
           activeAccount: adminWithManager.activeAccount,

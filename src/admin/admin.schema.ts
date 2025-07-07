@@ -44,9 +44,6 @@ export class Admin {
   @Prop({ type: String, enum: ["free", "paid"], default: "free" })
   planType: "free" | "paid";
 
-  @Prop({ type: Date })
-  planExpiresAt: Date;
-
   @Prop({ type: Boolean, default: false })
   freeTrial: boolean;
 
@@ -59,7 +56,7 @@ export class Admin {
   @Prop({ type: Boolean, default: false })
   activeAccount: boolean;
 
-  @Prop({ type: Date })
+  @Prop({ type: Date, default: Date.now })
   startDate: Date;
 }
 

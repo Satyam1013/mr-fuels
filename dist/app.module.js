@@ -16,7 +16,6 @@ const auth_module_1 = require("./auth/auth.module");
 const machine_module_1 = require("./machine/machine.module");
 const fuel_price_module_1 = require("./fuel-price/fuel-price.module");
 const pump_data_module_1 = require("./pump-data/pump-data.module");
-const plan_scheduler_service_1 = require("./common/plan-scheduler.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,7 +31,7 @@ exports.AppModule = AppModule = __decorate([
             fuel_price_module_1.FuelPriceModule,
             pump_data_module_1.PumpDataModule,
         ],
-        providers: [plan_scheduler_service_1.PlanSchedulerService],
+        providers: [],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

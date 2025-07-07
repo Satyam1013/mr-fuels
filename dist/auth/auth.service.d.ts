@@ -26,7 +26,6 @@ export declare class AuthService {
             businessName: string;
             mobileNo: string;
             plan: "free" | "paid";
-            planExpiresAt: Date;
             startDate: Date;
             freeTrial: boolean;
             freeTrialAttempt: boolean;
@@ -46,7 +45,6 @@ export declare class AuthService {
             businessName: string;
             mobileNo: string;
             plan: "free" | "paid";
-            planExpiresAt: Date;
             freeTrial: boolean;
             paidUser: boolean;
             activeAccount: boolean;

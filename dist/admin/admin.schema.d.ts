@@ -24,7 +24,6 @@ export declare class Admin {
     password: string;
     refreshToken?: string | null;
     planType: "free" | "paid";
-    planExpiresAt: Date;
     freeTrial: boolean;
     freeTrialAttempt: boolean;
     paidUser: boolean;
