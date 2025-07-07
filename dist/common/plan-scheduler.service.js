@@ -32,17 +32,21 @@ let PlanSchedulerService = PlanSchedulerService_1 = class PlanSchedulerService {
                 planExpiresAt: { $lte: now },
             });
             if (expiredAdmins.length === 0) {
-                this.logger.log("No admins found for plan update");
+                this.logger.log("No expired free trial accounts found");
                 return;
             }
             const result = await this.adminModel.updateMany({
                 planType: "free",
                 planExpiresAt: { $lte: now },
-            }, { $set: { planType: "paid" } });
-            this.logger.log(`Plans updated to paid: ${result.modifiedCount}`);
+            }, {
+                $set: {
+                    paidUser: false,
+                },
+            });
+            this.logger.log(`Marked ${result.modifiedCount} admins as expired trial users`);
         }
         catch (err) {
-            this.logger.error("Error in plan upgrade cron job", err);
+            this.logger.error("Error in plan expiration cron job", err);
         }
     }
 };

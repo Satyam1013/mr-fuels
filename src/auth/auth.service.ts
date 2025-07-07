@@ -99,8 +99,14 @@ export class AuthService {
         shiftDetails: pumpDetails.shiftDetails,
         managers: managersWithHashedPasswords,
         password: hashedPassword,
+
         planType: "free",
         planExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        freeTrial: false,
+        freeTrialAttempt: false,
+        paidUser: false,
+        activeAccount: false,
+        startDate: new Date(),
       });
 
       await admin.save();
@@ -150,9 +156,14 @@ export class AuthService {
           admin: {
             businessEmail: admin.businessEmail,
             businessName: admin.businessName,
+            mobileNo: admin.mobileNo,
             plan: admin.planType,
             planExpiresAt: admin.planExpiresAt,
-            mobileNo: admin.mobileNo,
+            startDate: admin.startDate,
+            freeTrial: admin.freeTrial,
+            freeTrialAttempt: admin.freeTrialAttempt,
+            paidUser: admin.paidUser,
+            activeAccount: admin.activeAccount,
           },
         };
       }
@@ -217,9 +228,12 @@ export class AuthService {
           shift: manager.shift,
           businessEmail: adminWithManager.businessEmail,
           businessName: adminWithManager.businessName,
+          mobileNo: manager.mobile,
           plan: adminWithManager.planType,
           planExpiresAt: adminWithManager.planExpiresAt,
-          mobileNo: manager.mobile,
+          freeTrial: adminWithManager.freeTrial,
+          paidUser: adminWithManager.paidUser,
+          activeAccount: adminWithManager.activeAccount,
         },
       };
     } catch (error) {

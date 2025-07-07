@@ -38,7 +38,7 @@ export class Admin {
 
   @Prop({ required: true }) password: string;
 
-  @Prop({ type: String, default: null }) // ✅ Fix
+  @Prop({ type: String, default: null })
   refreshToken?: string | null;
 
   @Prop({ type: String, enum: ["free", "paid"], default: "free" })
@@ -46,6 +46,21 @@ export class Admin {
 
   @Prop({ type: Date })
   planExpiresAt: Date;
+
+  @Prop({ type: Boolean, default: false })
+  freeTrial: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  freeTrialAttempt: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  paidUser: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  activeAccount: boolean;
+
+  @Prop({ type: Date })
+  startDate: Date;
 }
 
 export type AdminDocument = Admin & Document;

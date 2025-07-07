@@ -17,13 +17,15 @@ export class PlanSchedulerService {
   async handlePlanUpgrade() {
     try {
       const now = new Date();
+
+      // Find expired free trial users
       const expiredAdmins = await this.adminModel.find({
         planType: "free",
         planExpiresAt: { $lte: now },
       });
 
       if (expiredAdmins.length === 0) {
-        this.logger.log("No admins found for plan update");
+        this.logger.log("No expired free trial accounts found");
         return;
       }
 
@@ -32,12 +34,18 @@ export class PlanSchedulerService {
           planType: "free",
           planExpiresAt: { $lte: now },
         },
-        { $set: { planType: "paid" } },
+        {
+          $set: {
+            paidUser: false,
+          },
+        },
       );
 
-      this.logger.log(`Plans updated to paid: ${result.modifiedCount}`);
+      this.logger.log(
+        `Marked ${result.modifiedCount} admins as expired trial users`,
+      );
     } catch (err) {
-      this.logger.error("Error in plan upgrade cron job", err);
+      this.logger.error("Error in plan expiration cron job", err);
     }
   }
 }

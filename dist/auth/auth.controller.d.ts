@@ -19,9 +19,14 @@ export declare class AuthController {
         admin: {
             businessEmail: string;
             businessName: string;
+            mobileNo: string;
             plan: "free" | "paid";
             planExpiresAt: Date;
-            mobileNo: string;
+            startDate: Date;
+            freeTrial: boolean;
+            freeTrialAttempt: boolean;
+            paidUser: boolean;
+            activeAccount: boolean;
         };
         manager?: undefined;
     } | {
@@ -34,9 +39,12 @@ export declare class AuthController {
             shift: number;
             businessEmail: string;
             businessName: string;
+            mobileNo: string;
             plan: "free" | "paid";
             planExpiresAt: Date;
-            mobileNo: string;
+            freeTrial: boolean;
+            paidUser: boolean;
+            activeAccount: boolean;
         };
         admin?: undefined;
     }>;

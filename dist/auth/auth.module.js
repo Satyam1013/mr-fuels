@@ -12,7 +12,6 @@ const jwt_1 = require("@nestjs/jwt");
 const admin_module_1 = require("../admin/admin.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
-const user_module_1 = require("../user/user.module");
 const config_1 = require("@nestjs/config");
 const plan_scheduler_service_1 = require("../common/plan-scheduler.service");
 let AuthModule = class AuthModule {
@@ -30,7 +29,6 @@ exports.AuthModule = AuthModule = __decorate([
                     signOptions: { expiresIn: "1h" },
                 }),
             }),
-            user_module_1.UserModule,
             (0, common_1.forwardRef)(() => admin_module_1.AdminModule),
         ],
         providers: [auth_service_1.AuthService, plan_scheduler_service_1.PlanSchedulerService],

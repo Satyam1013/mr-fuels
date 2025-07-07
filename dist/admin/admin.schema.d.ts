@@ -25,6 +25,11 @@ export declare class Admin {
     refreshToken?: string | null;
     planType: "free" | "paid";
     planExpiresAt: Date;
+    freeTrial: boolean;
+    freeTrialAttempt: boolean;
+    paidUser: boolean;
+    activeAccount: boolean;
+    startDate: Date;
 }
 export type AdminDocument = Admin & Document;
 export declare const AdminSchema: import("mongoose").Schema<Admin, import("mongoose").Model<Admin, any, any, any, Document<unknown, any, Admin> & Admin & {
