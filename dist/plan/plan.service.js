@@ -21,15 +21,6 @@ let PlanService = class PlanService {
     constructor(planModel) {
         this.planModel = planModel;
     }
-    async createPlan(dto) {
-        return this.planModel.create(dto);
-    }
-    async updatePlan(id, dto) {
-        const plan = await this.planModel.findByIdAndUpdate(id, dto, { new: true });
-        if (!plan)
-            throw new common_1.NotFoundException("Plan not found");
-        return plan;
-    }
     async getAllPlans() {
         return this.planModel.find({ isActive: true });
     }
