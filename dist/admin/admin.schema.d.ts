@@ -1,4 +1,5 @@
 import { Document, Types } from "mongoose";
+import { Plan } from "src/plan/plan.schema";
 export declare class Manager {
     _id: Types.ObjectId;
     name: string;
@@ -23,7 +24,7 @@ export declare class Admin {
     managers: Manager[];
     password: string;
     refreshToken?: string | null;
-    planType: "free" | "paid";
+    plan: Types.ObjectId | Plan;
     freeTrial: boolean;
     freeTrialAttempt: boolean;
     paidUser: boolean;

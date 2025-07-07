@@ -13,6 +13,7 @@ import { Model } from "mongoose";
 import { Admin, AdminDocument } from "src/admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
+import { Plan } from "src/plan/plan.schema";
 
 @Injectable()
 export class AuthService {
@@ -127,8 +128,13 @@ export class AuthService {
   async login(mobileNo: string, password: string) {
     try {
       // 1. Try as Admin
-      const admin = await this.adminModel.findOne({ mobileNo });
-      if (admin) {
+      const adminDoc = await this.adminModel
+        .findOne({ mobileNo })
+        .populate("plan");
+
+      if (adminDoc) {
+        const admin = adminDoc as AdminDocument & { plan: Plan };
+
         const isValid = await bcrypt.compare(password, admin.password);
         if (!isValid) throw new UnauthorizedException("Invalid password");
 
@@ -156,22 +162,32 @@ export class AuthService {
             businessEmail: admin.businessEmail,
             businessName: admin.businessName,
             mobileNo: admin.mobileNo,
-            plan: admin.planType,
             startDate: admin.startDate,
             freeTrial: admin.freeTrial,
             freeTrialAttempt: admin.freeTrialAttempt,
             paidUser: admin.paidUser,
             activeAccount: admin.activeAccount,
+            plan: {
+              label: admin.plan?.label,
+              type: admin.plan?.type,
+              price: admin.plan?.price,
+              period: admin.plan?.period,
+            },
           },
         };
       }
 
       // 2. Try as Manager
-      const adminWithManager = await this.adminModel.findOne({
-        "managers.mobile": mobileNo,
-      });
+      const adminWithManagerDoc = await this.adminModel
+        .findOne({ "managers.mobile": mobileNo })
+        .populate("plan");
 
-      if (!adminWithManager) throw new UnauthorizedException("User not found");
+      if (!adminWithManagerDoc)
+        throw new UnauthorizedException("User not found");
+
+      const adminWithManager = adminWithManagerDoc as AdminDocument & {
+        plan: Plan;
+      };
 
       const manager = adminWithManager.managers.find(
         (m) => m.mobile === mobileNo,
@@ -203,7 +219,6 @@ export class AuthService {
         expiresIn: "7d",
       });
 
-      // Save refresh token for that specific manager
       await this.adminModel.updateOne(
         {
           _id: adminWithManager._id,
@@ -227,10 +242,15 @@ export class AuthService {
           businessEmail: adminWithManager.businessEmail,
           businessName: adminWithManager.businessName,
           mobileNo: manager.mobile,
-          plan: adminWithManager.planType,
           freeTrial: adminWithManager.freeTrial,
           paidUser: adminWithManager.paidUser,
           activeAccount: adminWithManager.activeAccount,
+          plan: {
+            label: adminWithManager.plan?.label,
+            type: adminWithManager.plan?.type,
+            price: adminWithManager.plan?.price,
+            period: adminWithManager.plan?.period,
+          },
         },
       };
     } catch (error) {

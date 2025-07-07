@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminSchema = exports.Admin = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const plan_schema_1 = require("../plan/plan.schema");
 let Manager = class Manager {
 };
 exports.Manager = Manager;
@@ -106,9 +107,9 @@ __decorate([
     __metadata("design:type", Object)
 ], Admin.prototype, "refreshToken", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String, enum: ["free", "paid"], default: "free" }),
-    __metadata("design:type", String)
-], Admin.prototype, "planType", void 0);
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: plan_schema_1.Plan.name }),
+    __metadata("design:type", Object)
+], Admin.prototype, "plan", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)

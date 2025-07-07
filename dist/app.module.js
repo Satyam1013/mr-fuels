@@ -13,6 +13,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const schedule_1 = require("@nestjs/schedule");
 const admin_module_1 = require("./admin/admin.module");
 const auth_module_1 = require("./auth/auth.module");
+const plan_module_1 = require("./plan/plan.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,6 +25,7 @@ exports.AppModule = AppModule = __decorate([
             schedule_1.ScheduleModule.forRoot(),
             admin_module_1.AdminModule,
             auth_module_1.AuthModule,
+            plan_module_1.PlanModule,
         ],
         providers: [],
     })

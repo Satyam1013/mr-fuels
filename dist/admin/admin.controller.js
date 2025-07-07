@@ -16,7 +16,7 @@ exports.AdminController = void 0;
 const common_1 = require("@nestjs/common");
 const admin_service_1 = require("./admin.service");
 const auth_guard_1 = require("../auth/auth.guard");
-const admin_dto_1 = require("./admin.dto");
+const plan_dto_1 = require("../plan/plan.dto");
 let AdminController = class AdminController {
     constructor(adminService) {
         this.adminService = adminService;
@@ -32,7 +32,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, admin_dto_1.SelectPlanDto]),
+    __metadata("design:paramtypes", [Object, plan_dto_1.SelectPlanDto]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updatePlan", null);
 exports.AdminController = AdminController = __decorate([

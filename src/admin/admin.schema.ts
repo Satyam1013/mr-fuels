@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { Plan } from "src/plan/plan.schema";
 
 @Schema()
 export class Manager {
@@ -15,7 +16,7 @@ export class Manager {
 
   @Prop({ required: true }) password: string;
 
-  @Prop({ type: String, default: null }) // ✅ Fix
+  @Prop({ type: String, default: null })
   refreshToken?: string | null;
 }
 
@@ -41,8 +42,8 @@ export class Admin {
   @Prop({ type: String, default: null })
   refreshToken?: string | null;
 
-  @Prop({ type: String, enum: ["free", "paid"], default: "free" })
-  planType: "free" | "paid";
+  @Prop({ type: Types.ObjectId, ref: Plan.name })
+  plan: Types.ObjectId | Plan;
 
   @Prop({ type: Boolean, default: false })
   freeTrial: boolean;

@@ -3,6 +3,3 @@ export declare enum PlanType {
     MONTHLY = "monthly",
     YEARLY = "yearly"
 }
-export declare class SelectPlanDto {
-    plan: PlanType;
-}

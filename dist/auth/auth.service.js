@@ -131,8 +131,11 @@ let AuthService = class AuthService {
     }
     async login(mobileNo, password) {
         try {
-            const admin = await this.adminModel.findOne({ mobileNo });
-            if (admin) {
+            const adminDoc = await this.adminModel
+                .findOne({ mobileNo })
+                .populate("plan");
+            if (adminDoc) {
+                const admin = adminDoc;
                 const isValid = await bcrypt.compare(password, admin.password);
                 if (!isValid)
                     throw new common_1.UnauthorizedException("Invalid password");
@@ -156,20 +159,26 @@ let AuthService = class AuthService {
                         businessEmail: admin.businessEmail,
                         businessName: admin.businessName,
                         mobileNo: admin.mobileNo,
-                        plan: admin.planType,
                         startDate: admin.startDate,
                         freeTrial: admin.freeTrial,
                         freeTrialAttempt: admin.freeTrialAttempt,
                         paidUser: admin.paidUser,
                         activeAccount: admin.activeAccount,
+                        plan: {
+                            label: admin.plan?.label,
+                            type: admin.plan?.type,
+                            price: admin.plan?.price,
+                            period: admin.plan?.period,
+                        },
                     },
                 };
             }
-            const adminWithManager = await this.adminModel.findOne({
-                "managers.mobile": mobileNo,
-            });
-            if (!adminWithManager)
+            const adminWithManagerDoc = await this.adminModel
+                .findOne({ "managers.mobile": mobileNo })
+                .populate("plan");
+            if (!adminWithManagerDoc)
                 throw new common_1.UnauthorizedException("User not found");
+            const adminWithManager = adminWithManagerDoc;
             const manager = adminWithManager.managers.find((m) => m.mobile === mobileNo);
             if (!manager)
                 throw new common_1.UnauthorizedException("Manager not found");
@@ -210,10 +219,15 @@ let AuthService = class AuthService {
                     businessEmail: adminWithManager.businessEmail,
                     businessName: adminWithManager.businessName,
                     mobileNo: manager.mobile,
-                    plan: adminWithManager.planType,
                     freeTrial: adminWithManager.freeTrial,
                     paidUser: adminWithManager.paidUser,
                     activeAccount: adminWithManager.activeAccount,
+                    plan: {
+                        label: adminWithManager.plan?.label,
+                        type: adminWithManager.plan?.type,
+                        price: adminWithManager.plan?.price,
+                        period: adminWithManager.plan?.period,
+                    },
                 },
             };
         }

@@ -25,12 +25,17 @@ export declare class AuthService {
             businessEmail: string;
             businessName: string;
             mobileNo: string;
-            plan: "free" | "paid";
             startDate: Date;
             freeTrial: boolean;
             freeTrialAttempt: boolean;
             paidUser: boolean;
             activeAccount: boolean;
+            plan: {
+                label: string;
+                type: "free" | "monthly" | "quarterly" | "yearly";
+                price: string;
+                period: string;
+            };
             name?: undefined;
             shift?: undefined;
         };
@@ -45,10 +50,15 @@ export declare class AuthService {
             businessEmail: string;
             businessName: string;
             mobileNo: string;
-            plan: "free" | "paid";
             freeTrial: boolean;
             paidUser: boolean;
             activeAccount: boolean;
+            plan: {
+                label: string;
+                type: "free" | "monthly" | "quarterly" | "yearly";
+                price: string;
+                period: string;
+            };
             startDate?: undefined;
             freeTrialAttempt?: undefined;
         };

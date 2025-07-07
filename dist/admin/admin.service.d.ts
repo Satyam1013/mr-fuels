@@ -1,9 +1,11 @@
 import { AdminDocument } from "./admin.schema";
 import { Model } from "mongoose";
-import { SelectPlanDto } from "./admin.dto";
+import { SelectPlanDto } from "src/plan/plan.dto";
+import { PlanDocument } from "src/plan/plan.schema";
 export declare class AdminService {
     private adminModel;
-    constructor(adminModel: Model<AdminDocument>);
+    private planModel;
+    constructor(adminModel: Model<AdminDocument>, planModel: Model<PlanDocument>);
     selectPlan(adminId: string, dto: SelectPlanDto): Promise<{
         message: string;
         expiresAt: Date;

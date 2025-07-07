@@ -17,46 +17,51 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const admin_schema_1 = require("./admin.schema");
 const mongoose_2 = require("mongoose");
-const admin_dto_1 = require("./admin.dto");
+const plan_schema_1 = require("../plan/plan.schema");
 let AdminService = class AdminService {
-    constructor(adminModel) {
+    constructor(adminModel, planModel) {
         this.adminModel = adminModel;
+        this.planModel = planModel;
     }
     async selectPlan(adminId, dto) {
         const admin = await this.adminModel.findById(adminId);
         if (!admin)
             throw new common_1.NotFoundException("Admin not found");
+        const selectedPlan = await this.planModel.findById(dto.planId);
+        if (!selectedPlan)
+            throw new common_1.BadRequestException("Invalid plan selected");
+        admin.plan = selectedPlan._id;
         const now = new Date();
-        let expiresAt = null;
-        switch (dto.plan) {
-            case admin_dto_1.PlanType.FREE:
+        let expiresAt;
+        switch (selectedPlan.type) {
+            case "free":
                 expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-                admin.planType = "free";
-                admin.paidUser = false;
-                admin.activeAccount = true;
                 admin.freeTrial = true;
+                admin.paidUser = false;
                 break;
-            case admin_dto_1.PlanType.MONTHLY:
+            case "monthly":
                 expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-                admin.planType = "paid";
-                admin.paidUser = true;
-                admin.activeAccount = true;
                 admin.freeTrial = false;
+                admin.paidUser = true;
                 break;
-            case admin_dto_1.PlanType.YEARLY:
-                expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
-                admin.planType = "paid";
-                admin.paidUser = true;
-                admin.activeAccount = true;
+            case "quarterly":
+                expiresAt = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
                 admin.freeTrial = false;
+                admin.paidUser = true;
+                break;
+            case "yearly":
+                expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+                admin.freeTrial = false;
+                admin.paidUser = true;
                 break;
             default:
-                throw new common_1.BadRequestException("Invalid plan type");
+                throw new common_1.BadRequestException("Unknown plan type");
         }
         admin.planExpiresAt = expiresAt;
+        admin.activeAccount = true;
         await admin.save();
         return {
-            message: `Plan updated to ${dto.plan}`,
+            message: `Plan updated to ${selectedPlan.label}`,
             expiresAt,
         };
     }
@@ -65,6 +70,8 @@ exports.AdminService = AdminService;
 exports.AdminService = AdminService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(plan_schema_1.Plan.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], AdminService);
 //# sourceMappingURL=admin.service.js.map

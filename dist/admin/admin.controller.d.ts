@@ -1,5 +1,5 @@
 import { AdminService } from "./admin.service";
-import { SelectPlanDto } from "./admin.dto";
+import { SelectPlanDto } from "src/plan/plan.dto";
 import { AuthenticatedRequest } from "src/auth/auth.request";
 export declare class AdminController {
     private readonly adminService;
