@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -14,14 +15,76 @@ import { Admin, AdminDocument } from "src/admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
 import { Plan } from "src/plan/plan.schema";
+import {
+  SuperAdminLoginDto,
+  SuperAdminSignupDto,
+} from "src/super-admin/super-admin.dto";
+import {
+  SuperAdmin,
+  SuperAdminDocument,
+} from "src/super-admin/super-admin.schema";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    @InjectModel(SuperAdmin.name)
+    private superAdminModel: Model<SuperAdminDocument>,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
+
+  async superAdminSignup(dto: SuperAdminSignupDto) {
+    const existing = await this.superAdminModel.findOne({
+      $or: [{ email: dto.email }, { mobile: dto.mobile }],
+    });
+
+    if (existing) {
+      throw new BadRequestException("Super admin already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const newSuperAdmin = new this.superAdminModel({
+      ...dto,
+      password: hashedPassword,
+    });
+
+    await newSuperAdmin.save();
+
+    return { message: "Super admin registered successfully" };
+  }
+
+  async superAdminLogin(dto: SuperAdminLoginDto) {
+    const superAdmin = await this.superAdminModel.findOne({
+      email: dto.email,
+    });
+
+    if (!superAdmin) {
+      throw new UnauthorizedException("Invalid email or password");
+    }
+
+    const isValid = await bcrypt.compare(dto.password, superAdmin.password);
+
+    if (!isValid) {
+      throw new UnauthorizedException("Invalid email or password");
+    }
+
+    const payload = {
+      sub: superAdmin._id,
+      email: superAdmin.email,
+    };
+
+    const access_token = this.jwtService.sign(payload, {
+      secret: this.configService.get("JWT_SECRET"),
+      expiresIn: "1h",
+    });
+
+    return {
+      message: "Login successful",
+      access_token,
+    };
+  }
 
   async adminSignup(body: CreateAdminDto) {
     try {

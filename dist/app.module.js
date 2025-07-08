@@ -14,6 +14,7 @@ const schedule_1 = require("@nestjs/schedule");
 const admin_module_1 = require("./admin/admin.module");
 const auth_module_1 = require("./auth/auth.module");
 const plan_module_1 = require("./plan/plan.module");
+const super_admin_module_1 = require("./super-admin/super-admin.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -23,6 +24,7 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
             schedule_1.ScheduleModule.forRoot(),
+            super_admin_module_1.SuperAdminModule,
             admin_module_1.AdminModule,
             auth_module_1.AuthModule,
             plan_module_1.PlanModule,

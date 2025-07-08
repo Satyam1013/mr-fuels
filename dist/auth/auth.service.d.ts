@@ -3,11 +3,21 @@ import { Model } from "mongoose";
 import { AdminDocument } from "src/admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
+import { SuperAdminLoginDto, SuperAdminSignupDto } from "src/super-admin/super-admin.dto";
+import { SuperAdminDocument } from "src/super-admin/super-admin.schema";
 export declare class AuthService {
     private adminModel;
+    private superAdminModel;
     private jwtService;
     private configService;
-    constructor(adminModel: Model<AdminDocument>, jwtService: JwtService, configService: ConfigService);
+    constructor(adminModel: Model<AdminDocument>, superAdminModel: Model<SuperAdminDocument>, jwtService: JwtService, configService: ConfigService);
+    superAdminSignup(dto: SuperAdminSignupDto): Promise<{
+        message: string;
+    }>;
+    superAdminLogin(dto: SuperAdminLoginDto): Promise<{
+        message: string;
+        access_token: string;
+    }>;
     adminSignup(body: CreateAdminDto): Promise<{
         message: string;
         admin: {

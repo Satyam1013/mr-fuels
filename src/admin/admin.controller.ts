@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// src/admin/admin.controller.ts
 import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { AuthGuard } from "src/auth/auth.guard";
