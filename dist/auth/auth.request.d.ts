@@ -1,6 +1,9 @@
 import { Request as ExpressRequest } from "express";
 export interface AuthenticatedRequest extends ExpressRequest {
     user: {
-        _id: string;
+        sub: string;
+        mobileNo: string;
+        role: "admin" | "manager";
+        adminId?: string;
     };
 }

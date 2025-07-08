@@ -68,4 +68,80 @@ export class AdminService {
       expiresAt,
     };
   }
+
+  async getProfile(user: {
+    role: string;
+    mobileNo: string;
+    adminId?: string;
+    sub: string;
+  }) {
+    if (user.role === "admin") {
+      const adminDoc = await this.adminModel
+        .findOne({ mobileNo: user.mobileNo })
+        .populate("plan");
+
+      if (!adminDoc) throw new NotFoundException("Admin not found");
+
+      const admin = adminDoc as AdminDocument & { plan: Plan };
+
+      return {
+        role: "admin",
+        data: {
+          businessEmail: admin.businessEmail,
+          businessName: admin.businessName,
+          mobileNo: admin.mobileNo,
+          startDate: admin.startDate,
+          freeTrial: admin.freeTrial,
+          freeTrialAttempt: admin.freeTrialAttempt,
+          paidUser: admin.paidUser,
+          activeAccount: admin.activeAccount,
+          plan: {
+            label: admin.plan?.label,
+            type: admin.plan?.type,
+            price: admin.plan?.price,
+            period: admin.plan?.period,
+          },
+        },
+      };
+    }
+
+    if (user.role === "manager" && user.adminId) {
+      const adminDoc = await this.adminModel
+        .findById(user.adminId)
+        .populate("plan");
+
+      if (!adminDoc) throw new NotFoundException("Admin (owner) not found");
+
+      const admin = adminDoc as AdminDocument & { plan: Plan };
+
+      const manager = admin.managers.find((m) => m.mobile === user.mobileNo);
+      if (!manager) throw new NotFoundException("Manager not found");
+
+      return {
+        role: "manager",
+        data: {
+          manager: {
+            name: manager.name,
+            mobile: manager.mobile,
+            shift: manager.shift,
+          },
+          admin: {
+            businessEmail: admin.businessEmail,
+            businessName: admin.businessName,
+            freeTrial: admin.freeTrial,
+            paidUser: admin.paidUser,
+            activeAccount: admin.activeAccount,
+            plan: {
+              label: admin.plan?.label,
+              type: admin.plan?.type,
+              price: admin.plan?.price,
+              period: admin.plan?.period,
+            },
+          },
+        },
+      };
+    }
+
+    throw new BadRequestException("Invalid role or user context");
+  }
 }

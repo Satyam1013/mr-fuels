@@ -22,8 +22,11 @@ let AdminController = class AdminController {
         this.adminService = adminService;
     }
     async updatePlan(req, dto) {
-        const adminId = req.user._id;
+        const adminId = req.user.sub;
         return this.adminService.selectPlan(adminId, dto);
+    }
+    async getProfile(req) {
+        return this.adminService.getProfile(req.user);
     }
 };
 exports.AdminController = AdminController;
@@ -35,6 +38,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, plan_dto_1.SelectPlanDto]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updatePlan", null);
+__decorate([
+    (0, common_1.Get)("profile"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getProfile", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("admin"),

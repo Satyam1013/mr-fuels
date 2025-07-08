@@ -158,22 +158,6 @@ export class AuthService {
           access_token,
           refresh_token,
           role: "admin",
-          data: {
-            businessEmail: admin.businessEmail,
-            businessName: admin.businessName,
-            mobileNo: admin.mobileNo,
-            startDate: admin.startDate,
-            freeTrial: admin.freeTrial,
-            freeTrialAttempt: admin.freeTrialAttempt,
-            paidUser: admin.paidUser,
-            activeAccount: admin.activeAccount,
-            plan: {
-              label: admin.plan?.label,
-              type: admin.plan?.type,
-              price: admin.plan?.price,
-              period: admin.plan?.period,
-            },
-          },
         };
       }
 
@@ -236,22 +220,6 @@ export class AuthService {
         access_token,
         refresh_token,
         role: "manager",
-        data: {
-          name: manager.name,
-          shift: manager.shift,
-          businessEmail: adminWithManager.businessEmail,
-          businessName: adminWithManager.businessName,
-          mobileNo: manager.mobile,
-          freeTrial: adminWithManager.freeTrial,
-          paidUser: adminWithManager.paidUser,
-          activeAccount: adminWithManager.activeAccount,
-          plan: {
-            label: adminWithManager.plan?.label,
-            type: adminWithManager.plan?.type,
-            price: adminWithManager.plan?.price,
-            period: adminWithManager.plan?.period,
-          },
-        },
       };
     } catch (error) {
       console.error("Unified login error:", error);
