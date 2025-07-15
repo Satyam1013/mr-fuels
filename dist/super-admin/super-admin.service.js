@@ -40,4 +40,3 @@ exports.SuperAdminService = SuperAdminService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(plan_schema_1.Plan.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], SuperAdminService);
-//# sourceMappingURL=super-admin.service.js.map

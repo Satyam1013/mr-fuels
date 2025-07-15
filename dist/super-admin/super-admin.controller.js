@@ -38,4 +38,3 @@ exports.SuperAdminController = SuperAdminController = __decorate([
     (0, common_1.Controller)("super-admin"),
     __metadata("design:paramtypes", [super_admin_service_1.SuperAdminService])
 ], SuperAdminController);
-//# sourceMappingURL=super-admin.controller.js.map

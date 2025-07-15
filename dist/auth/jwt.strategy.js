@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtStrategy = void 0;
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
@@ -22,6 +23,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
         this.configService = configService;
     }
+    // eslint-disable-next-line @typescript-eslint/require-await
     async validate(payload) {
         if (!payload || !payload.sub) {
             throw new common_1.UnauthorizedException("Invalid token");
@@ -38,4 +40,3 @@ exports.JwtStrategy = JwtStrategy = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService])
 ], JwtStrategy);
-//# sourceMappingURL=jwt.strategy.js.map

@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
+/* eslint-disable @typescript-eslint/require-await */
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const admin_module_1 = require("../admin/admin.module");
@@ -37,4 +38,3 @@ exports.AuthModule = AuthModule = __decorate([
         exports: [jwt_1.JwtModule, auth_service_1.AuthService],
     })
 ], AuthModule);
-//# sourceMappingURL=auth.module.js.map

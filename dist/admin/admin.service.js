@@ -30,27 +30,29 @@ let AdminService = class AdminService {
         const selectedPlan = await this.planModel.findById(dto.planId);
         if (!selectedPlan)
             throw new common_1.BadRequestException("Invalid plan selected");
+        // Set plan reference
         admin.plan = selectedPlan._id;
         const now = new Date();
         let expiresAt;
+        // Set expiry based on plan type
         switch (selectedPlan.type) {
             case "free":
-                expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
                 admin.freeTrial = true;
                 admin.paidUser = false;
                 break;
             case "monthly":
-                expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+                expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
                 admin.freeTrial = false;
                 admin.paidUser = true;
                 break;
             case "quarterly":
-                expiresAt = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+                expiresAt = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000); // 90 days
                 admin.freeTrial = false;
                 admin.paidUser = true;
                 break;
             case "yearly":
-                expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+                expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000); // 365 days
                 admin.freeTrial = false;
                 admin.paidUser = true;
                 break;
@@ -138,4 +140,3 @@ exports.AdminService = AdminService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model])
 ], AdminService);
-//# sourceMappingURL=admin.service.js.map

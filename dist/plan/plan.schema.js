@@ -1,4 +1,5 @@
 "use strict";
+// ../plan/plan.schema.ts
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -42,4 +43,3 @@ exports.Plan = Plan = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Plan);
 exports.PlanSchema = mongoose_1.SchemaFactory.createForClass(Plan);
-//# sourceMappingURL=plan.schema.js.map

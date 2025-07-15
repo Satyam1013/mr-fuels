@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
 import { AdminService } from "./admin.service";
-import { AuthGuard } from "src/auth/auth.guard";
-import { SelectPlanDto } from "src/plan/plan.dto";
-import { AuthenticatedRequest } from "src/auth/auth.request";
+import { AuthGuard } from "../auth/auth.guard";
+import { SelectPlanDto } from "../plan/plan.dto";
+import { AuthenticatedRequest } from "../auth/auth.request";
 
 @UseGuards(AuthGuard)
 @Controller("admin")

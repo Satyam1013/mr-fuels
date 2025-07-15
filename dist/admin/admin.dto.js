@@ -7,4 +7,3 @@ var PlanType;
     PlanType["MONTHLY"] = "monthly";
     PlanType["YEARLY"] = "yearly";
 })(PlanType || (exports.PlanType = PlanType = {}));
-//# sourceMappingURL=admin.dto.js.map

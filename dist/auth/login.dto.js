@@ -35,4 +35,3 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], AdminLoginDto.prototype, "password", void 0);
-//# sourceMappingURL=login.dto.js.map

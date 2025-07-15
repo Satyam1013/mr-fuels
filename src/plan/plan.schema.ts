@@ -1,4 +1,4 @@
-// src/plan/plan.schema.ts
+// ../plan/plan.schema.ts
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
@@ -6,22 +6,22 @@ import { Document } from "mongoose";
 @Schema({ timestamps: true })
 export class Plan {
   @Prop({ required: true, unique: true })
-  label: string;
+  label!: string;
 
   @Prop({ required: true })
-  description: string;
+  description!: string;
 
   @Prop({ required: true })
-  price: string;
+  price!: string;
 
   @Prop({ required: true })
-  period: string;
+  period!: string;
 
   @Prop({ required: true, enum: ["free", "monthly", "quarterly", "yearly"] })
-  type: "free" | "monthly" | "quarterly" | "yearly";
+  type!: "free" | "monthly" | "quarterly" | "yearly";
 
   @Prop({ type: Boolean, default: true })
-  isActive: boolean;
+  isActive!: boolean;
 }
 
 export type PlanDocument = Plan & Document;

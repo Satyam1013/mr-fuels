@@ -9,46 +9,46 @@ import {
 export class SuperAdminSignupDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
-  mobile: string;
+  mobile!: string;
 
   @IsString()
-  password: string;
+  password!: string;
 }
 
 export class SuperAdminLoginDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
-  password: string;
+  password!: string;
 }
 
 export class CreatePlanDto {
   @IsString()
   @IsNotEmpty()
-  label: string;
+  label!: string;
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsString()
   @IsNotEmpty()
-  price: string;
+  price!: string;
 
   @IsString()
   @IsNotEmpty()
-  period: string;
+  period!: string;
 
   @IsEnum(["free", "monthly", "quarterly", "yearly"])
-  type: "free" | "monthly" | "quarterly" | "yearly";
+  type!: "free" | "monthly" | "quarterly" | "yearly";
 
   @IsBoolean()
-  isActive: boolean;
+  isActive!: boolean;
 }

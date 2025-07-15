@@ -11,129 +11,129 @@ import { Type } from "class-transformer";
 
 export class FuelDto {
   @IsString()
-  value: string;
+  value!: string;
 
   @IsNumber()
   @Type(() => Number)
-  kl: number;
+  kl!: number;
 
   @IsObject()
-  pdf: object;
+  pdf!: object;
 }
 
 export class BusinessDetailsDto {
   @IsString()
-  businessName: string;
+  businessName!: string;
 
   @IsEmail()
-  businessEmail: string;
+  businessEmail!: string;
 
   @IsString()
-  businessPhoneNo: string;
+  businessPhoneNo!: string;
 
   @IsArray()
   @IsString({ each: true })
-  fuelTypes: string[];
+  fuelTypes!: string[];
 
   @ValidateNested({ each: true })
   @Type(() => FuelDto)
-  fuels: FuelDto[];
+  fuels!: FuelDto[];
 }
 
 export class NozzleDto {
   @IsString()
-  nozzleType: string;
+  nozzleType!: string;
 }
 
 export class MachineDto {
   @IsNumber()
   @Type(() => Number)
-  machineNo: number;
+  machineNo!: number;
 
   @IsNumber()
   @Type(() => Number)
-  nozzleCount: number;
+  nozzleCount!: number;
 
   @ValidateNested({ each: true })
   @Type(() => NozzleDto)
-  nozzles: NozzleDto[];
+  nozzles!: NozzleDto[];
 }
 
 export class MachineDetailsDto {
   @IsNumber()
   @Type(() => Number)
-  numberOfMachines: number;
+  numberOfMachines!: number;
 
   @ValidateNested({ each: true })
   @Type(() => MachineDto)
-  machines: MachineDto[];
+  machines!: MachineDto[];
 }
 
 export class PumpDetailsDto {
   @IsArray()
   @IsString({ each: true })
-  businessUpiApps: string[];
+  businessUpiApps!: string[];
 
   @IsString()
-  swipeStatement: string;
+  swipeStatement!: string;
 
   @IsString()
-  bankDeposit: string;
+  bankDeposit!: string;
 
   @IsNumber()
   @Type(() => Number)
-  noOfEmployeeShifts: number;
+  noOfEmployeeShifts!: number;
 
   @IsNumber()
   @Type(() => Number)
-  shiftDetails: number;
+  shiftDetails!: number;
 }
 
 export class ManagerDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsString()
-  mobile: string;
+  mobile!: string;
 
   @IsNumber()
   @Type(() => Number)
-  shift: number;
+  shift!: number;
 
   @IsOptional()
   @IsObject()
   aadhar?: object;
 
   @IsString()
-  password: string;
+  password!: string;
 }
 
 export class CreateAdminDto {
   @ValidateNested()
   @Type(() => BusinessDetailsDto)
-  businessDetails: BusinessDetailsDto;
+  businessDetails!: BusinessDetailsDto;
 
   @ValidateNested()
   @Type(() => MachineDetailsDto)
-  machineDetails: MachineDetailsDto;
+  machineDetails!: MachineDetailsDto;
 
   @ValidateNested()
   @Type(() => PumpDetailsDto)
-  pumpDetails: PumpDetailsDto;
+  pumpDetails!: PumpDetailsDto;
 
   @ValidateNested({ each: true })
   @Type(() => ManagerDto)
   @IsArray()
-  managers: ManagerDto[];
+  managers!: ManagerDto[];
 
   @IsString()
-  adminPassword: string;
+  adminPassword!: string;
 }
 
 export class LoginDto {
   @IsString()
-  mobileNo: string;
+  mobileNo!: string;
 
   @IsString()
-  password: string;
+  password!: string;
 }

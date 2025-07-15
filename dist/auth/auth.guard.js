@@ -10,6 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const core_1 = require("@nestjs/core");
@@ -44,4 +47,3 @@ exports.AuthGuard = AuthGuard = __decorate([
     __metadata("design:paramtypes", [jwt_1.JwtService,
         core_1.Reflector])
 ], AuthGuard);
-//# sourceMappingURL=auth.guard.js.map

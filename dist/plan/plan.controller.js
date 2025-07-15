@@ -44,4 +44,3 @@ exports.PlanController = PlanController = __decorate([
     (0, common_1.Controller)("plans"),
     __metadata("design:paramtypes", [plan_service_1.PlanService])
 ], PlanController);
-//# sourceMappingURL=plan.controller.js.map

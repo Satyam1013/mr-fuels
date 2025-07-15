@@ -1,7 +1,7 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { AuthModule } from "src/auth/auth.module";
-import { PlanModule } from "src/plan/plan.module";
+import { AuthModule } from "../auth/auth.module";
+import { PlanModule } from "../plan/plan.module";
 import { SuperAdmin, SuperAdminSchema } from "./super-admin.schema";
 import { SuperAdminService } from "./super-admin.service";
 import { SuperAdminController } from "./super-admin.controller";

@@ -6,8 +6,8 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Admin, AdminDocument } from "./admin.schema";
 import { Model, Types } from "mongoose";
-import { SelectPlanDto } from "src/plan/plan.dto";
-import { Plan, PlanDocument } from "src/plan/plan.schema";
+import { SelectPlanDto } from "../plan/plan.dto";
+import { Plan, PlanDocument } from "../plan/plan.schema";
 
 @Injectable()
 export class AdminService {

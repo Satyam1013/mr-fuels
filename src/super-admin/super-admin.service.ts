@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Plan, PlanDocument } from "src/plan/plan.schema";
+import { Plan, PlanDocument } from "../plan/plan.schema";
 import { CreatePlanDto } from "./super-admin.dto";
 
 @Injectable()

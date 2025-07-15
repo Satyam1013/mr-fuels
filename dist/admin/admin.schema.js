@@ -138,4 +138,3 @@ exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)()
 ], Admin);
 exports.AdminSchema = mongoose_1.SchemaFactory.createForClass(Admin);
-//# sourceMappingURL=admin.schema.js.map

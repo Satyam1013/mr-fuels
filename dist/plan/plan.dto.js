@@ -49,4 +49,3 @@ __decorate([
 class UpdatePlanDto extends CreatePlanDto {
 }
 exports.UpdatePlanDto = UpdatePlanDto;
-//# sourceMappingURL=plan.dto.js.map

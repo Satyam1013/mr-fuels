@@ -3,8 +3,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { AdminService } from "./admin.service";
 import { AdminController } from "./admin.controller";
 import { Admin, AdminSchema } from "./admin.schema";
-import { AuthModule } from "src/auth/auth.module";
-import { PlanModule } from "src/plan/plan.module";
+import { AuthModule } from "../auth/auth.module";
+import { PlanModule } from "../plan/plan.module";
 
 @Module({
   imports: [

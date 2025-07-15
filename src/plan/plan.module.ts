@@ -1,4 +1,4 @@
-// src/plan/plan.module.ts
+// ../plan/plan.module.ts
 
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";

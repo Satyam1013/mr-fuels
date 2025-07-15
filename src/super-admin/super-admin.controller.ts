@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "src/auth/auth.guard";
+import { AuthGuard } from "../auth/auth.guard";
 import { SuperAdminService } from "./super-admin.service";
 import { CreatePlanDto } from "./super-admin.dto";
 

@@ -46,6 +46,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const bcrypt = __importStar(require("bcrypt"));
@@ -103,30 +105,37 @@ let AuthService = class AuthService {
     async adminSignup(body) {
         try {
             const { businessDetails, machineDetails, pumpDetails, managers, adminPassword, } = body;
+            // 1. Check if admin email already exists
             const existingEmail = await this.adminModel.findOne({
                 businessEmail: businessDetails.businessEmail,
             });
             if (existingEmail)
                 throw new common_1.ForbiddenException("Admin already exists");
+            // 2. Check if admin mobile number already used
             const existingMobile = await this.adminModel.findOne({
                 mobileNo: businessDetails.businessPhoneNo,
             });
             if (existingMobile)
                 throw new common_1.ForbiddenException("Mobile number already in use by another admin");
+            // 3. Check manager mobile uniqueness among themselves
             const managerMobiles = managers.map((m) => m.mobile);
             if (new Set(managerMobiles).size !== managerMobiles.length) {
                 throw new common_1.ForbiddenException("Manager mobile numbers must be unique");
             }
+            // 4. Check if any manager has same mobile as admin
             if (managerMobiles.includes(businessDetails.businessPhoneNo)) {
                 throw new common_1.ForbiddenException("A manager cannot have the same mobile number as the admin");
             }
+            // 5. Check if any manager's mobile already used in another admin's manager
             const usedInOtherAdmins = await this.adminModel.find({
                 "managers.mobile": { $in: managerMobiles },
             });
             if (usedInOtherAdmins.length > 0) {
                 throw new common_1.ForbiddenException("One or more manager mobile numbers are already in use");
             }
+            // 6. Hash admin password
             const hashedPassword = await bcrypt.hash(adminPassword, 10);
+            // 7. Hash each manager's password
             const managersWithHashedPasswords = await Promise.all(managers.map(async (m) => ({
                 name: m.name,
                 mobile: m.mobile,
@@ -134,6 +143,7 @@ let AuthService = class AuthService {
                 aadhar: m.aadhar,
                 password: await bcrypt.hash(m.password, 10),
             })));
+            // 8. Create new admin document
             const admin = new this.adminModel({
                 businessEmail: businessDetails.businessEmail,
                 businessName: businessDetails.businessName,
@@ -172,6 +182,7 @@ let AuthService = class AuthService {
     }
     async login(mobileNo, password) {
         try {
+            // 1. Try as Admin
             const adminDoc = await this.adminModel
                 .findOne({ mobileNo })
                 .populate("plan");
@@ -198,6 +209,7 @@ let AuthService = class AuthService {
                     role: "admin",
                 };
             }
+            // 2. Try as Manager
             const adminWithManagerDoc = await this.adminModel
                 .findOne({ "managers.mobile": mobileNo })
                 .populate("plan");
@@ -306,4 +318,3 @@ exports.AuthService = AuthService = __decorate([
         jwt_1.JwtService,
         config_1.ConfigService])
 ], AuthService);
-//# sourceMappingURL=auth.service.js.map

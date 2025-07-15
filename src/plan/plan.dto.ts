@@ -8,19 +8,19 @@ import {
 
 export class CreatePlanDto {
   @IsString()
-  label: string;
+  label!: string;
 
   @IsString()
-  description: string;
+  description!: string;
 
   @IsString()
-  price: string;
+  price!: string;
 
   @IsString()
-  period: string;
+  period!: string;
 
   @IsEnum(["free", "monthly", "quarterly", "yearly"])
-  type: "free" | "monthly" | "quarterly" | "yearly";
+  type!: "free" | "monthly" | "quarterly" | "yearly";
 
   @IsOptional()
   @IsBoolean()
@@ -29,7 +29,7 @@ export class CreatePlanDto {
 
 export class SelectPlanDto {
   @IsMongoId()
-  planId: string;
+  planId!: string;
 }
 
 export class UpdatePlanDto extends CreatePlanDto {}

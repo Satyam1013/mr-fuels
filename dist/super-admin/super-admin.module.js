@@ -31,4 +31,3 @@ exports.SuperAdminModule = SuperAdminModule = __decorate([
         exports: [super_admin_service_1.SuperAdminService, mongoose_1.MongooseModule],
     })
 ], SuperAdminModule);
-//# sourceMappingURL=super-admin.module.js.map

@@ -11,18 +11,18 @@ import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
-import { Admin, AdminDocument } from "src/admin/admin.schema";
+import { Admin, AdminDocument } from "../admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
-import { Plan } from "src/plan/plan.schema";
+import { Plan } from "../plan/plan.schema";
 import {
   SuperAdminLoginDto,
   SuperAdminSignupDto,
-} from "src/super-admin/super-admin.dto";
+} from "../super-admin/super-admin.dto";
 import {
   SuperAdmin,
   SuperAdminDocument,
-} from "src/super-admin/super-admin.schema";
+} from "../super-admin/super-admin.schema";
 
 @Injectable()
 export class AuthService {

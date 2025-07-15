@@ -29,4 +29,3 @@ exports.AdminModule = AdminModule = __decorate([
         exports: [admin_service_1.AdminService, mongoose_1.MongooseModule],
     })
 ], AdminModule);
-//# sourceMappingURL=admin.module.js.map

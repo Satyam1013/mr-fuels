@@ -39,4 +39,3 @@ exports.SuperAdmin = SuperAdmin = __decorate([
     (0, mongoose_1.Schema)()
 ], SuperAdmin);
 exports.SuperAdminSchema = mongoose_1.SchemaFactory.createForClass(SuperAdmin);
-//# sourceMappingURL=super-admin.schema.js.map
