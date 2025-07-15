@@ -23,6 +23,9 @@ let AuthController = class AuthController {
     adminSignup(body) {
         return this.authService.adminSignup(body);
     }
+    checkUsedMobiles(numbers) {
+        return this.authService.checkUsedMobiles(numbers);
+    }
     login(body) {
         return this.authService.login(body.mobileNo, body.password);
     }
@@ -41,6 +44,13 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateAdminDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "adminSignup", null);
+__decorate([
+    (0, common_1.Get)("check-used-mobiles"),
+    __param(0, (0, common_1.Query)("numbers")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "checkUsedMobiles", null);
 __decorate([
     (0, common_1.Post)("login"),
     __param(0, (0, common_1.Body)()),

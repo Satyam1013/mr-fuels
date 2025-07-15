@@ -188,6 +188,34 @@ export class AuthService {
     }
   }
 
+  async checkUsedMobiles(numbers: string) {
+    if (!numbers) throw new BadRequestException("No mobile numbers provided");
+
+    const mobileArray = numbers.split(",").map((m) => m.trim());
+
+    const usedAdmins = await this.adminModel.find({
+      $or: [
+        { mobileNo: { $in: mobileArray } },
+        { "managers.mobile": { $in: mobileArray } },
+      ],
+    });
+
+    const usedMobiles = new Set<string>();
+
+    for (const admin of usedAdmins) {
+      if (mobileArray.includes(admin.mobileNo)) {
+        usedMobiles.add(admin.mobileNo);
+      }
+      admin.managers?.forEach((m) => {
+        if (mobileArray.includes(m.mobile)) {
+          usedMobiles.add(m.mobile);
+        }
+      });
+    }
+
+    return { usedMobiles: Array.from(usedMobiles) };
+  }
+
   async login(mobileNo: string, password: string) {
     try {
       // 1. Try as Admin

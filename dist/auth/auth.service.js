@@ -180,6 +180,29 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException("Failed to signup admin");
         }
     }
+    async checkUsedMobiles(numbers) {
+        if (!numbers)
+            throw new common_1.BadRequestException("No mobile numbers provided");
+        const mobileArray = numbers.split(",").map((m) => m.trim());
+        const usedAdmins = await this.adminModel.find({
+            $or: [
+                { mobileNo: { $in: mobileArray } },
+                { "managers.mobile": { $in: mobileArray } },
+            ],
+        });
+        const usedMobiles = new Set();
+        for (const admin of usedAdmins) {
+            if (mobileArray.includes(admin.mobileNo)) {
+                usedMobiles.add(admin.mobileNo);
+            }
+            admin.managers?.forEach((m) => {
+                if (mobileArray.includes(m.mobile)) {
+                    usedMobiles.add(m.mobile);
+                }
+            });
+        }
+        return { usedMobiles: Array.from(usedMobiles) };
+    }
     async login(mobileNo, password) {
         try {
             // 1. Try as Admin

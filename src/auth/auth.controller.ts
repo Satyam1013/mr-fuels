@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateAdminDto, LoginDto } from "./create-user.dto";
 
@@ -9,6 +9,11 @@ export class AuthController {
   @Post("signup")
   adminSignup(@Body() body: CreateAdminDto) {
     return this.authService.adminSignup(body);
+  }
+
+  @Get("check-used-mobiles")
+  checkUsedMobiles(@Query("numbers") numbers: string) {
+    return this.authService.checkUsedMobiles(numbers);
   }
 
   @Post("login")
