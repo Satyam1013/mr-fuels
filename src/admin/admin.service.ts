@@ -23,7 +23,6 @@ export class AdminService {
     const selectedPlan = await this.planModel.findById(dto.planId);
     if (!selectedPlan) throw new BadRequestException("Invalid plan selected");
 
-    // Set plan reference
     admin.plan = selectedPlan._id as Types.ObjectId;
 
     const now = new Date();
