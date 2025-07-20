@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
@@ -15,7 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async validate(payload: { sub: string; username: string; role: string }) {
     if (!payload || !payload.sub) {
       throw new UnauthorizedException("Invalid token");
