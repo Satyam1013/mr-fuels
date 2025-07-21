@@ -7,6 +7,7 @@ import { AdminModule } from "./admin/admin.module";
 import { AuthModule } from "./auth/auth.module";
 import { PlanModule } from "./plan/plan.module";
 import { SuperAdminModule } from "./super-admin/super-admin.module";
+import { HomeModule } from "./home/home.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SuperAdminModule } from "./super-admin/super-admin.module";
     AdminModule,
     AuthModule,
     PlanModule,
+    HomeModule,
   ],
   providers: [],
 })

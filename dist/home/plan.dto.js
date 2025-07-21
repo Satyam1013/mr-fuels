@@ -9,36 +9,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlanSchema = exports.Plan = void 0;
-const mongoose_1 = require("@nestjs/mongoose");
-let Plan = class Plan {
-};
-exports.Plan = Plan;
+exports.UpdatePlanDto = exports.SelectPlanDto = exports.CreatePlanDto = void 0;
+const class_validator_1 = require("class-validator");
+class CreatePlanDto {
+}
+exports.CreatePlanDto = CreatePlanDto;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], Plan.prototype, "label", void 0);
+], CreatePlanDto.prototype, "label", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], Plan.prototype, "description", void 0);
+], CreatePlanDto.prototype, "description", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], Plan.prototype, "price", void 0);
+], CreatePlanDto.prototype, "price", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], Plan.prototype, "period", void 0);
+], CreatePlanDto.prototype, "period", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ["free", "monthly", "quarterly", "yearly"] }),
+    (0, class_validator_1.IsEnum)(["free", "monthly", "quarterly", "yearly"]),
     __metadata("design:type", String)
-], Plan.prototype, "type", void 0);
+], CreatePlanDto.prototype, "type", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], Plan.prototype, "isActive", void 0);
-exports.Plan = Plan = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true })
-], Plan);
-exports.PlanSchema = mongoose_1.SchemaFactory.createForClass(Plan);
+], CreatePlanDto.prototype, "isActive", void 0);
+class SelectPlanDto {
+}
+exports.SelectPlanDto = SelectPlanDto;
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], SelectPlanDto.prototype, "planId", void 0);
+class UpdatePlanDto extends CreatePlanDto {
+}
+exports.UpdatePlanDto = UpdatePlanDto;

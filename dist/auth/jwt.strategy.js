@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtStrategy = void 0;
+/* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
@@ -23,7 +24,6 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
         this.configService = configService;
     }
-    // eslint-disable-next-line @typescript-eslint/require-await
     async validate(payload) {
         if (!payload || !payload.sub) {
             throw new common_1.UnauthorizedException("Invalid token");

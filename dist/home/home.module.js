@@ -6,22 +6,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlanModule = void 0;
+exports.HomeModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const plan_schema_1 = require("./plan.schema");
-const plan_service_1 = require("./plan.service");
-const plan_controller_1 = require("./plan.controller");
-let PlanModule = class PlanModule {
+const home_schema_1 = require("./home.schema");
+const home_service_1 = require("./home.service");
+const home_controller_1 = require("./home.controller");
+let HomeModule = class HomeModule {
 };
-exports.PlanModule = PlanModule;
-exports.PlanModule = PlanModule = __decorate([
+exports.HomeModule = HomeModule;
+exports.HomeModule = HomeModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: plan_schema_1.Plan.name, schema: plan_schema_1.PlanSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: home_schema_1.Home.name, schema: home_schema_1.HomeSchema }]),
         ],
-        providers: [plan_service_1.PlanService],
-        controllers: [plan_controller_1.PlanController],
+        providers: [home_service_1.HomeService],
+        controllers: [home_controller_1.HomeController],
         exports: [mongoose_1.MongooseModule],
     })
-], PlanModule);
+], HomeModule);

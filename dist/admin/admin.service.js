@@ -30,7 +30,6 @@ let AdminService = class AdminService {
         const selectedPlan = await this.planModel.findById(dto.planId);
         if (!selectedPlan)
             throw new common_1.BadRequestException("Invalid plan selected");
-        // Set plan reference
         admin.plan = selectedPlan._id;
         const now = new Date();
         let expiresAt;
