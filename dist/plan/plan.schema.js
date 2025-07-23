@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanSchema = exports.Plan = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const types_1 = require("../common/types");
 let Plan = class Plan {
 };
 exports.Plan = Plan;
@@ -31,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], Plan.prototype, "period", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ["free", "monthly", "quarterly", "yearly"] }),
+    (0, mongoose_1.Prop)({ required: true, enum: Object.values(types_1.PlanEnum) }),
     __metadata("design:type", String)
 ], Plan.prototype, "type", void 0);
 __decorate([

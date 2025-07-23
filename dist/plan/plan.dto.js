@@ -11,27 +11,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdatePlanDto = exports.SelectPlanDto = exports.CreatePlanDto = void 0;
 const class_validator_1 = require("class-validator");
+const types_1 = require("../common/types");
 class CreatePlanDto {
 }
 exports.CreatePlanDto = CreatePlanDto;
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePlanDto.prototype, "label", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePlanDto.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePlanDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePlanDto.prototype, "period", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(["free", "monthly", "quarterly", "yearly"]),
+    (0, class_validator_1.IsEnum)(types_1.PlanEnum),
     __metadata("design:type", String)
 ], CreatePlanDto.prototype, "type", void 0);
 __decorate([

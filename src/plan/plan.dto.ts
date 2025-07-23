@@ -4,27 +4,33 @@ import {
   IsOptional,
   IsBoolean,
   IsMongoId,
+  IsNotEmpty,
 } from "class-validator";
+import { PlanEnum, PlanEnumType } from "../common/types";
 
 export class CreatePlanDto {
   @IsString()
+  @IsNotEmpty()
   label!: string;
 
   @IsString()
+  @IsNotEmpty()
   description!: string;
 
   @IsString()
+  @IsNotEmpty()
   price!: string;
 
   @IsString()
+  @IsNotEmpty()
   period!: string;
 
-  @IsEnum(["free", "monthly", "quarterly", "yearly"])
-  type!: "free" | "monthly" | "quarterly" | "yearly";
+  @IsEnum(PlanEnum)
+  type!: PlanEnumType;
 
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  isActive!: boolean;
 }
 
 export class SelectPlanDto {

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+import { PlanEnum, PlanEnumType } from "../common/types";
 
 @Schema({ timestamps: true })
 export class Plan {
@@ -15,8 +16,8 @@ export class Plan {
   @Prop({ required: true })
   period!: string;
 
-  @Prop({ required: true, enum: ["free", "monthly", "quarterly", "yearly"] })
-  type!: "free" | "monthly" | "quarterly" | "yearly";
+  @Prop({ required: true, enum: Object.values(PlanEnum) })
+  type!: PlanEnumType;
 
   @Prop({ type: Boolean, default: true })
   isActive!: boolean;

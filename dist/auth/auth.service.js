@@ -56,6 +56,7 @@ const mongoose_2 = require("mongoose");
 const admin_schema_1 = require("../admin/admin.schema");
 const config_1 = require("@nestjs/config");
 const super_admin_schema_1 = require("../super-admin/super-admin.schema");
+const types_1 = require("../common/types");
 let AuthService = class AuthService {
     constructor(adminModel, superAdminModel, jwtService, configService) {
         this.adminModel = adminModel;
@@ -158,7 +159,7 @@ let AuthService = class AuthService {
                 shiftDetails: pumpDetails.shiftDetails,
                 managers: managersWithHashedPasswords,
                 password: hashedPassword,
-                planType: "free",
+                planType: types_1.PlanEnum.FREE,
                 freeTrial: false,
                 freeTrialAttempt: false,
                 paidUser: false,

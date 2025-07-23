@@ -16,7 +16,7 @@ exports.SuperAdminController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_guard_1 = require("../auth/auth.guard");
 const super_admin_service_1 = require("./super-admin.service");
-const super_admin_dto_1 = require("./super-admin.dto");
+const plan_dto_1 = require("../plan/plan.dto");
 let SuperAdminController = class SuperAdminController {
     constructor(superAdminService) {
         this.superAdminService = superAdminService;
@@ -30,7 +30,7 @@ __decorate([
     (0, common_1.Post)("/add-plan"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [super_admin_dto_1.CreatePlanDto]),
+    __metadata("design:paramtypes", [plan_dto_1.CreatePlanDto]),
     __metadata("design:returntype", Promise)
 ], SuperAdminController.prototype, "addPlan", null);
 exports.SuperAdminController = SuperAdminController = __decorate([

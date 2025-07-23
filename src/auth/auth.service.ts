@@ -23,6 +23,7 @@ import {
   SuperAdmin,
   SuperAdminDocument,
 } from "../super-admin/super-admin.schema";
+import { PlanEnum } from "../common/types";
 
 @Injectable()
 export class AuthService {
@@ -164,7 +165,7 @@ export class AuthService {
         managers: managersWithHashedPasswords,
         password: hashedPassword,
 
-        planType: "free",
+        planType: PlanEnum.FREE,
         freeTrial: false,
         freeTrialAttempt: false,
         paidUser: false,
