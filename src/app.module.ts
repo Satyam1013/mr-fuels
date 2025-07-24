@@ -8,6 +8,7 @@ import { AuthModule } from "./auth/auth.module";
 import { PlanModule } from "./plan/plan.module";
 import { SuperAdminModule } from "./super-admin/super-admin.module";
 import { HomeModule } from "./home/home.module";
+import { PumpExpenseModule } from "./pump-expenses/pump-expenses.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HomeModule } from "./home/home.module";
     MongooseModule.forRoot(process.env.MONGODB_URI!),
     ScheduleModule.forRoot(),
     SuperAdminModule,
+    PumpExpenseModule,
     AdminModule,
     AuthModule,
     PlanModule,

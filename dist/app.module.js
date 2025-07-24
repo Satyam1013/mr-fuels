@@ -16,6 +16,7 @@ const auth_module_1 = require("./auth/auth.module");
 const plan_module_1 = require("./plan/plan.module");
 const super_admin_module_1 = require("./super-admin/super-admin.module");
 const home_module_1 = require("./home/home.module");
+const pump_expenses_module_1 = require("./pump-expenses/pump-expenses.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
             schedule_1.ScheduleModule.forRoot(),
             super_admin_module_1.SuperAdminModule,
+            pump_expenses_module_1.PumpExpenseModule,
             admin_module_1.AdminModule,
             auth_module_1.AuthModule,
             plan_module_1.PlanModule,
