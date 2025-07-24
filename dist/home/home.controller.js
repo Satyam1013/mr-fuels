@@ -20,27 +20,19 @@ let HomeController = class HomeController {
     constructor(homeService) {
         this.homeService = homeService;
     }
-    async create(body) {
-        return this.homeService.create(body);
-    }
-    async getAll() {
-        return this.homeService.findAll();
+    getExpenseSummary(filterType, date) {
+        return this.homeService.getPumpExpenseByFilter(filterType, date);
     }
 };
 exports.HomeController = HomeController;
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)("pump-expense-summary"),
+    __param(0, (0, common_1.Query)("filterType")),
+    __param(1, (0, common_1.Query)("date")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [home_dto_1.CreateHomeDto]),
-    __metadata("design:returntype", Promise)
-], HomeController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], HomeController.prototype, "getAll", null);
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], HomeController.prototype, "getExpenseSummary", null);
 exports.HomeController = HomeController = __decorate([
     (0, common_1.Controller)("home"),
     __metadata("design:paramtypes", [home_service_1.HomeService])

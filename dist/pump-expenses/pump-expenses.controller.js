@@ -13,16 +13,16 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseController = void 0;
-// src/pump-expense/pump-expense.controller.ts
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const pump_expenses_service_1 = require("./pump-expenses.service");
 const pump_expenses_dto_1 = require("./pump-expenses.dto");
 let PumpExpenseController = class PumpExpenseController {
     constructor(pumpExpenseService) {
         this.pumpExpenseService = pumpExpenseService;
     }
-    create(dto) {
-        return this.pumpExpenseService.create(dto);
+    async create(dto, files) {
+        return this.pumpExpenseService.create(dto, files?.images || []);
     }
     findAll() {
         return this.pumpExpenseService.findAll();
@@ -40,10 +40,12 @@ let PumpExpenseController = class PumpExpenseController {
 exports.PumpExpenseController = PumpExpenseController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: "images", maxCount: 10 }])),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pump_expenses_dto_1.CreatePumpExpenseDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [pump_expenses_dto_1.CreatePumpExpenseDto, Object]),
+    __metadata("design:returntype", Promise)
 ], PumpExpenseController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),

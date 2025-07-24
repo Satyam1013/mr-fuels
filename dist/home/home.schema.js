@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeSchema = exports.Home = void 0;
-// src/home/home.schema.ts
 const mongoose_1 = require("@nestjs/mongoose");
 const home_dto_1 = require("./home.dto");
 let Category = class Category {

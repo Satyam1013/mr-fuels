@@ -1,21 +1,69 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Home } from "./home.schema";
-import { CreateHomeDto } from "./home.dto";
+import {
+  PumpExpense,
+  PumpExpenseDocument,
+} from "../pump-expenses/pump-expenses.schema";
+import { FilterType } from "./home.dto";
+import dayjs from "dayjs";
 
 @Injectable()
 export class HomeService {
   constructor(
-    @InjectModel(Home.name) private readonly homeModel: Model<Home>,
+    @InjectModel(PumpExpense.name)
+    private readonly pumpExpenseModel: Model<PumpExpenseDocument>,
   ) {}
 
-  async create(data: CreateHomeDto) {
-    return this.homeModel.create(data);
-  }
+  async getPumpExpenseByFilter(filterType: FilterType, baseDate: string) {
+    const date = dayjs(baseDate);
 
-  async findAll() {
-    const result = await this.homeModel.find().sort({ createdAt: -1 });
-    return result.length > 0 ? result : 0;
+    let startDate: Date;
+    let endDate: Date;
+
+    if (filterType === FilterType.DAILY) {
+      startDate = date.startOf("day").toDate();
+      endDate = date.endOf("day").toDate();
+    } else if (filterType === FilterType.WEEKLY) {
+      startDate = date.startOf("week").toDate();
+      endDate = date.endOf("week").toDate();
+    } else {
+      // monthly
+      startDate = date.startOf("month").toDate();
+      endDate = date.endOf("month").toDate();
+    }
+
+    const data = await this.pumpExpenseModel.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      { $unwind: "$entries" },
+      {
+        $group: {
+          _id: "$entries.category",
+          totalAmount: { $sum: "$entries.amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          category: "$_id",
+          totalAmount: 1,
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    return {
+      filterType,
+      range: { startDate, endDate },
+      categories: data,
+    };
   }
 }

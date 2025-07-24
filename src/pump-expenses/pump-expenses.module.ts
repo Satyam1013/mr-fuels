@@ -1,4 +1,3 @@
-// src/pump-expense/pump-expense.module.ts
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PumpExpense, PumpExpenseSchema } from "./pump-expenses.schema";
@@ -13,5 +12,6 @@ import { PumpExpenseService } from "./pump-expenses.service";
   ],
   controllers: [PumpExpenseController],
   providers: [PumpExpenseService],
+  exports: [PumpExpenseService, MongooseModule],
 })
 export class PumpExpenseModule {}

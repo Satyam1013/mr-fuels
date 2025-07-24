@@ -1,4 +1,3 @@
-// src/pump-expense/pump-expense.schema.ts
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
@@ -11,6 +10,7 @@ class Entry {
   @Prop({ required: true }) time!: Date;
   @Prop({ required: true }) category!: string;
   @Prop({ required: true }) paymentMode!: string;
+  @Prop() imageUrl!: string;
 }
 
 const EntrySchema = SchemaFactory.createForClass(Entry);

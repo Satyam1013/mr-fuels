@@ -1,18 +1,16 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { HomeService } from "./home.service";
-import { CreateHomeDto } from "./home.dto";
+import { FilterType } from "./home.dto";
 
 @Controller("home")
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
-  @Post()
-  async create(@Body() body: CreateHomeDto) {
-    return this.homeService.create(body);
-  }
-
-  @Get()
-  async getAll() {
-    return this.homeService.findAll();
+  @Get("pump-expense-summary")
+  getExpenseSummary(
+    @Query("filterType") filterType: FilterType,
+    @Query("date") date: string,
+  ) {
+    return this.homeService.getPumpExpenseByFilter(filterType, date);
   }
 }

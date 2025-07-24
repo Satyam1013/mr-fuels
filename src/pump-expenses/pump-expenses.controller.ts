@@ -1,4 +1,3 @@
-// src/pump-expense/pump-expense.controller.ts
 import {
   Body,
   Controller,
@@ -7,7 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFiles,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { PumpExpenseService } from "./pump-expenses.service";
 import {
   CreatePumpExpenseDto,
@@ -19,8 +21,12 @@ export class PumpExpenseController {
   constructor(private readonly pumpExpenseService: PumpExpenseService) {}
 
   @Post()
-  create(@Body() dto: CreatePumpExpenseDto) {
-    return this.pumpExpenseService.create(dto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: "images", maxCount: 10 }]))
+  async create(
+    @Body() dto: CreatePumpExpenseDto,
+    @UploadedFiles() files: { images?: Express.Multer.File[] },
+  ) {
+    return this.pumpExpenseService.create(dto, files?.images || []);
   }
 
   @Get()

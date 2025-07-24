@@ -2,6 +2,7 @@ import {
   IsArray,
   IsDateString,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
@@ -13,6 +14,9 @@ class EntryDto {
   @IsDateString() time!: string;
   @IsString() category!: string;
   @IsString() paymentMode!: string;
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }
 
 export class CreatePumpExpenseDto {

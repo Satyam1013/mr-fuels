@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -6,6 +9,7 @@ import {
   CreatePumpExpenseDto,
   UpdatePumpExpenseDto,
 } from "./pump-expenses.dto";
+import { uploadPdfBufferToCloudinary } from "../utils/cloudinary";
 
 @Injectable()
 export class PumpExpenseService {
@@ -14,8 +18,23 @@ export class PumpExpenseService {
     private readonly pumpExpenseModel: Model<PumpExpenseDocument>,
   ) {}
 
-  async create(dto: CreatePumpExpenseDto) {
-    return this.pumpExpenseModel.create(dto);
+  async create(dto: CreatePumpExpenseDto, images: Express.Multer.File[]) {
+    if (images?.length) {
+      for (let i = 0; i < dto.entries.length; i++) {
+        if (images[i]) {
+          const upload = await uploadPdfBufferToCloudinary(
+            images[i].buffer,
+            images[i].originalname,
+          );
+          dto.entries[i].imageUrl = upload.secure_url;
+        }
+      }
+    }
+
+    return this.pumpExpenseModel.create({
+      date: dto.date,
+      entries: dto.entries,
+    });
   }
 
   async findAll() {

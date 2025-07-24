@@ -1,4 +1,3 @@
-// src/home/home.schema.ts
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { FilterType } from "./home.dto";

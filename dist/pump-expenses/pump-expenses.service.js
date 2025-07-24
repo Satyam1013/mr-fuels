@@ -1,4 +1,6 @@
 "use strict";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -17,12 +19,24 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const pump_expenses_schema_1 = require("./pump-expenses.schema");
+const cloudinary_1 = require("../utils/cloudinary");
 let PumpExpenseService = class PumpExpenseService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
     }
-    async create(dto) {
-        return this.pumpExpenseModel.create(dto);
+    async create(dto, images) {
+        if (images?.length) {
+            for (let i = 0; i < dto.entries.length; i++) {
+                if (images[i]) {
+                    const upload = await (0, cloudinary_1.uploadPdfBufferToCloudinary)(images[i].buffer, images[i].originalname);
+                    dto.entries[i].imageUrl = upload.secure_url;
+                }
+            }
+        }
+        return this.pumpExpenseModel.create({
+            date: dto.date,
+            entries: dto.entries,
+        });
     }
     async findAll() {
         return this.pumpExpenseModel.find().sort({ date: -1 });

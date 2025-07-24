@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseSchema = exports.PumpExpense = void 0;
-// src/pump-expense/pump-expense.schema.ts
 const mongoose_1 = require("@nestjs/mongoose");
 let Entry = class Entry {
 };
@@ -34,6 +33,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Entry.prototype, "paymentMode", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Entry.prototype, "imageUrl", void 0);
 Entry = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], Entry);

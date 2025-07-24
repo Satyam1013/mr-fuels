@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseModule = void 0;
-// src/pump-expense/pump-expense.module.ts
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const pump_expenses_schema_1 = require("./pump-expenses.schema");
@@ -25,5 +24,6 @@ exports.PumpExpenseModule = PumpExpenseModule = __decorate([
         ],
         controllers: [pump_expenses_controller_1.PumpExpenseController],
         providers: [pump_expenses_service_1.PumpExpenseService],
+        exports: [pump_expenses_service_1.PumpExpenseService, mongoose_1.MongooseModule],
     })
 ], PumpExpenseModule);
