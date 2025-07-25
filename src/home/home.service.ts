@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -18,7 +18,7 @@ export class HomeService {
     private readonly pumpExpenseModel: Model<PumpExpenseDocument>,
   ) {}
 
-  async getPumpExpenseByFilter(filterType: FilterType, baseDate: string) {
+  async getAll(filterType: FilterType, baseDate: string) {
     const date = dayjs(baseDate);
 
     let startDate: Date;
@@ -35,26 +35,24 @@ export class HomeService {
       endDate = date.endOf("month").toDate();
     }
 
-    const data = await this.pumpExpenseModel.aggregate([
+    // Existing aggregation
+    const pumpExpenseData = await this.pumpExpenseModel.aggregate([
       {
         $match: {
-          date: {
-            $gte: startDate,
-            $lte: endDate,
-          },
+          date: { $gte: startDate, $lte: endDate },
         },
       },
       { $unwind: "$entries" },
       {
         $group: {
-          _id: "$entries.category",
+          _id: "$entries.title",
           categoryAmount: { $sum: "$entries.amount" },
           count: { $sum: 1 },
         },
       },
       {
         $project: {
-          category: "$_id",
+          title: "$_id",
           categoryAmount: 1,
           count: 1,
           _id: 0,
@@ -62,16 +60,76 @@ export class HomeService {
       },
     ]);
 
-    const totalAmount = data.reduce(
+    const totalAmount = pumpExpenseData.reduce(
       (sum, item) => sum + (item.categoryAmount ?? 0),
       0,
     );
 
-    return {
-      filterType,
-      range: { startDate, endDate },
-      totalAmount,
-      categories: data,
-    };
+    return [
+      {
+        filterType,
+        categories: [
+          {
+            id: 1,
+            name: "Pump Expenses",
+            amount: totalAmount,
+            date: startDate,
+          },
+          {
+            id: 2,
+            name: "Creditors",
+            amount: totalAmount,
+            date: startDate,
+          },
+          {
+            id: 3,
+            name: "Personal Expenses",
+            amount: totalAmount,
+            date: startDate,
+          },
+          {
+            id: 4,
+            name: "UPI Payment",
+            amount: totalAmount,
+            date: startDate,
+          },
+          {
+            id: 5,
+            name: "Swipe Collection",
+            amount: totalAmount,
+            date: startDate,
+          },
+          {
+            id: 6,
+            name: "UPI Payment",
+            amount: totalAmount,
+            date: startDate,
+          },
+        ],
+        sale: {
+          ltr: 20000,
+          amount: 10000,
+        },
+        collection: {
+          ltr: 20000,
+          amount: 10000,
+        },
+        collected: {
+          ltr: 20000,
+          amount: 10000,
+        },
+        deposited: {
+          ltr: 20000,
+          amount: 10000,
+        },
+        diff: {
+          ltr: 0,
+          amount: 0,
+        },
+        salesTarget: 25000,
+        saleLastMonth: 20000,
+        expensesLastMonth: 20,
+      },
+    ];
   }
 }

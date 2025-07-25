@@ -16,8 +16,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeService = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
@@ -29,7 +29,7 @@ let HomeService = class HomeService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
     }
-    async getPumpExpenseByFilter(filterType, baseDate) {
+    async getAll(filterType, baseDate) {
         const date = (0, dayjs_1.default)(baseDate);
         let startDate;
         let endDate;
@@ -45,39 +45,97 @@ let HomeService = class HomeService {
             startDate = date.startOf("month").toDate();
             endDate = date.endOf("month").toDate();
         }
-        const data = await this.pumpExpenseModel.aggregate([
+        // Existing aggregation
+        const pumpExpenseData = await this.pumpExpenseModel.aggregate([
             {
                 $match: {
-                    date: {
-                        $gte: startDate,
-                        $lte: endDate,
-                    },
+                    date: { $gte: startDate, $lte: endDate },
                 },
             },
             { $unwind: "$entries" },
             {
                 $group: {
-                    _id: "$entries.category",
+                    _id: "$entries.title",
                     categoryAmount: { $sum: "$entries.amount" },
                     count: { $sum: 1 },
                 },
             },
             {
                 $project: {
-                    category: "$_id",
+                    title: "$_id",
                     categoryAmount: 1,
                     count: 1,
                     _id: 0,
                 },
             },
         ]);
-        const totalAmount = data.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
-        return {
-            filterType,
-            range: { startDate, endDate },
-            totalAmount,
-            categories: data,
-        };
+        const totalAmount = pumpExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
+        return [
+            {
+                filterType,
+                categories: [
+                    {
+                        id: 1,
+                        name: "Pump Expenses",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                    {
+                        id: 2,
+                        name: "Creditors",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                    {
+                        id: 3,
+                        name: "Personal Expenses",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                    {
+                        id: 4,
+                        name: "UPI Payment",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                    {
+                        id: 5,
+                        name: "Swipe Collection",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                    {
+                        id: 6,
+                        name: "UPI Payment",
+                        amount: totalAmount,
+                        date: startDate,
+                    },
+                ],
+                sale: {
+                    ltr: 20000,
+                    amount: 10000,
+                },
+                collection: {
+                    ltr: 20000,
+                    amount: 10000,
+                },
+                collected: {
+                    ltr: 20000,
+                    amount: 10000,
+                },
+                deposited: {
+                    ltr: 20000,
+                    amount: 10000,
+                },
+                diff: {
+                    ltr: 0,
+                    amount: 0,
+                },
+                salesTarget: 25000,
+                saleLastMonth: 20000,
+                expensesLastMonth: 20,
+            },
+        ];
     }
 };
 exports.HomeService = HomeService;

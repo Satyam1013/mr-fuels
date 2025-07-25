@@ -20,19 +20,19 @@ let HomeController = class HomeController {
     constructor(homeService) {
         this.homeService = homeService;
     }
-    getExpenseSummary(filterType, date) {
-        return this.homeService.getPumpExpenseByFilter(filterType, date);
+    getAll(filterType, date) {
+        return this.homeService.getAll(filterType, date);
     }
 };
 exports.HomeController = HomeController;
 __decorate([
-    (0, common_1.Get)("pump-expense-summary"),
+    (0, common_1.Get)(),
     __param(0, (0, common_1.Query)("filterType")),
     __param(1, (0, common_1.Query)("date")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
-], HomeController.prototype, "getExpenseSummary", null);
+], HomeController.prototype, "getAll", null);
 exports.HomeController = HomeController = __decorate([
     (0, common_1.Controller)("home"),
     __metadata("design:paramtypes", [home_service_1.HomeService])

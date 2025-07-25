@@ -6,11 +6,11 @@ import { FilterType } from "./home.dto";
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
-  @Get("pump-expense-summary")
-  getExpenseSummary(
+  @Get()
+  getAll(
     @Query("filterType") filterType: FilterType,
     @Query("date") date: string,
   ) {
-    return this.homeService.getPumpExpenseByFilter(filterType, date);
+    return this.homeService.getAll(filterType, date);
   }
 }
