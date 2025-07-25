@@ -35,7 +35,6 @@ export class HomeService {
       endDate = date.endOf("month").toDate();
     }
 
-    // Existing aggregation
     const pumpExpenseData = await this.pumpExpenseModel.aggregate([
       {
         $match: {
@@ -60,7 +59,7 @@ export class HomeService {
       },
     ]);
 
-    const totalAmount = pumpExpenseData.reduce(
+    const pumpExpenseTotalAmount = pumpExpenseData.reduce(
       (sum, item) => sum + (item.categoryAmount ?? 0),
       0,
     );
@@ -72,38 +71,27 @@ export class HomeService {
           {
             id: 1,
             name: "Pump Expenses",
-            amount: totalAmount,
-            date: startDate,
+            amount: pumpExpenseTotalAmount,
           },
           {
             id: 2,
             name: "Creditors",
-            amount: totalAmount,
-            date: startDate,
+            amount: pumpExpenseTotalAmount,
           },
           {
             id: 3,
             name: "Personal Expenses",
-            amount: totalAmount,
-            date: startDate,
+            amount: pumpExpenseTotalAmount,
           },
           {
             id: 4,
             name: "UPI Payment",
-            amount: totalAmount,
-            date: startDate,
+            amount: pumpExpenseTotalAmount,
           },
           {
             id: 5,
             name: "Swipe Collection",
-            amount: totalAmount,
-            date: startDate,
-          },
-          {
-            id: 6,
-            name: "UPI Payment",
-            amount: totalAmount,
-            date: startDate,
+            amount: pumpExpenseTotalAmount,
           },
         ],
         sale: {
