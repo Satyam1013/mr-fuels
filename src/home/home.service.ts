@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -28,7 +31,6 @@ export class HomeService {
       startDate = date.startOf("week").toDate();
       endDate = date.endOf("week").toDate();
     } else {
-      // monthly
       startDate = date.startOf("month").toDate();
       endDate = date.endOf("month").toDate();
     }
@@ -46,23 +48,29 @@ export class HomeService {
       {
         $group: {
           _id: "$entries.category",
-          totalAmount: { $sum: "$entries.amount" },
+          categoryAmount: { $sum: "$entries.amount" },
           count: { $sum: 1 },
         },
       },
       {
         $project: {
           category: "$_id",
-          totalAmount: 1,
+          categoryAmount: 1,
           count: 1,
           _id: 0,
         },
       },
     ]);
 
+    const totalAmount = data.reduce(
+      (sum, item) => sum + (item.categoryAmount ?? 0),
+      0,
+    );
+
     return {
       filterType,
       range: { startDate, endDate },
+      totalAmount,
       categories: data,
     };
   }
