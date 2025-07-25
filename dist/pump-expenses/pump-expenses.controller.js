@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const pump_expenses_service_1 = require("./pump-expenses.service");
 const pump_expenses_dto_1 = require("./pump-expenses.dto");
+const home_dto_1 = require("../home/home.dto");
 let PumpExpenseController = class PumpExpenseController {
     constructor(pumpExpenseService) {
         this.pumpExpenseService = pumpExpenseService;
@@ -24,8 +25,8 @@ let PumpExpenseController = class PumpExpenseController {
     async create(dto, files) {
         return this.pumpExpenseService.create(dto, files?.images || []);
     }
-    findAll(date) {
-        return this.pumpExpenseService.findAll(date);
+    findAll(date, filterType) {
+        return this.pumpExpenseService.findAll(date, filterType);
     }
     findOne(id) {
         return this.pumpExpenseService.findById(id);
@@ -50,8 +51,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)("date")),
+    __param(1, (0, common_1.Query)("filterType")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "findAll", null);
 __decorate([

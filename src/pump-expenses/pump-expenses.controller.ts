@@ -16,6 +16,7 @@ import {
   CreatePumpExpenseDto,
   UpdatePumpExpenseDto,
 } from "./pump-expenses.dto";
+import { FilterType } from "../home/home.dto";
 
 @Controller("pump-expense")
 export class PumpExpenseController {
@@ -31,8 +32,11 @@ export class PumpExpenseController {
   }
 
   @Get()
-  findAll(@Query("date") date?: string) {
-    return this.pumpExpenseService.findAll(date);
+  findAll(
+    @Query("date") date?: string,
+    @Query("filterType") filterType?: FilterType,
+  ) {
+    return this.pumpExpenseService.findAll(date, filterType);
   }
 
   @Get(":id")

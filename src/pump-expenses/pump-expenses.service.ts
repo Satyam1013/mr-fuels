@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -9,6 +8,7 @@ import {
 } from "./pump-expenses.dto";
 import { uploadPdfBufferToCloudinary } from "../utils/cloudinary";
 import dayjs from "dayjs";
+import { FilterType } from "../home/home.dto";
 
 @Injectable()
 export class PumpExpenseService {
@@ -36,54 +36,32 @@ export class PumpExpenseService {
     });
   }
 
-  async findAll(dateString?: string) {
-    if (dateString) {
+  async findAll(dateString?: string, filterType?: FilterType) {
+    let startDate: Date | undefined;
+    let endDate: Date | undefined;
+
+    if (dateString && filterType) {
       const date = dayjs(dateString);
-      const startOfDay = date.startOf("day").toDate();
-      const endOfDay = date.endOf("day").toDate();
 
-      const data = await this.pumpExpenseModel.aggregate([
-        {
-          $match: {
-            date: { $gte: startOfDay, $lte: endOfDay },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            date: 1,
-            entries: 1,
-          },
-        },
-        {
-          $group: {
-            _id: "$date",
-            entries: { $push: "$entries" },
-          },
-        },
-        {
-          $project: {
-            date: "$_id",
-            entries: {
-              $reduce: {
-                input: "$entries",
-                initialValue: [],
-                in: { $concatArrays: ["$$value", "$$this"] },
-              },
-            },
-            _id: 0,
-          },
-        },
-      ]);
-
-      return data;
+      if (filterType === FilterType.DAILY) {
+        startDate = date.startOf("day").toDate();
+        endDate = date.endOf("day").toDate();
+      } else if (filterType === FilterType.WEEKLY) {
+        startDate = date.startOf("week").toDate();
+        endDate = date.endOf("week").toDate();
+      } else if (filterType === FilterType.MONTHLY) {
+        startDate = date.startOf("month").toDate();
+        endDate = date.endOf("month").toDate();
+      }
     }
 
-    // No date provided — return all grouped by date
-    const allData = await this.pumpExpenseModel.aggregate([
-      {
-        $sort: { date: -1 },
-      },
+    const matchStage =
+      startDate && endDate
+        ? [{ $match: { date: { $gte: startDate, $lte: endDate } } }]
+        : [];
+
+    const aggregationPipeline = [
+      ...matchStage,
       {
         $project: {
           _id: 0,
@@ -111,11 +89,11 @@ export class PumpExpenseService {
         },
       },
       {
-        $sort: { date: -1 },
+        $sort: { date: -1 as const },
       },
-    ]);
+    ];
 
-    return allData;
+    return this.pumpExpenseModel.aggregate(aggregationPipeline);
   }
 
   async findById(id: string) {

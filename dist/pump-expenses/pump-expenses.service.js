@@ -16,13 +16,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseService = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const pump_expenses_schema_1 = require("./pump-expenses.schema");
 const cloudinary_1 = require("../utils/cloudinary");
 const dayjs_1 = __importDefault(require("dayjs"));
+const home_dto_1 = require("../home/home.dto");
 let PumpExpenseService = class PumpExpenseService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
@@ -41,51 +41,29 @@ let PumpExpenseService = class PumpExpenseService {
             entries: dto.entries,
         });
     }
-    async findAll(dateString) {
-        if (dateString) {
+    async findAll(dateString, filterType) {
+        let startDate;
+        let endDate;
+        if (dateString && filterType) {
             const date = (0, dayjs_1.default)(dateString);
-            const startOfDay = date.startOf("day").toDate();
-            const endOfDay = date.endOf("day").toDate();
-            const data = await this.pumpExpenseModel.aggregate([
-                {
-                    $match: {
-                        date: { $gte: startOfDay, $lte: endOfDay },
-                    },
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        date: 1,
-                        entries: 1,
-                    },
-                },
-                {
-                    $group: {
-                        _id: "$date",
-                        entries: { $push: "$entries" },
-                    },
-                },
-                {
-                    $project: {
-                        date: "$_id",
-                        entries: {
-                            $reduce: {
-                                input: "$entries",
-                                initialValue: [],
-                                in: { $concatArrays: ["$$value", "$$this"] },
-                            },
-                        },
-                        _id: 0,
-                    },
-                },
-            ]);
-            return data;
+            if (filterType === home_dto_1.FilterType.DAILY) {
+                startDate = date.startOf("day").toDate();
+                endDate = date.endOf("day").toDate();
+            }
+            else if (filterType === home_dto_1.FilterType.WEEKLY) {
+                startDate = date.startOf("week").toDate();
+                endDate = date.endOf("week").toDate();
+            }
+            else if (filterType === home_dto_1.FilterType.MONTHLY) {
+                startDate = date.startOf("month").toDate();
+                endDate = date.endOf("month").toDate();
+            }
         }
-        // No date provided — return all grouped by date
-        const allData = await this.pumpExpenseModel.aggregate([
-            {
-                $sort: { date: -1 },
-            },
+        const matchStage = startDate && endDate
+            ? [{ $match: { date: { $gte: startDate, $lte: endDate } } }]
+            : [];
+        const aggregationPipeline = [
+            ...matchStage,
             {
                 $project: {
                     _id: 0,
@@ -115,8 +93,8 @@ let PumpExpenseService = class PumpExpenseService {
             {
                 $sort: { date: -1 },
             },
-        ]);
-        return allData;
+        ];
+        return this.pumpExpenseModel.aggregate(aggregationPipeline);
     }
     async findById(id) {
         const doc = await this.pumpExpenseModel.findById(id);
