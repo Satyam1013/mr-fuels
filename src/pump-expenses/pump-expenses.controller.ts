@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
@@ -30,8 +31,8 @@ export class PumpExpenseController {
   }
 
   @Get()
-  findAll() {
-    return this.pumpExpenseService.findAll();
+  findAll(@Query("date") date?: string) {
+    return this.pumpExpenseService.findAll(date);
   }
 
   @Get(":id")

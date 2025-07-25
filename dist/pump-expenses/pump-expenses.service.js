@@ -11,13 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseService = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const pump_expenses_schema_1 = require("./pump-expenses.schema");
 const cloudinary_1 = require("../utils/cloudinary");
+const dayjs_1 = __importDefault(require("dayjs"));
 let PumpExpenseService = class PumpExpenseService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
@@ -36,8 +41,82 @@ let PumpExpenseService = class PumpExpenseService {
             entries: dto.entries,
         });
     }
-    async findAll() {
-        return this.pumpExpenseModel.find().sort({ date: -1 });
+    async findAll(dateString) {
+        if (dateString) {
+            const date = (0, dayjs_1.default)(dateString);
+            const startOfDay = date.startOf("day").toDate();
+            const endOfDay = date.endOf("day").toDate();
+            const data = await this.pumpExpenseModel.aggregate([
+                {
+                    $match: {
+                        date: { $gte: startOfDay, $lte: endOfDay },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        date: 1,
+                        entries: 1,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$date",
+                        entries: { $push: "$entries" },
+                    },
+                },
+                {
+                    $project: {
+                        date: "$_id",
+                        entries: {
+                            $reduce: {
+                                input: "$entries",
+                                initialValue: [],
+                                in: { $concatArrays: ["$$value", "$$this"] },
+                            },
+                        },
+                        _id: 0,
+                    },
+                },
+            ]);
+            return data;
+        }
+        // No date provided — return all grouped by date
+        const allData = await this.pumpExpenseModel.aggregate([
+            {
+                $sort: { date: -1 },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: 1,
+                    entries: 1,
+                },
+            },
+            {
+                $group: {
+                    _id: "$date",
+                    entries: { $push: "$entries" },
+                },
+            },
+            {
+                $project: {
+                    date: "$_id",
+                    entries: {
+                        $reduce: {
+                            input: "$entries",
+                            initialValue: [],
+                            in: { $concatArrays: ["$$value", "$$this"] },
+                        },
+                    },
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { date: -1 },
+            },
+        ]);
+        return allData;
     }
     async findById(id) {
         const doc = await this.pumpExpenseModel.findById(id);

@@ -24,8 +24,8 @@ let PumpExpenseController = class PumpExpenseController {
     async create(dto, files) {
         return this.pumpExpenseService.create(dto, files?.images || []);
     }
-    findAll() {
-        return this.pumpExpenseService.findAll();
+    findAll(date) {
+        return this.pumpExpenseService.findAll(date);
     }
     findOne(id) {
         return this.pumpExpenseService.findById(id);
@@ -49,8 +49,9 @@ __decorate([
 ], PumpExpenseController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("date")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "findAll", null);
 __decorate([
