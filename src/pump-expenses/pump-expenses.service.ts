@@ -7,8 +7,8 @@ import {
   UpdatePumpExpenseDto,
 } from "./pump-expenses.dto";
 import { uploadPdfBufferToCloudinary } from "../utils/cloudinary";
-import dayjs from "dayjs";
 import { FilterType } from "../home/home.dto";
+import { getDateRange } from "../utils/date";
 
 @Injectable()
 export class PumpExpenseService {
@@ -41,18 +41,7 @@ export class PumpExpenseService {
     let endDate: Date | undefined;
 
     if (dateString && filterType) {
-      const date = dayjs(dateString);
-
-      if (filterType === FilterType.DAILY) {
-        startDate = date.startOf("day").toDate();
-        endDate = date.endOf("day").toDate();
-      } else if (filterType === FilterType.WEEKLY) {
-        startDate = date.startOf("week").toDate();
-        endDate = date.endOf("week").toDate();
-      } else if (filterType === FilterType.MONTHLY) {
-        startDate = date.startOf("month").toDate();
-        endDate = date.endOf("month").toDate();
-      }
+      ({ startDate, endDate } = getDateRange(filterType, dateString));
     }
 
     const matchStage =

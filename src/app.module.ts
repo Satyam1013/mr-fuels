@@ -9,6 +9,7 @@ import { PlanModule } from "./plan/plan.module";
 import { SuperAdminModule } from "./super-admin/super-admin.module";
 import { HomeModule } from "./home/home.module";
 import { PumpExpenseModule } from "./pump-expenses/pump-expenses.module";
+import { PersonalExpenseModule } from "./personal-expenses/personal-expenses.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PumpExpenseModule } from "./pump-expenses/pump-expenses.module";
     ScheduleModule.forRoot(),
     SuperAdminModule,
     PumpExpenseModule,
+    PersonalExpenseModule,
     AdminModule,
     AuthModule,
     PlanModule,

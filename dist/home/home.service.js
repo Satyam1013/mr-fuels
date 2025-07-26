@@ -11,64 +11,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeService = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const pump_expenses_schema_1 = require("../pump-expenses/pump-expenses.schema");
-const home_dto_1 = require("./home.dto");
-const dayjs_1 = __importDefault(require("dayjs"));
+const date_1 = require("../utils/date");
+const pump_expense_1 = require("../utils/pump-expense");
 let HomeService = class HomeService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
     }
     async getAll(filterType, baseDate) {
-        const date = (0, dayjs_1.default)(baseDate);
-        let startDate;
-        let endDate;
-        if (filterType === home_dto_1.FilterType.DAILY) {
-            startDate = date.startOf("day").toDate();
-            endDate = date.endOf("day").toDate();
-        }
-        else if (filterType === home_dto_1.FilterType.WEEKLY) {
-            startDate = date.startOf("week").toDate();
-            endDate = date.endOf("week").toDate();
-        }
-        else {
-            startDate = date.startOf("month").toDate();
-            endDate = date.endOf("month").toDate();
-        }
-        const pumpExpenseData = await this.pumpExpenseModel.aggregate([
-            {
-                $match: {
-                    date: { $gte: startDate, $lte: endDate },
-                },
-            },
-            { $unwind: "$entries" },
-            {
-                $group: {
-                    _id: "$entries.title",
-                    categoryAmount: { $sum: "$entries.amount" },
-                    count: { $sum: 1 },
-                },
-            },
-            {
-                $project: {
-                    title: "$_id",
-                    categoryAmount: 1,
-                    count: 1,
-                    _id: 0,
-                },
-            },
-        ]);
-        const pumpExpenseTotalAmount = pumpExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
+        const { startDate, endDate } = (0, date_1.getDateRange)(filterType, baseDate);
+        const { pumpExpenseTotalAmount } = await (0, pump_expense_1.getPumpExpenseStats)(this.pumpExpenseModel, startDate, endDate);
         return [
             {
                 filterType,
