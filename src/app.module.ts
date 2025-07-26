@@ -10,6 +10,7 @@ import { SuperAdminModule } from "./super-admin/super-admin.module";
 import { HomeModule } from "./home/home.module";
 import { PumpExpenseModule } from "./pump-expenses/pump-expenses.module";
 import { PersonalExpenseModule } from "./personal-expenses/personal-expenses.module";
+import { CreditorModule } from "./creditors/creditors.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PersonalExpenseModule } from "./personal-expenses/personal-expenses.mod
     AuthModule,
     PlanModule,
     HomeModule,
+    CreditorModule,
   ],
   providers: [],
 })
