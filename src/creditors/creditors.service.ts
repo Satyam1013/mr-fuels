@@ -1,19 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, PipelineStage, Types } from "mongoose";
 import { Creditor, CreditorDocument } from "./creditors.schema";
-import { CreateCreditorDto, UpdateCreditorDto } from "./creditors.dto";
+import {
+  CreateCreditorDto,
+  NormalizedCreditRecord,
+  UpdateCreditorDto,
+} from "./creditors.dto";
 import { FilterType } from "../home/home.dto";
 import { getDateRange } from "../utils/date";
+import {
+  CreditorContact,
+  CreditorContactDocument,
+} from "../creditor-contact/creditor-contact.schema";
 
 @Injectable()
 export class CreditorService {
   constructor(
     @InjectModel(Creditor.name)
     private readonly creditorModel: Model<CreditorDocument>,
+
+    @InjectModel(CreditorContact.name)
+    private readonly creditorContactModel: Model<CreditorContactDocument>,
   ) {}
 
-  private computeTotals(records: CreateCreditorDto["records"]) {
+  private computeTotals(records: NormalizedCreditRecord[]) {
     const totalCreditGiven = records
       .filter((r) => r.type === "credit")
       .reduce((sum, r) => sum + r.amount, 0);
@@ -33,41 +46,39 @@ export class CreditorService {
   }
 
   async create(dto: CreateCreditorDto) {
+    const creditorContact = await this.creditorContactModel.findById(
+      dto.creditorContactId,
+    );
+    if (!creditorContact) {
+      throw new NotFoundException("Creditor contact not found");
+    }
+
+    const creditorObjectId = new Types.ObjectId(dto.creditorContactId);
     const existing = await this.creditorModel.findOne({
-      creditorContactId: dto.creditorContactId,
+      creditorContactId: creditorObjectId,
     });
 
-    let totalCreditGiven = 0;
-    let totalCreditLeft = 0;
-
-    // Convert string dates to Date objects and calculate totals
-    const normalizedRecords = dto.records.map((record) => {
-      if (record.type === "credit") {
-        totalCreditGiven += record.amount;
-        totalCreditLeft += record.amount;
-      } else if (record.type === "return") {
-        totalCreditLeft -= record.amount;
-      }
-
-      return {
+    const normalizedRecords: NormalizedCreditRecord[] = dto.records.map(
+      (record) => ({
         ...record,
         time: new Date(record.time),
-      };
-    });
+      }),
+    );
+
+    const { totalCreditGiven, totalCreditLeft } =
+      this.computeTotals(normalizedRecords);
 
     if (existing) {
       existing.records.push(...normalizedRecords);
       existing.totalCreditGiven += totalCreditGiven;
       existing.totalCreditLeft += totalCreditLeft;
-      existing.date = new Date();
       return await existing.save();
     } else {
       return await this.creditorModel.create({
-        creditorContactId: new Types.ObjectId(dto.creditorContactId),
+        creditorContactId: creditorObjectId,
         records: normalizedRecords,
         totalCreditGiven,
         totalCreditLeft,
-        date: new Date(),
       });
     }
   }
@@ -80,43 +91,132 @@ export class CreditorService {
       ({ startDate, endDate } = getDateRange(filterType, dateString));
     }
 
-    const matchStage =
-      startDate && endDate
-        ? [{ $match: { "records.time": { $gte: startDate, $lte: endDate } } }]
-        : [];
+    const pipeline: PipelineStage[] = [
+      { $unwind: "$records" },
 
-    const aggregationPipeline = [
-      ...matchStage,
+      // Filter by record time
+      ...(startDate && endDate
+        ? [
+            {
+              $match: {
+                "records.time": {
+                  $gte: startDate,
+                  $lte: endDate,
+                },
+              },
+            },
+          ]
+        : []),
+
+      // Join with creditor contacts
+      {
+        $lookup: {
+          from: "creditorcontacts",
+          localField: "creditorContactId",
+          foreignField: "_id",
+          as: "contact",
+        },
+      },
+      { $unwind: "$contact" },
+
+      // Project required fields
+      {
+        $project: {
+          creditorId: "$_id",
+          name: "$contact.name",
+          number: "$contact.number",
+          amount: "$records.amount",
+          time: "$records.time",
+          type: "$records.type",
+          paidType: "$records.paidType",
+          imgUrl: "$records.imgUrl",
+          details: "$records.details",
+          dateOnly: {
+            $dateToString: { format: "%Y-%m-%d", date: "$records.time" },
+          },
+        },
+      },
+
+      // Group by date and push only records (no totals)
+      {
+        $group: {
+          _id: "$dateOnly",
+          records: {
+            $push: {
+              creditorId: "$creditorId",
+              name: "$name",
+              number: "$number",
+              amount: "$amount",
+              time: "$time",
+              type: "$type",
+              paidType: "$paidType",
+              details: "$details",
+              imgUrl: "$imgUrl",
+            },
+          },
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          records: 1,
+        },
+      },
+    ];
+
+    return this.creditorModel.aggregate(pipeline);
+  }
+
+  async getCreditSummary(dateString: string, filterType: FilterType) {
+    const { startDate, endDate } = getDateRange(filterType, dateString);
+
+    const pipeline: PipelineStage[] = [
       { $unwind: "$records" },
       {
-        $match:
-          startDate && endDate
-            ? { "records.time": { $gte: startDate, $lte: endDate } }
-            : {},
+        $match: {
+          "records.time": {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
       },
       {
         $group: {
-          _id: "$_id",
-          date: { $first: "$date" },
-          totalCreditGiven: { $first: "$totalCreditGiven" },
-          totalCreditLeft: { $first: "$totalCreditLeft" },
-          records: { $push: "$records" },
+          _id: null,
+          totalCreditGiven: {
+            $sum: {
+              $cond: [
+                { $eq: ["$records.type", "credit"] },
+                "$records.amount",
+                0,
+              ],
+            },
+          },
+          totalCreditReturned: {
+            $sum: {
+              $cond: [
+                { $eq: ["$records.type", "return"] },
+                "$records.amount",
+                0,
+              ],
+            },
+          },
         },
       },
       {
         $project: {
           _id: 0,
-          id: "$_id",
-          date: 1,
           totalCreditGiven: 1,
-          totalCreditLeft: 1,
-          records: 1,
+          totalCreditLeft: {
+            $subtract: ["$totalCreditGiven", "$totalCreditReturned"],
+          },
         },
       },
-      { $sort: { date: -1 } as const },
     ];
 
-    return this.creditorModel.aggregate(aggregationPipeline);
+    const [result] = await this.creditorModel.aggregate(pipeline);
+    return result || { totalCreditGiven: 0, totalCreditLeft: 0 };
   }
 
   async findById(id: string) {
@@ -126,13 +226,23 @@ export class CreditorService {
   }
 
   async update(id: string, dto: UpdateCreditorDto) {
-    const { totalCreditGiven, totalCreditLeft, date } = this.computeTotals(
-      dto.records,
-    );
+    const normalizedRecords = dto.records.map((record) => ({
+      ...record,
+      time: new Date(record.time),
+    }));
+
+    const { totalCreditGiven, totalCreditLeft, date } =
+      this.computeTotals(normalizedRecords);
 
     const updated = await this.creditorModel.findByIdAndUpdate(
       id,
-      { ...dto, totalCreditGiven, totalCreditLeft, date },
+      {
+        ...dto,
+        records: normalizedRecords,
+        totalCreditGiven,
+        totalCreditLeft,
+        date,
+      },
       { new: true },
     );
 

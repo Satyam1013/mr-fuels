@@ -27,6 +27,13 @@ let CreditorController = class CreditorController {
         const { filterType, date } = query;
         return this.creditorService.findAll(date, filterType);
     }
+    getCreditSummary(query) {
+        const { filterType, date } = query;
+        if (!filterType || !date) {
+            throw new common_1.BadRequestException("Both filterType and date are required");
+        }
+        return this.creditorService.getCreditSummary(date, filterType);
+    }
     findById(id) {
         return this.creditorService.findById(id);
     }
@@ -52,6 +59,13 @@ __decorate([
     __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("/summary"),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto]),
+    __metadata("design:returntype", void 0)
+], CreditorController.prototype, "getCreditSummary", null);
 __decorate([
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),

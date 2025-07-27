@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -28,6 +29,15 @@ export class CreditorController {
   findAll(@Query() query: GetCreditorsQueryDto) {
     const { filterType, date } = query;
     return this.creditorService.findAll(date, filterType);
+  }
+
+  @Get("/summary")
+  getCreditSummary(@Query() query: GetCreditorsQueryDto) {
+    const { filterType, date } = query;
+    if (!filterType || !date) {
+      throw new BadRequestException("Both filterType and date are required");
+    }
+    return this.creditorService.getCreditSummary(date, filterType);
   }
 
   @Get(":id")

@@ -54,3 +54,12 @@ export class GetCreditorsQueryDto {
   @IsString()
   date?: string;
 }
+
+export type NormalizedCreditRecord = {
+  amount: number;
+  time: Date;
+  type: "credit" | "return";
+  imgUrl: string;
+  details: string;
+  paidType: "cash" | "account";
+};

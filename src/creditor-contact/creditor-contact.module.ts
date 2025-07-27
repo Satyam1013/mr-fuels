@@ -15,5 +15,6 @@ import { CreditorContactController } from "./creditor-contact.controller";
   ],
   controllers: [CreditorContactController],
   providers: [CreditorContactService],
+  exports: [CreditorContactService, MongooseModule],
 })
 export class CreditorContactModule {}

@@ -24,5 +24,6 @@ exports.CreditorContactModule = CreditorContactModule = __decorate([
         ],
         controllers: [creditor_contact_controller_1.CreditorContactController],
         providers: [creditor_contact_service_1.CreditorContactService],
+        exports: [creditor_contact_service_1.CreditorContactService, mongoose_1.MongooseModule],
     })
 ], CreditorContactModule);

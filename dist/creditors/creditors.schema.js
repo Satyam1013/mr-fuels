@@ -26,10 +26,6 @@ __decorate([
 ], Creditor.prototype, "creditorContactId", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
-    __metadata("design:type", Date)
-], Creditor.prototype, "date", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Creditor.prototype, "totalCreditGiven", void 0);
 __decorate([
@@ -39,6 +35,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)([
         {
+            _id: false,
             amount: Number,
             time: Date,
             type: { type: String, enum: ["credit", "return"] },

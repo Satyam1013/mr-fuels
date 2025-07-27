@@ -14,9 +14,6 @@ export class Creditor {
   creditorContactId!: Types.ObjectId;
 
   @Prop()
-  date!: Date;
-
-  @Prop()
   totalCreditGiven!: number;
 
   @Prop()
@@ -24,6 +21,7 @@ export class Creditor {
 
   @Prop([
     {
+      _id: false,
       amount: Number,
       time: Date,
       type: { type: String, enum: ["credit", "return"] },
