@@ -1,16 +1,25 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export type CreditorDocument = Creditor & Document;
 
 @Schema({ timestamps: true })
 export class Creditor {
-  @Prop({ required: true }) date!: Date;
+  @Prop({
+    type: Types.ObjectId,
+    ref: "CreditorContact",
+    required: true,
+    unique: true,
+  })
+  creditorContactId!: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop()
+  date!: Date;
+
+  @Prop()
   totalCreditGiven!: number;
 
-  @Prop({ required: true })
+  @Prop()
   totalCreditLeft!: number;
 
   @Prop([

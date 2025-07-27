@@ -6,24 +6,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PersonalExpenseModule = void 0;
+exports.CreditorContactModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const personal_expenses_schema_1 = require("./personal-expenses.schema");
-const personal_expenses_controller_1 = require("./personal-expenses.controller");
-const personal_expenses_service_1 = require("./personal-expenses.service");
-let PersonalExpenseModule = class PersonalExpenseModule {
+const creditor_contact_schema_1 = require("./creditor-contact.schema");
+const creditor_contact_service_1 = require("./creditor-contact.service");
+const creditor_contact_controller_1 = require("./creditor-contact.controller");
+let CreditorContactModule = class CreditorContactModule {
 };
-exports.PersonalExpenseModule = PersonalExpenseModule;
-exports.PersonalExpenseModule = PersonalExpenseModule = __decorate([
+exports.CreditorContactModule = CreditorContactModule;
+exports.CreditorContactModule = CreditorContactModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: personal_expenses_schema_1.PersonalExpense.name, schema: personal_expenses_schema_1.PersonalExpenseSchema },
+                { name: creditor_contact_schema_1.CreditorContact.name, schema: creditor_contact_schema_1.CreditorContactSchema },
             ]),
         ],
-        controllers: [personal_expenses_controller_1.PersonalExpenseController],
-        providers: [personal_expenses_service_1.PersonalExpenseService],
-        exports: [personal_expenses_service_1.PersonalExpenseService, mongoose_1.MongooseModule],
+        controllers: [creditor_contact_controller_1.CreditorContactController],
+        providers: [creditor_contact_service_1.CreditorContactService],
     })
-], PersonalExpenseModule);
+], CreditorContactModule);

@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  InternalServerErrorException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Creditor, CreditorDocument } from "./creditors.schema";
 import { CreateCreditorDto, UpdateCreditorDto } from "./creditors.dto";
 import { FilterType } from "../home/home.dto";
@@ -17,16 +13,65 @@ export class CreditorService {
     private readonly creditorModel: Model<CreditorDocument>,
   ) {}
 
+  private computeTotals(records: CreateCreditorDto["records"]) {
+    const totalCreditGiven = records
+      .filter((r) => r.type === "credit")
+      .reduce((sum, r) => sum + r.amount, 0);
+
+    const totalReturned = records
+      .filter((r) => r.type === "return")
+      .reduce((sum, r) => sum + r.amount, 0);
+
+    const totalCreditLeft = totalCreditGiven - totalReturned;
+
+    const date =
+      records?.length > 0
+        ? new Date(Math.max(...records.map((r) => new Date(r.time).getTime())))
+        : new Date();
+
+    return { totalCreditGiven, totalCreditLeft, date };
+  }
+
   async create(dto: CreateCreditorDto) {
-    try {
-      return await this.creditorModel.create(dto);
-    } catch (err) {
-      if (err instanceof Error) {
-        throw new InternalServerErrorException("Creation failed", err.message);
+    const existing = await this.creditorModel.findOne({
+      creditorContactId: dto.creditorContactId,
+    });
+
+    let totalCreditGiven = 0;
+    let totalCreditLeft = 0;
+
+    // Convert string dates to Date objects and calculate totals
+    const normalizedRecords = dto.records.map((record) => {
+      if (record.type === "credit") {
+        totalCreditGiven += record.amount;
+        totalCreditLeft += record.amount;
+      } else if (record.type === "return") {
+        totalCreditLeft -= record.amount;
       }
-      throw new InternalServerErrorException("Creation failed");
+
+      return {
+        ...record,
+        time: new Date(record.time),
+      };
+    });
+
+    if (existing) {
+      existing.records.push(...normalizedRecords);
+      existing.totalCreditGiven += totalCreditGiven;
+      existing.totalCreditLeft += totalCreditLeft;
+      existing.date = new Date();
+      return await existing.save();
+    } else {
+      return await this.creditorModel.create({
+        creditorContactId: new Types.ObjectId(dto.creditorContactId),
+        records: normalizedRecords,
+        totalCreditGiven,
+        totalCreditLeft,
+        date: new Date(),
+      });
     }
   }
+
   async findAll(dateString?: string, filterType?: FilterType) {
     let startDate: Date | undefined;
     let endDate: Date | undefined;
@@ -81,9 +126,16 @@ export class CreditorService {
   }
 
   async update(id: string, dto: UpdateCreditorDto) {
-    const updated = await this.creditorModel.findByIdAndUpdate(id, dto, {
-      new: true,
-    });
+    const { totalCreditGiven, totalCreditLeft, date } = this.computeTotals(
+      dto.records,
+    );
+
+    const updated = await this.creditorModel.findByIdAndUpdate(
+      id,
+      { ...dto, totalCreditGiven, totalCreditLeft, date },
+      { new: true },
+    );
+
     if (!updated) throw new NotFoundException("Creditor not found");
     return updated;
   }

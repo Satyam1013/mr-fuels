@@ -6,24 +6,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PumpExpenseModule = void 0;
+exports.CreditorModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const pump_expenses_schema_1 = require("./pump-expenses.schema");
-const pump_expenses_controller_1 = require("./pump-expenses.controller");
-const pump_expenses_service_1 = require("./pump-expenses.service");
-let PumpExpenseModule = class PumpExpenseModule {
+const creditors_schema_1 = require("./creditors.schema");
+const creditors_controller_1 = require("./creditors.controller");
+const creditors_service_1 = require("./creditors.service");
+let CreditorModule = class CreditorModule {
 };
-exports.PumpExpenseModule = PumpExpenseModule;
-exports.PumpExpenseModule = PumpExpenseModule = __decorate([
+exports.CreditorModule = CreditorModule;
+exports.CreditorModule = CreditorModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: pump_expenses_schema_1.PumpExpense.name, schema: pump_expenses_schema_1.PumpExpenseSchema },
+                { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
             ]),
         ],
-        controllers: [pump_expenses_controller_1.PumpExpenseController],
-        providers: [pump_expenses_service_1.PumpExpenseService],
-        exports: [pump_expenses_service_1.PumpExpenseService, mongoose_1.MongooseModule],
+        controllers: [creditors_controller_1.CreditorController],
+        providers: [creditors_service_1.CreditorService],
     })
-], PumpExpenseModule);
+], CreditorModule);

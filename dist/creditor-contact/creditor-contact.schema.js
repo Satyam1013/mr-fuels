@@ -9,16 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PersonalExpenseController = void 0;
-const common_1 = require("@nestjs/common");
-const personal_expenses_service_1 = require("./personal-expenses.service");
-let PersonalExpenseController = class PersonalExpenseController {
-    constructor(personalExpenseService) {
-        this.personalExpenseService = personalExpenseService;
-    }
+exports.CreditorContactSchema = exports.CreditorContact = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let CreditorContact = class CreditorContact {
 };
-exports.PersonalExpenseController = PersonalExpenseController;
-exports.PersonalExpenseController = PersonalExpenseController = __decorate([
-    (0, common_1.Controller)("personal-expense"),
-    __metadata("design:paramtypes", [personal_expenses_service_1.PersonalExpenseService])
-], PersonalExpenseController);
+exports.CreditorContact = CreditorContact;
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], CreditorContact.prototype, "name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    __metadata("design:type", String)
+], CreditorContact.prototype, "number", void 0);
+exports.CreditorContact = CreditorContact = __decorate([
+    (0, mongoose_1.Schema)({ timestamps: true })
+], CreditorContact);
+exports.CreditorContactSchema = mongoose_1.SchemaFactory.createForClass(CreditorContact);

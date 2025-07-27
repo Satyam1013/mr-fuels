@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetCreditorsQueryDto = exports.UpdateCreditorDto = exports.CreateCreditorDto = exports.CreditRecordDto = void 0;
+exports.UpdateCreditorDto = exports.GetCreditorsQueryDto = exports.CreateCreditorDto = exports.CreditRecordDto = void 0;
 const class_validator_1 = require("class-validator");
 const home_dto_1 = require("../home/home.dto");
 class CreditRecordDto {
@@ -43,24 +43,21 @@ class CreateCreditorDto {
 }
 exports.CreateCreditorDto = CreateCreditorDto;
 __decorate([
-    (0, class_validator_1.IsMongoId)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateCreditorDto.prototype, "creditorContactId", void 0);
+], CreateCreditorDto.prototype, "date", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateCreditorDto.prototype, "totalCreditGiven", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateCreditorDto.prototype, "totalCreditLeft", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], CreateCreditorDto.prototype, "records", void 0);
-class UpdateCreditorDto {
-}
-exports.UpdateCreditorDto = UpdateCreditorDto;
-__decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], UpdateCreditorDto.prototype, "creditorContactId", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], UpdateCreditorDto.prototype, "records", void 0);
 class GetCreditorsQueryDto {
 }
 exports.GetCreditorsQueryDto = GetCreditorsQueryDto;
@@ -74,3 +71,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], GetCreditorsQueryDto.prototype, "date", void 0);
+class UpdateCreditorDto extends CreateCreditorDto {
+}
+exports.UpdateCreditorDto = UpdateCreditorDto;

@@ -22,54 +22,15 @@ let CreditorService = class CreditorService {
     constructor(creditorModel) {
         this.creditorModel = creditorModel;
     }
-    computeTotals(records) {
-        const totalCreditGiven = records
-            .filter((r) => r.type === "credit")
-            .reduce((sum, r) => sum + r.amount, 0);
-        const totalReturned = records
-            .filter((r) => r.type === "return")
-            .reduce((sum, r) => sum + r.amount, 0);
-        const totalCreditLeft = totalCreditGiven - totalReturned;
-        const date = records?.length > 0
-            ? new Date(Math.max(...records.map((r) => new Date(r.time).getTime())))
-            : new Date();
-        return { totalCreditGiven, totalCreditLeft, date };
-    }
     async create(dto) {
-        const existing = await this.creditorModel.findOne({
-            creditorContactId: dto.creditorContactId,
-        });
-        let totalCreditGiven = 0;
-        let totalCreditLeft = 0;
-        // Convert string dates to Date objects and calculate totals
-        const normalizedRecords = dto.records.map((record) => {
-            if (record.type === "credit") {
-                totalCreditGiven += record.amount;
-                totalCreditLeft += record.amount;
-            }
-            else if (record.type === "return") {
-                totalCreditLeft -= record.amount;
-            }
-            return {
-                ...record,
-                time: new Date(record.time),
-            };
-        });
-        if (existing) {
-            existing.records.push(...normalizedRecords);
-            existing.totalCreditGiven += totalCreditGiven;
-            existing.totalCreditLeft += totalCreditLeft;
-            existing.date = new Date();
-            return await existing.save();
+        try {
+            return await this.creditorModel.create(dto);
         }
-        else {
-            return await this.creditorModel.create({
-                creditorContactId: new mongoose_2.Types.ObjectId(dto.creditorContactId),
-                records: normalizedRecords,
-                totalCreditGiven,
-                totalCreditLeft,
-                date: new Date(),
-            });
+        catch (err) {
+            if (err instanceof Error) {
+                throw new common_1.InternalServerErrorException("Creation failed", err.message);
+            }
+            throw new common_1.InternalServerErrorException("Creation failed");
         }
     }
     async findAll(dateString, filterType) {
@@ -119,8 +80,9 @@ let CreditorService = class CreditorService {
         return creditor;
     }
     async update(id, dto) {
-        const { totalCreditGiven, totalCreditLeft, date } = this.computeTotals(dto.records);
-        const updated = await this.creditorModel.findByIdAndUpdate(id, { ...dto, totalCreditGiven, totalCreditLeft, date }, { new: true });
+        const updated = await this.creditorModel.findByIdAndUpdate(id, dto, {
+            new: true,
+        });
         if (!updated)
             throw new common_1.NotFoundException("Creditor not found");
         return updated;

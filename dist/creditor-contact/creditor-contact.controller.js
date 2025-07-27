@@ -12,73 +12,67 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PumpExpenseController = void 0;
+exports.CreditorContactController = void 0;
 const common_1 = require("@nestjs/common");
-const platform_express_1 = require("@nestjs/platform-express");
-const pump_expenses_service_1 = require("./pump-expenses.service");
-const pump_expenses_dto_1 = require("./pump-expenses.dto");
-const home_dto_1 = require("../home/home.dto");
-let PumpExpenseController = class PumpExpenseController {
-    constructor(pumpExpenseService) {
-        this.pumpExpenseService = pumpExpenseService;
+const creditor_contact_service_1 = require("./creditor-contact.service");
+const creditor_contact_dto_1 = require("./creditor-contact.dto");
+let CreditorContactController = class CreditorContactController {
+    constructor(contactService) {
+        this.contactService = contactService;
     }
-    async create(dto, files) {
-        return this.pumpExpenseService.create(dto, files?.images || []);
+    create(dto) {
+        return this.contactService.create(dto);
     }
-    findAll(date, filterType) {
-        return this.pumpExpenseService.findAll(date, filterType);
+    findAll() {
+        return this.contactService.findAll();
     }
-    findOne(id) {
-        return this.pumpExpenseService.findById(id);
+    getById(id) {
+        return this.contactService.getById(id);
     }
     update(id, dto) {
-        return this.pumpExpenseService.update(id, dto);
+        return this.contactService.update(id, dto);
     }
-    remove(id) {
-        return this.pumpExpenseService.delete(id);
+    delete(id) {
+        return this.contactService.delete(id);
     }
 };
-exports.PumpExpenseController = PumpExpenseController;
+exports.CreditorContactController = CreditorContactController;
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: "images", maxCount: 10 }])),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pump_expenses_dto_1.CreatePumpExpenseDto, Object]),
-    __metadata("design:returntype", Promise)
-], PumpExpenseController.prototype, "create", null);
+    __metadata("design:paramtypes", [creditor_contact_dto_1.CreateCreditorContactDto]),
+    __metadata("design:returntype", void 0)
+], CreditorContactController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("date")),
-    __param(1, (0, common_1.Query)("filterType")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], PumpExpenseController.prototype, "findAll", null);
+], CreditorContactController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], PumpExpenseController.prototype, "findOne", null);
+], CreditorContactController.prototype, "getById", null);
 __decorate([
     (0, common_1.Patch)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, pump_expenses_dto_1.UpdatePumpExpenseDto]),
+    __metadata("design:paramtypes", [String, creditor_contact_dto_1.UpdateCreditorContactDto]),
     __metadata("design:returntype", void 0)
-], PumpExpenseController.prototype, "update", null);
+], CreditorContactController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], PumpExpenseController.prototype, "remove", null);
-exports.PumpExpenseController = PumpExpenseController = __decorate([
-    (0, common_1.Controller)("pump-expense"),
-    __metadata("design:paramtypes", [pump_expenses_service_1.PumpExpenseService])
-], PumpExpenseController);
+], CreditorContactController.prototype, "delete", null);
+exports.CreditorContactController = CreditorContactController = __decorate([
+    (0, common_1.Controller)("creditor-contacts"),
+    __metadata("design:paramtypes", [creditor_contact_service_1.CreditorContactService])
+], CreditorContactController);

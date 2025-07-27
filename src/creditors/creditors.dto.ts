@@ -2,9 +2,10 @@ import {
   IsArray,
   IsDateString,
   IsEnum,
-  IsNumber,
   IsOptional,
   IsString,
+  IsNumber,
+  IsMongoId,
 } from "class-validator";
 import { FilterType } from "../home/home.dto";
 
@@ -29,13 +30,16 @@ export class CreditRecordDto {
 }
 
 export class CreateCreditorDto {
-  @IsDateString() date!: string;
+  @IsMongoId()
+  creditorContactId!: string;
 
-  @IsNumber()
-  totalCreditGiven!: number;
+  @IsArray()
+  records!: CreditRecordDto[];
+}
 
-  @IsNumber()
-  totalCreditLeft!: number;
+export class UpdateCreditorDto {
+  @IsMongoId()
+  creditorContactId!: string;
 
   @IsArray()
   records!: CreditRecordDto[];
@@ -50,5 +54,3 @@ export class GetCreditorsQueryDto {
   @IsString()
   date?: string;
 }
-
-export class UpdateCreditorDto extends CreateCreditorDto {}

@@ -11,6 +11,7 @@ import { HomeModule } from "./home/home.module";
 import { PumpExpenseModule } from "./pump-expenses/pump-expenses.module";
 import { PersonalExpenseModule } from "./personal-expenses/personal-expenses.module";
 import { CreditorModule } from "./creditors/creditors.module";
+import { CreditorContactModule } from "./creditor-contact/creditor-contact.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CreditorModule } from "./creditors/creditors.module";
     SuperAdminModule,
     PumpExpenseModule,
     PersonalExpenseModule,
+    CreditorContactModule,
     AdminModule,
     AuthModule,
     PlanModule,
