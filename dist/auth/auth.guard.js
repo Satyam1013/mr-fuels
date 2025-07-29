@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -22,7 +23,10 @@ let AuthGuard = class AuthGuard {
         this.reflector = reflector;
     }
     canActivate(context) {
-        const isPublic = this.reflector.get("isPublic", context.getHandler());
+        const isPublic = this.reflector.getAllAndOverride("isPublic", [
+            context.getHandler(),
+            context.getClass(),
+        ]);
         if (isPublic)
             return true;
         const request = context.switchToHttp().getRequest();
@@ -37,7 +41,7 @@ let AuthGuard = class AuthGuard {
             return true;
         }
         catch {
-            throw new common_1.UnauthorizedException("Invalid token");
+            throw new common_1.UnauthorizedException("Invalid or expired token");
         }
     }
 };

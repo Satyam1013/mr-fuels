@@ -16,15 +16,18 @@ exports.CreditorContactController = void 0;
 const common_1 = require("@nestjs/common");
 const creditor_contact_service_1 = require("./creditor-contact.service");
 const creditor_contact_dto_1 = require("./creditor-contact.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
+const auth_guard_1 = require("../auth/auth.guard");
 let CreditorContactController = class CreditorContactController {
     constructor(contactService) {
         this.contactService = contactService;
     }
-    create(dto) {
-        return this.contactService.create(dto);
+    create(dto, pumpId) {
+        return this.contactService.create(dto, pumpId);
     }
-    findAll() {
-        return this.contactService.findAll();
+    findAll(pumpId) {
+        return this.contactService.findAll(pumpId);
     }
     getById(id) {
         return this.contactService.getById(id);
@@ -40,14 +43,16 @@ exports.CreditorContactController = CreditorContactController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditor_contact_dto_1.CreateCreditorContactDto]),
+    __metadata("design:paramtypes", [creditor_contact_dto_1.CreateCreditorContactDto, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "findAll", null);
 __decorate([
@@ -73,6 +78,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "delete", null);
 exports.CreditorContactController = CreditorContactController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("creditor-contacts"),
     __metadata("design:paramtypes", [creditor_contact_service_1.CreditorContactService])
 ], CreditorContactController);

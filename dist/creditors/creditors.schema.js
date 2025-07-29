@@ -25,6 +25,10 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Creditor.prototype, "creditorContactId", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Creditor.prototype, "pumpId", void 0);
+__decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Creditor.prototype, "totalCreditGiven", void 0);

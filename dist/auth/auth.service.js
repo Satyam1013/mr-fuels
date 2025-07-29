@@ -215,7 +215,12 @@ let AuthService = class AuthService {
                 const isValid = await bcrypt.compare(password, admin.password);
                 if (!isValid)
                     throw new common_1.UnauthorizedException("Invalid password");
-                const payload = { sub: admin._id, mobileNo, role: "admin" };
+                const payload = {
+                    sub: admin._id,
+                    mobileNo,
+                    role: "admin",
+                    pumpId: admin._id,
+                };
                 const access_token = this.jwtService.sign(payload, {
                     secret: this.configService.get("JWT_SECRET"),
                     expiresIn: "1h",
@@ -251,7 +256,7 @@ let AuthService = class AuthService {
                 role: "manager",
                 mobileNo,
                 shift: manager.shift,
-                adminId: adminWithManager._id,
+                pumpId: adminWithManager._id,
             };
             const access_token = this.jwtService.sign(payload, {
                 secret: this.configService.get("JWT_SECRET"),

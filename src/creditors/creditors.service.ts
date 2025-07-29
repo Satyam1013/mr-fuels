@@ -83,7 +83,7 @@ export class CreditorService {
     }
   }
 
-  async findAll(dateString?: string, filterType?: FilterType) {
+  async findAll(pumpId: string, dateString?: string, filterType?: FilterType) {
     let startDate: Date | undefined;
     let endDate: Date | undefined;
 

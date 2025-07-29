@@ -21,12 +21,12 @@ let CreditorContactService = class CreditorContactService {
     constructor(contactModel) {
         this.contactModel = contactModel;
     }
-    async create(dto) {
-        return this.contactModel.create(dto);
+    async create(dto, pumpId) {
+        return this.contactModel.create({ ...dto, pumpId });
     }
-    async findAll() {
+    async findAll(pumpId) {
         const contacts = await this.contactModel
-            .find()
+            .find({ pumpId })
             .select("name number")
             .lean();
         return { contacts };

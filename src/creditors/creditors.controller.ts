@@ -15,6 +15,7 @@ import {
   GetCreditorsQueryDto,
   UpdateCreditorDto,
 } from "./creditors.dto";
+import { GetUser } from "../auth/get-user.decoration";
 
 @Controller("creditors")
 export class CreditorController {
@@ -26,9 +27,12 @@ export class CreditorController {
   }
 
   @Get()
-  findAll(@Query() query: GetCreditorsQueryDto) {
+  findAll(
+    @Query() query: GetCreditorsQueryDto,
+    @GetUser("pumpId") pumpId: string,
+  ) {
     const { filterType, date } = query;
-    return this.creditorService.findAll(date, filterType);
+    return this.creditorService.findAll(pumpId, date, filterType);
   }
 
   @Get("/summary")

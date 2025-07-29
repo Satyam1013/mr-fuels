@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import {
   CreditorContact,
   CreditorContactDocument,
@@ -17,13 +17,13 @@ export class CreditorContactService {
     private readonly contactModel: Model<CreditorContactDocument>,
   ) {}
 
-  async create(dto: CreateCreditorContactDto) {
-    return this.contactModel.create(dto);
+  async create(dto: CreateCreditorContactDto, pumpId: Types.ObjectId) {
+    return this.contactModel.create({ ...dto, pumpId });
   }
 
-  async findAll() {
+  async findAll(pumpId: Types.ObjectId) {
     const contacts = await this.contactModel
-      .find()
+      .find({ pumpId })
       .select("name number")
       .lean();
     return { contacts };

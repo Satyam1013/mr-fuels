@@ -68,7 +68,7 @@ let CreditorService = class CreditorService {
             });
         }
     }
-    async findAll(dateString, filterType) {
+    async findAll(pumpId, dateString, filterType) {
         let startDate;
         let endDate;
         if (dateString && filterType) {

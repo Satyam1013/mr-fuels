@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreditorContactSchema = exports.CreditorContact = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let CreditorContact = class CreditorContact {
 };
 exports.CreditorContact = CreditorContact;
@@ -22,6 +23,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], CreditorContact.prototype, "number", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], CreditorContact.prototype, "pumpId", void 0);
 exports.CreditorContact = CreditorContact = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], CreditorContact);

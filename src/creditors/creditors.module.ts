@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Creditor, CreditorSchema } from "./creditors.schema";
 import { CreditorController } from "./creditors.controller";
@@ -10,7 +10,7 @@ import { CreditorContactModule } from "../creditor-contact/creditor-contact.modu
     MongooseModule.forFeature([
       { name: Creditor.name, schema: CreditorSchema },
     ]),
-    CreditorContactModule,
+    forwardRef(() => CreditorContactModule),
   ],
   controllers: [CreditorController],
   providers: [CreditorService],

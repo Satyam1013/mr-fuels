@@ -72,6 +72,9 @@ export class Admin {
 
   @Prop({ type: Date })
   planExpiresAt?: Date;
+
+  @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
+  pumpId!: Types.ObjectId;
 }
 
 export type AdminDocument = Admin & Document;

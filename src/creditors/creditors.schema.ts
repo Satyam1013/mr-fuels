@@ -13,6 +13,9 @@ export class Creditor {
   })
   creditorContactId!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
+  pumpId!: Types.ObjectId;
+
   @Prop()
   totalCreditGiven!: number;
 

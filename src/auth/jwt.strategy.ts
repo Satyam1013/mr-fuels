@@ -16,14 +16,27 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; username: string; role: string }) {
+  async validate(payload: {
+    sub: string;
+    username?: string;
+    role: string;
+    mobileNo?: string;
+    shift?: number;
+    adminId?: string;
+    pumpId?: string;
+  }) {
     if (!payload || !payload.sub) {
       throw new UnauthorizedException("Invalid token");
     }
+
     return {
       userId: payload.sub,
       username: payload.username,
       role: payload.role,
+      mobileNo: payload.mobileNo,
+      shift: payload.shift,
+      adminId: payload.adminId,
+      pumpId: payload.pumpId, // ✅ Add this
     };
   }
 }

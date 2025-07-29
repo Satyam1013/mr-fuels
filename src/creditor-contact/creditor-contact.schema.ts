@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export type CreditorContactDocument = CreditorContact & Document;
 
@@ -10,6 +10,9 @@ export class CreditorContact {
 
   @Prop({ required: true, unique: true })
   number!: string;
+
+  @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
+  pumpId!: Types.ObjectId;
 }
 
 export const CreditorContactSchema =

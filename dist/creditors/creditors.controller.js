@@ -16,6 +16,7 @@ exports.CreditorController = void 0;
 const common_1 = require("@nestjs/common");
 const creditors_service_1 = require("./creditors.service");
 const creditors_dto_1 = require("./creditors.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
 let CreditorController = class CreditorController {
     constructor(creditorService) {
         this.creditorService = creditorService;
@@ -23,9 +24,9 @@ let CreditorController = class CreditorController {
     create(dto) {
         return this.creditorService.create(dto);
     }
-    findAll(query) {
+    findAll(query, pumpId) {
         const { filterType, date } = query;
-        return this.creditorService.findAll(date, filterType);
+        return this.creditorService.findAll(pumpId, date, filterType);
     }
     getCreditSummary(query) {
         const { filterType, date } = query;
@@ -55,8 +56,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto]),
+    __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "findAll", null);
 __decorate([

@@ -6,25 +6,33 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from "@nestjs/common";
 import { CreditorContactService } from "./creditor-contact.service";
 import {
   CreateCreditorContactDto,
   UpdateCreditorContactDto,
 } from "./creditor-contact.dto";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
+import { AuthGuard } from "../auth/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller("creditor-contacts")
 export class CreditorContactController {
   constructor(private readonly contactService: CreditorContactService) {}
 
   @Post()
-  create(@Body() dto: CreateCreditorContactDto) {
-    return this.contactService.create(dto);
+  create(
+    @Body() dto: CreateCreditorContactDto,
+    @GetUser("pumpId") pumpId: Types.ObjectId,
+  ) {
+    return this.contactService.create(dto, pumpId);
   }
 
   @Get()
-  findAll() {
-    return this.contactService.findAll();
+  findAll(@GetUser("pumpId") pumpId: Types.ObjectId) {
+    return this.contactService.findAll(pumpId);
   }
 
   @Get(":id")

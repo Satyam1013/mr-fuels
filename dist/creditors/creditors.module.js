@@ -22,7 +22,7 @@ exports.CreditorModule = CreditorModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
             ]),
-            creditor_contact_module_1.CreditorContactModule,
+            (0, common_1.forwardRef)(() => creditor_contact_module_1.CreditorContactModule),
         ],
         controllers: [creditors_controller_1.CreditorController],
         providers: [creditors_service_1.CreditorService],

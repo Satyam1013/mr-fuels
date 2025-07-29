@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export type PumpExpenseDocument = PumpExpense & Document;
 
@@ -18,6 +18,9 @@ const EntrySchema = SchemaFactory.createForClass(Entry);
 @Schema({ timestamps: true })
 export class PumpExpense {
   @Prop({ required: true }) date!: Date;
+
+  @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
+  pumpId!: Types.ObjectId;
 
   @Prop({ type: [EntrySchema], required: true, default: [] })
   entries!: Entry[];
