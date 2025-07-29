@@ -15,9 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanController = void 0;
 const common_1 = require("@nestjs/common");
 const plan_service_1 = require("./plan.service");
+const plan_dto_1 = require("./plan.dto");
 let PlanController = class PlanController {
     constructor(planService) {
         this.planService = planService;
+    }
+    create(dto) {
+        return this.planService.createPlan(dto);
     }
     findAll() {
         return this.planService.getAllPlans();
@@ -27,6 +31,13 @@ let PlanController = class PlanController {
     }
 };
 exports.PlanController = PlanController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [plan_dto_1.CreatePlanDto]),
+    __metadata("design:returntype", void 0)
+], PlanController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

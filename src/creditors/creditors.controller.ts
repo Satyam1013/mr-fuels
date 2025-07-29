@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { CreditorService } from "./creditors.service";
 import {
@@ -16,14 +17,16 @@ import {
   UpdateCreditorDto,
 } from "./creditors.dto";
 import { GetUser } from "../auth/get-user.decoration";
+import { AuthGuard } from "../auth/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller("creditors")
 export class CreditorController {
   constructor(private readonly creditorService: CreditorService) {}
 
   @Post()
-  create(@Body() dto: CreateCreditorDto) {
-    return this.creditorService.create(dto);
+  create(@Body() dto: CreateCreditorDto, @GetUser("pumpId") pumpId: string) {
+    return this.creditorService.create(dto, pumpId);
   }
 
   @Get()
@@ -36,26 +39,38 @@ export class CreditorController {
   }
 
   @Get("/summary")
-  getCreditSummary(@Query() query: GetCreditorsQueryDto) {
+  getCreditSummary(
+    @Query() query: GetCreditorsQueryDto,
+    @GetUser("pumpId") pumpId: string,
+  ) {
     const { filterType, date } = query;
     if (!filterType || !date) {
       throw new BadRequestException("Both filterType and date are required");
     }
-    return this.creditorService.getCreditSummary(date, filterType);
+    return this.creditorService.getCreditSummary(pumpId, date, filterType);
   }
 
   @Get(":id")
-  findById(@Param("id") id: string) {
-    return this.creditorService.findById(id);
+  findById(
+    @Param("id") id: string,
+    @Query() query: GetCreditorsQueryDto,
+    @GetUser("pumpId") pumpId: string,
+  ) {
+    const { date, filterType } = query;
+    return this.creditorService.findById(id, pumpId, date, filterType);
   }
 
   @Put(":id")
-  update(@Param("id") id: string, @Body() dto: UpdateCreditorDto) {
-    return this.creditorService.update(id, dto);
+  update(
+    @Param("id") id: string,
+    @Body() dto: UpdateCreditorDto,
+    @GetUser("pumpId") pumpId: string,
+  ) {
+    return this.creditorService.update(id, dto, pumpId);
   }
 
   @Delete(":id")
-  delete(@Param("id") id: string) {
-    return this.creditorService.delete(id);
+  delete(@Param("id") id: string, @GetUser("pumpId") pumpId: string) {
+    return this.creditorService.delete(id, pumpId);
   }
 }

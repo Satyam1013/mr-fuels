@@ -13,6 +13,7 @@ const creditors_schema_1 = require("./creditors.schema");
 const creditors_controller_1 = require("./creditors.controller");
 const creditors_service_1 = require("./creditors.service");
 const creditor_contact_module_1 = require("../creditor-contact/creditor-contact.module");
+const auth_module_1 = require("../auth/auth.module");
 let CreditorModule = class CreditorModule {
 };
 exports.CreditorModule = CreditorModule;
@@ -23,8 +24,10 @@ exports.CreditorModule = CreditorModule = __decorate([
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
             ]),
             (0, common_1.forwardRef)(() => creditor_contact_module_1.CreditorContactModule),
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [creditors_controller_1.CreditorController],
         providers: [creditors_service_1.CreditorService],
+        exports: [mongoose_1.MongooseModule],
     })
 ], CreditorModule);

@@ -18,15 +18,17 @@ const platform_express_1 = require("@nestjs/platform-express");
 const pump_expenses_service_1 = require("./pump-expenses.service");
 const pump_expenses_dto_1 = require("./pump-expenses.dto");
 const home_dto_1 = require("../home/home.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const auth_guard_1 = require("../auth/auth.guard");
 let PumpExpenseController = class PumpExpenseController {
     constructor(pumpExpenseService) {
         this.pumpExpenseService = pumpExpenseService;
     }
-    async create(dto, files) {
-        return this.pumpExpenseService.create(dto, files?.images || []);
+    async create(dto, files, pumpId) {
+        return this.pumpExpenseService.create(dto, files?.images || [], pumpId);
     }
-    findAll(date, filterType) {
-        return this.pumpExpenseService.findAll(date, filterType);
+    findAll(pumpId, date, filterType) {
+        return this.pumpExpenseService.findAll(pumpId, date, filterType);
     }
     findOne(id) {
         return this.pumpExpenseService.findById(id);
@@ -44,16 +46,18 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: "images", maxCount: 10 }])),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFiles)()),
+    __param(2, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pump_expenses_dto_1.CreatePumpExpenseDto, Object]),
+    __metadata("design:paramtypes", [pump_expenses_dto_1.CreatePumpExpenseDto, Object, String]),
     __metadata("design:returntype", Promise)
 ], PumpExpenseController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("date")),
-    __param(1, (0, common_1.Query)("filterType")),
+    __param(0, (0, get_user_decoration_1.GetUser)("pumpId")),
+    __param(1, (0, common_1.Query)("date")),
+    __param(2, (0, common_1.Query)("filterType")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "findAll", null);
 __decorate([
@@ -79,6 +83,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "remove", null);
 exports.PumpExpenseController = PumpExpenseController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("pump-expense"),
     __metadata("design:paramtypes", [pump_expenses_service_1.PumpExpenseService])
 ], PumpExpenseController);

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { PumpExpense, PumpExpenseDocument } from "./pump-expenses.schema";
 import {
   CreatePumpExpenseDto,
@@ -17,7 +18,11 @@ export class PumpExpenseService {
     private readonly pumpExpenseModel: Model<PumpExpenseDocument>,
   ) {}
 
-  async create(dto: CreatePumpExpenseDto, images: Express.Multer.File[]) {
+  async create(
+    dto: CreatePumpExpenseDto,
+    images: Express.Multer.File[],
+    pumpId: string,
+  ) {
     if (images?.length) {
       for (let i = 0; i < dto.entries.length; i++) {
         if (images[i]) {
@@ -31,12 +36,13 @@ export class PumpExpenseService {
     }
 
     return this.pumpExpenseModel.create({
+      pumpId: new Types.ObjectId(pumpId),
       date: dto.date,
       entries: dto.entries,
     });
   }
 
-  async findAll(dateString?: string, filterType?: FilterType) {
+  async findAll(pumpId: string, dateString?: string, filterType?: FilterType) {
     let startDate: Date | undefined;
     let endDate: Date | undefined;
 
@@ -44,10 +50,17 @@ export class PumpExpenseService {
       ({ startDate, endDate } = getDateRange(filterType, dateString));
     }
 
-    const matchStage =
-      startDate && endDate
-        ? [{ $match: { date: { $gte: startDate, $lte: endDate } } }]
-        : [];
+    const matchStage: any[] = [
+      { $match: { pumpId: new Types.ObjectId(pumpId) } },
+    ];
+
+    if (startDate && endDate) {
+      matchStage.push({
+        $match: {
+          date: { $gte: startDate, $lte: endDate },
+        },
+      });
+    }
 
     const aggregationPipeline = [
       ...matchStage,

@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const pump_expenses_schema_1 = require("./pump-expenses.schema");
 const pump_expenses_controller_1 = require("./pump-expenses.controller");
 const pump_expenses_service_1 = require("./pump-expenses.service");
+const auth_module_1 = require("../auth/auth.module");
 let PumpExpenseModule = class PumpExpenseModule {
 };
 exports.PumpExpenseModule = PumpExpenseModule;
@@ -21,6 +22,7 @@ exports.PumpExpenseModule = PumpExpenseModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: pump_expenses_schema_1.PumpExpense.name, schema: pump_expenses_schema_1.PumpExpenseSchema },
             ]),
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [pump_expenses_controller_1.PumpExpenseController],
         providers: [pump_expenses_service_1.PumpExpenseService],

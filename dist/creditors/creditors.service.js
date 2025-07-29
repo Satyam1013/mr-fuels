@@ -39,7 +39,7 @@ let CreditorService = class CreditorService {
             : new Date();
         return { totalCreditGiven, totalCreditLeft, date };
     }
-    async create(dto) {
+    async create(dto, pumpId) {
         const creditorContact = await this.creditorContactModel.findById(dto.creditorContactId);
         if (!creditorContact) {
             throw new common_1.NotFoundException("Creditor contact not found");
@@ -47,6 +47,7 @@ let CreditorService = class CreditorService {
         const creditorObjectId = new mongoose_2.Types.ObjectId(dto.creditorContactId);
         const existing = await this.creditorModel.findOne({
             creditorContactId: creditorObjectId,
+            pumpId: new mongoose_2.Types.ObjectId(pumpId),
         });
         const normalizedRecords = dto.records.map((record) => ({
             ...record,
@@ -62,6 +63,7 @@ let CreditorService = class CreditorService {
         else {
             return await this.creditorModel.create({
                 creditorContactId: creditorObjectId,
+                pumpId: new mongoose_2.Types.ObjectId(pumpId),
                 records: normalizedRecords,
                 totalCreditGiven,
                 totalCreditLeft,
@@ -75,6 +77,11 @@ let CreditorService = class CreditorService {
             ({ startDate, endDate } = (0, date_1.getDateRange)(filterType, dateString));
         }
         const pipeline = [
+            {
+                $match: {
+                    pumpId: new mongoose_2.Types.ObjectId(pumpId),
+                },
+            },
             { $unwind: "$records" },
             // Filter by record time
             ...(startDate && endDate
@@ -144,9 +151,14 @@ let CreditorService = class CreditorService {
         ];
         return this.creditorModel.aggregate(pipeline);
     }
-    async getCreditSummary(dateString, filterType) {
+    async getCreditSummary(pumpId, dateString, filterType) {
         const { startDate, endDate } = (0, date_1.getDateRange)(filterType, dateString);
         const pipeline = [
+            {
+                $match: {
+                    pumpId: new mongoose_2.Types.ObjectId(pumpId),
+                },
+            },
             { $unwind: "$records" },
             {
                 $match: {
@@ -192,19 +204,98 @@ let CreditorService = class CreditorService {
         const [result] = await this.creditorModel.aggregate(pipeline);
         return result || { totalCreditGiven: 0, totalCreditLeft: 0 };
     }
-    async findById(id) {
-        const creditor = await this.creditorModel.findById(id);
-        if (!creditor)
+    async findById(id, pumpId, dateString, filterType) {
+        let startDate;
+        let endDate;
+        if (dateString && filterType) {
+            ({ startDate, endDate } = (0, date_1.getDateRange)(filterType, dateString));
+        }
+        const pipeline = [
+            {
+                $match: {
+                    _id: new mongoose_2.Types.ObjectId(id),
+                    pumpId: new mongoose_2.Types.ObjectId(pumpId),
+                },
+            },
+            { $unwind: "$records" },
+            ...(startDate && endDate
+                ? [
+                    {
+                        $match: {
+                            "records.time": {
+                                $gte: startDate,
+                                $lte: endDate,
+                            },
+                        },
+                    },
+                ]
+                : []),
+            {
+                $lookup: {
+                    from: "creditorcontacts",
+                    localField: "creditorContactId",
+                    foreignField: "_id",
+                    as: "contact",
+                },
+            },
+            { $unwind: "$contact" },
+            {
+                $project: {
+                    creditorId: "$_id",
+                    name: "$contact.name",
+                    number: "$contact.number",
+                    amount: "$records.amount",
+                    time: "$records.time",
+                    type: "$records.type",
+                    paidType: "$records.paidType",
+                    imgUrl: "$records.imgUrl",
+                    details: "$records.details",
+                    dateOnly: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$records.time" },
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$dateOnly",
+                    records: {
+                        $push: {
+                            creditorId: "$creditorId",
+                            name: "$name",
+                            number: "$number",
+                            amount: "$amount",
+                            time: "$time",
+                            type: "$type",
+                            paidType: "$paidType",
+                            details: "$details",
+                            imgUrl: "$imgUrl",
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: "$_id",
+                    records: 1,
+                },
+            },
+            {
+                $sort: { date: -1 },
+            },
+        ];
+        const result = await this.creditorModel.aggregate(pipeline);
+        if (!result.length)
             throw new common_1.NotFoundException("Creditor not found");
-        return creditor;
+        return result;
     }
-    async update(id, dto) {
+    async update(id, dto, pumpId) {
         const normalizedRecords = dto.records.map((record) => ({
             ...record,
             time: new Date(record.time),
         }));
         const { totalCreditGiven, totalCreditLeft, date } = this.computeTotals(normalizedRecords);
-        const updated = await this.creditorModel.findByIdAndUpdate(id, {
+        const updated = await this.creditorModel.findOneAndUpdate({ _id: id, pumpId: new mongoose_2.Types.ObjectId(pumpId) }, {
             ...dto,
             records: normalizedRecords,
             totalCreditGiven,
@@ -215,8 +306,11 @@ let CreditorService = class CreditorService {
             throw new common_1.NotFoundException("Creditor not found");
         return updated;
     }
-    async delete(id) {
-        const deleted = await this.creditorModel.findByIdAndDelete(id);
+    async delete(id, pumpId) {
+        const deleted = await this.creditorModel.findOneAndDelete({
+            _id: id,
+            pumpId: new mongoose_2.Types.ObjectId(pumpId),
+        });
         if (!deleted)
             throw new common_1.NotFoundException("Creditor not found");
         return { message: "Deleted successfully" };

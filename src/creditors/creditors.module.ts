@@ -4,6 +4,7 @@ import { Creditor, CreditorSchema } from "./creditors.schema";
 import { CreditorController } from "./creditors.controller";
 import { CreditorService } from "./creditors.service";
 import { CreditorContactModule } from "../creditor-contact/creditor-contact.module";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [
@@ -11,8 +12,10 @@ import { CreditorContactModule } from "../creditor-contact/creditor-contact.modu
       { name: Creditor.name, schema: CreditorSchema },
     ]),
     forwardRef(() => CreditorContactModule),
+    forwardRef(() => AuthModule),
   ],
   controllers: [CreditorController],
   providers: [CreditorService],
+  exports: [MongooseModule],
 })
 export class CreditorModule {}

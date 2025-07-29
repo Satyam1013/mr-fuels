@@ -45,7 +45,7 @@ export class CreditorService {
     return { totalCreditGiven, totalCreditLeft, date };
   }
 
-  async create(dto: CreateCreditorDto) {
+  async create(dto: CreateCreditorDto, pumpId: string) {
     const creditorContact = await this.creditorContactModel.findById(
       dto.creditorContactId,
     );
@@ -56,6 +56,7 @@ export class CreditorService {
     const creditorObjectId = new Types.ObjectId(dto.creditorContactId);
     const existing = await this.creditorModel.findOne({
       creditorContactId: creditorObjectId,
+      pumpId: new Types.ObjectId(pumpId),
     });
 
     const normalizedRecords: NormalizedCreditRecord[] = dto.records.map(
@@ -76,6 +77,7 @@ export class CreditorService {
     } else {
       return await this.creditorModel.create({
         creditorContactId: creditorObjectId,
+        pumpId: new Types.ObjectId(pumpId),
         records: normalizedRecords,
         totalCreditGiven,
         totalCreditLeft,
@@ -92,6 +94,11 @@ export class CreditorService {
     }
 
     const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          pumpId: new Types.ObjectId(pumpId),
+        },
+      },
       { $unwind: "$records" },
 
       // Filter by record time
@@ -168,10 +175,20 @@ export class CreditorService {
     return this.creditorModel.aggregate(pipeline);
   }
 
-  async getCreditSummary(dateString: string, filterType: FilterType) {
+  async getCreditSummary(
+    pumpId: string,
+    dateString: string,
+    filterType: FilterType,
+  ) {
     const { startDate, endDate } = getDateRange(filterType, dateString);
 
     const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          pumpId: new Types.ObjectId(pumpId),
+        },
+      },
+
       { $unwind: "$records" },
       {
         $match: {
@@ -219,13 +236,106 @@ export class CreditorService {
     return result || { totalCreditGiven: 0, totalCreditLeft: 0 };
   }
 
-  async findById(id: string) {
-    const creditor = await this.creditorModel.findById(id);
-    if (!creditor) throw new NotFoundException("Creditor not found");
-    return creditor;
+  async findById(
+    id: string,
+    pumpId: string,
+    dateString?: string,
+    filterType?: FilterType,
+  ) {
+    let startDate: Date | undefined;
+    let endDate: Date | undefined;
+
+    if (dateString && filterType) {
+      ({ startDate, endDate } = getDateRange(filterType, dateString));
+    }
+
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          _id: new Types.ObjectId(id),
+          pumpId: new Types.ObjectId(pumpId),
+        },
+      },
+      { $unwind: "$records" },
+
+      ...(startDate && endDate
+        ? [
+            {
+              $match: {
+                "records.time": {
+                  $gte: startDate,
+                  $lte: endDate,
+                },
+              },
+            },
+          ]
+        : []),
+
+      {
+        $lookup: {
+          from: "creditorcontacts",
+          localField: "creditorContactId",
+          foreignField: "_id",
+          as: "contact",
+        },
+      },
+      { $unwind: "$contact" },
+
+      {
+        $project: {
+          creditorId: "$_id",
+          name: "$contact.name",
+          number: "$contact.number",
+          amount: "$records.amount",
+          time: "$records.time",
+          type: "$records.type",
+          paidType: "$records.paidType",
+          imgUrl: "$records.imgUrl",
+          details: "$records.details",
+          dateOnly: {
+            $dateToString: { format: "%Y-%m-%d", date: "$records.time" },
+          },
+        },
+      },
+
+      {
+        $group: {
+          _id: "$dateOnly",
+          records: {
+            $push: {
+              creditorId: "$creditorId",
+              name: "$name",
+              number: "$number",
+              amount: "$amount",
+              time: "$time",
+              type: "$type",
+              paidType: "$paidType",
+              details: "$details",
+              imgUrl: "$imgUrl",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          records: 1,
+        },
+      },
+      {
+        $sort: { date: -1 },
+      },
+    ];
+
+    const result = await this.creditorModel.aggregate(pipeline);
+
+    if (!result.length) throw new NotFoundException("Creditor not found");
+
+    return result;
   }
 
-  async update(id: string, dto: UpdateCreditorDto) {
+  async update(id: string, dto: UpdateCreditorDto, pumpId: string) {
     const normalizedRecords = dto.records.map((record) => ({
       ...record,
       time: new Date(record.time),
@@ -234,8 +344,8 @@ export class CreditorService {
     const { totalCreditGiven, totalCreditLeft, date } =
       this.computeTotals(normalizedRecords);
 
-    const updated = await this.creditorModel.findByIdAndUpdate(
-      id,
+    const updated = await this.creditorModel.findOneAndUpdate(
+      { _id: id, pumpId: new Types.ObjectId(pumpId) },
       {
         ...dto,
         records: normalizedRecords,
@@ -250,8 +360,11 @@ export class CreditorService {
     return updated;
   }
 
-  async delete(id: string) {
-    const deleted = await this.creditorModel.findByIdAndDelete(id);
+  async delete(id: string, pumpId: string) {
+    const deleted = await this.creditorModel.findOneAndDelete({
+      _id: id,
+      pumpId: new Types.ObjectId(pumpId),
+    });
     if (!deleted) throw new NotFoundException("Creditor not found");
     return { message: "Deleted successfully" };
   }

@@ -14,7 +14,6 @@ import {
   UpdateCreditorContactDto,
 } from "./creditor-contact.dto";
 import { GetUser } from "../auth/get-user.decoration";
-import { Types } from "mongoose";
 import { AuthGuard } from "../auth/auth.guard";
 
 @UseGuards(AuthGuard)
@@ -25,13 +24,13 @@ export class CreditorContactController {
   @Post()
   create(
     @Body() dto: CreateCreditorContactDto,
-    @GetUser("pumpId") pumpId: Types.ObjectId,
+    @GetUser("pumpId") pumpId: string,
   ) {
     return this.contactService.create(dto, pumpId);
   }
 
   @Get()
-  findAll(@GetUser("pumpId") pumpId: Types.ObjectId) {
+  findAll(@GetUser("pumpId") pumpId: string) {
     return this.contactService.findAll(pumpId);
   }
 

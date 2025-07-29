@@ -21,6 +21,9 @@ let PlanService = class PlanService {
     constructor(planModel) {
         this.planModel = planModel;
     }
+    async createPlan(dto) {
+        return this.planModel.create(dto);
+    }
     async getAllPlans() {
         return this.planModel.find({ isActive: true });
     }

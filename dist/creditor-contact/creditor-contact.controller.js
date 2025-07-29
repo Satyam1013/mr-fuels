@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const creditor_contact_service_1 = require("./creditor-contact.service");
 const creditor_contact_dto_1 = require("./creditor-contact.dto");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
-const mongoose_1 = require("mongoose");
 const auth_guard_1 = require("../auth/auth.guard");
 let CreditorContactController = class CreditorContactController {
     constructor(contactService) {
@@ -45,14 +44,14 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditor_contact_dto_1.CreateCreditorContactDto, mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [creditor_contact_dto_1.CreateCreditorContactDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "findAll", null);
 __decorate([

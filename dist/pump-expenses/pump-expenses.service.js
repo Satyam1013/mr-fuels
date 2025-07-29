@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseService = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
@@ -23,7 +24,7 @@ let PumpExpenseService = class PumpExpenseService {
     constructor(pumpExpenseModel) {
         this.pumpExpenseModel = pumpExpenseModel;
     }
-    async create(dto, images) {
+    async create(dto, images, pumpId) {
         if (images?.length) {
             for (let i = 0; i < dto.entries.length; i++) {
                 if (images[i]) {
@@ -33,19 +34,27 @@ let PumpExpenseService = class PumpExpenseService {
             }
         }
         return this.pumpExpenseModel.create({
+            pumpId: new mongoose_2.Types.ObjectId(pumpId),
             date: dto.date,
             entries: dto.entries,
         });
     }
-    async findAll(dateString, filterType) {
+    async findAll(pumpId, dateString, filterType) {
         let startDate;
         let endDate;
         if (dateString && filterType) {
             ({ startDate, endDate } = (0, date_1.getDateRange)(filterType, dateString));
         }
-        const matchStage = startDate && endDate
-            ? [{ $match: { date: { $gte: startDate, $lte: endDate } } }]
-            : [];
+        const matchStage = [
+            { $match: { pumpId: new mongoose_2.Types.ObjectId(pumpId) } },
+        ];
+        if (startDate && endDate) {
+            matchStage.push({
+                $match: {
+                    date: { $gte: startDate, $lte: endDate },
+                },
+            });
+        }
         const aggregationPipeline = [
             ...matchStage,
             {

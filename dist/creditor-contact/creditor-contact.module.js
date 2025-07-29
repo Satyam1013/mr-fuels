@@ -8,12 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreditorContactModule = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
 const creditor_contact_controller_1 = require("./creditor-contact.controller");
 const creditor_contact_service_1 = require("./creditor-contact.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const creditor_contact_schema_1 = require("./creditor-contact.schema");
-const auth_guard_1 = require("../auth/auth.guard");
+const auth_module_1 = require("../auth/auth.module");
 let CreditorContactModule = class CreditorContactModule {
 };
 exports.CreditorContactModule = CreditorContactModule;
@@ -23,10 +22,10 @@ exports.CreditorContactModule = CreditorContactModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: creditor_contact_schema_1.CreditorContact.name, schema: creditor_contact_schema_1.CreditorContactSchema },
             ]),
-            jwt_1.JwtModule.register({}),
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [creditor_contact_controller_1.CreditorContactController],
-        providers: [creditor_contact_service_1.CreditorContactService, auth_guard_1.AuthGuard],
+        providers: [creditor_contact_service_1.CreditorContactService],
         exports: [mongoose_1.MongooseModule],
     })
 ], CreditorContactModule);

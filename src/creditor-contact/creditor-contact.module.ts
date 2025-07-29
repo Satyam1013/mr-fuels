@@ -1,5 +1,4 @@
-import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
+import { Module, forwardRef } from "@nestjs/common";
 import { CreditorContactController } from "./creditor-contact.controller";
 import { CreditorContactService } from "./creditor-contact.service";
 import { MongooseModule } from "@nestjs/mongoose";
@@ -7,17 +6,17 @@ import {
   CreditorContact,
   CreditorContactSchema,
 } from "./creditor-contact.schema";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: CreditorContact.name, schema: CreditorContactSchema },
     ]),
-    JwtModule.register({}),
+    forwardRef(() => AuthModule),
   ],
   controllers: [CreditorContactController],
-  providers: [CreditorContactService, AuthGuard],
+  providers: [CreditorContactService],
   exports: [MongooseModule],
 })
 export class CreditorContactModule {}

@@ -17,13 +17,15 @@ export class CreditorContactService {
     private readonly contactModel: Model<CreditorContactDocument>,
   ) {}
 
-  async create(dto: CreateCreditorContactDto, pumpId: Types.ObjectId) {
-    return this.contactModel.create({ ...dto, pumpId });
+  async create(dto: CreateCreditorContactDto, pumpId: string) {
+    const objectId = new Types.ObjectId(pumpId);
+    return this.contactModel.create({ ...dto, pumpId: objectId });
   }
 
-  async findAll(pumpId: Types.ObjectId) {
+  async findAll(pumpId: string) {
+    const objectId = new Types.ObjectId(pumpId);
     const contacts = await this.contactModel
-      .find({ pumpId })
+      .find({ pumpId: objectId })
       .select("name number")
       .lean();
     return { contacts };

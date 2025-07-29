@@ -22,11 +22,13 @@ let CreditorContactService = class CreditorContactService {
         this.contactModel = contactModel;
     }
     async create(dto, pumpId) {
-        return this.contactModel.create({ ...dto, pumpId });
+        const objectId = new mongoose_2.Types.ObjectId(pumpId);
+        return this.contactModel.create({ ...dto, pumpId: objectId });
     }
     async findAll(pumpId) {
+        const objectId = new mongoose_2.Types.ObjectId(pumpId);
         const contacts = await this.contactModel
-            .find({ pumpId })
+            .find({ pumpId: objectId })
             .select("name number")
             .lean();
         return { contacts };

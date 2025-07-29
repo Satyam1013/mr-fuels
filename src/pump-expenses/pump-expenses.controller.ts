@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -17,7 +18,10 @@ import {
   UpdatePumpExpenseDto,
 } from "./pump-expenses.dto";
 import { FilterType } from "../home/home.dto";
+import { GetUser } from "../auth/get-user.decoration";
+import { AuthGuard } from "../auth/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller("pump-expense")
 export class PumpExpenseController {
   constructor(private readonly pumpExpenseService: PumpExpenseService) {}
@@ -27,16 +31,18 @@ export class PumpExpenseController {
   async create(
     @Body() dto: CreatePumpExpenseDto,
     @UploadedFiles() files: { images?: Express.Multer.File[] },
+    @GetUser("pumpId") pumpId: string, // ✅ add pumpId
   ) {
-    return this.pumpExpenseService.create(dto, files?.images || []);
+    return this.pumpExpenseService.create(dto, files?.images || [], pumpId);
   }
 
   @Get()
   findAll(
+    @GetUser("pumpId") pumpId: string,
     @Query("date") date?: string,
     @Query("filterType") filterType?: FilterType,
   ) {
-    return this.pumpExpenseService.findAll(date, filterType);
+    return this.pumpExpenseService.findAll(pumpId, date, filterType);
   }
 
   @Get(":id")

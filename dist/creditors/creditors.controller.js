@@ -17,40 +17,43 @@ const common_1 = require("@nestjs/common");
 const creditors_service_1 = require("./creditors.service");
 const creditors_dto_1 = require("./creditors.dto");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
+const auth_guard_1 = require("../auth/auth.guard");
 let CreditorController = class CreditorController {
     constructor(creditorService) {
         this.creditorService = creditorService;
     }
-    create(dto) {
-        return this.creditorService.create(dto);
+    create(dto, pumpId) {
+        return this.creditorService.create(dto, pumpId);
     }
     findAll(query, pumpId) {
         const { filterType, date } = query;
         return this.creditorService.findAll(pumpId, date, filterType);
     }
-    getCreditSummary(query) {
+    getCreditSummary(query, pumpId) {
         const { filterType, date } = query;
         if (!filterType || !date) {
             throw new common_1.BadRequestException("Both filterType and date are required");
         }
-        return this.creditorService.getCreditSummary(date, filterType);
+        return this.creditorService.getCreditSummary(pumpId, date, filterType);
     }
-    findById(id) {
-        return this.creditorService.findById(id);
+    findById(id, query, pumpId) {
+        const { date, filterType } = query;
+        return this.creditorService.findById(id, pumpId, date, filterType);
     }
-    update(id, dto) {
-        return this.creditorService.update(id, dto);
+    update(id, dto, pumpId) {
+        return this.creditorService.update(id, dto, pumpId);
     }
-    delete(id) {
-        return this.creditorService.delete(id);
+    delete(id, pumpId) {
+        return this.creditorService.delete(id, pumpId);
     }
 };
 exports.CreditorController = CreditorController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditors_dto_1.CreateCreditorDto]),
+    __metadata("design:paramtypes", [creditors_dto_1.CreateCreditorDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "create", null);
 __decorate([
@@ -64,33 +67,39 @@ __decorate([
 __decorate([
     (0, common_1.Get)("/summary"),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto]),
+    __metadata("design:paramtypes", [creditors_dto_1.GetCreditorsQueryDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "getCreditSummary", null);
 __decorate([
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Query)()),
+    __param(2, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, creditors_dto_1.GetCreditorsQueryDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "findById", null);
 __decorate([
     (0, common_1.Put)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, creditors_dto_1.UpdateCreditorDto]),
+    __metadata("design:paramtypes", [String, creditors_dto_1.UpdateCreditorDto, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, get_user_decoration_1.GetUser)("pumpId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], CreditorController.prototype, "delete", null);
 exports.CreditorController = CreditorController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("creditors"),
     __metadata("design:paramtypes", [creditors_service_1.CreditorService])
 ], CreditorController);
