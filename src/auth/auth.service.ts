@@ -10,7 +10,7 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Admin, AdminDocument } from "../admin/admin.schema";
 import { CreateAdminDto } from "./create-user.dto";
 import { ConfigService } from "@nestjs/config";
@@ -173,6 +173,8 @@ export class AuthService {
         startDate: new Date(),
       });
 
+      await admin.save();
+      admin.pumpId = admin._id as Types.ObjectId;
       await admin.save();
 
       return {

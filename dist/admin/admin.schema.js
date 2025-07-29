@@ -135,7 +135,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Admin.prototype, "planExpiresAt", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin" }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Admin.prototype, "pumpId", void 0);
 exports.Admin = Admin = __decorate([

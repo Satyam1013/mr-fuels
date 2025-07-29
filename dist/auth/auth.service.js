@@ -167,6 +167,8 @@ let AuthService = class AuthService {
                 startDate: new Date(),
             });
             await admin.save();
+            admin.pumpId = admin._id;
+            await admin.save();
             return {
                 message: "Admin created successfully",
                 admin: {
