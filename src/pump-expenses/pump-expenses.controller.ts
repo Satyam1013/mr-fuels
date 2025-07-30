@@ -31,7 +31,7 @@ export class PumpExpenseController {
   async create(
     @Body() dto: CreatePumpExpenseDto,
     @UploadedFiles() files: { images?: Express.Multer.File[] },
-    @GetUser("pumpId") pumpId: string, // ✅ add pumpId
+    @GetUser("pumpId") pumpId: string,
   ) {
     return this.pumpExpenseService.create(dto, files?.images || [], pumpId);
   }
