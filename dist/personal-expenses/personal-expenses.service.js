@@ -13,13 +13,99 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PersonalExpenseService = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const cloudinary_1 = require("../utils/cloudinary");
+const date_1 = require("../utils/date");
 const personal_expenses_schema_1 = require("./personal-expenses.schema");
 let PersonalExpenseService = class PersonalExpenseService {
     constructor(personalExpenseModel) {
         this.personalExpenseModel = personalExpenseModel;
+    }
+    async create(dto, images, pumpId) {
+        if (images?.length) {
+            for (let i = 0; i < dto.entries.length; i++) {
+                if (images[i]) {
+                    const upload = await (0, cloudinary_1.uploadPdfBufferToCloudinary)(images[i].buffer, images[i].originalname);
+                    dto.entries[i].imageUrl = upload.secure_url;
+                }
+            }
+        }
+        return this.personalExpenseModel.create({
+            pumpId: new mongoose_2.Types.ObjectId(pumpId),
+            date: dto.date,
+            entries: dto.entries,
+        });
+    }
+    async findAll(pumpId, dateString, filterType) {
+        let startDate;
+        let endDate;
+        if (dateString && filterType) {
+            ({ startDate, endDate } = (0, date_1.getDateRange)(filterType, dateString));
+        }
+        const matchStage = [
+            { $match: { pumpId: new mongoose_2.Types.ObjectId(pumpId) } },
+        ];
+        if (startDate && endDate) {
+            matchStage.push({
+                $match: {
+                    date: { $gte: startDate, $lte: endDate },
+                },
+            });
+        }
+        const aggregationPipeline = [
+            ...matchStage,
+            {
+                $project: {
+                    _id: 0,
+                    date: 1,
+                    entries: 1,
+                },
+            },
+            {
+                $group: {
+                    _id: "$date",
+                    entries: { $push: "$entries" },
+                },
+            },
+            {
+                $project: {
+                    date: "$_id",
+                    entries: {
+                        $reduce: {
+                            input: "$entries",
+                            initialValue: [],
+                            in: { $concatArrays: ["$$value", "$$this"] },
+                        },
+                    },
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { date: -1 },
+            },
+        ];
+        return this.personalExpenseModel.aggregate(aggregationPipeline);
+    }
+    async findById(id) {
+        const doc = await this.personalExpenseModel.findById(id);
+        if (!doc)
+            throw new common_1.NotFoundException("Expense not found");
+        return doc;
+    }
+    async update(id, dto) {
+        const updated = await this.personalExpenseModel.findByIdAndUpdate(id, { $set: { entries: dto.entries } }, { new: true });
+        if (!updated)
+            throw new common_1.NotFoundException("Expense not found");
+        return updated;
+    }
+    async delete(id) {
+        const deleted = await this.personalExpenseModel.findByIdAndDelete(id);
+        if (!deleted)
+            throw new common_1.NotFoundException("Expense not found");
+        return { message: "Expense deleted successfully" };
     }
 };
 exports.PersonalExpenseService = PersonalExpenseService;
