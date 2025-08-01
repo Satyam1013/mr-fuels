@@ -256,9 +256,10 @@ let AuthService = class AuthService {
             const payload = {
                 sub: manager.mobile,
                 role: "manager",
-                mobileNo,
+                mobileNo: manager.mobile,
                 shift: manager.shift,
                 pumpId: adminWithManager._id,
+                adminId: adminWithManager._id,
             };
             const access_token = this.jwtService.sign(payload, {
                 secret: this.configService.get("JWT_SECRET"),
