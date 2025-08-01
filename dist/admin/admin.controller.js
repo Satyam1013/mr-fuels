@@ -31,7 +31,6 @@ let AdminController = class AdminController {
 };
 exports.AdminController = AdminController;
 __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Patch)("plan"),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -47,6 +46,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getProfile", null);
 exports.AdminController = AdminController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("admin"),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], AdminController);

@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PersonalExpenseController = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const home_dto_1 = require("../home/home.dto");

@@ -4,11 +4,11 @@ import { AuthGuard } from "../auth/auth.guard";
 import { SelectPlanDto } from "../plan/plan.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
+@UseGuards(AuthGuard)
 @Controller("admin")
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @UseGuards(AuthGuard)
   @Patch("plan")
   async updatePlan(
     @Req() req: AuthenticatedRequest,
