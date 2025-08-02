@@ -204,7 +204,7 @@ let CreditorService = class CreditorService {
         const [result] = await this.creditorModel.aggregate(pipeline);
         return result || { totalCreditGiven: 0, totalCreditLeft: 0 };
     }
-    async findById(id, pumpId, dateString, filterType) {
+    async findById(contactId, pumpId, dateString, filterType) {
         let startDate;
         let endDate;
         if (dateString && filterType) {
@@ -213,7 +213,7 @@ let CreditorService = class CreditorService {
         const pipeline = [
             {
                 $match: {
-                    _id: new mongoose_2.Types.ObjectId(id),
+                    creditorContactId: new mongoose_2.Types.ObjectId(contactId),
                     pumpId: new mongoose_2.Types.ObjectId(pumpId),
                 },
             },

@@ -36,9 +36,9 @@ let CreditorController = class CreditorController {
         }
         return this.creditorService.getCreditSummary(pumpId, date, filterType);
     }
-    findById(id, query, pumpId) {
+    findById(contactId, query, pumpId) {
         const { date, filterType } = query;
-        return this.creditorService.findById(id, pumpId, date, filterType);
+        return this.creditorService.findById(contactId, pumpId, date, filterType);
     }
     update(id, dto, pumpId) {
         return this.creditorService.update(id, dto, pumpId);

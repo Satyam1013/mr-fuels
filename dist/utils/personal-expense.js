@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPumpExpenseStats = getPumpExpenseStats;
+exports.getPersonalExpenseStats = getPersonalExpenseStats;
 const mongoose_1 = require("mongoose");
-async function getPumpExpenseStats(model, pumpId, startDate, endDate) {
-    const pumpExpenseData = await model.aggregate([
+async function getPersonalExpenseStats(model, pumpId, startDate, endDate) {
+    const personalExpenseData = await model.aggregate([
         {
             $match: {
                 pumpId: new mongoose_1.Types.ObjectId(pumpId),
@@ -30,6 +30,6 @@ async function getPumpExpenseStats(model, pumpId, startDate, endDate) {
             },
         },
     ]);
-    const pumpExpenseTotalAmount = pumpExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
-    return { breakdown: pumpExpenseData, pumpExpenseTotalAmount };
+    const personalExpenseTotalAmount = personalExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
+    return { breakdown: personalExpenseData, personalExpenseTotalAmount };
 }

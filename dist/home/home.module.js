@@ -11,13 +11,22 @@ const common_1 = require("@nestjs/common");
 const home_service_1 = require("./home.service");
 const home_controller_1 = require("./home.controller");
 const pump_expenses_module_1 = require("../pump-expenses/pump-expenses.module");
+const creditors_module_1 = require("../creditors/creditors.module");
+const auth_module_1 = require("../auth/auth.module");
+const personal_expenses_module_1 = require("../personal-expenses/personal-expenses.module");
 let HomeModule = class HomeModule {
 };
 exports.HomeModule = HomeModule;
 exports.HomeModule = HomeModule = __decorate([
     (0, common_1.Module)({
-        imports: [pump_expenses_module_1.PumpExpenseModule],
+        imports: [
+            pump_expenses_module_1.PumpExpenseModule,
+            personal_expenses_module_1.PersonalExpenseModule,
+            creditors_module_1.CreditorModule,
+            auth_module_1.AuthModule,
+        ],
         providers: [home_service_1.HomeService],
         controllers: [home_controller_1.HomeController],
+        exports: [auth_module_1.AuthModule],
     })
 ], HomeModule);

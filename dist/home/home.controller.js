@@ -16,24 +16,28 @@ exports.HomeController = void 0;
 const common_1 = require("@nestjs/common");
 const home_service_1 = require("./home.service");
 const home_dto_1 = require("./home.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const auth_guard_1 = require("../auth/auth.guard");
 let HomeController = class HomeController {
     constructor(homeService) {
         this.homeService = homeService;
     }
-    getAll(filterType, date) {
-        return this.homeService.getAll(filterType, date);
+    getAll(pumpId, filterType, date) {
+        return this.homeService.getAll(pumpId, filterType, date);
     }
 };
 exports.HomeController = HomeController;
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("filterType")),
-    __param(1, (0, common_1.Query)("date")),
+    __param(0, (0, get_user_decoration_1.GetUser)("pumpId")),
+    __param(1, (0, common_1.Query)("filterType")),
+    __param(2, (0, common_1.Query)("date")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], HomeController.prototype, "getAll", null);
 exports.HomeController = HomeController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("home"),
     __metadata("design:paramtypes", [home_service_1.HomeService])
 ], HomeController);

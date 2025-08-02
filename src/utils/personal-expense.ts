@@ -3,24 +3,24 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Model, Types } from "mongoose";
-import { PumpExpenseDocument } from "../pump-expenses/pump-expenses.schema";
+import { PersonalExpenseDocument } from "../personal-expenses/personal-expenses.schema";
 
-interface PumpExpenseStats {
+interface PersonalExpenseStats {
   breakdown: Array<{
     title: string;
     categoryAmount: number;
     count: number;
   }>;
-  pumpExpenseTotalAmount: number;
+  personalExpenseTotalAmount: number;
 }
 
-export async function getPumpExpenseStats(
-  model: Model<PumpExpenseDocument>,
+export async function getPersonalExpenseStats(
+  model: Model<PersonalExpenseDocument>,
   pumpId: string,
   startDate: Date,
   endDate: Date,
-): Promise<PumpExpenseStats> {
-  const pumpExpenseData = await model.aggregate([
+): Promise<PersonalExpenseStats> {
+  const personalExpenseData = await model.aggregate([
     {
       $match: {
         pumpId: new Types.ObjectId(pumpId),
@@ -45,10 +45,10 @@ export async function getPumpExpenseStats(
     },
   ]);
 
-  const pumpExpenseTotalAmount = pumpExpenseData.reduce(
+  const personalExpenseTotalAmount = personalExpenseData.reduce(
     (sum, item) => sum + (item.categoryAmount ?? 0),
     0,
   );
 
-  return { breakdown: pumpExpenseData, pumpExpenseTotalAmount };
+  return { breakdown: personalExpenseData, personalExpenseTotalAmount };
 }

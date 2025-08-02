@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -8,19 +9,45 @@ import {
 import { FilterType } from "./home.dto";
 import { getDateRange } from "../utils/date";
 import { getPumpExpenseStats } from "../utils/pump-expense";
+import { Creditor, CreditorDocument } from "../creditors/creditors.schema";
+import { getCreditorStats } from "../utils/creditors";
+import {
+  PersonalExpense,
+  PersonalExpenseDocument,
+} from "../personal-expenses/personal-expenses.schema";
+import { getPersonalExpenseStats } from "../utils/personal-expense";
 
 @Injectable()
 export class HomeService {
   constructor(
     @InjectModel(PumpExpense.name)
     private readonly pumpExpenseModel: Model<PumpExpenseDocument>,
+    @InjectModel(PersonalExpense.name)
+    private readonly personalExpenseModel: Model<PersonalExpenseDocument>,
+    @InjectModel(Creditor.name)
+    private readonly creditorModel: Model<CreditorDocument>,
   ) {}
 
-  async getAll(filterType: FilterType, baseDate: string) {
+  async getAll(pumpId: string, filterType: FilterType, baseDate: string) {
     const { startDate, endDate } = getDateRange(filterType, baseDate);
 
     const { pumpExpenseTotalAmount } = await getPumpExpenseStats(
       this.pumpExpenseModel,
+      pumpId,
+      startDate,
+      endDate,
+    );
+
+    const { creditorTotalAmount } = await getCreditorStats(
+      this.creditorModel,
+      pumpId,
+      startDate,
+      endDate,
+    );
+
+    const { personalExpenseTotalAmount } = await getPersonalExpenseStats(
+      this.personalExpenseModel,
+      pumpId,
       startDate,
       endDate,
     );
@@ -37,12 +64,12 @@ export class HomeService {
           {
             id: 2,
             name: "Creditors",
-            amount: pumpExpenseTotalAmount,
+            amount: creditorTotalAmount,
           },
           {
             id: 3,
             name: "Personal Expenses",
-            amount: pumpExpenseTotalAmount,
+            amount: personalExpenseTotalAmount,
           },
           {
             id: 4,
