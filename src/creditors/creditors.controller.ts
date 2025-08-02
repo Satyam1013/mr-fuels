@@ -52,12 +52,12 @@ export class CreditorController {
 
   @Get(":id")
   findById(
-    @Param("id") id: string,
+    @Param("id") contactId: string,
     @Query() query: GetCreditorsQueryDto,
     @GetUser("pumpId") pumpId: string,
   ) {
     const { date, filterType } = query;
-    return this.creditorService.findById(id, pumpId, date, filterType);
+    return this.creditorService.findById(contactId, pumpId, date, filterType);
   }
 
   @Put(":id")

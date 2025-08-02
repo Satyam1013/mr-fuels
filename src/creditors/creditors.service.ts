@@ -237,7 +237,7 @@ export class CreditorService {
   }
 
   async findById(
-    id: string,
+    contactId: string,
     pumpId: string,
     dateString?: string,
     filterType?: FilterType,
@@ -252,7 +252,7 @@ export class CreditorService {
     const pipeline: PipelineStage[] = [
       {
         $match: {
-          _id: new Types.ObjectId(id),
+          creditorContactId: new Types.ObjectId(contactId),
           pumpId: new Types.ObjectId(pumpId),
         },
       },
