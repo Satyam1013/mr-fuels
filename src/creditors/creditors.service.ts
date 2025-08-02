@@ -130,6 +130,7 @@ export class CreditorService {
       {
         $project: {
           creditorId: "$_id",
+          creditorContactId: "$creditorContactId",
           name: "$contact.name",
           number: "$contact.number",
           amount: "$records.amount",
@@ -151,6 +152,7 @@ export class CreditorService {
           records: {
             $push: {
               creditorId: "$creditorId",
+              creditorContactId: "$creditorContactId",
               name: "$name",
               number: "$number",
               amount: "$amount",
@@ -284,6 +286,7 @@ export class CreditorService {
       {
         $project: {
           creditorId: "$_id",
+          creditorContactId: "$creditorContactId",
           name: "$contact.name",
           number: "$contact.number",
           amount: "$records.amount",
@@ -304,6 +307,7 @@ export class CreditorService {
           records: {
             $push: {
               creditorId: "$creditorId",
+              creditorContactId: "$creditorContactId",
               name: "$name",
               number: "$number",
               amount: "$amount",
