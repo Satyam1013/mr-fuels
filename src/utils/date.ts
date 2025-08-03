@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { FilterType } from "../home/home.dto";
+
+dayjs.extend(utc);
 
 export function getDateRange(
   filterType: FilterType,
@@ -8,7 +11,7 @@ export function getDateRange(
   startDate: Date;
   endDate: Date;
 } {
-  const date = dayjs(baseDate);
+  const date = dayjs.utc(baseDate);
 
   switch (filterType) {
     case FilterType.DAILY:
