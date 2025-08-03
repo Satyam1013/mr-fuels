@@ -110,6 +110,7 @@ let CreditorService = class CreditorService {
             {
                 $project: {
                     creditorId: "$_id",
+                    creditorContactId: "$creditorContactId",
                     name: "$contact.name",
                     number: "$contact.number",
                     amount: "$records.amount",
@@ -130,6 +131,7 @@ let CreditorService = class CreditorService {
                     records: {
                         $push: {
                             creditorId: "$creditorId",
+                            creditorContactId: "$creditorContactId",
                             name: "$name",
                             number: "$number",
                             amount: "$amount",
@@ -242,6 +244,7 @@ let CreditorService = class CreditorService {
             {
                 $project: {
                     creditorId: "$_id",
+                    creditorContactId: "$creditorContactId",
                     name: "$contact.name",
                     number: "$contact.number",
                     amount: "$records.amount",
@@ -261,6 +264,7 @@ let CreditorService = class CreditorService {
                     records: {
                         $push: {
                             creditorId: "$creditorId",
+                            creditorContactId: "$creditorContactId",
                             name: "$name",
                             number: "$number",
                             amount: "$amount",
