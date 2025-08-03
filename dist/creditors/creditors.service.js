@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreditorService = void 0;
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -21,6 +24,7 @@ const mongoose_2 = require("mongoose");
 const creditors_schema_1 = require("./creditors.schema");
 const date_1 = require("../utils/date");
 const creditor_contact_schema_1 = require("../creditor-contact/creditor-contact.schema");
+const dayjs_1 = __importDefault(require("dayjs"));
 let CreditorService = class CreditorService {
     constructor(creditorModel, creditorContactModel) {
         this.creditorModel = creditorModel;
@@ -289,8 +293,14 @@ let CreditorService = class CreditorService {
             },
         ];
         const result = await this.creditorModel.aggregate(pipeline);
-        if (!result.length)
-            throw new common_1.NotFoundException("Creditor not found");
+        if (!result.length) {
+            return [
+                {
+                    date: (0, dayjs_1.default)(dateString).format("YYYY-MM-DD"),
+                    records: [],
+                },
+            ];
+        }
         return result;
     }
     async update(id, dto, pumpId) {

@@ -15,6 +15,7 @@ import {
   CreditorContact,
   CreditorContactDocument,
 } from "../creditor-contact/creditor-contact.schema";
+import dayjs from "dayjs";
 
 @Injectable()
 export class CreditorService {
@@ -334,7 +335,14 @@ export class CreditorService {
 
     const result = await this.creditorModel.aggregate(pipeline);
 
-    if (!result.length) throw new NotFoundException("Creditor not found");
+    if (!result.length) {
+      return [
+        {
+          date: dayjs(dateString).format("YYYY-MM-DD"),
+          records: [],
+        },
+      ];
+    }
 
     return result;
   }
