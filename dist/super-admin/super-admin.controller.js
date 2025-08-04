@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SuperAdminController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_guard_1 = require("../auth/auth.guard");
 const super_admin_service_1 = require("./super-admin.service");
 const plan_dto_1 = require("../plan/plan.dto");
 let SuperAdminController = class SuperAdminController {
@@ -34,7 +33,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SuperAdminController.prototype, "addPlan", null);
 exports.SuperAdminController = SuperAdminController = __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("super-admin"),
     __metadata("design:paramtypes", [super_admin_service_1.SuperAdminService])
 ], SuperAdminController);

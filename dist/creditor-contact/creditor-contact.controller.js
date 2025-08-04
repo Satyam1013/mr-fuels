@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const creditor_contact_service_1 = require("./creditor-contact.service");
 const creditor_contact_dto_1 = require("./creditor-contact.dto");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
-const auth_guard_1 = require("../auth/auth.guard");
 let CreditorContactController = class CreditorContactController {
     constructor(contactService) {
         this.contactService = contactService;
@@ -77,7 +76,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CreditorContactController.prototype, "delete", null);
 exports.CreditorContactController = CreditorContactController = __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("creditor-contacts"),
     __metadata("design:paramtypes", [creditor_contact_service_1.CreditorContactService])
 ], CreditorContactController);

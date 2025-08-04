@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { AdminModule } from "../admin/admin.module";
 import { AuthService } from "./auth.service";
@@ -18,7 +18,7 @@ import { SuperAdminModule } from "../super-admin/super-admin.module";
         signOptions: { expiresIn: "1h" },
       }),
     }),
-    forwardRef(() => AdminModule),
+    AdminModule,
     SuperAdminModule,
   ],
   providers: [AuthService],

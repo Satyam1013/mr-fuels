@@ -30,7 +30,7 @@ exports.AuthModule = AuthModule = __decorate([
                     signOptions: { expiresIn: "1h" },
                 }),
             }),
-            (0, common_1.forwardRef)(() => admin_module_1.AdminModule),
+            admin_module_1.AdminModule,
             super_admin_module_1.SuperAdminModule,
         ],
         providers: [auth_service_1.AuthService],

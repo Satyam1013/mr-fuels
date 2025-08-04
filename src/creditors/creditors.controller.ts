@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import { CreditorService } from "./creditors.service";
 import {
@@ -17,9 +16,7 @@ import {
   UpdateCreditorDto,
 } from "./creditors.dto";
 import { GetUser } from "../auth/get-user.decoration";
-import { AuthGuard } from "../auth/auth.guard";
 
-@UseGuards(AuthGuard)
 @Controller("creditors")
 export class CreditorController {
   constructor(private readonly creditorService: CreditorService) {}

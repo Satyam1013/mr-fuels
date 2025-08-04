@@ -1,6 +1,5 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { AuthModule } from "../auth/auth.module";
 import {
   PersonalExpense,
   PersonalExpenseSchema,
@@ -13,7 +12,6 @@ import { PersonalExpenseService } from "./personal-expenses.service";
     MongooseModule.forFeature([
       { name: PersonalExpense.name, schema: PersonalExpenseSchema },
     ]),
-    forwardRef(() => AuthModule),
   ],
   controllers: [PersonalExpenseController],
   providers: [PersonalExpenseService],

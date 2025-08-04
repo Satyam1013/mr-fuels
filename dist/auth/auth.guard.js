@@ -17,13 +17,14 @@ exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const core_1 = require("@nestjs/core");
+const public_decorator_1 = require("./public.decorator");
 let AuthGuard = class AuthGuard {
     constructor(jwtService, reflector) {
         this.jwtService = jwtService;
         this.reflector = reflector;
     }
     canActivate(context) {
-        const isPublic = this.reflector.getAllAndOverride("isPublic", [
+        const isPublic = this.reflector.getAllAndOverride(public_decorator_1.IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);

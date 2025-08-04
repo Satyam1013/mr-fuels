@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const create_user_dto_1 = require("./create-user.dto");
+const public_decorator_1 = require("./public.decorator");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -38,6 +39,7 @@ let AuthController = class AuthController {
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)("signup"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -45,6 +47,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "adminSignup", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Get)("check-used-mobiles"),
     __param(0, (0, common_1.Query)("numbers")),
     __metadata("design:type", Function),
@@ -52,6 +55,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "checkUsedMobiles", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)("login"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -59,6 +63,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)("refresh-token"),
     __param(0, (0, common_1.Body)("refresh_token")),
     __metadata("design:type", Function),
@@ -66,6 +71,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshAccessToken", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)("logout"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

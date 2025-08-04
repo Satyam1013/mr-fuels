@@ -19,7 +19,6 @@ const pump_expenses_service_1 = require("./pump-expenses.service");
 const pump_expenses_dto_1 = require("./pump-expenses.dto");
 const home_dto_1 = require("../home/home.dto");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
-const auth_guard_1 = require("../auth/auth.guard");
 let PumpExpenseController = class PumpExpenseController {
     constructor(pumpExpenseService) {
         this.pumpExpenseService = pumpExpenseService;
@@ -83,7 +82,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "remove", null);
 exports.PumpExpenseController = PumpExpenseController = __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("pump-expense"),
     __metadata("design:paramtypes", [pump_expenses_service_1.PumpExpenseService])
 ], PumpExpenseController);

@@ -1,10 +1,8 @@
-import { Controller, Get, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { HomeService } from "./home.service";
 import { FilterType } from "./home.dto";
 import { GetUser } from "../auth/get-user.decoration";
-import { AuthGuard } from "../auth/auth.guard";
 
-@UseGuards(AuthGuard)
 @Controller("home")
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}

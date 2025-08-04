@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const home_dto_1 = require("../home/home.dto");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
-const auth_guard_1 = require("../auth/auth.guard");
 const personal_expenses_dto_1 = require("./personal-expenses.dto");
 const personal_expenses_service_1 = require("./personal-expenses.service");
 let PersonalExpenseController = class PersonalExpenseController {
@@ -83,7 +82,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PersonalExpenseController.prototype, "remove", null);
 exports.PersonalExpenseController = PersonalExpenseController = __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Controller)("personal-expense"),
     __metadata("design:paramtypes", [personal_expenses_service_1.PersonalExpenseService])
 ], PersonalExpenseController);

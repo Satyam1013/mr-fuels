@@ -8,7 +8,6 @@ import {
   Post,
   Query,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -19,9 +18,7 @@ import {
 } from "./pump-expenses.dto";
 import { FilterType } from "../home/home.dto";
 import { GetUser } from "../auth/get-user.decoration";
-import { AuthGuard } from "../auth/auth.guard";
 
-@UseGuards(AuthGuard)
 @Controller("pump-expense")
 export class PumpExpenseController {
   constructor(private readonly pumpExpenseService: PumpExpenseService) {}

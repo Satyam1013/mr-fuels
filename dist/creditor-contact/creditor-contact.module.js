@@ -12,7 +12,6 @@ const creditor_contact_controller_1 = require("./creditor-contact.controller");
 const creditor_contact_service_1 = require("./creditor-contact.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const creditor_contact_schema_1 = require("./creditor-contact.schema");
-const auth_module_1 = require("../auth/auth.module");
 let CreditorContactModule = class CreditorContactModule {
 };
 exports.CreditorContactModule = CreditorContactModule;
@@ -22,7 +21,6 @@ exports.CreditorContactModule = CreditorContactModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: creditor_contact_schema_1.CreditorContact.name, schema: creditor_contact_schema_1.CreditorContactSchema },
             ]),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [creditor_contact_controller_1.CreditorContactController],
         providers: [creditor_contact_service_1.CreditorContactService],

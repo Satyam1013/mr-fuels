@@ -20,6 +20,7 @@ const pump_expenses_module_1 = require("./pump-expenses/pump-expenses.module");
 const personal_expenses_module_1 = require("./personal-expenses/personal-expenses.module");
 const creditors_module_1 = require("./creditors/creditors.module");
 const creditor_contact_module_1 = require("./creditor-contact/creditor-contact.module");
+const dsr_module_1 = require("./dsr/dsr.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -37,6 +38,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             plan_module_1.PlanModule,
             home_module_1.HomeModule,
+            dsr_module_1.DSRModule,
             creditors_module_1.CreditorModule,
         ],
         providers: [],

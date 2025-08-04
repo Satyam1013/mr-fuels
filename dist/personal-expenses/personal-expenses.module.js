@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PersonalExpenseModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const auth_module_1 = require("../auth/auth.module");
 const personal_expenses_schema_1 = require("./personal-expenses.schema");
 const personal_expenses_controller_1 = require("./personal-expenses.controller");
 const personal_expenses_service_1 = require("./personal-expenses.service");
@@ -22,7 +21,6 @@ exports.PersonalExpenseModule = PersonalExpenseModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: personal_expenses_schema_1.PersonalExpense.name, schema: personal_expenses_schema_1.PersonalExpenseSchema },
             ]),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [personal_expenses_controller_1.PersonalExpenseController],
         providers: [personal_expenses_service_1.PersonalExpenseService],

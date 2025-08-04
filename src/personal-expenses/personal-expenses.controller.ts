@@ -8,20 +8,17 @@ import {
   Post,
   Query,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { FilterType } from "../home/home.dto";
 import { GetUser } from "../auth/get-user.decoration";
-import { AuthGuard } from "../auth/auth.guard";
 import {
   CreatePersonalExpenseDto,
   UpdatePersonalExpenseDto,
 } from "./personal-expenses.dto";
 import { PersonalExpenseService } from "./personal-expenses.service";
 
-@UseGuards(AuthGuard)
 @Controller("personal-expense")
 export class PersonalExpenseController {
   constructor(

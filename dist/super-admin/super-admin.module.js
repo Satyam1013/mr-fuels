@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SuperAdminModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const auth_module_1 = require("../auth/auth.module");
 const plan_module_1 = require("../plan/plan.module");
 const super_admin_schema_1 = require("./super-admin.schema");
 const super_admin_service_1 = require("./super-admin.service");
@@ -23,7 +22,6 @@ exports.SuperAdminModule = SuperAdminModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: super_admin_schema_1.SuperAdmin.name, schema: super_admin_schema_1.SuperAdminSchema },
             ]),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
             plan_module_1.PlanModule,
         ],
         providers: [super_admin_service_1.SuperAdminService],

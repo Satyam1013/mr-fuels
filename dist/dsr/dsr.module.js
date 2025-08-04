@@ -6,24 +6,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminModule = void 0;
+exports.DSRModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const admin_service_1 = require("./admin.service");
-const admin_controller_1 = require("./admin.controller");
-const admin_schema_1 = require("./admin.schema");
-const plan_module_1 = require("../plan/plan.module");
-let AdminModule = class AdminModule {
+const dsr_schema_1 = require("./dsr.schema");
+const dsr_controller_1 = require("./dsr.controller");
+const dsr_service_1 = require("./dsr.service");
+let DSRModule = class DSRModule {
 };
-exports.AdminModule = AdminModule;
-exports.AdminModule = AdminModule = __decorate([
+exports.DSRModule = DSRModule;
+exports.DSRModule = DSRModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema }]),
-            plan_module_1.PlanModule,
-        ],
-        providers: [admin_service_1.AdminService],
-        controllers: [admin_controller_1.AdminController],
-        exports: [admin_service_1.AdminService, mongoose_1.MongooseModule],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: dsr_schema_1.DSR.name, schema: dsr_schema_1.DSRSchema }])],
+        providers: [dsr_service_1.DSRService],
+        controllers: [dsr_controller_1.DSRController],
+        exports: [mongoose_1.MongooseModule],
     })
-], AdminModule);
+], DSRModule);
