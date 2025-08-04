@@ -21,7 +21,7 @@ async function getCreditorStats(model, pumpId, startDate, endDate) {
         },
         {
             $group: {
-                _id: "$records.type", // credit or return
+                _id: "$records.type",
                 totalAmount: { $sum: "$records.amount" },
                 count: { $sum: 1 },
             },
@@ -36,5 +36,5 @@ async function getCreditorStats(model, pumpId, startDate, endDate) {
         },
     ]);
     const creditorTotalAmount = stats.reduce((sum, entry) => sum + entry.totalAmount, 0);
-    return { breakdown: stats, creditorTotalAmount };
+    return { creditorTotalAmount };
 }

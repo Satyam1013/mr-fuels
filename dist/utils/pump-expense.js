@@ -31,5 +31,5 @@ async function getPumpExpenseStats(model, pumpId, startDate, endDate) {
         },
     ]);
     const pumpExpenseTotalAmount = pumpExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
-    return { breakdown: pumpExpenseData, pumpExpenseTotalAmount };
+    return { pumpExpenseTotalAmount };
 }

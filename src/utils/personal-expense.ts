@@ -6,11 +6,6 @@ import { Model, Types } from "mongoose";
 import { PersonalExpenseDocument } from "../personal-expenses/personal-expenses.schema";
 
 interface PersonalExpenseStats {
-  breakdown: Array<{
-    title: string;
-    categoryAmount: number;
-    count: number;
-  }>;
   personalExpenseTotalAmount: number;
 }
 
@@ -50,5 +45,5 @@ export async function getPersonalExpenseStats(
     0,
   );
 
-  return { breakdown: personalExpenseData, personalExpenseTotalAmount };
+  return { personalExpenseTotalAmount };
 }

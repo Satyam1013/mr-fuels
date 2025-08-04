@@ -25,7 +25,7 @@ export async function getCreditorStats(
     },
     {
       $group: {
-        _id: "$records.type", // credit or return
+        _id: "$records.type",
         totalAmount: { $sum: "$records.amount" },
         count: { $sum: 1 },
       },
@@ -45,5 +45,5 @@ export async function getCreditorStats(
     0,
   );
 
-  return { breakdown: stats, creditorTotalAmount };
+  return { creditorTotalAmount };
 }

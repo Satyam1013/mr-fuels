@@ -31,5 +31,5 @@ async function getPersonalExpenseStats(model, pumpId, startDate, endDate) {
         },
     ]);
     const personalExpenseTotalAmount = personalExpenseData.reduce((sum, item) => sum + (item.categoryAmount ?? 0), 0);
-    return { breakdown: personalExpenseData, personalExpenseTotalAmount };
+    return { personalExpenseTotalAmount };
 }

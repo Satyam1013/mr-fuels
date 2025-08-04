@@ -6,11 +6,6 @@ import { Model, Types } from "mongoose";
 import { PumpExpenseDocument } from "../pump-expenses/pump-expenses.schema";
 
 interface PumpExpenseStats {
-  breakdown: Array<{
-    title: string;
-    categoryAmount: number;
-    count: number;
-  }>;
   pumpExpenseTotalAmount: number;
 }
 
@@ -50,5 +45,5 @@ export async function getPumpExpenseStats(
     0,
   );
 
-  return { breakdown: pumpExpenseData, pumpExpenseTotalAmount };
+  return { pumpExpenseTotalAmount };
 }
