@@ -21,6 +21,5 @@ exports.HomeModule = HomeModule = __decorate([
         imports: [pump_expenses_module_1.PumpExpenseModule, personal_expenses_module_1.PersonalExpenseModule, creditors_module_1.CreditorModule],
         providers: [home_service_1.HomeService],
         controllers: [home_controller_1.HomeController],
-        exports: [],
     })
 ], HomeModule);

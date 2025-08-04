@@ -9,6 +9,5 @@ import { PersonalExpenseModule } from "../personal-expenses/personal-expenses.mo
   imports: [PumpExpenseModule, PersonalExpenseModule, CreditorModule],
   providers: [HomeService],
   controllers: [HomeController],
-  exports: [],
 })
 export class HomeModule {}
