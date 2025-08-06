@@ -47,7 +47,7 @@ export async function uploadPdfBufferToCloudinary(
       {
         folder: "pdfs",
         resource_type: "raw",
-        public_id: filename.replace(/\.[^/.]+$/, ""), // remove extension for public_id
+        public_id: filename.replace(/\.[^/.]+$/, ""),
       },
       (
         error: unknown,
