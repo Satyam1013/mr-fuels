@@ -69,10 +69,6 @@ export async function uploadPdfBufferToCloudinary(
   });
 }
 
-/**
- * Delete a file from Cloudinary using its full URL
- * @param imageUrl - Cloudinary URL of the uploaded file
- */
 export const deleteFromCloudinary = async (imageUrl: string) => {
   const publicId = imageUrl.split("/").pop()?.split(".")[0];
   if (publicId) {
