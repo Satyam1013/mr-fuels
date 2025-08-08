@@ -33,11 +33,6 @@ export async function uploadPdfToCloudinary(filePath: string) {
   }
 }
 
-/**
- * Upload a PDF from a buffer (e.g., received from an HTTP file upload)
- * @param buffer - Buffer of the uploaded PDF
- * @param filename - Original filename of the PDF
- */
 export async function uploadPdfBufferToCloudinary(
   buffer: Buffer,
   filename: string,
