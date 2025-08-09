@@ -13,10 +13,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-/**
- * Upload a PDF file from disk path to Cloudinary
- * @param filePath - Local file path of the PDF
- */
+
 export async function uploadPdfToCloudinary(filePath: string) {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
