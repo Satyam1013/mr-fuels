@@ -13,12 +13,11 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 export async function uploadPdfToCloudinary(filePath: string) {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: "pdfs",
-      resource_type: "raw", // For PDF and other non-image files
+      resource_type: "raw",
     });
     return {
       secure_url: result.secure_url,
