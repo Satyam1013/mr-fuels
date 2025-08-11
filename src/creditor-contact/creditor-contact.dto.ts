@@ -6,7 +6,7 @@ export class CreateCreditorContactDto {
   name!: string;
 
   @IsNotEmpty()
-  @Matches(/^[0-9]{10}$/, { message: "Phone number must be 10 digits" })
+  @Matches(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" })
   number!: string;
 }
 
@@ -16,6 +16,6 @@ export class UpdateCreditorContactDto {
   name?: string;
 
   @IsOptional()
-  @Matches(/^[0-9]{10}$/, { message: "Phone number must be 10 digits" })
+  @Matches(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" })
   number?: string;
 }
