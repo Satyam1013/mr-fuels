@@ -48,15 +48,11 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-/**
- * Upload a PDF file from disk path to Cloudinary
- * @param filePath - Local file path of the PDF
- */
 async function uploadPdfToCloudinary(filePath) {
     try {
         const result = await cloudinary.uploader.upload(filePath, {
             folder: "pdfs",
-            resource_type: "raw", // For PDF and other non-image files
+            resource_type: "raw",
         });
         return {
             secure_url: result.secure_url,
@@ -68,17 +64,12 @@ async function uploadPdfToCloudinary(filePath) {
         throw new Error("Cloudinary PDF upload failed");
     }
 }
-/**
- * Upload a PDF from a buffer (e.g., received from an HTTP file upload)
- * @param buffer - Buffer of the uploaded PDF
- * @param filename - Original filename of the PDF
- */
 async function uploadPdfBufferToCloudinary(buffer, filename) {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({
             folder: "pdfs",
             resource_type: "raw",
-            public_id: filename.replace(/\.[^/.]+$/, ""), // remove extension for public_id
+            public_id: filename.replace(/\.[^/.]+$/, ""),
         }, (error, result) => {
             if (error) {
                 console.error("Cloudinary PDF buffer upload failed:", error);
@@ -94,10 +85,6 @@ async function uploadPdfBufferToCloudinary(buffer, filename) {
         stream.end(buffer);
     });
 }
-/**
- * Delete a file from Cloudinary using its full URL
- * @param imageUrl - Cloudinary URL of the uploaded file
- */
 const deleteFromCloudinary = async (imageUrl) => {
     const publicId = imageUrl.split("/").pop()?.split(".")[0];
     if (publicId) {

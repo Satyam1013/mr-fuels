@@ -21,7 +21,7 @@ __decorate([
 ], CreateCreditorContactDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Phone number must be 10 digits" }),
+    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" }),
     __metadata("design:type", String)
 ], CreateCreditorContactDto.prototype, "number", void 0);
 class UpdateCreditorContactDto {
@@ -34,6 +34,6 @@ __decorate([
 ], UpdateCreditorContactDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Phone number must be 10 digits" }),
+    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" }),
     __metadata("design:type", String)
 ], UpdateCreditorContactDto.prototype, "number", void 0);
