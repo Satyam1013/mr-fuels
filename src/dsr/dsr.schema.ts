@@ -5,6 +5,9 @@ export type DSRDocument = DSR & Document;
 
 @Schema({ timestamps: true })
 export class DSR {
+  @Prop({ required: true })
+  name!: string;
+
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
   pumpId!: Types.ObjectId;
 }
