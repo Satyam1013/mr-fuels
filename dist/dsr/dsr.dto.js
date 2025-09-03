@@ -50,10 +50,6 @@ class CreateDSRDto {
 }
 exports.CreateDSRDto = CreateDSRDto;
 __decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreateDSRDto.prototype, "pumpId", void 0);
-__decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => FuelEntryDto),
     __metadata("design:type", FuelEntryDto)

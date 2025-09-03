@@ -1,4 +1,4 @@
-import { IsMongoId, ValidateNested, IsNumber, IsString } from "class-validator";
+import { ValidateNested, IsNumber, IsString } from "class-validator";
 import { Type } from "class-transformer";
 
 class FuelEntryDto {
@@ -16,9 +16,6 @@ class FuelEntryDto {
 }
 
 export class CreateDSRDto {
-  @IsMongoId()
-  pumpId!: string;
-
   @ValidateNested()
   @Type(() => FuelEntryDto)
   petrol!: FuelEntryDto;
