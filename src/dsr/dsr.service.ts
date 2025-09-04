@@ -14,6 +14,7 @@ export class DSRService {
     return this.dsrModel.create({
       ...dto,
       pumpId: new Types.ObjectId(pumpId),
+      date: new Date(dto.date),
     });
   }
 }

@@ -1,4 +1,9 @@
-import { ValidateNested, IsNumber, IsString } from "class-validator";
+import {
+  ValidateNested,
+  IsNumber,
+  IsString,
+  IsDateString,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 class FuelEntryDto {
@@ -16,6 +21,9 @@ class FuelEntryDto {
 }
 
 export class CreateDSRDto {
+  @IsDateString()
+  date!: string;
+
   @ValidateNested()
   @Type(() => FuelEntryDto)
   petrol!: FuelEntryDto;

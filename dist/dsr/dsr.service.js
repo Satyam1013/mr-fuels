@@ -25,6 +25,7 @@ let DSRService = class DSRService {
         return this.dsrModel.create({
             ...dto,
             pumpId: new mongoose_2.Types.ObjectId(pumpId),
+            date: new Date(dto.date),
         });
     }
 };
