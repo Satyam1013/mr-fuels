@@ -143,4 +143,14 @@ export class AdminService {
 
     throw new BadRequestException("Invalid role or user context");
   }
+
+  async getFuelTypes(adminId: string | undefined) {
+    const admin = await this.adminModel.findById(adminId).select("fuelTypes");
+
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+
+    return { fuelTypes: admin.fuelTypes };
+  }
 }

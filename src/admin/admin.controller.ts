@@ -20,4 +20,10 @@ export class AdminController {
   async getProfile(@Req() req: AuthenticatedRequest) {
     return this.adminService.getProfile(req.user);
   }
+
+  @Get("fuel-types")
+  async getFuelTypes(@Req() req: AuthenticatedRequest) {
+    const adminId = req.user.adminId;
+    return this.adminService.getFuelTypes(adminId);
+  }
 }
