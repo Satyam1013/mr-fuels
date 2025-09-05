@@ -28,7 +28,7 @@ let AdminController = class AdminController {
         return this.adminService.getProfile(req.user);
     }
     async getFuelTypes(req) {
-        const adminId = req.user.adminId;
+        const adminId = req.user.adminId ?? req.user.sub;
         return this.adminService.getFuelTypes(adminId);
     }
 };

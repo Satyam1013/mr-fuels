@@ -23,7 +23,7 @@ export class AdminController {
 
   @Get("fuel-types")
   async getFuelTypes(@Req() req: AuthenticatedRequest) {
-    const adminId = req.user.adminId;
+    const adminId = req.user.adminId ?? req.user.sub;
     return this.adminService.getFuelTypes(adminId);
   }
 }
