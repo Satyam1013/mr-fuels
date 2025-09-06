@@ -219,8 +219,8 @@ let AuthService = class AuthService {
                     throw new common_1.UnauthorizedException("Invalid password");
                 const payload = {
                     sub: admin._id,
-                    mobileNo,
                     role: "admin",
+                    mobileNo: admin.mobileNo,
                     pumpId: admin._id,
                 };
                 const access_token = this.jwtService.sign(payload, {
@@ -254,11 +254,10 @@ let AuthService = class AuthService {
             if (!isValidManagerPassword)
                 throw new common_1.UnauthorizedException("Invalid password");
             const payload = {
-                sub: manager.mobile,
+                sub: manager._id.toString(),
                 role: "manager",
                 mobileNo: manager.mobile,
                 shift: manager.shift,
-                pumpId: adminWithManager._id,
                 adminId: adminWithManager._id,
             };
             const access_token = this.jwtService.sign(payload, {

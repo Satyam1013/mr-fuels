@@ -234,8 +234,8 @@ export class AuthService {
 
         const payload = {
           sub: admin._id,
-          mobileNo,
           role: "admin",
+          mobileNo: admin.mobileNo,
           pumpId: admin._id,
         };
 
@@ -285,11 +285,10 @@ export class AuthService {
         throw new UnauthorizedException("Invalid password");
 
       const payload = {
-        sub: manager.mobile,
+        sub: manager._id.toString(),
         role: "manager",
         mobileNo: manager.mobile,
         shift: manager.shift,
-        pumpId: adminWithManager._id,
         adminId: adminWithManager._id,
       };
 
