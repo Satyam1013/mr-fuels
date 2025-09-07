@@ -21,9 +21,9 @@ export class AdminController {
     return this.adminService.getProfile(req.user);
   }
 
-  @Get("fuel-types")
-  async getFuelTypes(@Req() req: AuthenticatedRequest) {
-    const adminId = req.user.adminId ?? req.user.sub;
-    return this.adminService.getFuelTypes(adminId);
+  @Get("machine-details")
+  async getMachineDetails(@Req() req: AuthenticatedRequest) {
+    const adminId = req.user.sub;
+    return this.adminService.getMachineDetails(adminId);
   }
 }

@@ -27,9 +27,9 @@ let AdminController = class AdminController {
     async getProfile(req) {
         return this.adminService.getProfile(req.user);
     }
-    async getFuelTypes(req) {
-        const adminId = req.user.adminId ?? req.user.sub;
-        return this.adminService.getFuelTypes(adminId);
+    async getMachineDetails(req) {
+        const adminId = req.user.sub;
+        return this.adminService.getMachineDetails(adminId);
     }
 };
 exports.AdminController = AdminController;
@@ -49,12 +49,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getProfile", null);
 __decorate([
-    (0, common_1.Get)("fuel-types"),
+    (0, common_1.Get)("machine-details"),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AdminController.prototype, "getFuelTypes", null);
+], AdminController.prototype, "getMachineDetails", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.Controller)("admin"),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
