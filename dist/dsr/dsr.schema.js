@@ -12,43 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DSRSchema = exports.DSR = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let FuelEntry = class FuelEntry {
-};
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], FuelEntry.prototype, "manualDip", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], FuelEntry.prototype, "manualDipPic", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], FuelEntry.prototype, "receipt", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], FuelEntry.prototype, "receiptPic", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], FuelEntry.prototype, "meterReading", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], FuelEntry.prototype, "meterReadingPic", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], FuelEntry.prototype, "pumpTesting", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], FuelEntry.prototype, "pumpTestingPic", void 0);
-FuelEntry = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
-], FuelEntry);
 let DSR = class DSR {
 };
 exports.DSR = DSR;
@@ -57,17 +20,25 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], DSR.prototype, "pumpId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: FuelEntry }),
-    __metadata("design:type", FuelEntry)
-], DSR.prototype, "petrol", void 0);
+    (0, mongoose_1.Prop)({ type: Date, required: true }),
+    __metadata("design:type", Date)
+], DSR.prototype, "date", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: FuelEntry }),
-    __metadata("design:type", FuelEntry)
-], DSR.prototype, "diesel", void 0);
+    (0, mongoose_1.Prop)({ type: Object, required: true }),
+    __metadata("design:type", Object)
+], DSR.prototype, "manualDip", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: FuelEntry }),
-    __metadata("design:type", FuelEntry)
-], DSR.prototype, "power", void 0);
+    (0, mongoose_1.Prop)({ type: Object, required: true }),
+    __metadata("design:type", Object)
+], DSR.prototype, "receipt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Object, required: true }),
+    __metadata("design:type", Object)
+], DSR.prototype, "pumpTesting", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Object, required: true }),
+    __metadata("design:type", Object)
+], DSR.prototype, "meterReading", void 0);
 exports.DSR = DSR = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], DSR);

@@ -11,41 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDSRDto = void 0;
 const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-class FuelEntryDto {
-}
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], FuelEntryDto.prototype, "manualDip", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FuelEntryDto.prototype, "manualDipPic", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], FuelEntryDto.prototype, "receipt", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FuelEntryDto.prototype, "receiptPic", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], FuelEntryDto.prototype, "meterReading", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FuelEntryDto.prototype, "meterReadingPic", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], FuelEntryDto.prototype, "pumpTesting", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FuelEntryDto.prototype, "pumpTestingPic", void 0);
 class CreateDSRDto {
 }
 exports.CreateDSRDto = CreateDSRDto;
@@ -54,17 +19,18 @@ __decorate([
     __metadata("design:type", String)
 ], CreateDSRDto.prototype, "date", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => FuelEntryDto),
-    __metadata("design:type", FuelEntryDto)
-], CreateDSRDto.prototype, "petrol", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateDSRDto.prototype, "manualDip", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => FuelEntryDto),
-    __metadata("design:type", FuelEntryDto)
-], CreateDSRDto.prototype, "diesel", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateDSRDto.prototype, "receipt", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => FuelEntryDto),
-    __metadata("design:type", FuelEntryDto)
-], CreateDSRDto.prototype, "power", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateDSRDto.prototype, "pumpTesting", void 0);
+__decorate([
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateDSRDto.prototype, "meterReading", void 0);

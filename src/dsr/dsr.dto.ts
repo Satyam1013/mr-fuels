@@ -1,38 +1,22 @@
-import {
-  ValidateNested,
-  IsNumber,
-  IsString,
-  IsDateString,
-} from "class-validator";
-import { Type } from "class-transformer";
-
-class FuelEntryDto {
-  @IsNumber() manualDip!: number;
-  @IsString() manualDipPic!: string;
-
-  @IsNumber() receipt!: number;
-  @IsString() receiptPic!: string;
-
-  @IsNumber() meterReading!: number;
-  @IsString() meterReadingPic!: string;
-
-  @IsNumber() pumpTesting!: number;
-  @IsString() pumpTestingPic!: string;
-}
+import { IsDateString, IsObject } from "class-validator";
 
 export class CreateDSRDto {
   @IsDateString()
   date!: string;
 
-  @ValidateNested()
-  @Type(() => FuelEntryDto)
-  petrol!: FuelEntryDto;
+  @IsObject()
+  manualDip!: Record<string, number>;
+  // e.g. { Petrol: 123, Diesel: 456 }
 
-  @ValidateNested()
-  @Type(() => FuelEntryDto)
-  diesel!: FuelEntryDto;
+  @IsObject()
+  receipt!: Record<string, number>;
+  // e.g. { Petrol: 200, Diesel: 300 }
 
-  @ValidateNested()
-  @Type(() => FuelEntryDto)
-  power!: FuelEntryDto;
+  @IsObject()
+  pumpTesting!: Record<string, number>;
+  // e.g. { Petrol: 50, Diesel: 80 }
+
+  @IsObject()
+  meterReading!: Record<string, Record<string, number>>;
+  // e.g. { Machine1: { Petrol: 123, Diesel: 456 }, Machine2: { Petrol: 789 } }
 }
