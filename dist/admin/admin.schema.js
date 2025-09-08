@@ -9,17 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminSchema = exports.Admin = exports.Manager = void 0;
+exports.AdminSchema = exports.Admin = exports.ManagerSchema = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const plan_schema_1 = require("../plan/plan.schema");
 let Manager = class Manager {
 };
 exports.Manager = Manager;
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, auto: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Manager.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
@@ -47,6 +43,36 @@ __decorate([
 exports.Manager = Manager = __decorate([
     (0, mongoose_1.Schema)()
 ], Manager);
+exports.ManagerSchema = mongoose_1.SchemaFactory.createForClass(Manager);
+let Fuel = class Fuel {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Fuel.prototype, "value", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Fuel.prototype, "kl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Fuel.prototype, "diameter", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Fuel.prototype, "radius", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Fuel.prototype, "length", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Object)
+], Fuel.prototype, "pdf", void 0);
+Fuel = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], Fuel);
 let Admin = class Admin {
 };
 exports.Admin = Admin;
@@ -67,7 +93,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Admin.prototype, "fuelTypes", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, type: Object }),
+    (0, mongoose_1.Prop)({ type: [Fuel], required: true }),
     __metadata("design:type", Array)
 ], Admin.prototype, "fuels", void 0);
 __decorate([
@@ -95,7 +121,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Admin.prototype, "shiftDetails", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [Manager], required: true }),
+    (0, mongoose_1.Prop)({ type: [exports.ManagerSchema], required: true }),
     __metadata("design:type", Array)
 ], Admin.prototype, "managers", void 0);
 __decorate([

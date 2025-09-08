@@ -21,8 +21,8 @@ export class AuthController {
 
   @Public()
   @Post("login")
-  login(@Body() body: LoginDto) {
-    return this.authService.login(body.mobileNo, body.password);
+  adminLogin(@Body() body: LoginDto) {
+    return this.authService.adminLogin(body.mobileNo, body.password);
   }
 
   @Public()

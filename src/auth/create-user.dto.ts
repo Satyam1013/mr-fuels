@@ -17,8 +17,20 @@ export class FuelDto {
   @Type(() => Number)
   kl!: number;
 
+  @IsNumber()
+  @Type(() => Number)
+  diameter!: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  radius!: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  length!: number;
+
   @IsObject()
-  pdf!: object;
+  pdf?: object;
 }
 
 export class BusinessDetailsDto {

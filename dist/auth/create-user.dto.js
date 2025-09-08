@@ -25,6 +25,21 @@ __decorate([
     __metadata("design:type", Number)
 ], FuelDto.prototype, "kl", void 0);
 __decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], FuelDto.prototype, "diameter", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], FuelDto.prototype, "radius", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], FuelDto.prototype, "length", void 0);
+__decorate([
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], FuelDto.prototype, "pdf", void 0);

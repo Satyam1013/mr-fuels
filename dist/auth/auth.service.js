@@ -46,8 +46,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const bcrypt = __importStar(require("bcrypt"));
@@ -206,33 +204,34 @@ let AuthService = class AuthService {
         }
         return { usedMobiles: Array.from(usedMobiles) };
     }
-    async login(mobileNo, password) {
+    async adminLogin(mobileNo, password) {
         try {
-            // 1. Try as Admin
+            const ACCESS_TTL = this.configService.get("ACCESS_TOKEN_TTL") ?? "1h";
+            const REFRESH_TTL = this.configService.get("REFRESH_TOKEN_TTL") ?? "7d";
+            // --- Try Admin ---
             const adminDoc = await this.adminModel
                 .findOne({ mobileNo })
                 .populate("plan");
             if (adminDoc) {
-                const admin = adminDoc;
-                const isValid = await bcrypt.compare(password, admin.password);
+                const isValid = await bcrypt.compare(password, adminDoc.password);
                 if (!isValid)
                     throw new common_1.UnauthorizedException("Invalid password");
                 const payload = {
-                    sub: admin._id,
+                    sub: adminDoc._id,
                     role: "admin",
-                    mobileNo: admin.mobileNo,
-                    pumpId: admin._id,
+                    mobileNo: adminDoc.mobileNo,
+                    pumpId: adminDoc._id,
                 };
-                const access_token = this.jwtService.sign(payload, {
+                const access_token = await this.jwtService.signAsync(payload, {
                     secret: this.configService.get("JWT_SECRET"),
-                    expiresIn: "1h",
+                    expiresIn: ACCESS_TTL,
                 });
-                const refresh_token = this.jwtService.sign(payload, {
+                const refresh_token = await this.jwtService.signAsync(payload, {
                     secret: this.configService.get("JWT_REFRESH_SECRET"),
-                    expiresIn: "7d",
+                    expiresIn: REFRESH_TTL,
                 });
-                admin.refreshToken = refresh_token;
-                await admin.save();
+                adminDoc.refreshToken = refresh_token;
+                await adminDoc.save();
                 return {
                     message: "Admin logged in",
                     access_token,
@@ -240,13 +239,12 @@ let AuthService = class AuthService {
                     role: "admin",
                 };
             }
-            // 2. Try as Manager
-            const adminWithManagerDoc = await this.adminModel
+            // --- Try Manager ---
+            const adminWithManager = await this.adminModel
                 .findOne({ "managers.mobile": mobileNo })
                 .populate("plan");
-            if (!adminWithManagerDoc)
+            if (!adminWithManager)
                 throw new common_1.UnauthorizedException("User not found");
-            const adminWithManager = adminWithManagerDoc;
             const manager = adminWithManager.managers.find((m) => m.mobile === mobileNo);
             if (!manager)
                 throw new common_1.UnauthorizedException("Manager not found");
@@ -254,28 +252,22 @@ let AuthService = class AuthService {
             if (!isValidManagerPassword)
                 throw new common_1.UnauthorizedException("Invalid password");
             const payload = {
-                sub: manager._id.toString(),
+                sub: manager._id,
                 role: "manager",
                 mobileNo: manager.mobile,
                 shift: manager.shift,
                 adminId: adminWithManager._id,
+                pumpId: adminWithManager._id,
             };
-            const access_token = this.jwtService.sign(payload, {
+            const access_token = await this.jwtService.signAsync(payload, {
                 secret: this.configService.get("JWT_SECRET"),
-                expiresIn: "1h",
+                expiresIn: ACCESS_TTL,
             });
-            const refresh_token = this.jwtService.sign(payload, {
+            const refresh_token = await this.jwtService.signAsync(payload, {
                 secret: this.configService.get("JWT_REFRESH_SECRET"),
-                expiresIn: "7d",
+                expiresIn: REFRESH_TTL,
             });
-            await this.adminModel.updateOne({
-                _id: adminWithManager._id,
-                "managers.mobile": mobileNo,
-            }, {
-                $set: {
-                    "managers.$.refreshToken": refresh_token,
-                },
-            });
+            await this.adminModel.updateOne({ _id: adminWithManager._id, "managers._id": manager._id }, { $set: { "managers.$.refreshToken": refresh_token } });
             return {
                 message: "Manager logged in",
                 access_token,
@@ -283,30 +275,55 @@ let AuthService = class AuthService {
                 role: "manager",
             };
         }
-        catch (error) {
-            console.error("Unified login error:", error);
+        catch (err) {
+            console.error("Unified login error:", err);
             throw new common_1.InternalServerErrorException("Login failed");
         }
     }
     async refreshAccessToken(refreshToken) {
         try {
-            const payload = this.jwtService.verify(refreshToken, {
+            const ACCESS_TTL = this.configService.get("ACCESS_TOKEN_TTL") ?? "1h";
+            // allow a small clock skew (helps “expired too early” symptoms)
+            const payload = await this.jwtService.verifyAsync(refreshToken, {
                 secret: this.configService.get("JWT_REFRESH_SECRET"),
+                clockTolerance: 10, // seconds
             });
-            const admin = await this.adminModel.findById(payload.sub);
-            if (!admin || admin.refreshToken !== refreshToken) {
+            if (payload.role === "admin") {
+                const admin = await this.adminModel.findById(payload.sub);
+                if (!admin || admin.refreshToken !== refreshToken) {
+                    throw new common_1.UnauthorizedException("Invalid refresh token");
+                }
+                const newAccess = await this.jwtService.signAsync({
+                    sub: admin._id,
+                    role: "admin",
+                    mobileNo: admin.mobileNo,
+                    pumpId: admin._id,
+                }, {
+                    secret: this.configService.get("JWT_SECRET"),
+                    expiresIn: ACCESS_TTL,
+                });
+                return { access_token: newAccess };
+            }
+            // role === 'manager'
+            const admin = await this.adminModel.findById(payload.adminId);
+            if (!admin)
+                throw new common_1.UnauthorizedException("Invalid refresh token");
+            const manager = admin.managers.find((m) => m._id.toString() === payload.sub);
+            if (!manager || manager.refreshToken !== refreshToken) {
                 throw new common_1.UnauthorizedException("Invalid refresh token");
             }
-            const newAccessToken = this.jwtService.sign({ sub: admin._id, mobileNo: admin.mobileNo }, {
-                secret: this.configService.get("JWT_SECRET"),
-                expiresIn: "1h",
-            });
-            return {
-                access_token: newAccessToken,
-            };
+            const newAccess = await this.jwtService.signAsync({
+                sub: manager._id,
+                role: "manager",
+                mobileNo: manager.mobile,
+                shift: manager.shift,
+                adminId: admin._id,
+                pumpId: admin._id,
+            }, { secret: this.configService.get("JWT_SECRET"), expiresIn: ACCESS_TTL });
+            return { access_token: newAccess };
         }
-        catch (error) {
-            console.error("Error refreshing token:", error);
+        catch (err) {
+            console.error("Error refreshing token:", err);
             throw new common_1.UnauthorizedException("Invalid or expired refresh token");
         }
     }

@@ -27,8 +27,8 @@ let AuthController = class AuthController {
     checkUsedMobiles(numbers) {
         return this.authService.checkUsedMobiles(numbers);
     }
-    login(body) {
-        return this.authService.login(body.mobileNo, body.password);
+    adminLogin(body) {
+        return this.authService.adminLogin(body.mobileNo, body.password);
     }
     refreshAccessToken(refreshToken) {
         return this.authService.refreshAccessToken(refreshToken);
@@ -61,7 +61,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "login", null);
+], AuthController.prototype, "adminLogin", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("refresh-token"),

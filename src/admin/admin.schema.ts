@@ -4,7 +4,7 @@ import { Plan } from "../plan/plan.schema";
 
 @Schema()
 export class Manager {
-  @Prop({ type: Types.ObjectId, auto: true }) _id!: Types.ObjectId;
+  _id!: Types.ObjectId;
 
   @Prop({ required: true }) name!: string;
 
@@ -20,6 +20,23 @@ export class Manager {
   refreshToken?: string | null;
 }
 
+export const ManagerSchema = SchemaFactory.createForClass(Manager);
+
+@Schema({ _id: false })
+class Fuel {
+  @Prop({ required: true }) value!: string;
+
+  @Prop({ required: true }) kl!: number;
+
+  @Prop({ required: true }) diameter!: number;
+
+  @Prop({ required: true }) radius!: number;
+
+  @Prop({ required: true }) length!: number;
+
+  @Prop({ type: Object }) pdf!: object;
+}
+
 @Schema()
 export class Admin {
   @Prop({ required: true }) businessName!: string;
@@ -30,7 +47,8 @@ export class Admin {
 
   @Prop({ required: true }) fuelTypes!: string[];
 
-  @Prop({ required: true, type: Object }) fuels!: any[];
+  @Prop({ type: [Fuel], required: true })
+  fuels!: Fuel[];
 
   @Prop({ required: true, type: Object }) machines!: any[];
 
@@ -44,7 +62,7 @@ export class Admin {
 
   @Prop() shiftDetails?: number;
 
-  @Prop({ type: [Manager], required: true })
+  @Prop({ type: [ManagerSchema], required: true })
   managers!: Manager[];
 
   @Prop({ required: true }) password!: string;
