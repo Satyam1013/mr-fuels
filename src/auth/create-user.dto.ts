@@ -29,6 +29,7 @@ export class FuelDto {
   @Type(() => Number)
   length!: number;
 
+  @IsOptional()
   @IsObject()
   pdf?: object;
 }
