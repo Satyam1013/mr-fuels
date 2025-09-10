@@ -67,7 +67,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Fuel.prototype, "length", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Object }),
+    (0, mongoose_1.Prop)({ type: Object, required: false }),
     __metadata("design:type", Object)
 ], Fuel.prototype, "pdf", void 0);
 Fuel = __decorate([
