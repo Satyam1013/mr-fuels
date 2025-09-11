@@ -34,7 +34,8 @@ class Fuel {
 
   @Prop({ required: true }) length!: number;
 
-  @Prop({ type: Object, required: false }) pdf?: object;
+  @Prop({ type: Object, required: false })
+  pdf?: object;
 }
 
 @Schema()
@@ -47,8 +48,7 @@ export class Admin {
 
   @Prop({ required: true }) fuelTypes!: string[];
 
-  @Prop({ type: [Fuel], required: true })
-  fuels!: Fuel[];
+  @Prop({ type: [Fuel], required: true }) fuels!: Fuel[];
 
   @Prop({ required: true, type: Object }) machines!: any[];
 
@@ -88,8 +88,7 @@ export class Admin {
   @Prop({ type: Date, default: Date.now })
   startDate!: Date;
 
-  @Prop({ type: Date })
-  planExpiresAt?: Date;
+  @Prop({ type: Date }) planExpiresAt?: Date;
 
   @Prop({ type: Types.ObjectId, ref: "Admin" })
   pumpId!: Types.ObjectId;
