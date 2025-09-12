@@ -34,8 +34,7 @@ class Fuel {
 
   @Prop({ required: true }) length!: number;
 
-  @Prop({ type: Object, required: false })
-  pdf?: object;
+  @Prop({ type: Object, required: false }) pdf?: object;
 }
 
 @Schema()
