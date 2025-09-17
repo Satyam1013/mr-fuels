@@ -13,6 +13,7 @@ import { PersonalExpenseModule } from "./personal-expenses/personal-expenses.mod
 import { CreditorModule } from "./creditors/creditors.module";
 import { CreditorContactModule } from "./creditor-contact/creditor-contact.module";
 import { DSRModule } from "./dsr/dsr.module";
+import { AttendanceModule } from "./attendance/attendance.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DSRModule } from "./dsr/dsr.module";
     PersonalExpenseModule,
     CreditorContactModule,
     AdminModule,
+    AttendanceModule,
     AuthModule,
     PlanModule,
     HomeModule,

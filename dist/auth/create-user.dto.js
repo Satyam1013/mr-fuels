@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoginDto = exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
+exports.AddCreditDto = exports.CreditSalaryDto = exports.SalaryMode = exports.CreateStaffDto = exports.LoginDto = exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class FuelDto {
@@ -197,3 +197,73 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
+class CreateStaffDto {
+}
+exports.CreateStaffDto = CreateStaffDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateStaffDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateStaffDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateStaffDto.prototype, "shift", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateStaffDto.prototype, "salaryType", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateStaffDto.prototype, "salary", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], CreateStaffDto.prototype, "dateJoined", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateStaffDto.prototype, "paidLeave", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateStaffDto.prototype, "salaryPending", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
+], CreateStaffDto.prototype, "document", void 0);
+var SalaryMode;
+(function (SalaryMode) {
+    SalaryMode["FULL"] = "fullSalary";
+    SalaryMode["MINUS_CREDIT"] = "minusCredit";
+    SalaryMode["CUSTOM"] = "customSalary";
+})(SalaryMode || (exports.SalaryMode = SalaryMode = {}));
+class CreditSalaryDto {
+}
+exports.CreditSalaryDto = CreditSalaryDto;
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreditSalaryDto.prototype, "amount", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Array)
+], CreditSalaryDto.prototype, "pendingIds", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(SalaryMode),
+    __metadata("design:type", String)
+], CreditSalaryDto.prototype, "mode", void 0);
+class AddCreditDto {
+}
+exports.AddCreditDto = AddCreditDto;
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], AddCreditDto.prototype, "amount", void 0);

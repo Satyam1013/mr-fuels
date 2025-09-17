@@ -13,15 +13,51 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const admin_schema_1 = require("./admin.schema");
 const mongoose_2 = require("mongoose");
 const plan_schema_1 = require("../plan/plan.schema");
+const create_user_dto_1 = require("../auth/create-user.dto");
 let AdminService = class AdminService {
     constructor(adminModel, planModel) {
         this.adminModel = adminModel;
         this.planModel = planModel;
+    }
+    async addStaff(pumpId, dto) {
+        const admin = await this.adminModel.findById(pumpId);
+        if (!admin)
+            throw new common_1.NotFoundException("Admin not found");
+        const staffId = new mongoose_2.Types.ObjectId();
+        admin.staff.push({
+            _id: staffId,
+            ...dto,
+            dateJoined: new Date(dto.dateJoined),
+        });
+        await admin.save();
+        return {
+            success: true,
+            staffId,
+            message: "Staff added successfully",
+        };
+    }
+    async getStaff(pumpId) {
+        const admin = await this.adminModel.findById(pumpId).select("staff");
+        if (!admin)
+            throw new common_1.NotFoundException("Admin not found");
+        return admin.staff;
+    }
+    async updateStaff(pumpId, staffId, update) {
+        const admin = await this.adminModel.findById(pumpId);
+        if (!admin)
+            throw new common_1.NotFoundException("Admin not found");
+        const staff = admin.staff.id(staffId);
+        if (!staff)
+            throw new common_1.NotFoundException("Staff not found");
+        Object.assign(staff, update);
+        await admin.save();
+        return { success: true, message: "Staff updated successfully" };
     }
     async selectPlan(adminId, dto) {
         const admin = await this.adminModel.findById(adminId);
@@ -141,6 +177,69 @@ let AdminService = class AdminService {
             fuelTypes: admin.fuelTypes,
             machines: admin.machines,
         };
+    }
+    async creditSalary(pumpId, staffId, dto) {
+        const admin = await this.adminModel.findById(pumpId);
+        if (!admin)
+            throw new common_1.NotFoundException("Admin not found");
+        const staff = admin.staff.id(staffId);
+        if (!staff)
+            throw new common_1.NotFoundException("Staff not found");
+        let creditedAmount = 0;
+        switch (dto.mode) {
+            case create_user_dto_1.SalaryMode.FULL:
+                creditedAmount = staff.salary;
+                break;
+            case create_user_dto_1.SalaryMode.MINUS_CREDIT:
+                creditedAmount = staff.salary - staff.credit;
+                break;
+            case create_user_dto_1.SalaryMode.CUSTOM:
+                creditedAmount = dto.amount;
+                break;
+            default:
+                throw new common_1.BadRequestException("Invalid salary mode");
+        }
+        // Update staff salary state
+        staff.salaryPending = false;
+        staff.creditLeft = 0;
+        // Add transaction record
+        staff.transactions.push({
+            type: "salary",
+            date: new Date().toISOString(),
+            amount: creditedAmount,
+            description: `Salary credited via ${dto.mode}`,
+            details: { pendingIds: dto.pendingIds },
+        });
+        await admin.save();
+        return { success: true };
+    }
+    async addCredit(pumpId, staffId, dto) {
+        const admin = await this.adminModel.findById(pumpId);
+        if (!admin)
+            throw new common_1.NotFoundException("Pump not found");
+        const staff = admin.staff.id(staffId);
+        if (!staff)
+            throw new common_1.NotFoundException("Staff not found");
+        staff.credit = (staff.credit || 0) + dto.amount;
+        staff.transactions.push({
+            type: "credit",
+            date: new Date().toISOString(),
+            amount: dto.amount,
+            description: "Manual credit added",
+        });
+        await admin.save();
+        return { success: true };
+    }
+    async getTransactions(pumpId, staffId) {
+        const admin = await this.adminModel
+            .findById(pumpId)
+            .lean();
+        if (!admin)
+            throw new common_1.NotFoundException("Pump not found");
+        const staff = admin.staff.find((s) => s._id.toString() === staffId);
+        if (!staff)
+            throw new common_1.NotFoundException("Staff not found");
+        return staff.transactions ?? [];
     }
 };
 exports.AdminService = AdminService;

@@ -21,6 +21,7 @@ const personal_expenses_module_1 = require("./personal-expenses/personal-expense
 const creditors_module_1 = require("./creditors/creditors.module");
 const creditor_contact_module_1 = require("./creditor-contact/creditor-contact.module");
 const dsr_module_1 = require("./dsr/dsr.module");
+const attendance_module_1 = require("./attendance/attendance.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,6 +36,7 @@ exports.AppModule = AppModule = __decorate([
             personal_expenses_module_1.PersonalExpenseModule,
             creditor_contact_module_1.CreditorContactModule,
             admin_module_1.AdminModule,
+            attendance_module_1.AttendanceModule,
             auth_module_1.AuthModule,
             plan_module_1.PlanModule,
             home_module_1.HomeModule,

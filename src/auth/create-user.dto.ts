@@ -1,6 +1,9 @@
 import {
   IsArray,
+  IsBoolean,
+  IsDateString,
   IsEmail,
+  IsEnum,
   IsNumber,
   IsObject,
   IsOptional,
@@ -149,4 +152,43 @@ export class LoginDto {
 
   @IsString()
   password!: string;
+}
+
+export class CreateStaffDto {
+  @IsString() name!: string;
+  @IsString() role!: string;
+  @IsNumber() shift!: number;
+  @IsString() salaryType!: string;
+  @IsNumber() salary!: number;
+  @IsDateString() dateJoined!: string;
+
+  @IsBoolean() paidLeave!: boolean;
+  @IsBoolean() salaryPending!: boolean;
+
+  @IsOptional() document?: { name: string; file: any };
+}
+
+export enum SalaryMode {
+  FULL = "fullSalary",
+  MINUS_CREDIT = "minusCredit",
+  CUSTOM = "customSalary",
+}
+
+export class CreditSalaryDto {
+  @IsNumber()
+  @Type(() => Number)
+  amount!: number;
+
+  @IsArray()
+  @Type(() => Number)
+  pendingIds!: number[];
+
+  @IsEnum(SalaryMode)
+  mode!: SalaryMode;
+}
+
+export class AddCreditDto {
+  @IsNumber()
+  @Type(() => Number)
+  amount!: number;
 }
