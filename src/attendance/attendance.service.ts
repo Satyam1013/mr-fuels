@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { Injectable, NotFoundException } from "@nestjs/common";
 import dayjs from "dayjs";
 import { InjectModel } from "@nestjs/mongoose";
@@ -26,10 +27,11 @@ export class AttendanceService {
     mode: "day" | "week" | "month" = "day",
   ) {
     // 1. Calculate date range
-    const { startDate } = getDateRange(mode.toUpperCase() as FilterType, date);
-    let { endDate } = getDateRange(mode.toUpperCase() as FilterType, date);
+    let { startDate, endDate } = getDateRange(
+      mode.toUpperCase() as FilterType,
+      date,
+    );
 
-    // ⬇️ Force endDate to today if it’s in the future
     const today = dayjs().endOf("day").toDate();
     if (endDate > today) {
       endDate = today;
@@ -40,7 +42,6 @@ export class AttendanceService {
     if (!admin) throw new NotFoundException("Pump not found");
 
     let employees: Employee[] = [];
-
     if (role === "admin") {
       employees = [
         ...(admin.managers as unknown as Employee[]),
@@ -50,7 +51,14 @@ export class AttendanceService {
       employees = admin.staff as unknown as Employee[];
     }
 
-    // 3. Fetch attendance records
+    // 3. Filter employees by joining date
+    employees = employees.filter((emp) => {
+      if (!emp.dateJoined) return true;
+      const joined = dayjs(emp.dateJoined).startOf("day").toDate();
+      return joined <= endDate;
+    });
+
+    // 4. Fetch attendance records
     const records = await this.attendanceModel
       .find({
         pumpId,
@@ -58,7 +66,6 @@ export class AttendanceService {
       })
       .lean();
 
-    // 4. Build a lookup Map
     const recordMap = new Map<string, any>();
     for (const r of records) {
       const key = `${r.userId.toString()}-${new Date(r.date).toDateString()}`;
@@ -69,9 +76,25 @@ export class AttendanceService {
     const empData = employees.map((emp) => {
       const attendance: { day: number; status: string }[] = [];
 
+      let loopStart = new Date(startDate);
+      let loopEnd = new Date(endDate);
+
+      // 🔹 Ensure loop is restricted by mode
+      if (mode === "day") {
+        loopEnd = loopStart;
+      } else if (mode === "week") {
+        loopStart = dayjs(date).startOf("week").toDate();
+        loopEnd = dayjs(date).endOf("week").toDate();
+        if (loopEnd > today) loopEnd = today; // cap at today
+      } else if (mode === "month") {
+        loopStart = dayjs(date).startOf("month").toDate();
+        loopEnd = dayjs(date).endOf("month").toDate();
+        if (loopEnd > today) loopEnd = today;
+      }
+
       for (
-        let d = new Date(startDate);
-        d <= endDate;
+        let d = new Date(loopStart);
+        d <= loopEnd;
         d.setDate(d.getDate() + 1)
       ) {
         const empId = emp._id.toString();
@@ -80,7 +103,7 @@ export class AttendanceService {
 
         attendance.push({
           day: d.getDate(),
-          status: rec?.status ?? AttendanceStatus.ABSENT, // default absent
+          status: rec?.status ?? AttendanceStatus.ABSENT,
         });
       }
 

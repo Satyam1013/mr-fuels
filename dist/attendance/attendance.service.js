@@ -16,6 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttendanceService = void 0;
+/* eslint-disable prefer-const */
 const common_1 = require("@nestjs/common");
 const dayjs_1 = __importDefault(require("dayjs"));
 const mongoose_1 = require("@nestjs/mongoose");
@@ -31,9 +32,7 @@ let AttendanceService = class AttendanceService {
     }
     async getEmpData(pumpId, role, date, mode = "day") {
         // 1. Calculate date range
-        const { startDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
-        let { endDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
-        // ⬇️ Force endDate to today if it’s in the future
+        let { startDate, endDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
         const today = (0, dayjs_1.default)().endOf("day").toDate();
         if (endDate > today) {
             endDate = today;
@@ -52,14 +51,20 @@ let AttendanceService = class AttendanceService {
         else {
             employees = admin.staff;
         }
-        // 3. Fetch attendance records
+        // 3. Filter employees by joining date
+        employees = employees.filter((emp) => {
+            if (!emp.dateJoined)
+                return true;
+            const joined = (0, dayjs_1.default)(emp.dateJoined).startOf("day").toDate();
+            return joined <= endDate;
+        });
+        // 4. Fetch attendance records
         const records = await this.attendanceModel
             .find({
             pumpId,
             date: { $gte: startDate, $lte: endDate },
         })
             .lean();
-        // 4. Build a lookup Map
         const recordMap = new Map();
         for (const r of records) {
             const key = `${r.userId.toString()}-${new Date(r.date).toDateString()}`;
@@ -68,13 +73,31 @@ let AttendanceService = class AttendanceService {
         // 5. Build empData
         const empData = employees.map((emp) => {
             const attendance = [];
-            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+            let loopStart = new Date(startDate);
+            let loopEnd = new Date(endDate);
+            // 🔹 Ensure loop is restricted by mode
+            if (mode === "day") {
+                loopEnd = loopStart;
+            }
+            else if (mode === "week") {
+                loopStart = (0, dayjs_1.default)(date).startOf("week").toDate();
+                loopEnd = (0, dayjs_1.default)(date).endOf("week").toDate();
+                if (loopEnd > today)
+                    loopEnd = today; // cap at today
+            }
+            else if (mode === "month") {
+                loopStart = (0, dayjs_1.default)(date).startOf("month").toDate();
+                loopEnd = (0, dayjs_1.default)(date).endOf("month").toDate();
+                if (loopEnd > today)
+                    loopEnd = today;
+            }
+            for (let d = new Date(loopStart); d <= loopEnd; d.setDate(d.getDate() + 1)) {
                 const empId = emp._id.toString();
                 const key = `${empId}-${d.toDateString()}`;
                 const rec = recordMap.get(key);
                 attendance.push({
                     day: d.getDate(),
-                    status: rec?.status ?? attendance_dto_1.AttendanceStatus.ABSENT, // default absent
+                    status: rec?.status ?? attendance_dto_1.AttendanceStatus.ABSENT,
                 });
             }
             return {
