@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import dayjs from "dayjs";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Attendance, AttendanceDocument } from "./attendance.schema";
@@ -25,10 +26,14 @@ export class AttendanceService {
     mode: "day" | "week" | "month" = "day",
   ) {
     // 1. Calculate date range
-    const { startDate, endDate } = getDateRange(
-      mode.toUpperCase() as FilterType,
-      date,
-    );
+    const { startDate } = getDateRange(mode.toUpperCase() as FilterType, date);
+    let { endDate } = getDateRange(mode.toUpperCase() as FilterType, date);
+
+    // ⬇️ Force endDate to today if it’s in the future
+    const today = dayjs().endOf("day").toDate();
+    if (endDate > today) {
+      endDate = today;
+    }
 
     // 2. Get admin with managers + staff
     const admin = await this.adminModel.findById(pumpId).lean();
@@ -53,7 +58,7 @@ export class AttendanceService {
       })
       .lean();
 
-    // 4. Build a lookup Map for fast access
+    // 4. Build a lookup Map
     const recordMap = new Map<string, any>();
     for (const r of records) {
       const key = `${r.userId.toString()}-${new Date(r.date).toDateString()}`;

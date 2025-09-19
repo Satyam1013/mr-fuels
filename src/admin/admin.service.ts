@@ -68,6 +68,41 @@ export class AdminService {
     return { success: true, message: "Staff updated successfully" };
   }
 
+  async addCredit(pumpId: string, staffId: string, dto: AddCreditDto) {
+    const admin = await this.adminModel.findById(pumpId);
+    if (!admin) throw new NotFoundException("Pump not found");
+
+    const staff = admin.staff.id(staffId) as Staff | null;
+    if (!staff) throw new NotFoundException("Staff not found");
+
+    staff.credit = (staff.credit || 0) + dto.amount;
+
+    staff.transactions.push({
+      type: "credit",
+      date: new Date().toISOString(),
+      amount: dto.amount,
+      description: "Manual credit added",
+    });
+
+    await admin.save();
+    return { success: true };
+  }
+
+  async getTransactions(
+    pumpId: string,
+    staffId: string,
+  ): Promise<Transaction[]> {
+    const admin = await this.adminModel
+      .findById(pumpId)
+      .lean<Admin & { staff: (Staff & { transactions: Transaction[] })[] }>();
+    if (!admin) throw new NotFoundException("Pump not found");
+
+    const staff = admin.staff.find((s) => s._id.toString() === staffId);
+    if (!staff) throw new NotFoundException("Staff not found");
+
+    return staff.transactions ?? [];
+  }
+
   async selectPlan(adminId: string, dto: SelectPlanDto) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) throw new NotFoundException("Admin not found");
@@ -248,40 +283,5 @@ export class AdminService {
 
     await admin.save();
     return { success: true };
-  }
-
-  async addCredit(pumpId: string, staffId: string, dto: AddCreditDto) {
-    const admin = await this.adminModel.findById(pumpId);
-    if (!admin) throw new NotFoundException("Pump not found");
-
-    const staff = admin.staff.id(staffId) as Staff | null;
-    if (!staff) throw new NotFoundException("Staff not found");
-
-    staff.credit = (staff.credit || 0) + dto.amount;
-
-    staff.transactions.push({
-      type: "credit",
-      date: new Date().toISOString(),
-      amount: dto.amount,
-      description: "Manual credit added",
-    });
-
-    await admin.save();
-    return { success: true };
-  }
-
-  async getTransactions(
-    pumpId: string,
-    staffId: string,
-  ): Promise<Transaction[]> {
-    const admin = await this.adminModel
-      .findById(pumpId)
-      .lean<Admin & { staff: (Staff & { transactions: Transaction[] })[] }>();
-    if (!admin) throw new NotFoundException("Pump not found");
-
-    const staff = admin.staff.find((s) => s._id.toString() === staffId);
-    if (!staff) throw new NotFoundException("Staff not found");
-
-    return staff.transactions ?? [];
   }
 }

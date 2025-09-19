@@ -36,6 +36,15 @@ let AdminController = class AdminController {
         const staff = await this.adminService.updateStaff(pumpId, staffId, update);
         return staff;
     }
+    async creditSalary(staffId, dto, pumpId) {
+        return this.adminService.creditSalary(pumpId, staffId, dto);
+    }
+    async addCredit(staffId, dto, pumpId) {
+        return this.adminService.addCredit(pumpId, staffId, dto);
+    }
+    async getTransactions(staffId, pumpId) {
+        return this.adminService.getTransactions(pumpId, staffId);
+    }
     async updatePlan(req, dto) {
         const adminId = req.user.sub;
         return this.adminService.selectPlan(adminId, dto);
@@ -46,15 +55,6 @@ let AdminController = class AdminController {
     async getMachineDetails(req) {
         const adminId = req.user.sub;
         return this.adminService.getMachineDetails(adminId);
-    }
-    async creditSalary(staffId, dto, pumpId) {
-        return this.adminService.creditSalary(pumpId, staffId, dto);
-    }
-    async addCredit(staffId, dto, pumpId) {
-        return this.adminService.addCredit(pumpId, staffId, dto);
-    }
-    async getTransactions(staffId, pumpId) {
-        return this.adminService.getTransactions(pumpId, staffId);
     }
 };
 exports.AdminController = AdminController;
@@ -83,28 +83,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updateStaff", null);
 __decorate([
-    (0, common_1.Patch)("plan"),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, plan_dto_1.SelectPlanDto]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "updatePlan", null);
-__decorate([
-    (0, common_1.Get)("profile"),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "getProfile", null);
-__decorate([
-    (0, common_1.Get)("machine-details"),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "getMachineDetails", null);
-__decorate([
     (0, common_1.Post)("staff/:staffId/credit-salary"),
     __param(0, (0, common_1.Param)("staffId")),
     __param(1, (0, common_1.Body)()),
@@ -130,6 +108,28 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getTransactions", null);
+__decorate([
+    (0, common_1.Patch)("plan"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, plan_dto_1.SelectPlanDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "updatePlan", null);
+__decorate([
+    (0, common_1.Get)("profile"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)("machine-details"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getMachineDetails", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.Controller)("admin"),
     __metadata("design:paramtypes", [admin_service_1.AdminService])

@@ -11,9 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttendanceService = void 0;
 const common_1 = require("@nestjs/common");
+const dayjs_1 = __importDefault(require("dayjs"));
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const attendance_schema_1 = require("./attendance.schema");
@@ -27,7 +31,13 @@ let AttendanceService = class AttendanceService {
     }
     async getEmpData(pumpId, role, date, mode = "day") {
         // 1. Calculate date range
-        const { startDate, endDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
+        const { startDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
+        let { endDate } = (0, date_1.getDateRange)(mode.toUpperCase(), date);
+        // ⬇️ Force endDate to today if it’s in the future
+        const today = (0, dayjs_1.default)().endOf("day").toDate();
+        if (endDate > today) {
+            endDate = today;
+        }
         // 2. Get admin with managers + staff
         const admin = await this.adminModel.findById(pumpId).lean();
         if (!admin)
@@ -49,7 +59,7 @@ let AttendanceService = class AttendanceService {
             date: { $gte: startDate, $lte: endDate },
         })
             .lean();
-        // 4. Build a lookup Map for fast access
+        // 4. Build a lookup Map
         const recordMap = new Map();
         for (const r of records) {
             const key = `${r.userId.toString()}-${new Date(r.date).toDateString()}`;

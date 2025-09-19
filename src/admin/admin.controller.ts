@@ -41,26 +41,6 @@ export class AdminController {
     return staff;
   }
 
-  @Patch("plan")
-  async updatePlan(
-    @Req() req: AuthenticatedRequest,
-    @Body() dto: SelectPlanDto,
-  ) {
-    const adminId = req.user.sub;
-    return this.adminService.selectPlan(adminId, dto);
-  }
-
-  @Get("profile")
-  async getProfile(@Req() req: AuthenticatedRequest) {
-    return this.adminService.getProfile(req.user);
-  }
-
-  @Get("machine-details")
-  async getMachineDetails(@Req() req: AuthenticatedRequest) {
-    const adminId = req.user.sub;
-    return this.adminService.getMachineDetails(adminId);
-  }
-
   @Post("staff/:staffId/credit-salary")
   async creditSalary(
     @Param("staffId") staffId: string,
@@ -85,5 +65,25 @@ export class AdminController {
     @GetUser("pumpId") pumpId: string,
   ): Promise<Transaction[]> {
     return this.adminService.getTransactions(pumpId, staffId);
+  }
+
+  @Patch("plan")
+  async updatePlan(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: SelectPlanDto,
+  ) {
+    const adminId = req.user.sub;
+    return this.adminService.selectPlan(adminId, dto);
+  }
+
+  @Get("profile")
+  async getProfile(@Req() req: AuthenticatedRequest) {
+    return this.adminService.getProfile(req.user);
+  }
+
+  @Get("machine-details")
+  async getMachineDetails(@Req() req: AuthenticatedRequest) {
+    const adminId = req.user.sub;
+    return this.adminService.getMachineDetails(adminId);
   }
 }
