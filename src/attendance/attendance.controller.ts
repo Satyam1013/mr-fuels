@@ -20,7 +20,7 @@ export class AttendanceController {
   @Put("emp/:empId/day/:day")
   async updateAttendance(
     @Param("empId") empId: string,
-    @Param("day") day: string, // YYYY-MM-DD
+    @Param("day") day: string,
     @Body() dto: UpdateAttendanceDto,
     @GetUser("pumpId") pumpId: string,
   ) {
@@ -28,7 +28,7 @@ export class AttendanceController {
       pumpId,
       empId,
       dto.role,
-      day, // ✅ always take from param
+      day,
       dto.status,
     );
     return { success: true };
