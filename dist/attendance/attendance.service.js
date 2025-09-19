@@ -105,12 +105,14 @@ let AttendanceService = class AttendanceService {
         };
         return { empData: [{ date, emp: empData, summary }], summary };
     }
-    async updateAttendance(pumpId, empId, date, status) {
-        const normalizedDate = new Date(date);
+    async updateAttendance(pumpId, empId, role, date, status) {
+        // ✅ Normalize to YYYY-MM-DD string
+        const normalizedDate = (0, dayjs_1.default)(date).format("YYYY-MM-DD");
         const existing = await this.attendanceModel.findOne({
             pumpId,
             userId: empId,
             date: normalizedDate,
+            role,
         });
         if (existing) {
             existing.status = status;
@@ -120,6 +122,7 @@ let AttendanceService = class AttendanceService {
             await this.attendanceModel.create({
                 pumpId,
                 userId: empId,
+                role,
                 date: normalizedDate,
                 status,
             });

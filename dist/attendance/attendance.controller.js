@@ -25,7 +25,8 @@ let AttendanceController = class AttendanceController {
         return this.attendanceService.getEmpData(pumpId, role, date, mode);
     }
     async updateAttendance(empId, day, dto, pumpId) {
-        await this.attendanceService.updateAttendance(pumpId, empId, dto.date || day, dto.status);
+        await this.attendanceService.updateAttendance(pumpId, empId, dto.role, day, // ✅ always take from param
+        dto.status);
         return { success: true };
     }
 };

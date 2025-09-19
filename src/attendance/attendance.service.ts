@@ -125,15 +125,18 @@ export class AttendanceService {
   async updateAttendance(
     pumpId: string,
     empId: string,
+    role: "manager" | "staff",
     date: string,
     status: AttendanceStatus,
   ) {
-    const normalizedDate = new Date(date);
+    // ✅ Normalize to YYYY-MM-DD string
+    const normalizedDate = dayjs(date).format("YYYY-MM-DD");
 
     const existing = await this.attendanceModel.findOne({
       pumpId,
       userId: empId,
       date: normalizedDate,
+      role,
     });
 
     if (existing) {
@@ -143,6 +146,7 @@ export class AttendanceService {
       await this.attendanceModel.create({
         pumpId,
         userId: empId,
+        role,
         date: normalizedDate,
         status,
       });

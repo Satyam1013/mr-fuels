@@ -27,7 +27,8 @@ export class AttendanceController {
     await this.attendanceService.updateAttendance(
       pumpId,
       empId,
-      dto.date || day,
+      dto.role,
+      day, // ✅ always take from param
       dto.status,
     );
     return { success: true };

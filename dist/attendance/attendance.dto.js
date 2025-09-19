@@ -15,17 +15,17 @@ var AttendanceStatus;
 (function (AttendanceStatus) {
     AttendanceStatus["PRESENT"] = "P";
     AttendanceStatus["ABSENT"] = "A";
-    AttendanceStatus["HALF_DAY"] = "H";
+    AttendanceStatus["HOLIDAY"] = "H";
     AttendanceStatus["LEAVE"] = "L";
 })(AttendanceStatus || (exports.AttendanceStatus = AttendanceStatus = {}));
 class UpdateAttendanceDto {
 }
 exports.UpdateAttendanceDto = UpdateAttendanceDto;
 __decorate([
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], UpdateAttendanceDto.prototype, "date", void 0);
-__decorate([
     (0, class_validator_1.IsEnum)(AttendanceStatus),
     __metadata("design:type", String)
 ], UpdateAttendanceDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateAttendanceDto.prototype, "role", void 0);
