@@ -11,8 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminSchema = exports.Admin = exports.StaffSchema = exports.Staff = exports.TransactionSchema = exports.Transaction = exports.ManagerSchema = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-const plan_schema_1 = require("../plan/plan.schema");
 let Manager = class Manager {
 };
 exports.Manager = Manager;
@@ -126,35 +124,6 @@ exports.Staff = Staff = __decorate([
     (0, mongoose_1.Schema)()
 ], Staff);
 exports.StaffSchema = mongoose_1.SchemaFactory.createForClass(Staff);
-let Fuel = class Fuel {
-};
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Fuel.prototype, "value", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Fuel.prototype, "kl", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Fuel.prototype, "diameter", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Fuel.prototype, "radius", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Fuel.prototype, "length", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Object, required: false }),
-    __metadata("design:type", Object)
-], Fuel.prototype, "pdf", void 0);
-Fuel = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
-], Fuel);
 let Admin = class Admin {
 };
 exports.Admin = Admin;
@@ -163,94 +132,30 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "businessName", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Admin.prototype, "dealerCode", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], Admin.prototype, "businessEmail", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
-    __metadata("design:type", String)
-], Admin.prototype, "mobileNo", void 0);
+], Admin.prototype, "email", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Array)
-], Admin.prototype, "fuelTypes", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [Fuel], required: true }),
-    __metadata("design:type", Array)
-], Admin.prototype, "fuels", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true, type: Object }),
-    __metadata("design:type", Array)
-], Admin.prototype, "machines", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Array)
-], Admin.prototype, "businessUpiApps", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Admin.prototype, "swipeStatement", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Admin.prototype, "bankDeposit", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
-], Admin.prototype, "noOfEmployeeShifts", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
-], Admin.prototype, "shiftDetails", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [exports.ManagerSchema], required: true }),
-    __metadata("design:type", Array)
-], Admin.prototype, "managers", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [exports.StaffSchema], default: [] }),
-    __metadata("design:type", mongoose_2.Types.DocumentArray)
-], Admin.prototype, "staff", void 0);
+], Admin.prototype, "phone", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String, default: null }),
+    (0, mongoose_1.Prop)({ type: Object, default: {} }),
     __metadata("design:type", Object)
-], Admin.prototype, "refreshToken", void 0);
+], Admin.prototype, "pumpDetails", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: plan_schema_1.Plan.name }),
-    __metadata("design:type", Object)
-], Admin.prototype, "plan", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
-], Admin.prototype, "freeTrial", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
-    __metadata("design:type", Boolean)
-], Admin.prototype, "freeTrialAttempt", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
-    __metadata("design:type", Boolean)
-], Admin.prototype, "paidUser", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
-    __metadata("design:type", Boolean)
-], Admin.prototype, "activeAccount", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Date, default: Date.now }),
-    __metadata("design:type", Date)
-], Admin.prototype, "startDate", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Date }),
-    __metadata("design:type", Date)
-], Admin.prototype, "planExpiresAt", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin" }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Admin.prototype, "pumpId", void 0);
+], Admin.prototype, "setupComplete", void 0);
 exports.Admin = Admin = __decorate([
-    (0, mongoose_1.Schema)()
+    (0, mongoose_1.Schema)({ timestamps: true })
 ], Admin);
 exports.AdminSchema = mongoose_1.SchemaFactory.createForClass(Admin);

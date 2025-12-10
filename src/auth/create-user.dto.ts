@@ -4,6 +4,7 @@ import {
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
@@ -124,7 +125,7 @@ export class ManagerDto {
   password!: string;
 }
 
-export class CreateAdminDto {
+export class CreateAdminDtoDemo {
   @ValidateNested()
   @Type(() => BusinessDetailsDto)
   businessDetails!: BusinessDetailsDto;
@@ -191,4 +192,38 @@ export class AddCreditDto {
   @IsNumber()
   @Type(() => Number)
   amount!: number;
+}
+
+export class CreateAdminDto {
+  @IsString()
+  @IsNotEmpty()
+  businessName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  dealerCode!: string;
+
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phone!: string;
+  @IsString()
+  @IsNotEmpty()
+  password!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword!: string;
+  @IsObject()
+  pumpDetails!: Record<string, any>;
+}
+
+export class AdminLoginDto {
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  password!: string;
 }

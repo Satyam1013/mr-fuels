@@ -54,7 +54,6 @@ const mongoose_2 = require("mongoose");
 const admin_schema_1 = require("../admin/admin.schema");
 const config_1 = require("@nestjs/config");
 const super_admin_schema_1 = require("../super-admin/super-admin.schema");
-const types_1 = require("../common/types");
 let AuthService = class AuthService {
     constructor(adminModel, superAdminModel, jwtService, configService) {
         this.adminModel = adminModel;
@@ -101,259 +100,49 @@ let AuthService = class AuthService {
             access_token,
         };
     }
-    async adminSignup(body) {
-        try {
-            const { businessDetails, machineDetails, pumpDetails, managers, adminPassword, } = body;
-            // 1. Check if admin email already exists
-            const existingEmail = await this.adminModel.findOne({
-                businessEmail: businessDetails.businessEmail,
-            });
-            if (existingEmail)
-                throw new common_1.ForbiddenException("Admin already exists");
-            // 2. Check if admin mobile number already used
-            const existingMobile = await this.adminModel.findOne({
-                mobileNo: businessDetails.businessPhoneNo,
-            });
-            if (existingMobile)
-                throw new common_1.ForbiddenException("Mobile number already in use by another admin");
-            // 3. Check manager mobile uniqueness among themselves
-            const managerMobiles = managers.map((m) => m.mobile);
-            if (new Set(managerMobiles).size !== managerMobiles.length) {
-                throw new common_1.ForbiddenException("Manager mobile numbers must be unique");
-            }
-            // 4. Check if any manager has same mobile as admin
-            if (managerMobiles.includes(businessDetails.businessPhoneNo)) {
-                throw new common_1.ForbiddenException("A manager cannot have the same mobile number as the admin");
-            }
-            // 5. Check if any manager's mobile already used in another admin's manager
-            const usedInOtherAdmins = await this.adminModel.find({
-                "managers.mobile": { $in: managerMobiles },
-            });
-            if (usedInOtherAdmins.length > 0) {
-                throw new common_1.ForbiddenException("One or more manager mobile numbers are already in use");
-            }
-            // 6. Hash admin password
-            const hashedPassword = await bcrypt.hash(adminPassword, 10);
-            // 7. Hash each manager's password
-            const managersWithHashedPasswords = await Promise.all(managers.map(async (m) => ({
-                name: m.name,
-                mobile: m.mobile,
-                shift: m.shift,
-                aadhar: m.aadhar,
-                password: await bcrypt.hash(m.password, 10),
-            })));
-            // 8. Create new admin document
-            const admin = new this.adminModel({
-                businessEmail: businessDetails.businessEmail,
-                businessName: businessDetails.businessName,
-                mobileNo: businessDetails.businessPhoneNo,
-                fuelTypes: businessDetails.fuelTypes,
-                fuels: businessDetails.fuels,
-                machines: machineDetails.machines,
-                businessUpiApps: pumpDetails.businessUpiApps,
-                swipeStatement: pumpDetails.swipeStatement,
-                bankDeposit: pumpDetails.bankDeposit,
-                noOfEmployeeShifts: pumpDetails.noOfEmployeeShifts,
-                shiftDetails: pumpDetails.shiftDetails,
-                managers: managersWithHashedPasswords,
-                password: hashedPassword,
-                planType: types_1.PlanEnum.FREE,
-                freeTrial: false,
-                freeTrialAttempt: false,
-                paidUser: false,
-                activeAccount: false,
-                startDate: new Date(),
-            });
-            await admin.save();
-            admin.pumpId = admin._id;
-            await admin.save();
-            return {
-                message: "Admin created successfully",
-                admin: {
-                    businessEmail: businessDetails.businessEmail,
-                    businessName: businessDetails.businessName,
-                    mobileNo: businessDetails.businessPhoneNo,
-                },
-            };
+    async adminSignup(createAdminDto) {
+        const { password, confirmPassword, pumpDetails, ...rest } = createAdminDto;
+        if (password !== confirmPassword) {
+            throw new common_1.BadRequestException("Passwords do not match");
         }
-        catch (error) {
-            console.error("Error in adminSignup:", error);
-            throw new common_1.InternalServerErrorException("Failed to signup admin");
+        const existing = await this.adminModel.findOne({ email: rest.email });
+        if (existing) {
+            throw new common_1.BadRequestException("Admin already exists");
         }
-    }
-    async checkUsedMobiles(numbers) {
-        if (!numbers)
-            throw new common_1.BadRequestException("No mobile numbers provided");
-        const mobileArray = numbers.split(",").map((m) => m.trim());
-        const usedAdmins = await this.adminModel.find({
-            $or: [
-                { mobileNo: { $in: mobileArray } },
-                { "managers.mobile": { $in: mobileArray } },
-            ],
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
+        const admin = await this.adminModel.create({
+            ...rest,
+            pumpDetails,
+            password: hashedPassword,
+            setupComplete,
         });
-        const usedMobiles = new Set();
-        for (const admin of usedAdmins) {
-            if (mobileArray.includes(admin.mobileNo)) {
-                usedMobiles.add(admin.mobileNo);
-            }
-            admin.managers?.forEach((m) => {
-                if (mobileArray.includes(m.mobile)) {
-                    usedMobiles.add(m.mobile);
-                }
-            });
-        }
-        return { usedMobiles: Array.from(usedMobiles) };
+        return { message: "Admin created successfully", admin };
     }
-    async adminLogin(mobileNo, password) {
-        try {
-            const ACCESS_TTL = this.configService.get("ACCESS_TOKEN_TTL") ?? "1h";
-            const REFRESH_TTL = this.configService.get("REFRESH_TOKEN_TTL") ?? "7d";
-            // --- Try Admin ---
-            const adminDoc = await this.adminModel
-                .findOne({ mobileNo })
-                .populate("plan");
-            if (adminDoc) {
-                const isValid = await bcrypt.compare(password, adminDoc.password);
-                if (!isValid)
-                    throw new common_1.UnauthorizedException("Invalid password");
-                const payload = {
-                    sub: adminDoc._id,
-                    role: "admin",
-                    mobileNo: adminDoc.mobileNo,
-                    pumpId: adminDoc._id,
-                };
-                const access_token = await this.jwtService.signAsync(payload, {
-                    secret: this.configService.get("JWT_SECRET"),
-                    expiresIn: ACCESS_TTL,
-                });
-                const refresh_token = await this.jwtService.signAsync(payload, {
-                    secret: this.configService.get("JWT_REFRESH_SECRET"),
-                    expiresIn: REFRESH_TTL,
-                });
-                adminDoc.refreshToken = refresh_token;
-                await adminDoc.save();
-                return {
-                    message: "Admin logged in",
-                    access_token,
-                    refresh_token,
-                    role: "admin",
-                };
-            }
-            // --- Try Manager ---
-            const adminWithManager = await this.adminModel
-                .findOne({ "managers.mobile": mobileNo })
-                .populate("plan");
-            if (!adminWithManager)
-                throw new common_1.UnauthorizedException("User not found");
-            const manager = adminWithManager.managers.find((m) => m.mobile === mobileNo);
-            if (!manager)
-                throw new common_1.UnauthorizedException("Manager not found");
-            const isValidManagerPassword = await bcrypt.compare(password, manager.password);
-            if (!isValidManagerPassword)
-                throw new common_1.UnauthorizedException("Invalid password");
-            const payload = {
-                sub: manager._id,
-                role: "manager",
-                mobileNo: manager.mobile,
-                shift: manager.shift,
-                adminId: adminWithManager._id,
-                pumpId: adminWithManager._id,
-            };
-            const access_token = await this.jwtService.signAsync(payload, {
-                secret: this.configService.get("JWT_SECRET"),
-                expiresIn: ACCESS_TTL,
-            });
-            const refresh_token = await this.jwtService.signAsync(payload, {
-                secret: this.configService.get("JWT_REFRESH_SECRET"),
-                expiresIn: REFRESH_TTL,
-            });
-            await this.adminModel.updateOne({ _id: adminWithManager._id, "managers._id": manager._id }, { $set: { "managers.$.refreshToken": refresh_token } });
-            return {
-                message: "Manager logged in",
-                access_token,
-                refresh_token,
-                role: "manager",
-            };
+    async adminLogin(dto) {
+        const { email, password } = dto;
+        const admin = await this.adminModel.findOne({ email });
+        if (!admin) {
+            throw new common_1.UnauthorizedException("Invalid email or password");
         }
-        catch (err) {
-            console.error("Unified login error:", err);
-            throw new common_1.InternalServerErrorException("Login failed");
+        const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
+            throw new common_1.UnauthorizedException("Invalid email or password");
         }
-    }
-    async refreshAccessToken(refreshToken) {
-        try {
-            const ACCESS_TTL = this.configService.get("ACCESS_TOKEN_TTL") ?? "1h";
-            // allow a small clock skew (helps “expired too early” symptoms)
-            const payload = await this.jwtService.verifyAsync(refreshToken, {
-                secret: this.configService.get("JWT_REFRESH_SECRET"),
-                clockTolerance: 10, // seconds
-            });
-            if (payload.role === "admin") {
-                const admin = await this.adminModel.findById(payload.sub);
-                if (!admin || admin.refreshToken !== refreshToken) {
-                    throw new common_1.UnauthorizedException("Invalid refresh token");
-                }
-                const newAccess = await this.jwtService.signAsync({
-                    sub: admin._id,
-                    role: "admin",
-                    mobileNo: admin.mobileNo,
-                    pumpId: admin._id,
-                }, {
-                    secret: this.configService.get("JWT_SECRET"),
-                    expiresIn: ACCESS_TTL,
-                });
-                return { access_token: newAccess };
-            }
-            // role === 'manager'
-            const admin = await this.adminModel.findById(payload.adminId);
-            if (!admin)
-                throw new common_1.UnauthorizedException("Invalid refresh token");
-            const manager = admin.managers.find((m) => m._id.toString() === payload.sub);
-            if (!manager || manager.refreshToken !== refreshToken) {
-                throw new common_1.UnauthorizedException("Invalid refresh token");
-            }
-            const newAccess = await this.jwtService.signAsync({
-                sub: manager._id,
-                role: "manager",
-                mobileNo: manager.mobile,
-                shift: manager.shift,
-                adminId: admin._id,
-                pumpId: admin._id,
-            }, { secret: this.configService.get("JWT_SECRET"), expiresIn: ACCESS_TTL });
-            return { access_token: newAccess };
-        }
-        catch (err) {
-            console.error("Error refreshing token:", err);
-            throw new common_1.UnauthorizedException("Invalid or expired refresh token");
-        }
-    }
-    async logout(mobileNo, role) {
-        try {
-            if (role === "admin") {
-                const admin = await this.adminModel.findOne({ mobileNo });
-                if (!admin)
-                    throw new common_1.UnauthorizedException("Admin not found");
-                admin.refreshToken = null;
-                await admin.save();
-                return { message: "Admin logged out successfully" };
-            }
-            if (role === "manager") {
-                const result = await this.adminModel.updateOne({ "managers.mobile": mobileNo }, {
-                    $set: {
-                        "managers.$.refreshToken": null,
-                    },
-                });
-                if (result.modifiedCount === 0) {
-                    throw new common_1.UnauthorizedException("Manager not found or already logged out");
-                }
-                return { message: "Manager logged out successfully" };
-            }
-            throw new common_1.UnauthorizedException("Invalid role");
-        }
-        catch (error) {
-            console.error("Logout error:", error);
-            throw new common_1.InternalServerErrorException("Logout failed");
-        }
+        const token = this.jwtService.sign({
+            adminId: admin._id,
+            role: "admin",
+        });
+        return {
+            message: "Login successful",
+            token,
+            admin: {
+                _id: admin._id,
+                email: admin.email,
+                businessName: admin.businessName,
+                setupComplete: admin.setupComplete,
+            },
+        };
     }
 };
 exports.AuthService = AuthService;

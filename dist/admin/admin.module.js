@@ -24,6 +24,6 @@ exports.AdminModule = AdminModule = __decorate([
         ],
         providers: [admin_service_1.AdminService],
         controllers: [admin_controller_1.AdminController],
-        exports: [admin_service_1.AdminService, mongoose_1.MongooseModule],
+        exports: [mongoose_1.MongooseModule],
     })
 ], AdminModule);

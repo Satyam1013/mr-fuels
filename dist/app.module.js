@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const schedule_1 = require("@nestjs/schedule");
-const admin_module_1 = require("./admin/admin.module");
+// import { AdminModule } from "./admin/admin.module";
 const auth_module_1 = require("./auth/auth.module");
 const plan_module_1 = require("./plan/plan.module");
 const super_admin_module_1 = require("./super-admin/super-admin.module");
@@ -21,7 +21,7 @@ const personal_expenses_module_1 = require("./personal-expenses/personal-expense
 const creditors_module_1 = require("./creditors/creditors.module");
 const creditor_contact_module_1 = require("./creditor-contact/creditor-contact.module");
 const dsr_module_1 = require("./dsr/dsr.module");
-const attendance_module_1 = require("./attendance/attendance.module");
+// import { AttendanceModule } from "./attendance/attendance.module";
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,8 +35,8 @@ exports.AppModule = AppModule = __decorate([
             pump_expenses_module_1.PumpExpenseModule,
             personal_expenses_module_1.PersonalExpenseModule,
             creditor_contact_module_1.CreditorContactModule,
-            admin_module_1.AdminModule,
-            attendance_module_1.AttendanceModule,
+            // AdminModule,
+            // AttendanceModule,
             auth_module_1.AuthModule,
             plan_module_1.PlanModule,
             home_module_1.HomeModule,

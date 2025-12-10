@@ -15,26 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-const create_user_dto_1 = require("./create-user.dto");
 const public_decorator_1 = require("./public.decorator");
+const create_user_dto_1 = require("./create-user.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    adminSignup(body) {
-        return this.authService.adminSignup(body);
+    async signup(dto) {
+        return this.authService.adminSignup(dto);
     }
-    checkUsedMobiles(numbers) {
-        return this.authService.checkUsedMobiles(numbers);
-    }
-    adminLogin(body) {
-        return this.authService.adminLogin(body.mobileNo, body.password);
-    }
-    refreshAccessToken(refreshToken) {
-        return this.authService.refreshAccessToken(refreshToken);
-    }
-    logout(body) {
-        return this.authService.logout(body.mobileNo, body.role);
+    // @Post("add-pump-details")
+    // async addPumpDetails(@Body() dto: PumpDetailsDto) {
+    //   return this.authService.addPumpDetails(dto);
+    // }
+    // @Public()
+    // @Get("check-used-mobiles")
+    // checkUsedMobiles(@Query("numbers") numbers: string) {
+    //   return this.authService.checkUsedMobiles(numbers);
+    // }
+    login(dto) {
+        return this.authService.adminLogin(dto);
     }
 };
 exports.AuthController = AuthController;
@@ -44,40 +44,16 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateAdminDto]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "adminSignup", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)("check-used-mobiles"),
-    __param(0, (0, common_1.Query)("numbers")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "checkUsedMobiles", null);
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signup", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("login"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.AdminLoginDto]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "adminLogin", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)("refresh-token"),
-    __param(0, (0, common_1.Body)("refresh_token")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "refreshAccessToken", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)("logout"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "logout", null);
+], AuthController.prototype, "login", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

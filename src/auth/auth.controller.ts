@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateAdminDto, LoginDto } from "./create-user.dto";
 import { Public } from "./public.decorator";
+import { AdminLoginDto, CreateAdminDto } from "./create-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -9,31 +9,36 @@ export class AuthController {
 
   @Public()
   @Post("signup")
-  adminSignup(@Body() body: CreateAdminDto) {
-    return this.authService.adminSignup(body);
+  async signup(@Body() dto: CreateAdminDto) {
+    return this.authService.adminSignup(dto);
   }
 
-  @Public()
-  @Get("check-used-mobiles")
-  checkUsedMobiles(@Query("numbers") numbers: string) {
-    return this.authService.checkUsedMobiles(numbers);
-  }
+  // @Post("add-pump-details")
+  // async addPumpDetails(@Body() dto: PumpDetailsDto) {
+  //   return this.authService.addPumpDetails(dto);
+  // }
+
+  // @Public()
+  // @Get("check-used-mobiles")
+  // checkUsedMobiles(@Query("numbers") numbers: string) {
+  //   return this.authService.checkUsedMobiles(numbers);
+  // }
 
   @Public()
   @Post("login")
-  adminLogin(@Body() body: LoginDto) {
-    return this.authService.adminLogin(body.mobileNo, body.password);
+  login(@Body() dto: AdminLoginDto) {
+    return this.authService.adminLogin(dto);
   }
 
-  @Public()
-  @Post("refresh-token")
-  refreshAccessToken(@Body("refresh_token") refreshToken: string) {
-    return this.authService.refreshAccessToken(refreshToken);
-  }
+  // @Public()
+  // @Post("refresh-token")
+  // refreshAccessToken(@Body("refresh_token") refreshToken: string) {
+  //   return this.authService.refreshAccessToken(refreshToken);
+  // }
 
-  @Public()
-  @Post("logout")
-  logout(@Body() body: { mobileNo: string; role: "admin" | "manager" }) {
-    return this.authService.logout(body.mobileNo, body.role);
-  }
+  // @Public()
+  // @Post("logout")
+  // logout(@Body() body: { mobileNo: string; role: "admin" | "manager" }) {
+  //   return this.authService.logout(body.mobileNo, body.role);
+  // }
 }

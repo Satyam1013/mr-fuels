@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddCreditDto = exports.CreditSalaryDto = exports.SalaryMode = exports.CreateStaffDto = exports.LoginDto = exports.CreateAdminDto = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
+exports.AdminLoginDto = exports.CreateAdminDto = exports.AddCreditDto = exports.CreditSalaryDto = exports.SalaryMode = exports.CreateStaffDto = exports.LoginDto = exports.CreateAdminDtoDemo = exports.ManagerDto = exports.PumpDetailsDto = exports.MachineDetailsDto = exports.MachineDto = exports.NozzleDto = exports.BusinessDetailsDto = exports.FuelDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class FuelDto {
@@ -158,34 +158,34 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ManagerDto.prototype, "password", void 0);
-class CreateAdminDto {
+class CreateAdminDtoDemo {
 }
-exports.CreateAdminDto = CreateAdminDto;
+exports.CreateAdminDtoDemo = CreateAdminDtoDemo;
 __decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => BusinessDetailsDto),
     __metadata("design:type", BusinessDetailsDto)
-], CreateAdminDto.prototype, "businessDetails", void 0);
+], CreateAdminDtoDemo.prototype, "businessDetails", void 0);
 __decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => MachineDetailsDto),
     __metadata("design:type", MachineDetailsDto)
-], CreateAdminDto.prototype, "machineDetails", void 0);
+], CreateAdminDtoDemo.prototype, "machineDetails", void 0);
 __decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => PumpDetailsDto),
     __metadata("design:type", PumpDetailsDto)
-], CreateAdminDto.prototype, "pumpDetails", void 0);
+], CreateAdminDtoDemo.prototype, "pumpDetails", void 0);
 __decorate([
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => ManagerDto),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
-], CreateAdminDto.prototype, "managers", void 0);
+], CreateAdminDtoDemo.prototype, "managers", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateAdminDto.prototype, "adminPassword", void 0);
+], CreateAdminDtoDemo.prototype, "adminPassword", void 0);
 class LoginDto {
 }
 exports.LoginDto = LoginDto;
@@ -267,3 +267,50 @@ __decorate([
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], AddCreditDto.prototype, "amount", void 0);
+class CreateAdminDto {
+}
+exports.CreateAdminDto = CreateAdminDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "businessName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "dealerCode", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAdminDto.prototype, "confirmPassword", void 0);
+__decorate([
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateAdminDto.prototype, "pumpDetails", void 0);
+class AdminLoginDto {
+}
+exports.AdminLoginDto = AdminLoginDto;
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], AdminLoginDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AdminLoginDto.prototype, "password", void 0);
