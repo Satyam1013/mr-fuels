@@ -24,15 +24,6 @@ let AuthController = class AuthController {
     async signup(dto) {
         return this.authService.adminSignup(dto);
     }
-    // @Post("add-pump-details")
-    // async addPumpDetails(@Body() dto: PumpDetailsDto) {
-    //   return this.authService.addPumpDetails(dto);
-    // }
-    // @Public()
-    // @Get("check-used-mobiles")
-    // checkUsedMobiles(@Query("numbers") numbers: string) {
-    //   return this.authService.checkUsedMobiles(numbers);
-    // }
     login(dto) {
         return this.authService.adminLogin(dto);
     }

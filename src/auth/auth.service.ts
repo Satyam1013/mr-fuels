@@ -106,7 +106,24 @@ export class AuthService {
         setupComplete,
       });
 
-      return { message: "Admin created successfully", admin };
+      // ---------------------------
+      // ✅ Generate JWT Token
+      // ---------------------------
+      const token = this.jwtService.sign({
+        adminId: admin._id,
+        role: "admin",
+      });
+
+      return {
+        message: "Signup successful",
+        token,
+        admin: {
+          _id: admin._id,
+          mobileNo: admin.mobileNo,
+          businessName: admin.businessName,
+          setupComplete: admin.setupComplete,
+        },
+      };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

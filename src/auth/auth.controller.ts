@@ -13,6 +13,12 @@ export class AuthController {
     return this.authService.adminSignup(dto);
   }
 
+  @Public()
+  @Post("login")
+  login(@Body() dto: AdminLoginDto) {
+    return this.authService.adminLogin(dto);
+  }
+
   // @Post("add-pump-details")
   // async addPumpDetails(@Body() dto: PumpDetailsDto) {
   //   return this.authService.addPumpDetails(dto);
@@ -23,12 +29,6 @@ export class AuthController {
   // checkUsedMobiles(@Query("numbers") numbers: string) {
   //   return this.authService.checkUsedMobiles(numbers);
   // }
-
-  @Public()
-  @Post("login")
-  login(@Body() dto: AdminLoginDto) {
-    return this.authService.adminLogin(dto);
-  }
 
   // @Public()
   // @Post("refresh-token")
