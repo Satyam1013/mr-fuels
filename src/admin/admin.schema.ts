@@ -83,8 +83,8 @@ export class Admin {
   @Prop({ required: true, unique: true })
   email!: string;
 
-  @Prop({ required: true })
-  phone!: string;
+  @Prop({ required: true, unique: true })
+  mobileNo!: string;
 
   @Prop({ required: true })
   password!: string;

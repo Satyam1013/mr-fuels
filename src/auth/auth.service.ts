@@ -82,42 +82,49 @@ export class AuthService {
   }
 
   async adminSignup(createAdminDto: CreateAdminDto) {
-    const { password, confirmPassword, pumpDetails, ...rest } = createAdminDto;
+    try {
+      const { password, confirmPassword, pumpDetails, ...rest } =
+        createAdminDto;
 
-    if (password !== confirmPassword) {
-      throw new BadRequestException("Passwords do not match");
+      if (password !== confirmPassword) {
+        throw new BadRequestException("Passwords do not match");
+      }
+
+      const existing = await this.adminModel.findOne({ email: rest.email });
+      if (existing) {
+        throw new BadRequestException("Admin already exists");
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
+
+      const admin = await this.adminModel.create({
+        ...rest,
+        pumpDetails,
+        password: hashedPassword,
+        setupComplete,
+      });
+
+      return { message: "Admin created successfully", admin };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new BadRequestException("Error creating admin: " + errorMessage);
     }
-
-    const existing = await this.adminModel.findOne({ email: rest.email });
-    if (existing) {
-      throw new BadRequestException("Admin already exists");
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
-
-    const admin = await this.adminModel.create({
-      ...rest,
-      pumpDetails,
-      password: hashedPassword,
-      setupComplete,
-    });
-
-    return { message: "Admin created successfully", admin };
   }
 
   async adminLogin(dto: AdminLoginDto) {
-    const { email, password } = dto;
+    const { mobileNo, password } = dto;
 
-    const admin = await this.adminModel.findOne({ email });
+    const admin = await this.adminModel.findOne({ mobileNo });
     if (!admin) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException("Invalid mobile number or password");
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException("Invalid mobile number or password");
     }
 
     const token = this.jwtService.sign({
@@ -130,7 +137,7 @@ export class AuthService {
       token,
       admin: {
         _id: admin._id,
-        email: admin.email,
+        mobileNo: admin.mobileNo,
         businessName: admin.businessName,
         setupComplete: admin.setupComplete,
       },

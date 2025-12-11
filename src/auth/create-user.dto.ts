@@ -208,7 +208,8 @@ export class CreateAdminDto {
 
   @IsString()
   @IsNotEmpty()
-  phone!: string;
+  mobileNo!: string;
+
   @IsString()
   @IsNotEmpty()
   password!: string;
@@ -216,13 +217,14 @@ export class CreateAdminDto {
   @IsString()
   @IsNotEmpty()
   confirmPassword!: string;
+
   @IsObject()
   pumpDetails!: Record<string, any>;
 }
 
 export class AdminLoginDto {
-  @IsEmail()
-  email!: string;
+  @IsString()
+  mobileNo!: string;
 
   @IsString()
   password!: string;

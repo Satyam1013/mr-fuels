@@ -288,7 +288,7 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateAdminDto.prototype, "phone", void 0);
+], CreateAdminDto.prototype, "mobileNo", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
@@ -307,9 +307,9 @@ class AdminLoginDto {
 }
 exports.AdminLoginDto = AdminLoginDto;
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], AdminLoginDto.prototype, "email", void 0);
+], AdminLoginDto.prototype, "mobileNo", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

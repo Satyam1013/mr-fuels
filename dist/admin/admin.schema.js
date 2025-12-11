@@ -140,9 +140,9 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "email", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], Admin.prototype, "phone", void 0);
+], Admin.prototype, "mobileNo", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)

@@ -101,33 +101,39 @@ let AuthService = class AuthService {
         };
     }
     async adminSignup(createAdminDto) {
-        const { password, confirmPassword, pumpDetails, ...rest } = createAdminDto;
-        if (password !== confirmPassword) {
-            throw new common_1.BadRequestException("Passwords do not match");
+        try {
+            const { password, confirmPassword, pumpDetails, ...rest } = createAdminDto;
+            if (password !== confirmPassword) {
+                throw new common_1.BadRequestException("Passwords do not match");
+            }
+            const existing = await this.adminModel.findOne({ email: rest.email });
+            if (existing) {
+                throw new common_1.BadRequestException("Admin already exists");
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
+            const admin = await this.adminModel.create({
+                ...rest,
+                pumpDetails,
+                password: hashedPassword,
+                setupComplete,
+            });
+            return { message: "Admin created successfully", admin };
         }
-        const existing = await this.adminModel.findOne({ email: rest.email });
-        if (existing) {
-            throw new common_1.BadRequestException("Admin already exists");
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new common_1.BadRequestException("Error creating admin: " + errorMessage);
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
-        const admin = await this.adminModel.create({
-            ...rest,
-            pumpDetails,
-            password: hashedPassword,
-            setupComplete,
-        });
-        return { message: "Admin created successfully", admin };
     }
     async adminLogin(dto) {
-        const { email, password } = dto;
-        const admin = await this.adminModel.findOne({ email });
+        const { mobileNo, password } = dto;
+        const admin = await this.adminModel.findOne({ mobileNo });
         if (!admin) {
-            throw new common_1.UnauthorizedException("Invalid email or password");
+            throw new common_1.UnauthorizedException("Invalid mobile number or password");
         }
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
-            throw new common_1.UnauthorizedException("Invalid email or password");
+            throw new common_1.UnauthorizedException("Invalid mobile number or password");
         }
         const token = this.jwtService.sign({
             adminId: admin._id,
@@ -138,7 +144,7 @@ let AuthService = class AuthService {
             token,
             admin: {
                 _id: admin._id,
-                email: admin.email,
+                mobileNo: admin.mobileNo,
                 businessName: admin.businessName,
                 setupComplete: admin.setupComplete,
             },
