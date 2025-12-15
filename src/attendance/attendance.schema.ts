@@ -4,10 +4,10 @@ import { Document, Types } from "mongoose";
 @Schema({ timestamps: true })
 export class Attendance {
   @Prop({ type: Types.ObjectId, required: true, ref: "Admin" })
-  pumpId!: Types.ObjectId; // link to pump
+  pumpId!: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, required: true })
-  userId!: Types.ObjectId; // can be staff or manager
+  userId!: Types.ObjectId;
 
   @Prop({ required: true })
   role!: "manager" | "staff";
