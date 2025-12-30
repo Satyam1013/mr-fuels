@@ -118,9 +118,6 @@ let AuthService = class AuthService {
                 password: hashedPassword,
                 setupComplete,
             });
-            // ---------------------------
-            // ✅ Generate JWT Token
-            // ---------------------------
             const token = this.jwtService.sign({
                 adminId: admin._id,
                 role: "admin",

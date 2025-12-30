@@ -1,17 +1,13 @@
-import { IsOptional, IsArray, IsString } from "class-validator";
+import { IsString, IsObject, IsEmail } from "class-validator";
 
 export class CreatePumpDetailsDto {
-  @IsString()
-  @IsOptional()
-  signupId!: string | null;
-
   @IsString()
   businessName!: string;
 
   @IsString()
   dealerCode!: string;
 
-  @IsString()
+  @IsEmail()
   email!: string;
 
   @IsString()
@@ -23,42 +19,83 @@ export class CreatePumpDetailsDto {
   @IsString()
   confirmPassword!: string;
 
-  @IsString()
-  bankDeposit!: string;
+  // 🔹 Pump Details
+  @IsObject()
+  pumpDetails!: {
+    fuelPartner: string;
 
-  @IsString()
-  fuelPartner!: string;
+    pumpProducts: Array<{
+      kl: string;
+      dsrTankStock: string;
+      price: string;
+    }>;
 
-  @IsArray()
-  machines!: any[];
+    selectedOptions: string[];
 
-  @IsArray()
-  managers!: any[];
+    pumpTime: {
+      start: string;
+      end: string;
+    };
 
-  @IsArray()
-  staff!: any[];
+    pumpHours: number;
+    dailyCloseReportTime: string;
+  };
 
-  @IsArray()
-  pumpProducts!: any[];
+  // 🔹 Product Details
+  @IsObject()
+  productDetails!: {
+    selectedProducts: string[];
+  };
 
-  @IsArray()
-  selectedOptions!: string[];
+  // 🔹 Machines
+  @IsObject()
+  machines!: {
+    machines: any[];
+  };
 
-  @IsArray()
-  selectedProducts!: string[];
+  // 🔹 Managers
+  @IsObject()
+  managers!: {
+    managers: Array<{
+      managerName: string;
+      phone: string;
+      managerAadhar: any;
+      shift: number;
+      salary: string;
+      password: string;
+    }>;
+    is24Hour: boolean;
+  };
 
-  @IsArray()
-  tankConfig!: any[];
+  // 🔹 Staff
+  @IsObject()
+  staffDetails!: {
+    staff: Array<{
+      staffName: string;
+      staffNumber: string;
+      staffAadhar: any;
+      shift: number;
+      salary: string;
+    }>;
+  };
 
-  @IsArray()
-  upiApp!: string[];
+  // 🔹 Transactions
+  @IsObject()
+  transactionDetails!: {
+    upiApps: Array<{
+      name: string;
+      merchantId: string;
+    }>;
+    swipeSettlement: string;
+    swipeStatement: string;
+    bankDeposit: string;
+  };
 
-  @IsArray()
-  upiApps!: string[];
-
-  @IsString()
-  swipeSettlement!: string;
-
-  @IsString()
-  swipeStatement!: string;
+  // 🔹 DSR
+  @IsObject()
+  dsrDetails!: {
+    tankConfig: Array<{
+      tankNo: string;
+    }>;
+  };
 }

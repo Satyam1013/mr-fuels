@@ -19,11 +19,6 @@ export class AuthController {
     return this.authService.adminLogin(dto);
   }
 
-  // @Post("add-pump-details")
-  // async addPumpDetails(@Body() dto: PumpDetailsDto) {
-  //   return this.authService.addPumpDetails(dto);
-  // }
-
   // @Public()
   // @Get("check-used-mobiles")
   // checkUsedMobiles(@Query("numbers") numbers: string) {

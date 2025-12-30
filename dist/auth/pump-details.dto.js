@@ -16,11 +16,6 @@ class CreatePumpDetailsDto {
 exports.CreatePumpDetailsDto = CreatePumpDetailsDto;
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Object)
-], CreatePumpDetailsDto.prototype, "signupId", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "businessName", void 0);
 __decorate([
@@ -28,7 +23,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "dealerCode", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "email", void 0);
 __decorate([
@@ -44,54 +39,30 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "confirmPassword", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "bankDeposit", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreatePumpDetailsDto.prototype, "pumpDetails", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "fuelPartner", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreatePumpDetailsDto.prototype, "productDetails", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
 ], CreatePumpDetailsDto.prototype, "machines", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
 ], CreatePumpDetailsDto.prototype, "managers", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "staff", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreatePumpDetailsDto.prototype, "staffDetails", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "pumpProducts", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreatePumpDetailsDto.prototype, "transactionDetails", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "selectedOptions", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "selectedProducts", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "tankConfig", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "upiApp", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], CreatePumpDetailsDto.prototype, "upiApps", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "swipeSettlement", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "swipeStatement", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreatePumpDetailsDto.prototype, "dsrDetails", void 0);
