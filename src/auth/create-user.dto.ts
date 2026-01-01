@@ -86,26 +86,6 @@ export class MachineDetailsDto {
   machines!: MachineDto[];
 }
 
-export class PumpDetailsDto {
-  @IsArray()
-  @IsString({ each: true })
-  businessUpiApps!: string[];
-
-  @IsString()
-  swipeStatement!: string;
-
-  @IsString()
-  bankDeposit!: string;
-
-  @IsNumber()
-  @Type(() => Number)
-  noOfEmployeeShifts!: number;
-
-  @IsNumber()
-  @Type(() => Number)
-  shiftDetails!: number;
-}
-
 export class ManagerDto {
   @IsString()
   name!: string;
@@ -123,28 +103,6 @@ export class ManagerDto {
 
   @IsString()
   password!: string;
-}
-
-export class CreateAdminDtoDemo {
-  @ValidateNested()
-  @Type(() => BusinessDetailsDto)
-  businessDetails!: BusinessDetailsDto;
-
-  @ValidateNested()
-  @Type(() => MachineDetailsDto)
-  machineDetails!: MachineDetailsDto;
-
-  @ValidateNested()
-  @Type(() => PumpDetailsDto)
-  pumpDetails!: PumpDetailsDto;
-
-  @ValidateNested({ each: true })
-  @Type(() => ManagerDto)
-  @IsArray()
-  managers!: ManagerDto[];
-
-  @IsString()
-  adminPassword!: string;
 }
 
 export class LoginDto {
@@ -217,9 +175,6 @@ export class CreateAdminDto {
   @IsString()
   @IsNotEmpty()
   confirmPassword!: string;
-
-  @IsObject()
-  pumpDetails!: Record<string, any>;
 }
 
 export class AdminLoginDto {

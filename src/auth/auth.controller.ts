@@ -18,22 +18,4 @@ export class AuthController {
   login(@Body() dto: AdminLoginDto) {
     return this.authService.adminLogin(dto);
   }
-
-  // @Public()
-  // @Get("check-used-mobiles")
-  // checkUsedMobiles(@Query("numbers") numbers: string) {
-  //   return this.authService.checkUsedMobiles(numbers);
-  // }
-
-  // @Public()
-  // @Post("refresh-token")
-  // refreshAccessToken(@Body("refresh_token") refreshToken: string) {
-  //   return this.authService.refreshAccessToken(refreshToken);
-  // }
-
-  // @Public()
-  // @Post("logout")
-  // logout(@Body() body: { mobileNo: string; role: "admin" | "manager" }) {
-  //   return this.authService.logout(body.mobileNo, body.role);
-  // }
 }

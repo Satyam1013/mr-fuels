@@ -9,30 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DsrDetailsSchema = exports.DsrDetails = void 0;
+exports.ProductDetailsSchema = exports.ProductDetails = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let TankConfig = class TankConfig {
+let ProductDetails = class ProductDetails extends mongoose_2.Document {
 };
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], TankConfig.prototype, "tankNo", void 0);
-TankConfig = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
-], TankConfig);
-let DsrDetails = class DsrDetails extends mongoose_2.Document {
-};
-exports.DsrDetails = DsrDetails;
+exports.ProductDetails = ProductDetails;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], DsrDetails.prototype, "adminId", void 0);
+], ProductDetails.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [TankConfig], default: [] }),
+    (0, mongoose_1.Prop)({ type: [String], default: [] }),
     __metadata("design:type", Array)
-], DsrDetails.prototype, "tankConfig", void 0);
-exports.DsrDetails = DsrDetails = __decorate([
+], ProductDetails.prototype, "selectedProducts", void 0);
+exports.ProductDetails = ProductDetails = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], DsrDetails);
-exports.DsrDetailsSchema = mongoose_1.SchemaFactory.createForClass(DsrDetails);
+], ProductDetails);
+exports.ProductDetailsSchema = mongoose_1.SchemaFactory.createForClass(ProductDetails);

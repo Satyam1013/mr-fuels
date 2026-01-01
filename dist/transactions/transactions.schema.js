@@ -9,30 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DsrDetailsSchema = exports.DsrDetails = void 0;
+exports.TransactionDetailsSchema = exports.TransactionDetails = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let TankConfig = class TankConfig {
+let UpiApp = class UpiApp {
 };
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], TankConfig.prototype, "tankNo", void 0);
-TankConfig = __decorate([
+], UpiApp.prototype, "name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], UpiApp.prototype, "merchantId", void 0);
+UpiApp = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
-], TankConfig);
-let DsrDetails = class DsrDetails extends mongoose_2.Document {
+], UpiApp);
+let TransactionDetails = class TransactionDetails extends mongoose_2.Document {
 };
-exports.DsrDetails = DsrDetails;
+exports.TransactionDetails = TransactionDetails;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], DsrDetails.prototype, "adminId", void 0);
+], TransactionDetails.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [TankConfig], default: [] }),
+    (0, mongoose_1.Prop)({ type: [UpiApp], default: [] }),
     __metadata("design:type", Array)
-], DsrDetails.prototype, "tankConfig", void 0);
-exports.DsrDetails = DsrDetails = __decorate([
+], TransactionDetails.prototype, "upiApps", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TransactionDetails.prototype, "swipeSettlement", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TransactionDetails.prototype, "swipeStatement", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TransactionDetails.prototype, "bankDeposit", void 0);
+exports.TransactionDetails = TransactionDetails = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], DsrDetails);
-exports.DsrDetailsSchema = mongoose_1.SchemaFactory.createForClass(DsrDetails);
+], TransactionDetails);
+exports.TransactionDetailsSchema = mongoose_1.SchemaFactory.createForClass(TransactionDetails);

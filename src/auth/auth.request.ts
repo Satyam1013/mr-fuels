@@ -1,10 +1,7 @@
-import { Request as ExpressRequest } from "express";
+import { Request } from "express";
 
-export interface AuthenticatedRequest extends ExpressRequest {
+export interface AuthenticatedRequest extends Request {
   user: {
-    sub: string;
-    mobileNo: string;
-    role: "admin" | "manager";
-    adminId?: string;
+    adminId: string;
   };
 }

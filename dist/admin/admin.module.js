@@ -12,7 +12,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const admin_service_1 = require("./admin.service");
 const admin_controller_1 = require("./admin.controller");
 const admin_schema_1 = require("./admin.schema");
-const plan_module_1 = require("../plan/plan.module");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
@@ -20,7 +19,6 @@ exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema }]),
-            plan_module_1.PlanModule,
         ],
         providers: [admin_service_1.AdminService],
         controllers: [admin_controller_1.AdminController],

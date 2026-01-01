@@ -5,7 +5,6 @@ import { AdminModule } from "../admin/admin.module";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { SuperAdminModule } from "../super-admin/super-admin.module";
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { SuperAdminModule } from "../super-admin/super-admin.module";
       }),
     }),
     AdminModule,
-    SuperAdminModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],

@@ -9,37 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminSchema = exports.Admin = void 0;
+exports.ManagerSchema = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let Admin = class Admin extends mongoose_2.Document {
+let Manager = class Manager extends mongoose_2.Document {
 };
-exports.Admin = Admin;
+exports.Manager = Manager;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Manager.prototype, "adminId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Admin.prototype, "businessName", void 0);
+], Manager.prototype, "managerName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Admin.prototype, "dealerCode", void 0);
+], Manager.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Manager.prototype, "shift", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Admin.prototype, "email", void 0);
+], Manager.prototype, "salary", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Admin.prototype, "mobileNo", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Admin.prototype, "password", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: false }),
-    __metadata("design:type", Boolean)
-], Admin.prototype, "setupComplete", void 0);
-exports.Admin = Admin = __decorate([
+], Manager.prototype, "password", void 0);
+exports.Manager = Manager = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], Admin);
-exports.AdminSchema = mongoose_1.SchemaFactory.createForClass(Admin);
+], Manager);
+exports.ManagerSchema = mongoose_1.SchemaFactory.createForClass(Manager);

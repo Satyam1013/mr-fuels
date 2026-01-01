@@ -21,19 +21,6 @@ let AdminService = class AdminService {
     constructor(adminModel) {
         this.adminModel = adminModel;
     }
-    async addPumpDetails(adminId, dto) {
-        const admin = await this.adminModel.findById(adminId);
-        if (!admin) {
-            throw new common_1.NotFoundException("Admin not found");
-        }
-        admin.pumpDetails = dto;
-        admin.setupComplete = true;
-        await admin.save();
-        return {
-            message: "Pump details saved successfully",
-            setupComplete: true,
-        };
-    }
 };
 exports.AdminService = AdminService;
 exports.AdminService = AdminService = __decorate([

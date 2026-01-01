@@ -52,57 +52,14 @@ const bcrypt = __importStar(require("bcrypt"));
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_2 = require("mongoose");
 const admin_schema_1 = require("../admin/admin.schema");
-const config_1 = require("@nestjs/config");
-const super_admin_schema_1 = require("../super-admin/super-admin.schema");
 let AuthService = class AuthService {
-    constructor(adminModel, superAdminModel, jwtService, configService) {
+    constructor(adminModel, jwtService) {
         this.adminModel = adminModel;
-        this.superAdminModel = superAdminModel;
         this.jwtService = jwtService;
-        this.configService = configService;
-    }
-    async superAdminSignup(dto) {
-        const existing = await this.superAdminModel.findOne({
-            $or: [{ email: dto.email }, { mobile: dto.mobile }],
-        });
-        if (existing) {
-            throw new common_1.BadRequestException("Super admin already exists");
-        }
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const newSuperAdmin = new this.superAdminModel({
-            ...dto,
-            password: hashedPassword,
-        });
-        await newSuperAdmin.save();
-        return { message: "Super admin registered successfully" };
-    }
-    async superAdminLogin(dto) {
-        const superAdmin = await this.superAdminModel.findOne({
-            email: dto.email,
-        });
-        if (!superAdmin) {
-            throw new common_1.UnauthorizedException("Invalid email or password");
-        }
-        const isValid = await bcrypt.compare(dto.password, superAdmin.password);
-        if (!isValid) {
-            throw new common_1.UnauthorizedException("Invalid email or password");
-        }
-        const payload = {
-            sub: superAdmin._id,
-            email: superAdmin.email,
-        };
-        const access_token = this.jwtService.sign(payload, {
-            secret: this.configService.get("JWT_SECRET"),
-            expiresIn: "1h",
-        });
-        return {
-            message: "Login successful",
-            access_token,
-        };
     }
     async adminSignup(createAdminDto) {
         try {
-            const { password, confirmPassword, pumpDetails, ...rest } = createAdminDto;
+            const { password, confirmPassword, ...rest } = createAdminDto;
             if (password !== confirmPassword) {
                 throw new common_1.BadRequestException("Passwords do not match");
             }
@@ -111,12 +68,9 @@ let AuthService = class AuthService {
                 throw new common_1.BadRequestException("Admin already exists");
             }
             const hashedPassword = await bcrypt.hash(password, 10);
-            const setupComplete = pumpDetails && Object.keys(pumpDetails).length > 0;
             const admin = await this.adminModel.create({
                 ...rest,
-                pumpDetails,
                 password: hashedPassword,
-                setupComplete,
             });
             const token = this.jwtService.sign({
                 adminId: admin._id,
@@ -168,9 +122,6 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
-    __param(1, (0, mongoose_1.InjectModel)(super_admin_schema_1.SuperAdmin.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
-        jwt_1.JwtService,
-        config_1.ConfigService])
+        jwt_1.JwtService])
 ], AuthService);

@@ -11,17 +11,8 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const schedule_1 = require("@nestjs/schedule");
-// import { AdminModule } from "./admin/admin.module";
 const auth_module_1 = require("./auth/auth.module");
-const plan_module_1 = require("./plan/plan.module");
-const super_admin_module_1 = require("./super-admin/super-admin.module");
-const home_module_1 = require("./home/home.module");
-const pump_expenses_module_1 = require("./pump-expenses/pump-expenses.module");
-const personal_expenses_module_1 = require("./personal-expenses/personal-expenses.module");
-const creditors_module_1 = require("./creditors/creditors.module");
-const creditor_contact_module_1 = require("./creditor-contact/creditor-contact.module");
-const dsr_module_1 = require("./dsr/dsr.module");
-// import { AttendanceModule } from "./attendance/attendance.module";
+const pump_details_module_1 = require("./pump-details/pump-details.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -31,17 +22,8 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
             schedule_1.ScheduleModule.forRoot(),
-            super_admin_module_1.SuperAdminModule,
-            pump_expenses_module_1.PumpExpenseModule,
-            personal_expenses_module_1.PersonalExpenseModule,
-            creditor_contact_module_1.CreditorContactModule,
-            // AdminModule,
-            // AttendanceModule,
             auth_module_1.AuthModule,
-            plan_module_1.PlanModule,
-            home_module_1.HomeModule,
-            dsr_module_1.DSRModule,
-            creditors_module_1.CreditorModule,
+            pump_details_module_1.PumpDetailsModule,
         ],
         providers: [],
     })
