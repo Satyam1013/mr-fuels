@@ -6,11 +6,23 @@ export class Manager extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
-  @Prop() managerName!: string;
-  @Prop() phone!: string;
-  @Prop() shift!: number;
-  @Prop() salary!: string;
-  @Prop() password!: string; // hashed
+  @Prop({ required: true })
+  managerName!: string;
+
+  @Prop({ required: true })
+  phone!: string;
+
+  @Prop()
+  managerAadhar!: any;
+
+  @Prop({ required: true })
+  shift!: number;
+
+  @Prop({ required: true })
+  salary!: string;
+
+  @Prop({ required: true })
+  password!: string;
 }
 
 export const ManagerSchema = SchemaFactory.createForClass(Manager);

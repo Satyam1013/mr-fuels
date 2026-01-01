@@ -23,7 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     mobileNo?: string;
     shift?: number;
     adminId?: string;
-    pumpId?: string;
   }) {
     if (!payload || !payload.sub) {
       throw new UnauthorizedException("Invalid token");
@@ -36,7 +35,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       mobileNo: payload.mobileNo,
       shift: payload.shift,
       adminId: payload.adminId,
-      pumpId: payload.pumpId, // ✅ Add this
     };
   }
 }
