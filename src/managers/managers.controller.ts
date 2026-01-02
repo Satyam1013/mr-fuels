@@ -1,16 +1,9 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Req } from "@nestjs/common";
 import { ManagerService } from "./managers.service";
 import { CreateManagerDto } from "./managers.dto";
-import { AuthGuard } from "@nestjs/passport";
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    adminId: string;
-  };
-}
+import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("managers")
-@UseGuards(AuthGuard("jwt"))
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
 

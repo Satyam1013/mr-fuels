@@ -63,7 +63,9 @@ let AuthService = class AuthService {
             if (password !== confirmPassword) {
                 throw new common_1.BadRequestException("Passwords do not match");
             }
-            const existing = await this.adminModel.findOne({ email: rest.email });
+            const existing = await this.adminModel.findOne({
+                mobileNo: rest.mobileNo,
+            });
             if (existing) {
                 throw new common_1.BadRequestException("Admin already exists");
             }
