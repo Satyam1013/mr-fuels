@@ -20,19 +20,19 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Staff.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Staff.prototype, "staffName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Staff.prototype, "staffNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Staff.prototype, "shift", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Staff.prototype, "salary", void 0);
 exports.Staff = Staff = __decorate([
