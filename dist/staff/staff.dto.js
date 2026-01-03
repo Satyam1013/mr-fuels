@@ -9,31 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateCreditorContactDto = exports.CreateCreditorContactDto = void 0;
+exports.CreateStaffDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateCreditorContactDto {
+class CreateStaffDto {
 }
-exports.CreateCreditorContactDto = CreateCreditorContactDto;
+exports.CreateStaffDto = CreateStaffDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCreditorContactDto.prototype, "name", void 0);
+], CreateStaffDto.prototype, "staffName", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" }),
-    __metadata("design:type", String)
-], CreateCreditorContactDto.prototype, "number", void 0);
-class UpdateCreditorContactDto {
-}
-exports.UpdateCreditorContactDto = UpdateCreditorContactDto;
-__decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCreditorContactDto.prototype, "name", void 0);
+], CreateStaffDto.prototype, "staffNumber", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.Matches)(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" }),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateStaffDto.prototype, "shift", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCreditorContactDto.prototype, "number", void 0);
+], CreateStaffDto.prototype, "salary", void 0);

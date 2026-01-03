@@ -6,6 +6,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { AuthModule } from "./auth/auth.module";
 import { PumpDetailsModule } from "./pump-details/pump-details.module";
 import { ManagerModule } from "./managers/managers.module";
+import { StaffModule } from "./staff/staff.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ManagerModule } from "./managers/managers.module";
     AuthModule,
     PumpDetailsModule,
     ManagerModule,
+    StaffModule,
   ],
   providers: [],
 })

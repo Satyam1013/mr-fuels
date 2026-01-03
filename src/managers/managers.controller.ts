@@ -3,7 +3,7 @@ import { ManagerService } from "./managers.service";
 import { CreateManagerDto } from "./managers.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
-@Controller("managers")
+@Controller("manager")
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
 

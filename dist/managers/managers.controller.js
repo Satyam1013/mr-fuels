@@ -34,6 +34,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ManagerController.prototype, "addManager", null);
 exports.ManagerController = ManagerController = __decorate([
-    (0, common_1.Controller)("managers"),
+    (0, common_1.Controller)("manager"),
     __metadata("design:paramtypes", [managers_service_1.ManagerService])
 ], ManagerController);

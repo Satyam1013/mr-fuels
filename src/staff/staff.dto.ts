@@ -1,21 +1,15 @@
-import { IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
-export class CreateCreditorContactDto {
-  @IsNotEmpty()
+export class CreateStaffDto {
   @IsString()
-  name!: string;
+  staffName!: string;
 
-  @IsNotEmpty()
-  @Matches(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" })
-  number!: string;
-}
-
-export class UpdateCreditorContactDto {
-  @IsOptional()
   @IsString()
-  name?: string;
+  staffNumber!: string;
 
-  @IsOptional()
-  @Matches(/^[0-9]{10}$/, { message: "Mobile number must be 10 digits" })
-  number?: string;
+  @IsNumber()
+  shift!: number;
+
+  @IsString()
+  salary!: string;
 }
