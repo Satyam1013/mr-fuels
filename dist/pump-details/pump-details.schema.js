@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpDetailsSchema = exports.PumpDetails = void 0;
-// pump-details.schema.ts
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let PumpProduct = class PumpProduct {

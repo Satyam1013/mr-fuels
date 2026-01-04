@@ -20,15 +20,15 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Machine.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Machine.prototype, "machineNo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Machine.prototype, "nozzleNo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Machine.prototype, "fuelType", void 0);
 __decorate([
