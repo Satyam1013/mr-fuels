@@ -15,6 +15,7 @@ const auth_module_1 = require("./auth/auth.module");
 const pump_details_module_1 = require("./pump-details/pump-details.module");
 const managers_module_1 = require("./managers/managers.module");
 const staff_module_1 = require("./staff/staff.module");
+const transactions_module_1 = require("./transactions/transactions.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,6 +29,7 @@ exports.AppModule = AppModule = __decorate([
             pump_details_module_1.PumpDetailsModule,
             managers_module_1.ManagerModule,
             staff_module_1.StaffModule,
+            transactions_module_1.TransactionDetailsModule,
         ],
         providers: [],
     })

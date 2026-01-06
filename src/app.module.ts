@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { PumpDetailsModule } from "./pump-details/pump-details.module";
 import { ManagerModule } from "./managers/managers.module";
 import { StaffModule } from "./staff/staff.module";
+import { TransactionDetailsModule } from "./transactions/transactions.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { StaffModule } from "./staff/staff.module";
     PumpDetailsModule,
     ManagerModule,
     StaffModule,
+    TransactionDetailsModule,
   ],
   providers: [],
 })
