@@ -10,6 +10,7 @@ import { StaffModule } from "./staff/staff.module";
 import { TransactionDetailsModule } from "./transactions/transactions.module";
 import { ProductDetailsModule } from "./product-details/product-details.module";
 import { MachineModule } from "./machines/machines.module";
+import { DsrDetailsModule } from "./dsr/dsr.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { MachineModule } from "./machines/machines.module";
     TransactionDetailsModule,
     ProductDetailsModule,
     MachineModule,
+    DsrDetailsModule,
   ],
   providers: [],
 })
