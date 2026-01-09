@@ -11,6 +11,7 @@ import { TransactionDetailsModule } from "./transactions/transactions.module";
 import { ProductDetailsModule } from "./product-details/product-details.module";
 import { MachineModule } from "./machines/machines.module";
 import { DsrDetailsModule } from "./dsr/dsr.module";
+import { PlanModule } from "./plan-details/plan-details.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DsrDetailsModule } from "./dsr/dsr.module";
     ProductDetailsModule,
     MachineModule,
     DsrDetailsModule,
+    PlanModule,
   ],
   providers: [],
 })
