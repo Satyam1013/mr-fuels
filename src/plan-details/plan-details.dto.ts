@@ -69,7 +69,6 @@ export class UiDto {
   gradient?: string[];
 }
 
-// Main DTO
 export class PlanDetailsDto {
   @IsString()
   id!: string;
