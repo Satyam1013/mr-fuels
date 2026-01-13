@@ -11,15 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanSchema = exports.Plan = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const plan_details_enums_1 = require("./plan-details.enums");
 let Plan = class Plan {
 };
 exports.Plan = Plan;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Plan.prototype, "id", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ["pro", "premium"] }),
+    (0, mongoose_1.Prop)({ required: true, enum: plan_details_enums_1.PlanName }),
     __metadata("design:type", String)
 ], Plan.prototype, "name", void 0);
 __decorate([
@@ -32,22 +33,33 @@ __decorate([
 ], Plan.prototype, "description", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Object,
-        required: true,
+        _id: false,
+        type: {
+            type: { type: String, enum: plan_details_enums_1.DurationType, required: true },
+            months: { type: Number, required: true },
+        },
     }),
     __metadata("design:type", Object)
 ], Plan.prototype, "duration", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Object,
-        required: true,
+        _id: false,
+        type: {
+            originalPrice: { type: Number, required: true },
+            finalPrice: { type: Number, required: true },
+            currency: { type: String, enum: plan_details_enums_1.Currency, required: true },
+            isFree: { type: Boolean, required: true },
+        },
     }),
     __metadata("design:type", Object)
 ], Plan.prototype, "pricing", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Object,
-        required: true,
+        _id: false,
+        type: {
+            enabled: { type: Boolean, required: true },
+            trialDays: { type: Number },
+        },
     }),
     __metadata("design:type", Object)
 ], Plan.prototype, "trial", void 0);
@@ -57,27 +69,33 @@ __decorate([
 ], Plan.prototype, "features", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Object,
+        _id: false,
+        type: {
+            mostPopular: Boolean,
+            discounted: Boolean,
+            freeTrial: Boolean,
+        },
         default: {},
     }),
     __metadata("design:type", Object)
 ], Plan.prototype, "tags", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Object,
+        _id: false,
+        type: {
+            badgeText: String,
+            badgeColor: String,
+            gradient: [String],
+        },
         default: {},
     }),
     __metadata("design:type", Object)
 ], Plan.prototype, "ui", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: ["active", "inactive"], default: "active" }),
+    (0, mongoose_1.Prop)({ enum: plan_details_enums_1.PlanStatus, default: plan_details_enums_1.PlanStatus.ACTIVE }),
     __metadata("design:type", String)
 ], Plan.prototype, "status", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: Date.now }),
-    __metadata("design:type", Date)
-], Plan.prototype, "createdAt", void 0);
 exports.Plan = Plan = __decorate([
-    (0, mongoose_1.Schema)()
+    (0, mongoose_1.Schema)({ timestamps: true })
 ], Plan);
 exports.PlanSchema = mongoose_1.SchemaFactory.createForClass(Plan);

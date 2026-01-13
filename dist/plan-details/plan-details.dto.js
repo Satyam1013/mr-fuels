@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanDetailsDto = exports.UiDto = exports.TagsDto = exports.TrialDto = exports.PricingDto = exports.DurationDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const plan_details_enums_1 = require("./plan-details.enums");
 class DurationDto {
 }
 exports.DurationDto = DurationDto;
 __decorate([
-    (0, class_validator_1.IsEnum)(["trial", "monthly", "yearly"]),
+    (0, class_validator_1.IsEnum)(plan_details_enums_1.DurationType),
     __metadata("design:type", String)
 ], DurationDto.prototype, "type", void 0);
 __decorate([
@@ -35,7 +36,7 @@ __decorate([
     __metadata("design:type", Number)
 ], PricingDto.prototype, "finalPrice", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEnum)(plan_details_enums_1.Currency),
     __metadata("design:type", String)
 ], PricingDto.prototype, "currency", void 0);
 __decorate([
@@ -91,7 +92,6 @@ __decorate([
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
 ], UiDto.prototype, "gradient", void 0);
-// Main DTO
 class PlanDetailsDto {
 }
 exports.PlanDetailsDto = PlanDetailsDto;
@@ -100,7 +100,7 @@ __decorate([
     __metadata("design:type", String)
 ], PlanDetailsDto.prototype, "id", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(["pro", "premium"]),
+    (0, class_validator_1.IsEnum)(plan_details_enums_1.PlanName),
     __metadata("design:type", String)
 ], PlanDetailsDto.prototype, "name", void 0);
 __decorate([
@@ -132,18 +132,18 @@ __decorate([
     __metadata("design:type", Array)
 ], PlanDetailsDto.prototype, "features", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => TagsDto),
-    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", TagsDto)
 ], PlanDetailsDto.prototype, "tags", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => UiDto),
-    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", UiDto)
 ], PlanDetailsDto.prototype, "ui", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(["active", "inactive"]),
+    (0, class_validator_1.IsEnum)(plan_details_enums_1.PlanStatus),
     __metadata("design:type", String)
 ], PlanDetailsDto.prototype, "status", void 0);

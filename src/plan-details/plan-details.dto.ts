@@ -8,10 +8,16 @@ import {
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
+import {
+  PlanName,
+  PlanStatus,
+  DurationType,
+  Currency,
+} from "./plan-details.enums";
 
 export class DurationDto {
-  @IsEnum(["trial", "monthly", "yearly"])
-  type!: "trial" | "monthly" | "yearly";
+  @IsEnum(DurationType)
+  type!: DurationType;
 
   @IsNumber()
   months!: number;
@@ -24,8 +30,8 @@ export class PricingDto {
   @IsNumber()
   finalPrice!: number;
 
-  @IsString()
-  currency!: "INR";
+  @IsEnum(Currency)
+  currency!: Currency;
 
   @IsBoolean()
   isFree!: boolean;
@@ -73,8 +79,8 @@ export class PlanDetailsDto {
   @IsString()
   id!: string;
 
-  @IsEnum(["pro", "premium"])
-  name!: "pro" | "premium";
+  @IsEnum(PlanName)
+  name!: PlanName;
 
   @IsNumber()
   tier!: number;
@@ -98,16 +104,16 @@ export class PlanDetailsDto {
   @IsString({ each: true })
   features!: string[];
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => TagsDto)
-  @IsOptional()
   tags?: TagsDto;
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => UiDto)
-  @IsOptional()
   ui?: UiDto;
 
-  @IsEnum(["active", "inactive"])
-  status!: "active" | "inactive";
+  @IsEnum(PlanStatus)
+  status!: PlanStatus;
 }

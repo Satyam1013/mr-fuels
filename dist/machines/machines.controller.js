@@ -20,25 +20,20 @@ let MachineController = class MachineController {
     constructor(machineService) {
         this.machineService = machineService;
     }
-    // Create machine
     async createMachine(req, dto) {
         const adminId = req.user.adminId;
         return this.machineService.createMachine(adminId, dto);
     }
-    // Get all machines of admin
     async getMachines(req) {
         const adminId = req.user.adminId;
         return this.machineService.getMachines(adminId);
     }
-    // Get single machine
     async getMachineById(id) {
         return this.machineService.getMachineById(id);
     }
-    // Update machine
     async updateMachine(id, dto) {
         return this.machineService.updateMachine(id, dto);
     }
-    // Delete machine
     async deleteMachine(id) {
         return this.machineService.deleteMachine(id);
     }
