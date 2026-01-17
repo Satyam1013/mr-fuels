@@ -12,6 +12,7 @@ import { ProductDetailsModule } from "./product-details/product-details.module";
 import { MachineModule } from "./machines/machines.module";
 import { DsrDetailsModule } from "./dsr/dsr.module";
 import { PlanModule } from "./plan-details/plan-details.module";
+import { NonFuelProductModule } from "./non-fuel-product/non-fuel-product.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PlanModule } from "./plan-details/plan-details.module";
     MachineModule,
     DsrDetailsModule,
     PlanModule,
+    NonFuelProductModule,
   ],
   providers: [],
 })

@@ -1,18 +1,38 @@
-import { IsNotEmpty, IsString, IsBoolean } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsBoolean,
+  ValidateNested,
+  IsOptional,
+} from "class-validator";
+import { Type } from "class-transformer";
+
+class NozzleDto {
+  @IsString()
+  @IsNotEmpty()
+  fuelType!: string;
+}
 
 export class CreateMachineDto {
   @IsString()
   @IsNotEmpty()
-  machineNo!: string;
+  machineNumber!: string;
 
   @IsString()
   @IsNotEmpty()
-  nozzleNo!: string;
+  machineKey!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  fuelType!: string;
+  @IsNumber()
+  nozzleCount!: number;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => NozzleDto)
+  nozzles!: NozzleDto[];
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

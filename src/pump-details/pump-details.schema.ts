@@ -3,6 +3,7 @@ import { Document, Types } from "mongoose";
 
 @Schema({ _id: false })
 class PumpProduct {
+  @Prop() productName!: string;
   @Prop() kl!: string;
   @Prop() dsrTankStock!: string;
   @Prop() price!: string;

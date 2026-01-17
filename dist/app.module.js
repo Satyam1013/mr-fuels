@@ -20,6 +20,7 @@ const product_details_module_1 = require("./product-details/product-details.modu
 const machines_module_1 = require("./machines/machines.module");
 const dsr_module_1 = require("./dsr/dsr.module");
 const plan_details_module_1 = require("./plan-details/plan-details.module");
+const non_fuel_product_module_1 = require("./non-fuel-product/non-fuel-product.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,6 +39,7 @@ exports.AppModule = AppModule = __decorate([
             machines_module_1.MachineModule,
             dsr_module_1.DsrDetailsModule,
             plan_details_module_1.PlanModule,
+            non_fuel_product_module_1.NonFuelProductModule,
         ],
         providers: [],
     })

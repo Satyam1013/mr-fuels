@@ -17,6 +17,10 @@ class PumpProductDto {
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
+], PumpProductDto.prototype, "productName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
 ], PumpProductDto.prototype, "kl", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
@@ -55,15 +59,18 @@ __decorate([
     __metadata("design:type", Array)
 ], CreatePumpDetailsDto.prototype, "selectedOptions", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => PumpTimeDto),
     __metadata("design:type", PumpTimeDto)
 ], CreatePumpDetailsDto.prototype, "pumpTime", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreatePumpDetailsDto.prototype, "pumpHours", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "dailyCloseReportTime", void 0);

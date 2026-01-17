@@ -9,41 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateMachineDto = void 0;
+exports.CreateNonFuelProductDto = void 0;
 const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-class NozzleDto {
+class CreateNonFuelProductDto {
 }
+exports.CreateNonFuelProductDto = CreateNonFuelProductDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], NozzleDto.prototype, "fuelType", void 0);
-class CreateMachineDto {
-}
-exports.CreateMachineDto = CreateMachineDto;
+], CreateNonFuelProductDto.prototype, "productName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateMachineDto.prototype, "machineNumber", void 0);
+], CreateNonFuelProductDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateMachineDto.prototype, "machineKey", void 0);
+], CreateNonFuelProductDto.prototype, "totalStock", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateMachineDto.prototype, "nozzleCount", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => NozzleDto),
-    __metadata("design:type", Array)
-], CreateMachineDto.prototype, "nozzles", void 0);
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateNonFuelProductDto.prototype, "unitType", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], CreateMachineDto.prototype, "isActive", void 0);
+], CreateNonFuelProductDto.prototype, "isActive", void 0);

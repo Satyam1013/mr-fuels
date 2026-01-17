@@ -1,31 +1,26 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-@Schema({ _id: false })
-class Nozzle {
-  @Prop({ required: true })
-  fuelType!: string;
-}
-
 @Schema({ timestamps: true })
-export class Machine extends Document {
+export class NonFuelProduct extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
   @Prop({ required: true })
-  machineNumber!: string;
+  productName!: string;
 
   @Prop({ required: true })
-  machineKey!: string;
+  price!: string;
 
   @Prop({ required: true })
-  nozzleCount!: number;
+  totalStock!: string;
 
-  @Prop({ type: [Nozzle], default: [] })
-  nozzles!: Nozzle[];
+  @Prop({ required: true })
+  unitType!: string; // Kg, Litre, etc.
 
   @Prop({ default: true })
   isActive!: boolean;
 }
 
-export const MachineSchema = SchemaFactory.createForClass(Machine);
+export const NonFuelProductSchema =
+  SchemaFactory.createForClass(NonFuelProduct);

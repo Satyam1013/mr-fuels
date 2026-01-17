@@ -11,11 +11,11 @@ export class MachineService {
   ) {}
 
   async createMachine(adminId: string, dto: CreateMachineDto) {
-    // Check if machine number already exists for this admin
     const existing = await this.machineModel.findOne({
       adminId,
-      machineNo: dto.machineNo,
+      machineNumber: dto.machineNumber,
     });
+
     if (existing) {
       throw new BadRequestException(
         "Machine number already exists for this admin",

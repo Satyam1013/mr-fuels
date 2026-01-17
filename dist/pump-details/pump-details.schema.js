@@ -17,6 +17,10 @@ let PumpProduct = class PumpProduct {
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
+], PumpProduct.prototype, "productName", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
 ], PumpProduct.prototype, "kl", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

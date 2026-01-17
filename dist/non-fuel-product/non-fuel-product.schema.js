@@ -9,46 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MachineSchema = exports.Machine = void 0;
+exports.NonFuelProductSchema = exports.NonFuelProduct = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let Nozzle = class Nozzle {
+let NonFuelProduct = class NonFuelProduct extends mongoose_2.Document {
 };
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Nozzle.prototype, "fuelType", void 0);
-Nozzle = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
-], Nozzle);
-let Machine = class Machine extends mongoose_2.Document {
-};
-exports.Machine = Machine;
+exports.NonFuelProduct = NonFuelProduct;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], Machine.prototype, "adminId", void 0);
+], NonFuelProduct.prototype, "adminId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], Machine.prototype, "machineNumber", void 0);
+], NonFuelProduct.prototype, "productName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], Machine.prototype, "machineKey", void 0);
+], NonFuelProduct.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Machine.prototype, "nozzleCount", void 0);
+    __metadata("design:type", String)
+], NonFuelProduct.prototype, "totalStock", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [Nozzle], default: [] }),
-    __metadata("design:type", Array)
-], Machine.prototype, "nozzles", void 0);
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], NonFuelProduct.prototype, "unitType", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)
-], Machine.prototype, "isActive", void 0);
-exports.Machine = Machine = __decorate([
+], NonFuelProduct.prototype, "isActive", void 0);
+exports.NonFuelProduct = NonFuelProduct = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], Machine);
-exports.MachineSchema = mongoose_1.SchemaFactory.createForClass(Machine);
+], NonFuelProduct);
+exports.NonFuelProductSchema = mongoose_1.SchemaFactory.createForClass(NonFuelProduct);
