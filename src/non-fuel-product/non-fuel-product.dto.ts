@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsBoolean, IsOptional } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateNonFuelProductDto {
   @IsString()
@@ -16,8 +16,4 @@ export class CreateNonFuelProductDto {
   @IsString()
   @IsNotEmpty()
   unitType!: string;
-
-  @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
 }

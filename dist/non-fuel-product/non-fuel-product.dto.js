@@ -34,8 +34,3 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateNonFuelProductDto.prototype, "unitType", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], CreateNonFuelProductDto.prototype, "isActive", void 0);

@@ -35,10 +35,6 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], NonFuelProduct.prototype, "unitType", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: true }),
-    __metadata("design:type", Boolean)
-], NonFuelProduct.prototype, "isActive", void 0);
 exports.NonFuelProduct = NonFuelProduct = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], NonFuelProduct);

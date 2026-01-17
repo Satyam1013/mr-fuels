@@ -17,9 +17,6 @@ export class NonFuelProduct extends Document {
 
   @Prop({ required: true })
   unitType!: string; // Kg, Litre, etc.
-
-  @Prop({ default: true })
-  isActive!: boolean;
 }
 
 export const NonFuelProductSchema =
