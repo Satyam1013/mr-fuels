@@ -13,6 +13,7 @@ import { MachineModule } from "./machines/machines.module";
 import { DsrDetailsModule } from "./dsr/dsr.module";
 import { PlanModule } from "./plan-details/plan-details.module";
 import { NonFuelProductModule } from "./non-fuel-product/non-fuel-product.module";
+import { PumpTimingModule } from "./pump-timing/pump-timing.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { NonFuelProductModule } from "./non-fuel-product/non-fuel-product.module
     DsrDetailsModule,
     PlanModule,
     NonFuelProductModule,
+    PumpTimingModule,
   ],
   providers: [],
 })

@@ -12,34 +12,43 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductDetailsService = void 0;
+exports.PumpDetailsService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const product_details_schema_1 = require("./product-details.schema");
+const pump_details_schema_1 = require("./pump-details.schema");
 const admin_schema_1 = require("../admin/admin.schema");
-let ProductDetailsService = class ProductDetailsService {
-    constructor(productDetailsModel, adminModel) {
-        this.productDetailsModel = productDetailsModel;
+let PumpDetailsService = class PumpDetailsService {
+    constructor(pumpDetailsModel, adminModel) {
+        this.pumpDetailsModel = pumpDetailsModel;
         this.adminModel = adminModel;
     }
-    async addProductDetails(adminId, dto) {
-        const admin = await this.adminModel.exists({ _id: adminId });
-        if (!admin) {
+    async addPumpDetails(adminId, dto) {
+        const adminExists = await this.adminModel.findById(adminId);
+        if (!adminExists) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        return this.productDetailsModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, { $set: dto }, {
-            new: true,
-            upsert: true,
-            runValidators: true,
+        // optional: only ONE pump detail per admin
+        const existing = await this.pumpDetailsModel.findOne({
+            adminId,
         });
+        if (existing) {
+            return this.pumpDetailsModel.findByIdAndUpdate(existing._id, dto, {
+                new: true,
+            });
+        }
+        const pumpDetails = await this.pumpDetailsModel.create({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            ...dto,
+        });
+        return pumpDetails;
     }
 };
-exports.ProductDetailsService = ProductDetailsService;
-exports.ProductDetailsService = ProductDetailsService = __decorate([
+exports.PumpDetailsService = PumpDetailsService;
+exports.PumpDetailsService = PumpDetailsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(product_details_schema_1.ProductDetails.name)),
+    __param(0, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __param(1, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model])
-], ProductDetailsService);
+], PumpDetailsService);

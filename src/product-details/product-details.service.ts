@@ -10,28 +10,24 @@ export class ProductDetailsService {
   constructor(
     @InjectModel(ProductDetails.name)
     private productDetailsModel: Model<ProductDetails>,
-
     @InjectModel(Admin.name)
     private adminModel: Model<Admin>,
   ) {}
 
   async addProductDetails(adminId: string, dto: CreateProductDetailsDto) {
-    const admin = await this.adminModel.findById(adminId);
+    const admin = await this.adminModel.exists({ _id: adminId });
     if (!admin) {
       throw new NotFoundException("Admin not found");
     }
 
-    const existing = await this.productDetailsModel.findOne({ adminId });
-
-    if (existing) {
-      return this.productDetailsModel.findByIdAndUpdate(existing._id, dto, {
+    return this.productDetailsModel.findOneAndUpdate(
+      { adminId: new Types.ObjectId(adminId) },
+      { $set: dto },
+      {
         new: true,
-      });
-    }
-
-    return this.productDetailsModel.create({
-      adminId: new Types.ObjectId(adminId),
-      ...dto,
-    });
+        upsert: true,
+        runValidators: true,
+      },
+    );
   }
 }
