@@ -16,7 +16,7 @@ export class NonFuelProduct extends Document {
   totalStock!: string;
 
   @Prop({ required: true })
-  unitType!: string; // Kg, Litre, etc.
+  unitType!: string;
 }
 
 export const NonFuelProductSchema =
