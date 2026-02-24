@@ -21,19 +21,12 @@ let MachineService = class MachineService {
     constructor(machineModel) {
         this.machineModel = machineModel;
     }
-    async createMachine(adminId, dto) {
-        const existing = await this.machineModel.findOne({
-            adminId,
-            machineNumber: dto.machineNumber,
-        });
-        if (existing) {
-            throw new common_1.BadRequestException("Machine number already exists for this admin");
-        }
-        const machine = await this.machineModel.create({
+    async createMachines(adminId, machines) {
+        const docs = machines.map((m) => ({
+            ...m,
             adminId: new mongoose_2.Types.ObjectId(adminId),
-            ...dto,
-        });
-        return machine;
+        }));
+        return this.machineModel.insertMany(docs);
     }
     async getMachines(adminId) {
         return this.machineModel.find({ adminId });

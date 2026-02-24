@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateMachineDto = void 0;
+exports.BulkCreateMachineDto = exports.CreateMachineDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class NozzleDto {
@@ -57,3 +57,12 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateMachineDto.prototype, "isActive", void 0);
+class BulkCreateMachineDto {
+}
+exports.BulkCreateMachineDto = BulkCreateMachineDto;
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CreateMachineDto),
+    __metadata("design:type", Array)
+], BulkCreateMachineDto.prototype, "machines", void 0);

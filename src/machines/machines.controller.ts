@@ -9,7 +9,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { MachineService } from "./machines.service";
-import { CreateMachineDto } from "./machines.dto";
+import { BulkCreateMachineDto, CreateMachineDto } from "./machines.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("machines")
@@ -17,14 +17,13 @@ export class MachineController {
   constructor(private readonly machineService: MachineService) {}
 
   @Post()
-  async createMachine(
+  async createMachines(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreateMachineDto,
+    @Body() body: BulkCreateMachineDto,
   ) {
     const adminId = req.user.adminId;
-    return this.machineService.createMachine(adminId, dto);
+    return this.machineService.createMachines(adminId, body.machines);
   }
-
   @Get()
   async getMachines(@Req() req: AuthenticatedRequest) {
     const adminId = req.user.adminId;

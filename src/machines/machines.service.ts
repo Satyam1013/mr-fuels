@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Machine } from "./machines.schema";
@@ -10,24 +10,13 @@ export class MachineService {
     @InjectModel(Machine.name) private machineModel: Model<Machine>,
   ) {}
 
-  async createMachine(adminId: string, dto: CreateMachineDto) {
-    const existing = await this.machineModel.findOne({
-      adminId,
-      machineNumber: dto.machineNumber,
-    });
-
-    if (existing) {
-      throw new BadRequestException(
-        "Machine number already exists for this admin",
-      );
-    }
-
-    const machine = await this.machineModel.create({
+  async createMachines(adminId: string, machines: CreateMachineDto[]) {
+    const docs = machines.map((m) => ({
+      ...m,
       adminId: new Types.ObjectId(adminId),
-      ...dto,
-    });
+    }));
 
-    return machine;
+    return this.machineModel.insertMany(docs);
   }
 
   async getMachines(adminId: string) {

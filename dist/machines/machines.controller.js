@@ -20,9 +20,9 @@ let MachineController = class MachineController {
     constructor(machineService) {
         this.machineService = machineService;
     }
-    async createMachine(req, dto) {
+    async createMachines(req, body) {
         const adminId = req.user.adminId;
-        return this.machineService.createMachine(adminId, dto);
+        return this.machineService.createMachines(adminId, body.machines);
     }
     async getMachines(req) {
         const adminId = req.user.adminId;
@@ -44,9 +44,9 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, machines_dto_1.CreateMachineDto]),
+    __metadata("design:paramtypes", [Object, machines_dto_1.BulkCreateMachineDto]),
     __metadata("design:returntype", Promise)
-], MachineController.prototype, "createMachine", null);
+], MachineController.prototype, "createMachines", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Req)()),

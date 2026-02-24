@@ -44,3 +44,10 @@ export class CreateMachineDto {
   @IsBoolean()
   isActive?: boolean;
 }
+
+export class BulkCreateMachineDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateMachineDto)
+  machines!: CreateMachineDto[];
+}
