@@ -28,6 +28,7 @@ export class AuthService {
       const existing = await this.adminModel.findOne({
         mobileNo: rest.mobileNo,
       });
+
       if (existing) {
         throw new BadRequestException("Admin already exists");
       }

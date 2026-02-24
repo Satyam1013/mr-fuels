@@ -5,6 +5,12 @@ import { Document, Types } from "mongoose";
 class Nozzle {
   @Prop({ required: true })
   fuelType!: string;
+
+  @Prop({ required: true })
+  price!: string;
+
+  @Prop({ default: true })
+  isActive!: boolean;
 }
 
 @Schema({ timestamps: true })

@@ -13,6 +13,14 @@ class NozzleDto {
   @IsString()
   @IsNotEmpty()
   fuelType!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  price!: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class CreateMachineDto {

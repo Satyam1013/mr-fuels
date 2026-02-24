@@ -18,6 +18,14 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Nozzle.prototype, "fuelType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Nozzle.prototype, "price", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: true }),
+    __metadata("design:type", Boolean)
+], Nozzle.prototype, "isActive", void 0);
 Nozzle = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], Nozzle);
