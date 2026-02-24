@@ -51,7 +51,7 @@ __decorate([
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => NozzleDto),
     __metadata("design:type", Array)
-], CreateMachineDto.prototype, "nozzles", void 0);
+], CreateMachineDto.prototype, "nozzle", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),

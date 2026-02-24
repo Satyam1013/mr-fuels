@@ -51,7 +51,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ type: [Nozzle], default: [] }),
     __metadata("design:type", Array)
-], Machine.prototype, "nozzles", void 0);
+], Machine.prototype, "nozzle", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)

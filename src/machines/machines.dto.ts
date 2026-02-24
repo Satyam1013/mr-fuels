@@ -38,7 +38,7 @@ export class CreateMachineDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => NozzleDto)
-  nozzles!: NozzleDto[];
+  nozzle!: NozzleDto[];
 
   @IsOptional()
   @IsBoolean()

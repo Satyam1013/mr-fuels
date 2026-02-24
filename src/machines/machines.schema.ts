@@ -28,7 +28,7 @@ export class Machine extends Document {
   nozzleCount!: number;
 
   @Prop({ type: [Nozzle], default: [] })
-  nozzles!: Nozzle[];
+  nozzle!: Nozzle[];
 
   @Prop({ default: true })
   isActive!: boolean;
