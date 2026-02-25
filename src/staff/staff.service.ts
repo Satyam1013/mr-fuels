@@ -7,7 +7,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Staff } from "./staff.schema";
 import { Admin } from "../admin/admin.schema";
-import { CreateStaffDto } from "./staff.dto";
+import { BulkCreateStaffDto } from "./staff.dto";
 
 @Injectable()
 export class StaffService {
@@ -19,24 +19,44 @@ export class StaffService {
     private adminModel: Model<Admin>,
   ) {}
 
-  async addStaff(adminId: string, dto: CreateStaffDto) {
+  async addStaff(adminId: string, payload: BulkCreateStaffDto) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) {
       throw new NotFoundException("Admin not found");
     }
 
-    const existing = await this.staffModel.findOne({
-      adminId,
-      staffNumber: dto.staffNumber,
-    });
+    const { staff, numberOfStaff } = payload;
 
-    if (existing) {
-      throw new ConflictException("Staff with this number already exists");
+    if (numberOfStaff !== staff.length) {
+      throw new ConflictException(
+        `numberOfStaff (${numberOfStaff}) does not match staff array length (${staff.length})`,
+      );
     }
 
-    return this.staffModel.create({
-      adminId: new Types.ObjectId(adminId),
-      ...dto,
-    });
+    const docs = [];
+
+    for (const dto of staff) {
+      const existing = await this.staffModel.findOne({
+        adminId,
+        staffNumber: dto.staffNumber,
+      });
+
+      if (existing) {
+        throw new ConflictException(
+          `Staff with number ${dto.staffNumber} already exists`,
+        );
+      }
+
+      docs.push({
+        adminId: new Types.ObjectId(adminId),
+        ...dto,
+      });
+    }
+
+    if (docs.length) {
+      return await this.staffModel.insertMany(docs);
+    }
+
+    return [];
   }
 }

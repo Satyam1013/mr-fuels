@@ -28,9 +28,13 @@ __decorate([
     __metadata("design:type", String)
 ], Manager.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Manager.prototype, "managerAadhar", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Manager.prototype, "managerPan", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)

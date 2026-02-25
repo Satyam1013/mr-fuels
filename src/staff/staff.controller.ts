@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req } from "@nestjs/common";
 import { StaffService } from "./staff.service";
-import { CreateStaffDto } from "./staff.dto";
+import { BulkCreateStaffDto } from "./staff.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("staff")
@@ -10,7 +10,7 @@ export class StaffController {
   @Post()
   async addStaff(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreateStaffDto,
+    @Body() dto: BulkCreateStaffDto,
   ) {
     return this.staffService.addStaff(req.user.adminId, dto);
   }

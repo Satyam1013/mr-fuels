@@ -23,22 +23,33 @@ let StaffService = class StaffService {
         this.staffModel = staffModel;
         this.adminModel = adminModel;
     }
-    async addStaff(adminId, dto) {
+    async addStaff(adminId, payload) {
         const admin = await this.adminModel.findById(adminId);
         if (!admin) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        const existing = await this.staffModel.findOne({
-            adminId,
-            staffNumber: dto.staffNumber,
-        });
-        if (existing) {
-            throw new common_1.ConflictException("Staff with this number already exists");
+        const { staff, numberOfStaff } = payload;
+        if (numberOfStaff !== staff.length) {
+            throw new common_1.ConflictException(`numberOfStaff (${numberOfStaff}) does not match staff array length (${staff.length})`);
         }
-        return this.staffModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            ...dto,
-        });
+        const docs = [];
+        for (const dto of staff) {
+            const existing = await this.staffModel.findOne({
+                adminId,
+                staffNumber: dto.staffNumber,
+            });
+            if (existing) {
+                throw new common_1.ConflictException(`Staff with number ${dto.staffNumber} already exists`);
+            }
+            docs.push({
+                adminId: new mongoose_2.Types.ObjectId(adminId),
+                ...dto,
+            });
+        }
+        if (docs.length) {
+            return await this.staffModel.insertMany(docs);
+        }
+        return [];
     }
 };
 exports.StaffService = StaffService;

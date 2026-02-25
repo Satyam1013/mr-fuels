@@ -28,6 +28,14 @@ __decorate([
     __metadata("design:type", String)
 ], Staff.prototype, "staffNumber", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Staff.prototype, "staffAadhar", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Staff.prototype, "staffPan", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Staff.prototype, "shift", void 0);

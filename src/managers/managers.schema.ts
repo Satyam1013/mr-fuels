@@ -12,8 +12,11 @@ export class Manager extends Document {
   @Prop({ required: true, unique: true })
   phone!: string;
 
-  @Prop({ type: String })
-  managerAadhar!: string;
+  @Prop()
+  managerAadhar?: string;
+
+  @Prop()
+  managerPan?: string;
 
   @Prop({ required: true })
   shift!: number;

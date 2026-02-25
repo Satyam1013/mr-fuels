@@ -24,9 +24,15 @@ __decorate([
     __metadata("design:type", String)
 ], CreateManagerDto.prototype, "phone", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateManagerDto.prototype, "managerAadhar", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateManagerDto.prototype, "managerPan", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

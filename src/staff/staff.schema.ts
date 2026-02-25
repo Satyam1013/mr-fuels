@@ -12,6 +12,12 @@ export class Staff extends Document {
   @Prop({ required: true })
   staffNumber!: string;
 
+  @Prop()
+  staffAadhar?: string;
+
+  @Prop()
+  staffPan?: string;
+
   @Prop({ required: true })
   shift!: number;
 

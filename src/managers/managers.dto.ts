@@ -1,5 +1,11 @@
 import { Type } from "class-transformer";
-import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 
 export class CreateManagerDto {
   @IsString()
@@ -8,8 +14,13 @@ export class CreateManagerDto {
   @IsString()
   phone!: string;
 
+  @IsOptional()
   @IsString()
-  managerAadhar!: string;
+  managerAadhar?: string;
+
+  @IsOptional()
+  @IsString()
+  managerPan?: string;
 
   @IsNumber()
   shift!: number;
