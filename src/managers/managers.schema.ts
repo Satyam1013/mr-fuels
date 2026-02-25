@@ -9,7 +9,7 @@ export class Manager extends Document {
   @Prop({ required: true })
   managerName!: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   phone!: string;
 
   @Prop({ type: String })

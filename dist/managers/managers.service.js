@@ -57,25 +57,35 @@ let ManagerService = class ManagerService {
         this.managerModel = managerModel;
         this.adminModel = adminModel;
     }
-    async addManager(adminId, dto) {
+    async addManagers(adminId, payload) {
         const admin = await this.adminModel.findById(adminId);
         if (!admin) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        // optional: same admin ke under duplicate phone avoid
-        const existing = await this.managerModel.findOne({
-            adminId,
-            phone: dto.phone,
-        });
-        if (existing) {
-            throw new common_1.ConflictException("Manager with this phone already exists");
+        const { managers, numberOfManagers } = payload;
+        if (numberOfManagers !== managers.length) {
+            throw new common_1.ConflictException(`numberOfManagers (${numberOfManagers}) does not match managers length (${managers.length})`);
         }
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        return this.managerModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            ...dto,
-            password: hashedPassword,
-        });
+        const docs = [];
+        for (const dto of managers) {
+            const existing = await this.managerModel.findOne({
+                phone: dto.phone,
+            });
+            if (existing) {
+                throw new common_1.ConflictException(`Manager with phone ${dto.phone} already exists`);
+            }
+            const hashedPassword = await bcrypt.hash(dto.password, 10);
+            docs.push({
+                adminId: new mongoose_2.Types.ObjectId(adminId),
+                ...dto,
+                password: hashedPassword,
+            });
+        }
+        let insertedManagers = [];
+        if (docs.length) {
+            insertedManagers = (await this.managerModel.insertMany(docs));
+        }
+        return insertedManagers;
     }
 };
 exports.ManagerService = ManagerService;

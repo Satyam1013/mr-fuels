@@ -20,8 +20,8 @@ let ManagerController = class ManagerController {
     constructor(managerService) {
         this.managerService = managerService;
     }
-    async addManager(req, dto) {
-        return this.managerService.addManager(req.user.adminId, dto);
+    async addManagers(req, body) {
+        return this.managerService.addManagers(req.user.adminId, body);
     }
 };
 exports.ManagerController = ManagerController;
@@ -30,9 +30,9 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, managers_dto_1.CreateManagerDto]),
+    __metadata("design:paramtypes", [Object, managers_dto_1.BulkCreateManagerDto]),
     __metadata("design:returntype", Promise)
-], ManagerController.prototype, "addManager", null);
+], ManagerController.prototype, "addManagers", null);
 exports.ManagerController = ManagerController = __decorate([
     (0, common_1.Controller)("manager"),
     __metadata("design:paramtypes", [managers_service_1.ManagerService])

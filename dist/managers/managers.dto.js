@@ -9,7 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateManagerDto = void 0;
+exports.BulkCreateManagerDto = exports.CreateManagerDto = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class CreateManagerDto {
 }
@@ -38,3 +39,20 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateManagerDto.prototype, "password", void 0);
+class BulkCreateManagerDto {
+}
+exports.BulkCreateManagerDto = BulkCreateManagerDto;
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], BulkCreateManagerDto.prototype, "numberOfManagers", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CreateManagerDto),
+    __metadata("design:type", Array)
+], BulkCreateManagerDto.prototype, "managers", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], BulkCreateManagerDto.prototype, "numberOfShift", void 0);

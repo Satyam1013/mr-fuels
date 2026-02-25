@@ -24,7 +24,7 @@ __decorate([
     __metadata("design:type", String)
 ], Manager.prototype, "managerName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Manager.prototype, "phone", void 0);
 __decorate([

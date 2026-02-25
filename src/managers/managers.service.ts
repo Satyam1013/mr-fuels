@@ -8,7 +8,7 @@ import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { Manager } from "./managers.schema";
 import { Admin } from "../admin/admin.schema";
-import { CreateManagerDto } from "./managers.dto";
+import { BulkCreateManagerDto } from "./managers.dto";
 
 @Injectable()
 export class ManagerService {
@@ -20,28 +20,50 @@ export class ManagerService {
     private adminModel: Model<Admin>,
   ) {}
 
-  async addManager(adminId: string, dto: CreateManagerDto) {
+  async addManagers(adminId: string, payload: BulkCreateManagerDto) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) {
       throw new NotFoundException("Admin not found");
     }
 
-    // optional: same admin ke under duplicate phone avoid
-    const existing = await this.managerModel.findOne({
-      adminId,
-      phone: dto.phone,
-    });
+    const { managers, numberOfManagers } = payload;
 
-    if (existing) {
-      throw new ConflictException("Manager with this phone already exists");
+    if (numberOfManagers !== managers.length) {
+      throw new ConflictException(
+        `numberOfManagers (${numberOfManagers}) does not match managers length (${managers.length})`,
+      );
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const docs: Partial<Manager>[] = [];
 
-    return this.managerModel.create({
-      adminId: new Types.ObjectId(adminId),
-      ...dto,
-      password: hashedPassword,
-    });
+    for (const dto of managers) {
+      const existing = await this.managerModel.findOne({
+        phone: dto.phone,
+      });
+
+      if (existing) {
+        throw new ConflictException(
+          `Manager with phone ${dto.phone} already exists`,
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+      docs.push({
+        adminId: new Types.ObjectId(adminId),
+        ...dto,
+        password: hashedPassword,
+      });
+    }
+
+    let insertedManagers: Manager[] = [];
+
+    if (docs.length) {
+      insertedManagers = (await this.managerModel.insertMany(
+        docs,
+      )) as Manager[];
+    }
+
+    return insertedManagers;
   }
 }
