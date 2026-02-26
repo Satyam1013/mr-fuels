@@ -56,19 +56,20 @@ let PlanService = class PlanService {
         return plan.save();
     }
     async findAll(adminId) {
-        // 🔎 Check if user has already used trial
-        const usedTrial = await this.subscriptionModel.exists({
+        const usedTrial = !!(await this.subscriptionModel.exists({
             adminId,
             isTrial: true,
-        });
-        const plans = await this.planModel.find({ status: "active" }).lean();
+        }));
+        const plans = await this.planModel
+            .find({ status: plan_details_enums_1.PlanStatus.ACTIVE })
+            .sort({ tier: 1 })
+            .lean();
         const quarterly = [];
         const yearly = [];
         for (const plan of plans) {
-            // 🚫 Skip trial plan if already used
-            if (plan.duration.durationType === plan_details_enums_1.DurationType.TRIAL && usedTrial) {
+            const isTrialPlan = plan.duration.durationType === plan_details_enums_1.DurationType.TRIAL;
+            if (isTrialPlan && usedTrial)
                 continue;
-            }
             const formatted = {
                 planId: plan._id,
                 code: plan.name,

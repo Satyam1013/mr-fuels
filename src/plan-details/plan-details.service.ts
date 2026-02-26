@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Plan, PlanDocument } from "./plan-details.schema";
 import { PlanDetailsDto } from "./plan-details.dto";
-import { DurationType } from "./plan-details.enums";
+import { DurationType, PlanStatus } from "./plan-details.enums";
 import { Subscription } from "../subscription/subscription.schema";
 
 @Injectable()
@@ -47,22 +47,23 @@ export class PlanService {
   }
 
   async findAll(adminId: string) {
-    // 🔎 Check if user has already used trial
-    const usedTrial = await this.subscriptionModel.exists({
+    const usedTrial = !!(await this.subscriptionModel.exists({
       adminId,
       isTrial: true,
-    });
+    }));
 
-    const plans = await this.planModel.find({ status: "active" }).lean();
+    const plans = await this.planModel
+      .find({ status: PlanStatus.ACTIVE })
+      .sort({ tier: 1 })
+      .lean();
 
     const quarterly: any[] = [];
     const yearly: any[] = [];
 
     for (const plan of plans) {
-      // 🚫 Skip trial plan if already used
-      if (plan.duration.durationType === DurationType.TRIAL && usedTrial) {
-        continue;
-      }
+      const isTrialPlan = plan.duration.durationType === DurationType.TRIAL;
+
+      if (isTrialPlan && usedTrial) continue;
 
       const formatted = {
         planId: plan._id,
@@ -83,7 +84,6 @@ export class PlanService {
 
     return { quarterly, yearly };
   }
-
   async findByName(name: string): Promise<Plan | null> {
     return this.planModel.findOne({ name }).exec();
   }
