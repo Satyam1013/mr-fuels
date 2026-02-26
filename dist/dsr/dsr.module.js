@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const dsr_schema_1 = require("./dsr.schema");
 const dsr_service_1 = require("./dsr.service");
 const dsr_controller_1 = require("./dsr.controller");
+const admin_schema_1 = require("../admin/admin.schema");
 let DsrDetailsModule = class DsrDetailsModule {
 };
 exports.DsrDetailsModule = DsrDetailsModule;
@@ -20,6 +21,7 @@ exports.DsrDetailsModule = DsrDetailsModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: dsr_schema_1.DsrDetails.name, schema: dsr_schema_1.DsrDetailsSchema },
+                { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
             ]),
         ],
         providers: [dsr_service_1.DsrDetailsService],

@@ -17,7 +17,7 @@ import {
 
 export class DurationDto {
   @IsEnum(DurationType)
-  type!: DurationType;
+  durationType!: DurationType;
 
   @IsNumber()
   months!: number;

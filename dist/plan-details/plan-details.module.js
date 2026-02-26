@@ -12,13 +12,17 @@ const mongoose_1 = require("@nestjs/mongoose");
 const plan_details_service_1 = require("./plan-details.service");
 const plan_details_controller_1 = require("./plan-details.controller");
 const plan_details_schema_1 = require("./plan-details.schema");
+const subscription_schema_1 = require("../subscription/subscription.schema");
 let PlanModule = class PlanModule {
 };
 exports.PlanModule = PlanModule;
 exports.PlanModule = PlanModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: plan_details_schema_1.Plan.name, schema: plan_details_schema_1.PlanSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: plan_details_schema_1.Plan.name, schema: plan_details_schema_1.PlanSchema },
+                { name: subscription_schema_1.Subscription.name, schema: subscription_schema_1.SubscriptionSchema },
+            ]),
         ],
         providers: [plan_details_service_1.PlanService],
         controllers: [plan_details_controller_1.PlanController],

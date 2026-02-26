@@ -4,12 +4,14 @@ import { Model, Types } from "mongoose";
 import { DsrDetails } from "./dsr.schema";
 import { CreateDsrDetailsDto } from "./dsr.dto";
 import { TankInputType } from "../types/dsr-details-types";
+import { Admin } from "../admin/admin.schema";
 
 @Injectable()
 export class DsrDetailsService {
   constructor(
     @InjectModel(DsrDetails.name)
     private readonly dsrModel: Model<DsrDetails>,
+    @InjectModel(Admin.name) private adminModel: Model<Admin>,
   ) {}
 
   async addOrUpdate(adminId: string, dto: CreateDsrDetailsDto) {
@@ -30,15 +32,24 @@ export class DsrDetailsService {
 
     const existing = await this.dsrModel.findOne({ adminId });
 
+    let result;
+
     if (existing) {
       existing.tankConfig = dto.tankConfig;
-      return existing.save();
+      result = await existing.save();
+    } else {
+      result = await this.dsrModel.create({
+        adminId: new Types.ObjectId(adminId),
+        tankConfig: dto.tankConfig,
+      });
     }
 
-    return this.dsrModel.create({
-      adminId: new Types.ObjectId(adminId),
-      tankConfig: dto.tankConfig,
-    });
+    await this.adminModel.updateOne(
+      { _id: adminId, setupComplete: false },
+      { $set: { setupComplete: true } },
+    );
+
+    return result;
   }
 
   async getByAdmin(adminId: string) {

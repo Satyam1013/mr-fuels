@@ -18,9 +18,11 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const dsr_schema_1 = require("./dsr.schema");
 const dsr_details_types_1 = require("../types/dsr-details-types");
+const admin_schema_1 = require("../admin/admin.schema");
 let DsrDetailsService = class DsrDetailsService {
-    constructor(dsrModel) {
+    constructor(dsrModel, adminModel) {
         this.dsrModel = dsrModel;
+        this.adminModel = adminModel;
     }
     async addOrUpdate(adminId, dto) {
         for (const tank of dto.tankConfig) {
@@ -33,14 +35,19 @@ let DsrDetailsService = class DsrDetailsService {
             }
         }
         const existing = await this.dsrModel.findOne({ adminId });
+        let result;
         if (existing) {
             existing.tankConfig = dto.tankConfig;
-            return existing.save();
+            result = await existing.save();
         }
-        return this.dsrModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            tankConfig: dto.tankConfig,
-        });
+        else {
+            result = await this.dsrModel.create({
+                adminId: new mongoose_2.Types.ObjectId(adminId),
+                tankConfig: dto.tankConfig,
+            });
+        }
+        await this.adminModel.updateOne({ _id: adminId, setupComplete: false }, { $set: { setupComplete: true } });
+        return result;
     }
     async getByAdmin(adminId) {
         return this.dsrModel.findOne({ adminId });
@@ -50,5 +57,7 @@ exports.DsrDetailsService = DsrDetailsService;
 exports.DsrDetailsService = DsrDetailsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(dsr_schema_1.DsrDetails.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], DsrDetailsService);

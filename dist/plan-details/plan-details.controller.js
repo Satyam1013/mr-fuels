@@ -23,8 +23,9 @@ let PlanController = class PlanController {
     create(planDetailsDto) {
         return this.planService.create(planDetailsDto);
     }
-    findAll() {
-        return this.planService.findAll();
+    findAll(req) {
+        const adminId = req.user.adminId;
+        return this.planService.findAll(adminId);
     }
     findByName(name) {
         return this.planService.findByName(name);
@@ -40,8 +41,9 @@ __decorate([
 ], PlanController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PlanController.prototype, "findAll", null);
 __decorate([

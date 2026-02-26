@@ -19,7 +19,7 @@ exports.DurationDto = DurationDto;
 __decorate([
     (0, class_validator_1.IsEnum)(plan_details_enums_1.DurationType),
     __metadata("design:type", String)
-], DurationDto.prototype, "type", void 0);
+], DurationDto.prototype, "durationType", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

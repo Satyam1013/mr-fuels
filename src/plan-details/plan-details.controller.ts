@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Req } from "@nestjs/common";
 import { PlanService } from "./plan-details.service";
 import { PlanDetailsDto } from "./plan-details.dto";
 import { Plan } from "./plan-details.schema";
+import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("plans")
 export class PlanController {
@@ -13,8 +14,9 @@ export class PlanController {
   }
 
   @Get()
-  findAll(): Promise<Plan[]> {
-    return this.planService.findAll();
+  findAll(@Req() req: AuthenticatedRequest): Promise<any> {
+    const adminId = req.user.adminId;
+    return this.planService.findAll(adminId);
   }
 
   @Get(":name")
