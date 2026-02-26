@@ -18,10 +18,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpiAppDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpiAppDto.prototype, "merchantId", void 0);
 class CreateTransactionDetailsDto {
 }
 exports.CreateTransactionDetailsDto = CreateTransactionDetailsDto;

@@ -12,12 +12,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DsrDetailsSchema = exports.DsrDetails = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const dsr_details_types_1 = require("../types/dsr-details-types");
 let TankConfig = class TankConfig {
 };
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], TankConfig.prototype, "tankNo", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: dsr_details_types_1.TankInputType, required: true }),
+    __metadata("design:type", String)
+], TankConfig.prototype, "inputType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TankConfig.prototype, "capacity", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TankConfig.prototype, "diameter", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TankConfig.prototype, "length", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TankConfig.prototype, "tankType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], TankConfig.prototype, "dsrChart", void 0);
 TankConfig = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], TankConfig);

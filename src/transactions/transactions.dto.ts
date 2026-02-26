@@ -4,9 +4,6 @@ import { Type } from "class-transformer";
 class UpiAppDto {
   @IsString()
   name!: string;
-
-  @IsString()
-  merchantId!: string;
 }
 
 export class CreateTransactionDetailsDto {

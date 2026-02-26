@@ -18,10 +18,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], UpiApp.prototype, "name", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], UpiApp.prototype, "merchantId", void 0);
 UpiApp = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], UpiApp);

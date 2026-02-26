@@ -1,9 +1,32 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { TankInputType } from "../types/dsr-details-types";
 
 @Schema({ _id: false })
 class TankConfig {
-  @Prop() tankNo!: string;
+  @Prop({ required: true })
+  tankNo!: string;
+
+  // Dropdown selection
+  @Prop({ enum: TankInputType, required: true })
+  inputType!: TankInputType;
+
+  // ===== Manual Entry Fields =====
+  @Prop()
+  capacity?: string;
+
+  @Prop()
+  diameter?: string;
+
+  @Prop()
+  length?: string;
+
+  @Prop()
+  tankType?: string;
+
+  // ===== Chart Upload Field =====
+  @Prop()
+  dsrChart?: string;
 }
 
 @Schema({ timestamps: true })

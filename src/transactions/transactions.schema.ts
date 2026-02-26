@@ -4,7 +4,6 @@ import { Document, Types } from "mongoose";
 @Schema({ _id: false })
 class UpiApp {
   @Prop() name!: string;
-  @Prop() merchantId!: string;
 }
 
 @Schema({ timestamps: true })
