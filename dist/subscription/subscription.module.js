@@ -6,28 +6,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminModule = void 0;
+exports.SubscriptionModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const admin_schema_1 = require("./admin.schema");
-const admin_service_1 = require("./admin.service");
-const admin_controller_1 = require("./admin.controller");
-const plan_details_schema_1 = require("../plan-details/plan-details.schema");
-const subscription_schema_1 = require("../subscription/subscription.schema");
-let AdminModule = class AdminModule {
+const subscription_schema_1 = require("./subscription.schema");
+let SubscriptionModule = class SubscriptionModule {
 };
-exports.AdminModule = AdminModule;
-exports.AdminModule = AdminModule = __decorate([
+exports.SubscriptionModule = SubscriptionModule;
+exports.SubscriptionModule = SubscriptionModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
-                { name: plan_details_schema_1.Plan.name, schema: plan_details_schema_1.PlanSchema },
                 { name: subscription_schema_1.Subscription.name, schema: subscription_schema_1.SubscriptionSchema },
             ]),
         ],
-        providers: [admin_service_1.AdminService],
-        controllers: [admin_controller_1.AdminController],
-        exports: [mongoose_1.MongooseModule, admin_service_1.AdminService],
+        providers: [],
+        controllers: [],
     })
-], AdminModule);
+], SubscriptionModule);

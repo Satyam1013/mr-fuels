@@ -26,12 +26,19 @@ export class Plan {
   @Prop({
     _id: false,
     type: {
-      type: { type: String, enum: DurationType, required: true },
-      months: { type: Number, required: true },
+      durationType: {
+        type: String,
+        enum: DurationType,
+        required: true,
+      },
+      months: {
+        type: Number,
+        required: true,
+      },
     },
   })
   duration!: {
-    type: DurationType;
+    durationType: DurationType;
     months: number;
   };
 

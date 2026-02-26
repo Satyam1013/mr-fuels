@@ -39,6 +39,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], Admin.prototype, "setupComplete", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Subscription", default: null }),
+    __metadata("design:type", Object)
+], Admin.prototype, "currentSubscriptionId", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Admin);

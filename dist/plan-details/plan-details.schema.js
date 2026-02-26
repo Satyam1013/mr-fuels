@@ -35,8 +35,15 @@ __decorate([
     (0, mongoose_1.Prop)({
         _id: false,
         type: {
-            type: { type: String, enum: plan_details_enums_1.DurationType, required: true },
-            months: { type: Number, required: true },
+            durationType: {
+                type: String,
+                enum: plan_details_enums_1.DurationType,
+                required: true,
+            },
+            months: {
+                type: Number,
+                required: true,
+            },
         },
     }),
     __metadata("design:type", Object)

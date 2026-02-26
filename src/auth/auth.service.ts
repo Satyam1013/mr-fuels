@@ -9,6 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Admin } from "../admin/admin.schema";
 import { AdminLoginDto, CreateAdminDto } from "./create-user.dto";
+import { Subscription } from "../subscription/subscription.schema";
 
 @Injectable()
 export class AuthService {
@@ -65,7 +66,11 @@ export class AuthService {
   async adminLogin(dto: AdminLoginDto) {
     const { mobileNo, password } = dto;
 
-    const admin = await this.adminModel.findOne({ mobileNo });
+    const admin = await this.adminModel.findOne({ mobileNo }).populate({
+      path: "currentSubscriptionId",
+      populate: { path: "planId" },
+    });
+
     if (!admin) {
       throw new UnauthorizedException("Invalid mobile number or password");
     }
@@ -80,15 +85,30 @@ export class AuthService {
       role: "admin",
     });
 
+    const subscription = admin.currentSubscriptionId as Subscription | null;
+
     return {
+      success: true,
       message: "Login successful",
       token,
-      admin: {
+      user: {
         _id: admin._id,
-        mobileNo: admin.mobileNo,
+        role: "admin",
         businessName: admin.businessName,
+        mobileNo: admin.mobileNo,
         setupComplete: admin.setupComplete,
+        newUser: false,
       },
+      subscription: subscription
+        ? {
+            _id: subscription._id,
+            status: subscription.status,
+            startDate: subscription.startDate,
+            expiryDate: subscription.expiryDate,
+            isTrial: subscription.isTrial,
+            plan: subscription.planId,
+          }
+        : null,
     };
   }
 }

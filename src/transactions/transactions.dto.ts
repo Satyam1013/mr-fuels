@@ -1,4 +1,4 @@
-import { IsArray, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 
 class UpiAppDto {
@@ -15,8 +15,9 @@ export class CreateTransactionDetailsDto {
   @IsString()
   swipeSettlement!: string;
 
+  @IsOptional()
   @IsString()
-  swipeStatement!: string;
+  swipeStatement?: string;
 
   @IsString()
   bankDeposit!: string;

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
+import { Subscription } from "../subscription/subscription.schema";
 
 @Schema({ timestamps: true })
 export class Admin extends Document {
@@ -20,6 +21,9 @@ export class Admin extends Document {
 
   @Prop({ default: false })
   setupComplete!: boolean;
+
+  @Prop({ type: Types.ObjectId, ref: "Subscription", default: null })
+  currentSubscriptionId?: Types.ObjectId | Subscription;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
