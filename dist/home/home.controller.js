@@ -23,6 +23,9 @@ let HomeController = class HomeController {
     getHomeData(req, query) {
         return this.homeService.getHomeData(req.user.adminId, query.filter);
     }
+    getSales(req) {
+        return this.homeService.getSalesData(req.user.adminId);
+    }
 };
 exports.HomeController = HomeController;
 __decorate([
@@ -33,6 +36,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, home_dto_1.HomeQueryDto]),
     __metadata("design:returntype", void 0)
 ], HomeController.prototype, "getHomeData", null);
+__decorate([
+    (0, common_1.Get)("sales"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], HomeController.prototype, "getSales", null);
 exports.HomeController = HomeController = __decorate([
     (0, common_1.Controller)("home"),
     __metadata("design:paramtypes", [home_service_1.HomeService])

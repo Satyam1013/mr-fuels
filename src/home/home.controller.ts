@@ -11,4 +11,9 @@ export class HomeController {
   getHomeData(@Req() req: AuthenticatedRequest, @Query() query: HomeQueryDto) {
     return this.homeService.getHomeData(req.user.adminId, query.filter);
   }
+
+  @Get("sales")
+  getSales(@Req() req: AuthenticatedRequest) {
+    return this.homeService.getSalesData(req.user.adminId);
+  }
 }

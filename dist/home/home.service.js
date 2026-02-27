@@ -12,36 +12,64 @@ const home_dto_1 = require("./home.dto");
 let HomeService = class HomeService {
     getHomeData(adminId, filter) {
         const { startDate, endDate } = this.getDateRange(filter);
-        // 👉 Yaha aap DSR, Expenses, Tank etc collections se
-        // date range ke according data fetch karoge
         return {
             homeData: {
-                performance: {
-                    totalSales: 150000,
-                    avgDailySales: 5000,
-                    uptime: "99.5%",
-                    lastUpdated: new Date(),
-                },
-                pumpDetails: {
-                    tankStatus: [
+                performance: [
+                    {
+                        type: "sales",
+                        totalSales: 150000,
+                        salesTarget: 200000,
+                        lastSales: "99.5%",
+                        desc: "This shows performance of sales",
+                    },
+                    {
+                        type: "discount",
+                        totalDiscountGiven: 5000,
+                        discountTarget: 8000,
+                        lastDiscount: "62.5%",
+                        desc: "This shows discount performance",
+                    },
+                    {
+                        type: "pnl",
+                        status: "profit",
+                        amount: 35000,
+                        lastStatus: "loss",
+                        lastAmount: 10000,
+                        desc: "This shows Profit & Loss performance",
+                    },
+                    {
+                        type: "taxation",
+                        taxCollected: 12000,
+                        taxPaid: 10000,
+                        pendingTax: 2000,
+                        desc: "This shows taxation performance",
+                    },
+                ],
+                recentEntries: {
+                    creditors: [
                         {
-                            tankId: "T1",
-                            fuelType: "Petrol",
-                            capacity: 5000,
-                            currentLevel: 3200,
-                        },
-                        {
-                            tankId: "T2",
-                            fuelType: "Diesel",
-                            capacity: 8000,
-                            currentLevel: 1500,
+                            id: "C001",
+                            name: "Supplier A",
+                            amount: 20000,
+                            date: "2026-02-25",
                         },
                     ],
-                    recentEntries: {
-                        creditors: [],
-                        pumpExpenses: [],
-                        personalExpenses: [],
-                    },
+                    pumpExpenses: [
+                        {
+                            id: "PE001",
+                            category: "Maintenance",
+                            amount: 5000,
+                            date: "2026-02-24",
+                        },
+                    ],
+                    personalExpenses: [
+                        {
+                            id: "PX001",
+                            category: "Travel",
+                            amount: 3000,
+                            date: "2026-02-23",
+                        },
+                    ],
                 },
             },
             filterApplied: filter ?? "all",
@@ -50,6 +78,52 @@ let HomeService = class HomeService {
                 endDate,
             },
             message: "Home data fetched successfully",
+            timestamp: new Date(),
+        };
+    }
+    getSalesData(adminId) {
+        // 🔥 Abhi demo/static data return kar rahe hain
+        return {
+            salesData: {
+                date: "2026-02-26",
+                salesInLiters: {
+                    petrol: {
+                        liters: 1200,
+                        amount: 96000,
+                    },
+                    diesel: {
+                        liters: 800,
+                        amount: 64000,
+                    },
+                },
+                collection: {
+                    totalCollected: 160000,
+                    paymentModes: {
+                        cash: 60000,
+                        upi: 40000,
+                        card: 30000,
+                        credit: 30000,
+                    },
+                },
+                bankDeposit: {
+                    depositedAmount: 150000,
+                    depositDate: "2026-02-26T15:30:00Z",
+                    bankName: "State Bank of India",
+                },
+                difference: {
+                    expected: 160000,
+                    deposited: 150000,
+                    variance: 10000,
+                },
+                summary: {
+                    totalLiters: 2000,
+                    totalSalesAmount: 160000,
+                    collectionAmount: 160000,
+                    netDeposited: 150000,
+                    pendingAmount: 10000,
+                },
+            },
+            message: "Sales data fetched successfully",
             timestamp: new Date(),
         };
     }
