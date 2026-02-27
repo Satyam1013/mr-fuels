@@ -22,6 +22,8 @@ const dsr_module_1 = require("./dsr/dsr.module");
 const plan_details_module_1 = require("./plan-details/plan-details.module");
 const non_fuel_product_module_1 = require("./non-fuel-product/non-fuel-product.module");
 const pump_timing_module_1 = require("./pump-timing/pump-timing.module");
+const home_module_1 = require("./home/home.module");
+const tank_details_module_1 = require("./tank-details/tank-details.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +44,8 @@ exports.AppModule = AppModule = __decorate([
             plan_details_module_1.PlanModule,
             non_fuel_product_module_1.NonFuelProductModule,
             pump_timing_module_1.PumpTimingModule,
+            home_module_1.HomeModule,
+            tank_details_module_1.TankModule,
         ],
         providers: [],
     })

@@ -12,14 +12,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpDetailsSchema = exports.PumpDetails = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+let PumpProduct = class PumpProduct {
+};
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], PumpProduct.prototype, "productName", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], PumpProduct.prototype, "kl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], PumpProduct.prototype, "dsrTankStock", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], PumpProduct.prototype, "price", void 0);
+PumpProduct = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], PumpProduct);
 let PumpTime = class PumpTime {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpTime.prototype, "start", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpTime.prototype, "end", void 0);
 PumpTime = __decorate([
@@ -33,27 +54,27 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpDetails.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpDetails.prototype, "fuelPartner", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: false }),
-    __metadata("design:type", Boolean)
-], PumpDetails.prototype, "is24Hour", void 0);
+    (0, mongoose_1.Prop)({ type: [PumpProduct], default: [] }),
+    __metadata("design:type", Array)
+], PumpDetails.prototype, "pumpProducts", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "TankDetails" }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], PumpDetails.prototype, "tank", void 0);
+    (0, mongoose_1.Prop)({ type: [String], default: [] }),
+    __metadata("design:type", Array)
+], PumpDetails.prototype, "selectedOptions", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: PumpTime, required: true }),
+    (0, mongoose_1.Prop)({ type: PumpTime }),
     __metadata("design:type", PumpTime)
 ], PumpDetails.prototype, "pumpTime", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], PumpDetails.prototype, "pumpHours", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpDetails.prototype, "dailyCloseReportTime", void 0);
 exports.PumpDetails = PumpDetails = __decorate([

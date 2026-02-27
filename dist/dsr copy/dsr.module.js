@@ -6,27 +6,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PumpDetailsModule = void 0;
+exports.DsrDetailsModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const pump_details_controller_1 = require("./pump-details.controller");
-const pump_details_service_1 = require("./pump-details.service");
-const pump_details_schema_1 = require("./pump-details.schema");
+const dsr_schema_1 = require("./dsr.schema");
+const dsr_service_1 = require("./dsr.service");
+const dsr_controller_1 = require("./dsr.controller");
 const admin_schema_1 = require("../admin/admin.schema");
-const tank_details_schema_1 = require("../tank-details/tank-details.schema");
-let PumpDetailsModule = class PumpDetailsModule {
+let DsrDetailsModule = class DsrDetailsModule {
 };
-exports.PumpDetailsModule = PumpDetailsModule;
-exports.PumpDetailsModule = PumpDetailsModule = __decorate([
+exports.DsrDetailsModule = DsrDetailsModule;
+exports.DsrDetailsModule = DsrDetailsModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
+                { name: dsr_schema_1.DsrDetails.name, schema: dsr_schema_1.DsrDetailsSchema },
                 { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
-                { name: tank_details_schema_1.TankDetails.name, schema: tank_details_schema_1.TankDetailsSchema },
             ]),
         ],
-        controllers: [pump_details_controller_1.PumpDetailsController],
-        providers: [pump_details_service_1.PumpDetailsService],
+        providers: [dsr_service_1.DsrDetailsService],
+        controllers: [dsr_controller_1.DsrDetailsController],
     })
-], PumpDetailsModule);
+], DsrDetailsModule);

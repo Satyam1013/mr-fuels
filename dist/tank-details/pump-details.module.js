@@ -13,7 +13,6 @@ const pump_details_controller_1 = require("./pump-details.controller");
 const pump_details_service_1 = require("./pump-details.service");
 const pump_details_schema_1 = require("./pump-details.schema");
 const admin_schema_1 = require("../admin/admin.schema");
-const tank_details_schema_1 = require("../tank-details/tank-details.schema");
 let PumpDetailsModule = class PumpDetailsModule {
 };
 exports.PumpDetailsModule = PumpDetailsModule;
@@ -23,7 +22,6 @@ exports.PumpDetailsModule = PumpDetailsModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
                 { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
-                { name: tank_details_schema_1.TankDetails.name, schema: tank_details_schema_1.TankDetailsSchema },
             ]),
         ],
         controllers: [pump_details_controller_1.PumpDetailsController],

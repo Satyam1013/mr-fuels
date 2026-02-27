@@ -9,44 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePumpDetailsDto = void 0;
+exports.UpdateTankDetailsDto = exports.CreateTankDetailsDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-class PumpTimeDto {
+const mapped_types_1 = require("@nestjs/mapped-types");
+class TankDto {
 }
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], PumpTimeDto.prototype, "start", void 0);
+], TankDto.prototype, "capacityKl", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], PumpTimeDto.prototype, "end", void 0);
-class CreatePumpDetailsDto {
-}
-exports.CreatePumpDetailsDto = CreatePumpDetailsDto;
+], TankDto.prototype, "dsrTankStock", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "fuelPartner", void 0);
+], TankDto.prototype, "fuelType", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], TankDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], CreatePumpDetailsDto.prototype, "pumpHours", void 0);
+], TankDto.prototype, "tankNo", void 0);
+class CreateTankDetailsDto {
+}
+exports.CreateTankDetailsDto = CreateTankDetailsDto;
 __decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "tank", void 0);
-__decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => PumpTimeDto),
-    __metadata("design:type", PumpTimeDto)
-], CreatePumpDetailsDto.prototype, "pumpTime", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePumpDetailsDto.prototype, "dailyCloseReportTime", void 0);
-__decorate([
-    (0, class_transformer_1.Type)(() => Boolean),
-    __metadata("design:type", Boolean)
-], CreatePumpDetailsDto.prototype, "is24Hour", void 0);
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => TankDto),
+    __metadata("design:type", Array)
+], CreateTankDetailsDto.prototype, "tanks", void 0);
+class UpdateTankDetailsDto extends (0, mapped_types_1.PartialType)(CreateTankDetailsDto) {
+}
+exports.UpdateTankDetailsDto = UpdateTankDetailsDto;

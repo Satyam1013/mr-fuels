@@ -18,30 +18,81 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const pump_details_schema_1 = require("./pump-details.schema");
 const admin_schema_1 = require("../admin/admin.schema");
+const tank_details_schema_1 = require("../tank-details/tank-details.schema");
 let PumpDetailsService = class PumpDetailsService {
-    constructor(pumpDetailsModel, adminModel) {
+    constructor(pumpDetailsModel, adminModel, tankModel) {
         this.pumpDetailsModel = pumpDetailsModel;
         this.adminModel = adminModel;
+        this.tankModel = tankModel;
     }
     async addPumpDetails(adminId, dto) {
         const adminExists = await this.adminModel.findById(adminId);
         if (!adminExists) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        // optional: only ONE pump detail per admin
-        const existing = await this.pumpDetailsModel.findOne({
-            adminId,
+        // 🔹 Check that the tank exists and belongs to this admin
+        const tankExists = await this.tankModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(dto.tank),
+            adminId: new mongoose_2.Types.ObjectId(adminId),
         });
+        if (!tankExists) {
+            throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
+        }
+        const payload = {
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            fuelPartner: dto.fuelPartner,
+            tank: new mongoose_2.Types.ObjectId(dto.tank),
+            pumpTime: dto.pumpTime,
+            pumpHours: dto.pumpHours,
+            dailyCloseReportTime: dto.dailyCloseReportTime,
+            is24Hour: dto.is24Hour ?? false,
+        };
+        const existing = await this.pumpDetailsModel.findOne({ adminId });
         if (existing) {
-            return this.pumpDetailsModel.findByIdAndUpdate(existing._id, dto, {
+            return this.pumpDetailsModel.findByIdAndUpdate(existing._id, payload, {
                 new: true,
             });
         }
-        const pumpDetails = await this.pumpDetailsModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            ...dto,
-        });
+        return this.pumpDetailsModel.create(payload);
+    }
+    async getPumpDetails(adminId) {
+        const pumpDetails = await this.pumpDetailsModel
+            .findOne({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+            .populate("tank");
+        if (!pumpDetails)
+            throw new common_1.NotFoundException("Pump details not found");
         return pumpDetails;
+    }
+    // 🔹 Update PumpDetails
+    async updatePumpDetails(adminId, dto) {
+        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+        if (!pumpDetails)
+            throw new common_1.NotFoundException("Pump details not found");
+        const tankExists = await this.tankModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(dto.tank),
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
+        if (!tankExists)
+            throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
+        const payload = {
+            fuelPartner: dto.fuelPartner,
+            tank: new mongoose_2.Types.ObjectId(dto.tank),
+            pumpTime: dto.pumpTime,
+            pumpHours: dto.pumpHours,
+            dailyCloseReportTime: dto.dailyCloseReportTime,
+            is24Hour: dto.is24Hour ?? false,
+        };
+        return this.pumpDetailsModel.findByIdAndUpdate(pumpDetails._id, payload, {
+            new: true,
+        });
+    }
+    // 🔹 Delete PumpDetails
+    async deletePumpDetails(adminId) {
+        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+        if (!pumpDetails)
+            throw new common_1.NotFoundException("Pump details not found");
+        await this.pumpDetailsModel.findByIdAndDelete(pumpDetails._id);
+        return { message: "Pump details deleted successfully" };
     }
 };
 exports.PumpDetailsService = PumpDetailsService;
@@ -49,6 +100,8 @@ exports.PumpDetailsService = PumpDetailsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __param(1, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
+    __param(2, (0, mongoose_1.InjectModel)(tank_details_schema_1.TankDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model])
 ], PumpDetailsService);

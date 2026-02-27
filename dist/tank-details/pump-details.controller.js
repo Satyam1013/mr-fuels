@@ -23,18 +23,6 @@ let PumpDetailsController = class PumpDetailsController {
     async addPumpDetails(req, dto) {
         return this.pumpDetailsService.addPumpDetails(req.user.adminId, dto);
     }
-    // 🔹 Get PumpDetails
-    async getPumpDetails(req) {
-        return this.pumpDetailsService.getPumpDetails(req.user.adminId);
-    }
-    // 🔹 Update PumpDetails
-    async updatePumpDetails(req, dto) {
-        return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
-    }
-    // 🔹 Delete PumpDetails
-    async deletePumpDetails(req) {
-        return this.pumpDetailsService.deletePumpDetails(req.user.adminId);
-    }
 };
 exports.PumpDetailsController = PumpDetailsController;
 __decorate([
@@ -45,28 +33,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, pump_details_dto_1.CreatePumpDetailsDto]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "addPumpDetails", null);
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], PumpDetailsController.prototype, "getPumpDetails", null);
-__decorate([
-    (0, common_1.Patch)(),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, pump_details_dto_1.CreatePumpDetailsDto]),
-    __metadata("design:returntype", Promise)
-], PumpDetailsController.prototype, "updatePumpDetails", null);
-__decorate([
-    (0, common_1.Delete)(),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], PumpDetailsController.prototype, "deletePumpDetails", null);
 exports.PumpDetailsController = PumpDetailsController = __decorate([
     (0, common_1.Controller)("pump-details"),
     __metadata("design:paramtypes", [pump_details_service_1.PumpDetailsService])

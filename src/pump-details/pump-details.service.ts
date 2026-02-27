@@ -4,6 +4,7 @@ import { Model, Types } from "mongoose";
 import { PumpDetails } from "./pump-details.schema";
 import { Admin } from "../admin/admin.schema";
 import { CreatePumpDetailsDto } from "./pump-details.dto";
+import { TankDetails } from "../tank-details/tank-details.schema";
 
 @Injectable()
 export class PumpDetailsService {
@@ -13,6 +14,9 @@ export class PumpDetailsService {
 
     @InjectModel(Admin.name)
     private adminModel: Model<Admin>,
+
+    @InjectModel(TankDetails.name)
+    private tankModel: Model<TankDetails>,
   ) {}
 
   async addPumpDetails(adminId: string, dto: CreatePumpDetailsDto) {
@@ -21,22 +25,83 @@ export class PumpDetailsService {
       throw new NotFoundException("Admin not found");
     }
 
-    // optional: only ONE pump detail per admin
-    const existing = await this.pumpDetailsModel.findOne({
-      adminId,
+    // 🔹 Check that the tank exists and belongs to this admin
+    const tankExists = await this.tankModel.findOne({
+      _id: new Types.ObjectId(dto.tank),
+      adminId: new Types.ObjectId(adminId),
     });
 
+    if (!tankExists) {
+      throw new NotFoundException(
+        "Tank not found or does not belong to this admin",
+      );
+    }
+
+    const payload = {
+      adminId: new Types.ObjectId(adminId),
+      fuelPartner: dto.fuelPartner,
+      tank: new Types.ObjectId(dto.tank),
+      pumpTime: dto.pumpTime,
+      pumpHours: dto.pumpHours,
+      dailyCloseReportTime: dto.dailyCloseReportTime,
+      is24Hour: dto.is24Hour ?? false,
+    };
+
+    const existing = await this.pumpDetailsModel.findOne({ adminId });
+
     if (existing) {
-      return this.pumpDetailsModel.findByIdAndUpdate(existing._id, dto, {
+      return this.pumpDetailsModel.findByIdAndUpdate(existing._id, payload, {
         new: true,
       });
     }
 
-    const pumpDetails = await this.pumpDetailsModel.create({
-      adminId: new Types.ObjectId(adminId),
-      ...dto,
-    });
+    return this.pumpDetailsModel.create(payload);
+  }
+
+  async getPumpDetails(adminId: string) {
+    const pumpDetails = await this.pumpDetailsModel
+      .findOne({ adminId: new Types.ObjectId(adminId) })
+      .populate("tank");
+
+    if (!pumpDetails) throw new NotFoundException("Pump details not found");
 
     return pumpDetails;
+  }
+
+  // 🔹 Update PumpDetails
+  async updatePumpDetails(adminId: string, dto: CreatePumpDetailsDto) {
+    const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+    if (!pumpDetails) throw new NotFoundException("Pump details not found");
+
+    const tankExists = await this.tankModel.findOne({
+      _id: new Types.ObjectId(dto.tank),
+      adminId: new Types.ObjectId(adminId),
+    });
+    if (!tankExists)
+      throw new NotFoundException(
+        "Tank not found or does not belong to this admin",
+      );
+
+    const payload = {
+      fuelPartner: dto.fuelPartner,
+      tank: new Types.ObjectId(dto.tank),
+      pumpTime: dto.pumpTime,
+      pumpHours: dto.pumpHours,
+      dailyCloseReportTime: dto.dailyCloseReportTime,
+      is24Hour: dto.is24Hour ?? false,
+    };
+
+    return this.pumpDetailsModel.findByIdAndUpdate(pumpDetails._id, payload, {
+      new: true,
+    });
+  }
+
+  // 🔹 Delete PumpDetails
+  async deletePumpDetails(adminId: string) {
+    const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+    if (!pumpDetails) throw new NotFoundException("Pump details not found");
+
+    await this.pumpDetailsModel.findByIdAndDelete(pumpDetails._id);
+    return { message: "Pump details deleted successfully" };
   }
 }
