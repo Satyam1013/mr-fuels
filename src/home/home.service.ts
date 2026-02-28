@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { TimeFilter } from "./home.dto";
+import { TimeFilterQueryDto, TimeFilter } from "./home.dto";
 
 @Injectable()
 export class HomeService {
-  getHomeData(adminId: string, filter?: TimeFilter) {
-    const { startDate, endDate } = this.getDateRange(filter);
+  // ✅ HOME DASHBOARD
+  getHomeData(adminId: string, query: TimeFilterQueryDto) {
+    const { startDate, endDate } = this.buildDateRange(query);
 
     return {
       homeData: {
@@ -39,7 +40,6 @@ export class HomeService {
             desc: "This shows taxation performance",
           },
         ],
-
         recentEntries: {
           creditors: [
             {
@@ -67,34 +67,24 @@ export class HomeService {
           ],
         },
       },
-
-      filterApplied: filter ?? "all",
-
-      dateRange: {
-        startDate,
-        endDate,
-      },
-
+      filterApplied: query.filter ?? TimeFilter.ALL,
+      dateRange: { startDate, endDate },
       message: "Home data fetched successfully",
       timestamp: new Date(),
     };
   }
 
-  getSalesData(adminId: string) {
-    // 🔥 Abhi demo/static data return kar rahe hain
+  // ✅ SALES DASHBOARD
+  getSalesData(adminId: string, query: TimeFilterQueryDto) {
+    const { startDate, endDate } = this.buildDateRange(query);
 
     return {
+      filterApplied: query.filter ?? TimeFilter.ALL,
+      dateRange: { startDate, endDate },
       salesData: {
-        date: "2026-02-26",
         salesInLiters: {
-          petrol: {
-            liters: 1200,
-            amount: 96000,
-          },
-          diesel: {
-            liters: 800,
-            amount: 64000,
-          },
+          petrol: { liters: 1200, amount: 96000 },
+          diesel: { liters: 800, amount: 64000 },
         },
         collection: {
           totalCollected: 160000,
@@ -128,23 +118,39 @@ export class HomeService {
     };
   }
 
-  // 🔥 Date Range Calculator
-  private getDateRange(filter?: TimeFilter) {
+  // 🔥 Common Date Range Builder (Daily, Weekly, Monthly, All)
+  private buildDateRange(query: TimeFilterQueryDto) {
     const now = new Date();
-    let startDate: Date;
 
-    if (filter === TimeFilter.WEEK) {
-      startDate = new Date();
-      startDate.setDate(now.getDate() - 7);
-    } else if (filter === TimeFilter.MONTH) {
-      startDate = new Date();
-      startDate.setMonth(now.getMonth() - 1);
-    } else {
-      startDate = new Date(0); // all time
+    if (query.filter === TimeFilter.DAILY && query.date) {
+      const start = new Date(query.date);
+      const end = new Date(query.date);
+      end.setHours(23, 59, 59, 999);
+      return { startDate: start, endDate: end };
+    }
+
+    if (query.filter === TimeFilter.WEEKLY) {
+      if (query.startDate && query.endDate) {
+        return {
+          startDate: new Date(query.startDate),
+          endDate: new Date(query.endDate),
+        };
+      }
+
+      const start = new Date();
+      start.setDate(now.getDate() - 7);
+      return { startDate: start, endDate: now };
+    }
+
+    if (query.filter === TimeFilter.MONTHLY && query.month) {
+      const [year, month] = query.month.split("-");
+      const start = new Date(Number(year), Number(month) - 1, 1);
+      const end = new Date(Number(year), Number(month), 0, 23, 59, 59);
+      return { startDate: start, endDate: end };
     }
 
     return {
-      startDate,
+      startDate: new Date(0),
       endDate: now,
     };
   }

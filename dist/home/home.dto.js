@@ -9,18 +9,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HomeQueryDto = exports.TimeFilter = void 0;
+exports.TimeFilterQueryDto = exports.TimeFilter = void 0;
 const class_validator_1 = require("class-validator");
 var TimeFilter;
 (function (TimeFilter) {
-    TimeFilter["WEEK"] = "week";
-    TimeFilter["MONTH"] = "month";
+    TimeFilter["DAILY"] = "daily";
+    TimeFilter["WEEKLY"] = "weekly";
+    TimeFilter["MONTHLY"] = "monthly";
+    TimeFilter["ALL"] = "all";
 })(TimeFilter || (exports.TimeFilter = TimeFilter = {}));
-class HomeQueryDto {
+class TimeFilterQueryDto {
 }
-exports.HomeQueryDto = HomeQueryDto;
+exports.TimeFilterQueryDto = TimeFilterQueryDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(TimeFilter),
     __metadata("design:type", String)
-], HomeQueryDto.prototype, "filter", void 0);
+], TimeFilterQueryDto.prototype, "filter", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], TimeFilterQueryDto.prototype, "date", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], TimeFilterQueryDto.prototype, "startDate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], TimeFilterQueryDto.prototype, "endDate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], TimeFilterQueryDto.prototype, "month", void 0);

@@ -1,12 +1,33 @@
-import { IsEnum, IsOptional } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
 
 export enum TimeFilter {
-  WEEK = "week",
-  MONTH = "month",
+  DAILY = "daily",
+  WEEKLY = "weekly",
+  MONTHLY = "monthly",
+  ALL = "all",
 }
 
-export class HomeQueryDto {
+export class TimeFilterQueryDto {
   @IsOptional()
   @IsEnum(TimeFilter)
   filter?: TimeFilter;
+
+  // daily ke liye
+  @IsOptional()
+  @IsString()
+  date?: string;
+
+  // weekly custom range ke liye
+  @IsOptional()
+  @IsString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsString()
+  endDate?: string;
+
+  // monthly ke liye
+  @IsOptional()
+  @IsString()
+  month?: string;
 }

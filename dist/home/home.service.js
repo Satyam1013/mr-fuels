@@ -10,8 +10,9 @@ exports.HomeService = void 0;
 const common_1 = require("@nestjs/common");
 const home_dto_1 = require("./home.dto");
 let HomeService = class HomeService {
-    getHomeData(adminId, filter) {
-        const { startDate, endDate } = this.getDateRange(filter);
+    // ✅ HOME DASHBOARD
+    getHomeData(adminId, query) {
+        const { startDate, endDate } = this.buildDateRange(query);
         return {
             homeData: {
                 performance: [
@@ -72,29 +73,22 @@ let HomeService = class HomeService {
                     ],
                 },
             },
-            filterApplied: filter ?? "all",
-            dateRange: {
-                startDate,
-                endDate,
-            },
+            filterApplied: query.filter ?? home_dto_1.TimeFilter.ALL,
+            dateRange: { startDate, endDate },
             message: "Home data fetched successfully",
             timestamp: new Date(),
         };
     }
-    getSalesData(adminId) {
-        // 🔥 Abhi demo/static data return kar rahe hain
+    // ✅ SALES DASHBOARD
+    getSalesData(adminId, query) {
+        const { startDate, endDate } = this.buildDateRange(query);
         return {
+            filterApplied: query.filter ?? home_dto_1.TimeFilter.ALL,
+            dateRange: { startDate, endDate },
             salesData: {
-                date: "2026-02-26",
                 salesInLiters: {
-                    petrol: {
-                        liters: 1200,
-                        amount: 96000,
-                    },
-                    diesel: {
-                        liters: 800,
-                        amount: 64000,
-                    },
+                    petrol: { liters: 1200, amount: 96000 },
+                    diesel: { liters: 800, amount: 64000 },
                 },
                 collection: {
                     totalCollected: 160000,
@@ -127,23 +121,34 @@ let HomeService = class HomeService {
             timestamp: new Date(),
         };
     }
-    // 🔥 Date Range Calculator
-    getDateRange(filter) {
+    // 🔥 Common Date Range Builder (Daily, Weekly, Monthly, All)
+    buildDateRange(query) {
         const now = new Date();
-        let startDate;
-        if (filter === home_dto_1.TimeFilter.WEEK) {
-            startDate = new Date();
-            startDate.setDate(now.getDate() - 7);
+        if (query.filter === home_dto_1.TimeFilter.DAILY && query.date) {
+            const start = new Date(query.date);
+            const end = new Date(query.date);
+            end.setHours(23, 59, 59, 999);
+            return { startDate: start, endDate: end };
         }
-        else if (filter === home_dto_1.TimeFilter.MONTH) {
-            startDate = new Date();
-            startDate.setMonth(now.getMonth() - 1);
+        if (query.filter === home_dto_1.TimeFilter.WEEKLY) {
+            if (query.startDate && query.endDate) {
+                return {
+                    startDate: new Date(query.startDate),
+                    endDate: new Date(query.endDate),
+                };
+            }
+            const start = new Date();
+            start.setDate(now.getDate() - 7);
+            return { startDate: start, endDate: now };
         }
-        else {
-            startDate = new Date(0); // all time
+        if (query.filter === home_dto_1.TimeFilter.MONTHLY && query.month) {
+            const [year, month] = query.month.split("-");
+            const start = new Date(Number(year), Number(month) - 1, 1);
+            const end = new Date(Number(year), Number(month), 0, 23, 59, 59);
+            return { startDate: start, endDate: end };
         }
         return {
-            startDate,
+            startDate: new Date(0),
             endDate: now,
         };
     }
