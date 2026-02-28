@@ -122,33 +122,69 @@ export class HomeService {
   private buildDateRange(query: TimeFilterQueryDto) {
     const now = new Date();
 
+    // ✅ DAILY
     if (query.filter === TimeFilter.DAILY && query.date) {
       const start = new Date(query.date);
       const end = new Date(query.date);
       end.setHours(23, 59, 59, 999);
+
       return { startDate: start, endDate: end };
     }
 
+    // ✅ WEEKLY (Default + Optional Override)
     if (query.filter === TimeFilter.WEEKLY) {
+      // agar weekly me bhi custom range diya hai
       if (query.startDate && query.endDate) {
-        return {
-          startDate: new Date(query.startDate),
-          endDate: new Date(query.endDate),
-        };
+        const start = new Date(query.startDate);
+        const end = new Date(query.endDate);
+        end.setHours(23, 59, 59, 999);
+
+        if (start > end) {
+          throw new Error("startDate cannot be greater than endDate");
+        }
+
+        return { startDate: start, endDate: end };
       }
 
+      // default last 7 days
       const start = new Date();
       start.setDate(now.getDate() - 7);
+
       return { startDate: start, endDate: now };
     }
 
+    // ✅ MONTHLY
     if (query.filter === TimeFilter.MONTHLY && query.month) {
       const [year, month] = query.month.split("-");
+
       const start = new Date(Number(year), Number(month) - 1, 1);
       const end = new Date(Number(year), Number(month), 0, 23, 59, 59);
+
       return { startDate: start, endDate: end };
     }
 
+    // ✅ CUSTOM (Unlimited Date Range)
+    if (query.filter === TimeFilter.CUSTOM) {
+      if (!query.startDate || !query.endDate) {
+        throw new Error("startDate and endDate are required for custom filter");
+      }
+
+      const start = new Date(query.startDate);
+      const end = new Date(query.endDate);
+      end.setHours(23, 59, 59, 999);
+
+      if (start > end) {
+        throw new Error("startDate cannot be greater than endDate");
+      }
+
+      if (end > now) {
+        throw new Error("endDate cannot be in the future");
+      }
+
+      return { startDate: start, endDate: end };
+    }
+
+    // ✅ ALL
     return {
       startDate: new Date(0),
       endDate: now,
