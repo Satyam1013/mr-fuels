@@ -34,7 +34,8 @@ let TankService = class TankService {
     }
     // 🔹 Get All (by admin)
     async findAll(adminId) {
-        return this.tankModel.find({ adminId }).lean();
+        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
+        return this.tankModel.find({ adminId: objectAdminId }).lean();
     }
     // 🔹 Get Single
     async findOne(id) {

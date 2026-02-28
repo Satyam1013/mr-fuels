@@ -26,7 +26,8 @@ export class TankService {
 
   // 🔹 Get All (by admin)
   async findAll(adminId: string) {
-    return this.tankModel.find({ adminId }).lean();
+    const objectAdminId = new Types.ObjectId(adminId);
+    return this.tankModel.find({ adminId: objectAdminId }).lean();
   }
 
   // 🔹 Get Single
