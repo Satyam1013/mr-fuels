@@ -41,6 +41,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], PumpDetails.prototype, "is24Hour", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], PumpDetails.prototype, "numberOfShifts", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "TankDetails" }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpDetails.prototype, "tank", void 0);

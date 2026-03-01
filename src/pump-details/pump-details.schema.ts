@@ -21,6 +21,9 @@ export class PumpDetails extends Document {
   @Prop({ default: false })
   is24Hour!: boolean;
 
+  @Prop({ required: true })
+  numberOfShifts!: number;
+
   @Prop({ type: Types.ObjectId, ref: "TankDetails" })
   tank!: Types.ObjectId;
 

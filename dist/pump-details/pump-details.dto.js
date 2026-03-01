@@ -34,6 +34,10 @@ __decorate([
     __metadata("design:type", Number)
 ], CreatePumpDetailsDto.prototype, "pumpHours", void 0);
 __decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePumpDetailsDto.prototype, "numberOfShifts", void 0);
+__decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "tank", void 0);

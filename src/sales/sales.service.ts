@@ -7,6 +7,7 @@ import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
 import { NonFuelProduct } from "../non-fuel-product/non-fuel-product.schema";
 import { Staff } from "../staff/staff.schema";
+import { PumpDetails } from "../pump-details/pump-details.schema";
 
 @Injectable()
 export class SalesService {
@@ -22,6 +23,9 @@ export class SalesService {
 
     @InjectModel(Staff.name)
     private staffModel: Model<Staff>,
+
+    @InjectModel(PumpDetails.name)
+    private pumpDetailsModel: Model<PumpDetails>,
   ) {}
 
   async getDashboardSetup(adminId: string) {
@@ -147,6 +151,48 @@ export class SalesService {
       cashCollection: {},
 
       staffDetails,
+    };
+  }
+
+  async getShiftDashboard(adminId: string) {
+    const objectAdminId = new Types.ObjectId(adminId);
+
+    const pumpDetails = await this.pumpDetailsModel
+      .findOne({ adminId: objectAdminId })
+      .lean();
+
+    if (!pumpDetails) {
+      throw new Error("Pump details not found");
+    }
+
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    // Generate unique shift staffId from date
+    const generatedShiftId = Number(
+      formattedDate.replace(/-/g, "") + "01", // example: 2026030101
+    );
+
+    return {
+      date: formattedDate,
+      totalShifts: pumpDetails.numberOfShifts,
+
+      currentShift: {
+        shiftId: 1,
+        staffId: generatedShiftId,
+        name: `Shift 1`,
+        startTime: pumpDetails.pumpTime.start,
+        endTime: "",
+        status: "Active",
+      },
+
+      shifts: [],
+
+      dailyProgress: {
+        completedShifts: 0,
+        pendingShifts: pumpDetails.numberOfShifts,
+        overallCompletionPercent: 0,
+      },
     };
   }
 }

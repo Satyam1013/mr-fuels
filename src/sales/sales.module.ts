@@ -14,6 +14,10 @@ import {
   NonFuelProductSchema,
 } from "../non-fuel-product/non-fuel-product.schema";
 import { Staff, StaffSchema } from "../staff/staff.schema";
+import {
+  PumpDetails,
+  PumpDetailsSchema,
+} from "../pump-details/pump-details.schema";
 
 @Module({
   imports: [
@@ -24,6 +28,7 @@ import { Staff, StaffSchema } from "../staff/staff.schema";
       { name: TransactionDetails.name, schema: TransactionDetailsSchema },
       { name: NonFuelProduct.name, schema: NonFuelProductSchema },
       { name: Staff.name, schema: StaffSchema },
+      { name: PumpDetails.name, schema: PumpDetailsSchema },
     ]),
   ],
   controllers: [SalesController],

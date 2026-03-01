@@ -11,4 +11,10 @@ export class SalesController {
     const adminId = req.user.adminId;
     return this.salesService.getDashboardSetup(adminId);
   }
+
+  @Get("shift-dashboard")
+  async getShiftDashboard(@Req() req: AuthenticatedRequest) {
+    const adminId = req.user.adminId;
+    return this.salesService.getShiftDashboard(adminId);
+  }
 }

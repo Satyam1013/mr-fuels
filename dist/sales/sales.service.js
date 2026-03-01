@@ -22,12 +22,14 @@ const transactions_schema_1 = require("../transactions/transactions.schema");
 const machines_schema_1 = require("../machines/machines.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 const staff_schema_1 = require("../staff/staff.schema");
+const pump_details_schema_1 = require("../pump-details/pump-details.schema");
 let SalesService = class SalesService {
-    constructor(machineModel, transactionModel, nonFuelModel, staffModel) {
+    constructor(machineModel, transactionModel, nonFuelModel, staffModel, pumpDetailsModel) {
         this.machineModel = machineModel;
         this.transactionModel = transactionModel;
         this.nonFuelModel = nonFuelModel;
         this.staffModel = staffModel;
+        this.pumpDetailsModel = pumpDetailsModel;
     }
     async getDashboardSetup(adminId) {
         const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
@@ -135,6 +137,37 @@ let SalesService = class SalesService {
             staffDetails,
         };
     }
+    async getShiftDashboard(adminId) {
+        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
+        const pumpDetails = await this.pumpDetailsModel
+            .findOne({ adminId: objectAdminId })
+            .lean();
+        if (!pumpDetails) {
+            throw new Error("Pump details not found");
+        }
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+        // Generate unique shift staffId from date
+        const generatedShiftId = Number(formattedDate.replace(/-/g, "") + "01");
+        return {
+            date: formattedDate,
+            totalShifts: pumpDetails.numberOfShifts,
+            currentShift: {
+                shiftId: 1,
+                staffId: generatedShiftId,
+                name: `Shift 1`,
+                startTime: pumpDetails.pumpTime.start,
+                endTime: "",
+                status: "Active",
+            },
+            shifts: [],
+            dailyProgress: {
+                completedShifts: 0,
+                pendingShifts: pumpDetails.numberOfShifts,
+                overallCompletionPercent: 0,
+            },
+        };
+    }
 };
 exports.SalesService = SalesService;
 exports.SalesService = SalesService = __decorate([
@@ -143,7 +176,9 @@ exports.SalesService = SalesService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)(transactions_schema_1.TransactionDetails.name)),
     __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProduct.name)),
     __param(3, (0, mongoose_1.InjectModel)(staff_schema_1.Staff.name)),
+    __param(4, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])

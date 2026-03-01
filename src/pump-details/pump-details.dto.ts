@@ -16,6 +16,9 @@ export class CreatePumpDetailsDto {
   @IsNumber()
   pumpHours!: number;
 
+  @IsNumber()
+  numberOfShifts!: number;
+
   @IsMongoId()
   tank!: string;
 
