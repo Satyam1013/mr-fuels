@@ -25,6 +25,7 @@ const pump_timing_module_1 = require("./pump-timing/pump-timing.module");
 const home_module_1 = require("./home/home.module");
 const tank_details_module_1 = require("./tank-details/tank-details.module");
 const pump_status_module_1 = require("./pump-status/pump-status.module");
+const sales_module_1 = require("./sales/sales.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -48,6 +49,7 @@ exports.AppModule = AppModule = __decorate([
             home_module_1.HomeModule,
             tank_details_module_1.TankModule,
             pump_status_module_1.PumpStatusModule,
+            sales_module_1.SalesModule,
         ],
         providers: [],
     })

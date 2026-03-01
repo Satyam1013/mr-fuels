@@ -9,38 +9,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateTransactionDetailsDto = void 0;
-const class_validator_1 = require("class-validator");
+exports.BulkCreateStaffDto = exports.CreateStaffDto = void 0;
 const class_transformer_1 = require("class-transformer");
-class UpiAppDto {
+const class_validator_1 = require("class-validator");
+class CreateStaffDto {
 }
+exports.CreateStaffDto = CreateStaffDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpiAppDto.prototype, "name", void 0);
-class CreateTransactionDetailsDto {
-}
-exports.CreateTransactionDetailsDto = CreateTransactionDetailsDto;
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => UpiAppDto),
-    __metadata("design:type", Array)
-], CreateTransactionDetailsDto.prototype, "upiApps", void 0);
+], CreateStaffDto.prototype, "staffName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateTransactionDetailsDto.prototype, "swipeMachine", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateTransactionDetailsDto.prototype, "swipeSettlement", void 0);
+], CreateStaffDto.prototype, "staffNumber", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateTransactionDetailsDto.prototype, "swipeStatement", void 0);
+], CreateStaffDto.prototype, "staffAadhar", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateStaffDto.prototype, "staffPan", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateStaffDto.prototype, "shift", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateTransactionDetailsDto.prototype, "bankDeposit", void 0);
+], CreateStaffDto.prototype, "salary", void 0);
+class BulkCreateStaffDto {
+}
+exports.BulkCreateStaffDto = BulkCreateStaffDto;
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], BulkCreateStaffDto.prototype, "numberOfStaff", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CreateStaffDto),
+    __metadata("design:type", Array)
+], BulkCreateStaffDto.prototype, "staff", void 0);

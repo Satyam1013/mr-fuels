@@ -14,6 +14,7 @@ export class TransactionDetails extends Document {
   @Prop({ type: [UpiApp], default: [] })
   upiApps!: UpiApp[];
 
+  @Prop() swipeMachine!: string;
   @Prop() swipeSettlement!: string;
   @Prop() swipeStatement?: string;
   @Prop() bankDeposit!: string;

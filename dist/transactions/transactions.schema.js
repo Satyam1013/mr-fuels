@@ -35,6 +35,10 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
+], TransactionDetails.prototype, "swipeMachine", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
 ], TransactionDetails.prototype, "swipeSettlement", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

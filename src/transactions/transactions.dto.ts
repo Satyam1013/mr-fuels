@@ -13,6 +13,9 @@ export class CreateTransactionDetailsDto {
   upiApps!: UpiAppDto[];
 
   @IsString()
+  swipeMachine!: string;
+
+  @IsString()
   swipeSettlement!: string;
 
   @IsOptional()

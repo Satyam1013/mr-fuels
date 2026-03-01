@@ -17,6 +17,7 @@ import { PumpTimingModule } from "./pump-timing/pump-timing.module";
 import { HomeModule } from "./home/home.module";
 import { TankModule } from "./tank-details/tank-details.module";
 import { PumpStatusModule } from "./pump-status/pump-status.module";
+import { SalesModule } from "./sales/sales.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PumpStatusModule } from "./pump-status/pump-status.module";
     HomeModule,
     TankModule,
     PumpStatusModule,
+    SalesModule,
   ],
   providers: [],
 })

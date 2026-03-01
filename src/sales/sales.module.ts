@@ -1,0 +1,32 @@
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { SalesController } from "./sales.controller";
+import { SalesService } from "./sales.service";
+import { Sales, SalesSchema } from "./sales.schema";
+import { Admin, AdminSchema } from "../admin/admin.schema";
+import { Machine, MachineSchema } from "../machines/machines.schema";
+import {
+  TransactionDetails,
+  TransactionDetailsSchema,
+} from "../transactions/transactions.schema";
+import {
+  NonFuelProduct,
+  NonFuelProductSchema,
+} from "../non-fuel-product/non-fuel-product.schema";
+import { Staff, StaffSchema } from "../staff/staff.schema";
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: Sales.name, schema: SalesSchema },
+      { name: Admin.name, schema: AdminSchema },
+      { name: Machine.name, schema: MachineSchema },
+      { name: TransactionDetails.name, schema: TransactionDetailsSchema },
+      { name: NonFuelProduct.name, schema: NonFuelProductSchema },
+      { name: Staff.name, schema: StaffSchema },
+    ]),
+  ],
+  controllers: [SalesController],
+  providers: [SalesService],
+})
+export class SalesModule {}
