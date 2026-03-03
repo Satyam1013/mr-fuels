@@ -24,6 +24,7 @@ export class MachineController {
     const adminId = req.user.adminId;
     return this.machineService.createMachines(adminId, body.machines);
   }
+
   @Get()
   async getMachines(@Req() req: AuthenticatedRequest) {
     const adminId = req.user.adminId;

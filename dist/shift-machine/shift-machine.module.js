@@ -6,25 +6,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlanModule = void 0;
+exports.ShiftMachineModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const plan_details_service_1 = require("./plan-details.service");
-const plan_details_controller_1 = require("./plan-details.controller");
-const plan_details_schema_1 = require("./plan-details.schema");
-const subscription_schema_1 = require("../subscription/subscription.schema");
-let PlanModule = class PlanModule {
+const shift_machine_controller_1 = require("./shift-machine.controller");
+const shift_machine_service_1 = require("./shift-machine.service");
+const shift_machine_schema_1 = require("./shift-machine.schema");
+const machines_schema_1 = require("../machines/machines.schema");
+let ShiftMachineModule = class ShiftMachineModule {
 };
-exports.PlanModule = PlanModule;
-exports.PlanModule = PlanModule = __decorate([
+exports.ShiftMachineModule = ShiftMachineModule;
+exports.ShiftMachineModule = ShiftMachineModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: plan_details_schema_1.Plan.name, schema: plan_details_schema_1.PlanSchema },
-                { name: subscription_schema_1.Subscription.name, schema: subscription_schema_1.SubscriptionSchema },
+                { name: shift_machine_schema_1.ShiftMachineEntry.name, schema: shift_machine_schema_1.ShiftMachineSchema },
+                { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
             ]),
         ],
-        providers: [plan_details_service_1.PlanService],
-        controllers: [plan_details_controller_1.PlanController],
+        controllers: [shift_machine_controller_1.ShiftMachineController],
+        providers: [shift_machine_service_1.ShiftMachineService],
     })
-], PlanModule);
+], ShiftMachineModule);

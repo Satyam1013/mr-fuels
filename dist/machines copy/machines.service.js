@@ -12,31 +12,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductService = void 0;
+exports.MachineService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let NonFuelProductService = class NonFuelProductService {
-    constructor(nonFuelModel) {
-        this.nonFuelModel = nonFuelModel;
+const machines_schema_1 = require("./machines.schema");
+let MachineService = class MachineService {
+    constructor(machineModel) {
+        this.machineModel = machineModel;
     }
-    async addProducts(adminId, dtos) {
-        const productsToSave = dtos.map((dto) => ({
-            ...dto,
+    async createMachines(adminId, machines) {
+        const docs = machines.map((m) => ({
+            ...m,
             adminId: new mongoose_2.Types.ObjectId(adminId),
         }));
-        return this.nonFuelModel.insertMany(productsToSave);
+        return this.machineModel.insertMany(docs);
     }
-    async getProducts(adminId) {
-        return this.nonFuelModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+    async getMachines(adminId) {
+        return this.machineModel.find({ adminId });
     }
-    async deleteProduct(productId) {
-        return this.nonFuelModel.findByIdAndDelete(productId);
+    async getMachineById(machineId) {
+        return this.machineModel.findById(machineId);
+    }
+    async updateMachine(machineId, dto) {
+        return this.machineModel.findByIdAndUpdate(machineId, dto, { new: true });
+    }
+    async deleteMachine(machineId) {
+        return this.machineModel.findByIdAndDelete(machineId);
     }
 };
-exports.NonFuelProductService = NonFuelProductService;
-exports.NonFuelProductService = NonFuelProductService = __decorate([
+exports.MachineService = MachineService;
+exports.MachineService = MachineService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(NonFuelProduct.name)),
+    __param(0, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
-], NonFuelProductService);
+], MachineService);

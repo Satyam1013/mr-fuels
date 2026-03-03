@@ -12,38 +12,29 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SalesController = void 0;
+exports.ShiftMachineController = void 0;
 const common_1 = require("@nestjs/common");
-const sales_service_1 = require("./sales.service");
-let SalesController = class SalesController {
-    constructor(salesService) {
-        this.salesService = salesService;
+const shift_machine_service_1 = require("./shift-machine.service");
+const shift_machine_dto_1 = require("./shift-machine.dto");
+let ShiftMachineController = class ShiftMachineController {
+    constructor(service) {
+        this.service = service;
     }
-    async getDashboardSetup(req) {
+    async create(dto, req) {
         const adminId = req.user.adminId;
-        return this.salesService.getDashboardSetup(adminId);
-    }
-    async getShiftDashboard(req) {
-        const adminId = req.user.adminId;
-        return this.salesService.getShiftDashboard(adminId);
+        return this.service.create(adminId, dto);
     }
 };
-exports.SalesController = SalesController;
+exports.ShiftMachineController = ShiftMachineController;
 __decorate([
-    (0, common_1.Get)("dashboard-setup"),
-    __param(0, (0, common_1.Req)()),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [shift_machine_dto_1.CreateShiftMachineDto, Object]),
     __metadata("design:returntype", Promise)
-], SalesController.prototype, "getDashboardSetup", null);
-__decorate([
-    (0, common_1.Get)("shift-dashboard"),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], SalesController.prototype, "getShiftDashboard", null);
-exports.SalesController = SalesController = __decorate([
-    (0, common_1.Controller)("sales"),
-    __metadata("design:paramtypes", [sales_service_1.SalesService])
-], SalesController);
+], ShiftMachineController.prototype, "create", null);
+exports.ShiftMachineController = ShiftMachineController = __decorate([
+    (0, common_1.Controller)("shift-machine"),
+    __metadata("design:paramtypes", [shift_machine_service_1.ShiftMachineService])
+], ShiftMachineController);

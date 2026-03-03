@@ -9,48 +9,60 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BulkCreateStaffDto = exports.CreateStaffDto = void 0;
-const class_transformer_1 = require("class-transformer");
+exports.BulkCreateMachineDto = exports.CreateMachineDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateStaffDto {
+const class_transformer_1 = require("class-transformer");
+class NozzleDto {
 }
-exports.CreateStaffDto = CreateStaffDto;
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateStaffDto.prototype, "staffName", void 0);
+], NozzleDto.prototype, "fuelType", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateStaffDto.prototype, "staffNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateStaffDto.prototype, "staffAadhar", void 0);
+], NozzleDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], NozzleDto.prototype, "isActive", void 0);
+class CreateMachineDto {
+}
+exports.CreateMachineDto = CreateMachineDto;
+__decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateStaffDto.prototype, "staffPan", void 0);
+], CreateMachineDto.prototype, "machineNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateMachineDto.prototype, "machineKey", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], CreateStaffDto.prototype, "shift", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateStaffDto.prototype, "salary", void 0);
-class BulkCreateStaffDto {
-}
-exports.BulkCreateStaffDto = BulkCreateStaffDto;
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], BulkCreateStaffDto.prototype, "numberOfStaff", void 0);
+], CreateMachineDto.prototype, "nozzleCount", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => CreateStaffDto),
+    (0, class_transformer_1.Type)(() => NozzleDto),
     __metadata("design:type", Array)
-], BulkCreateStaffDto.prototype, "staff", void 0);
+], CreateMachineDto.prototype, "nozzle", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateMachineDto.prototype, "isActive", void 0);
+class BulkCreateMachineDto {
+}
+exports.BulkCreateMachineDto = BulkCreateMachineDto;
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CreateMachineDto),
+    __metadata("design:type", Array)
+], BulkCreateMachineDto.prototype, "machines", void 0);
