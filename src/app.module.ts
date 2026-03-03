@@ -13,7 +13,6 @@ import { MachineModule } from "./machines/machines.module";
 import { DsrDetailsModule } from "./dsr/dsr.module";
 import { PlanModule } from "./plan-details/plan-details.module";
 import { NonFuelProductModule } from "./non-fuel-product/non-fuel-product.module";
-import { PumpTimingModule } from "./pump-timing/pump-timing.module";
 import { HomeModule } from "./home/home.module";
 import { TankModule } from "./tank-details/tank-details.module";
 import { PumpStatusModule } from "./pump-status/pump-status.module";
@@ -35,7 +34,6 @@ import { ShiftMachineModule } from "./shift-machine/shift-machine.module";
     DsrDetailsModule,
     PlanModule,
     NonFuelProductModule,
-    PumpTimingModule,
     HomeModule,
     TankModule,
     PumpStatusModule,
