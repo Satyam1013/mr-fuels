@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { TimeFilterQueryDto, TimeFilter } from "./home.dto";
+import { TimeFilterQueryDto } from "./home.dto";
+import { TimeFilter } from "./time.enum";
 
 @Injectable()
 export class HomeService {

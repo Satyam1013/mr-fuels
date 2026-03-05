@@ -3,11 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Admin } from "../admin/admin.schema";
 import { Plan } from "../plan-details/plan-details.schema";
-import {
-  Subscription,
-  SubscriptionStatus,
-} from "../subscription/subscription.schema";
+import { Subscription } from "../subscription/subscription.schema";
 import { PlanStatus } from "../plan-details/plan-details.enums";
+import { SubscriptionStatus } from "../subscription/subscription.enum";
 
 @Injectable()
 export class AdminService {

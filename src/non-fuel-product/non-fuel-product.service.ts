@@ -12,12 +12,17 @@ export class NonFuelProductService {
   ) {}
 
   async addProducts(adminId: string, dtos: CreateNonFuelProductDto[]) {
-    const productsToSave = dtos.map((dto) => ({
-      ...dto,
-      adminId: new Types.ObjectId(adminId),
-    }));
+    try {
+      const productsToSave = dtos.map((dto) => ({
+        ...dto,
+        adminId: new Types.ObjectId(adminId),
+        machineId: new Types.ObjectId(dto.machineId),
+      }));
 
-    return this.nonFuelModel.insertMany(productsToSave);
+      return this.nonFuelModel.insertMany(productsToSave);
+    } catch {
+      throw new Error("Error adding non-fuel products");
+    }
   }
 
   async getProducts(adminId: string) {

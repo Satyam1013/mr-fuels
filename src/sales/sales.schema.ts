@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { ShiftStatus } from "./sales.enum";
 
 @Schema({ timestamps: true })
 export class Sales extends Document {
@@ -10,10 +11,10 @@ export class Sales extends Document {
   shift!: number;
 
   @Prop({
-    enum: ["open", "closed"],
-    default: "open",
+    enum: ShiftStatus,
+    default: ShiftStatus.OPEN,
   })
-  shiftStatus!: string;
+  shiftStatus!: ShiftStatus;
 
   @Prop({ required: true })
   date!: Date;

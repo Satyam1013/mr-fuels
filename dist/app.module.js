@@ -26,6 +26,11 @@ const tank_details_module_1 = require("./tank-details/tank-details.module");
 const pump_status_module_1 = require("./pump-status/pump-status.module");
 const sales_module_1 = require("./sales/sales.module");
 const shift_machine_module_1 = require("./shift-machine/shift-machine.module");
+const creditors_module_1 = require("./creditors/creditors.module");
+const pump_expense_module_1 = require("./pump-expense/pump-expense.module");
+const personal_expense_module_1 = require("./personal-expense/personal-expense.module");
+const prepaid_module_1 = require("./prepaid/prepaid.module");
+const cash_collection_module_1 = require("./cash-collection/cash-collection.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -50,6 +55,11 @@ exports.AppModule = AppModule = __decorate([
             pump_status_module_1.PumpStatusModule,
             sales_module_1.SalesModule,
             shift_machine_module_1.ShiftMachineModule,
+            creditors_module_1.CreditorModule,
+            pump_expense_module_1.PumpExpenseModule,
+            personal_expense_module_1.PersonalExpenseModule,
+            prepaid_module_1.PrepaidModule,
+            cash_collection_module_1.CashCollectionModule,
         ],
         providers: [],
     })

@@ -1,11 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-
-export enum SubscriptionStatus {
-  ACTIVE = "active",
-  EXPIRED = "expired",
-  CANCELLED = "cancelled",
-}
+import { SubscriptionStatus } from "./subscription.enum";
 
 @Schema({ timestamps: true })
 export class Subscription extends Document {

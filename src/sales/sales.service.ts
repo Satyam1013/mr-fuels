@@ -64,7 +64,7 @@ export class SalesService {
 
     const lubricants: any = {};
     nonFuelProductsData.forEach((product) => {
-      lubricants[product.productName.toLowerCase()] = {
+      lubricants[product.name.toLowerCase()] = {
         liters: 0,
         amount: 0,
       };

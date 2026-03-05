@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDsrDetailsDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-const dsr_details_types_1 = require("../types/dsr-details-types");
+const dsr_enum_1 = require("./dsr.enum");
 class TankConfigDto {
 }
 __decorate([
@@ -20,31 +20,31 @@ __decorate([
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "tankNo", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(dsr_details_types_1.TankInputType),
+    (0, class_validator_1.IsEnum)(dsr_enum_1.TankInputType),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "inputType", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_details_types_1.TankInputType.MANUAL),
+    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_enum_1.TankInputType.MANUAL),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "capacity", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_details_types_1.TankInputType.MANUAL),
+    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_enum_1.TankInputType.MANUAL),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "diameter", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_details_types_1.TankInputType.MANUAL),
+    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_enum_1.TankInputType.MANUAL),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "length", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_details_types_1.TankInputType.MANUAL),
+    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_enum_1.TankInputType.MANUAL),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "tankType", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_details_types_1.TankInputType.CHART),
+    (0, class_validator_1.ValidateIf)((o) => o.inputType === dsr_enum_1.TankInputType.CHART),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankConfigDto.prototype, "dsrChart", void 0);

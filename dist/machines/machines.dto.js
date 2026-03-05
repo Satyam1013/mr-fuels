@@ -15,14 +15,19 @@ const class_transformer_1 = require("class-transformer");
 class NozzleDto {
 }
 __decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "nozzleNumber", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], NozzleDto.prototype, "fuelType", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], NozzleDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
@@ -41,7 +46,7 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateMachineDto.prototype, "machineKey", void 0);
+], CreateMachineDto.prototype, "machineName", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

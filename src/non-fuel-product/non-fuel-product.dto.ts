@@ -1,19 +1,49 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import {
+  IsString,
+  IsNumber,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsDateString,
+} from "class-validator";
+import { CreditBy } from "../creditors/creditors.enum";
 
 export class CreateNonFuelProductDto {
-  @IsString()
-  @IsNotEmpty()
-  productName!: string;
+  @IsMongoId()
+  machineId!: string;
+
+  @IsNumber()
+  nozzleNumber!: number;
 
   @IsString()
-  @IsNotEmpty()
-  price!: string;
+  name!: string;
 
   @IsString()
-  @IsNotEmpty()
-  totalStock!: string;
+  category!: string;
 
+  @IsNumber()
+  quantity!: number;
+
+  @IsNumber()
+  pricePerUnit!: number;
+
+  @IsNumber()
+  amount!: number;
+
+  @IsEnum(CreditBy)
+  creditBy!: CreditBy;
+
+  @IsDateString()
+  date!: string;
+
+  @IsNumber()
+  shiftNumber!: number;
+
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  unitType!: string;
+  narration?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
 }

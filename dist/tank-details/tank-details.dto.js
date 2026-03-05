@@ -29,7 +29,7 @@ __decorate([
 ], TankDto.prototype, "fuelType", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], TankDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),

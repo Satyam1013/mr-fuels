@@ -28,7 +28,7 @@ __decorate([
 ], Tank.prototype, "fuelType", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Tank.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),

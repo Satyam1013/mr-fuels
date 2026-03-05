@@ -6,7 +6,7 @@ import {
   ValidateIf,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { TankInputType } from "../types/dsr-details-types";
+import { TankInputType } from "./dsr.enum";
 
 class TankConfigDto {
   @IsString()

@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const dsr_schema_1 = require("./dsr.schema");
-const dsr_details_types_1 = require("../types/dsr-details-types");
 const admin_schema_1 = require("../admin/admin.schema");
+const dsr_enum_1 = require("./dsr.enum");
 let DsrDetailsService = class DsrDetailsService {
     constructor(dsrModel, adminModel) {
         this.dsrModel = dsrModel;
@@ -26,10 +26,10 @@ let DsrDetailsService = class DsrDetailsService {
     }
     async addOrUpdate(adminId, dto) {
         for (const tank of dto.tankConfig) {
-            if (tank.inputType === dsr_details_types_1.TankInputType.CHART && !tank.dsrChart) {
+            if (tank.inputType === dsr_enum_1.TankInputType.CHART && !tank.dsrChart) {
                 throw new Error(`DSR Chart is required for tank ${tank.tankNo}`);
             }
-            if (tank.inputType === dsr_details_types_1.TankInputType.MANUAL &&
+            if (tank.inputType === dsr_enum_1.TankInputType.MANUAL &&
                 (!tank.capacity || !tank.diameter || !tank.length || !tank.tankType)) {
                 throw new Error(`All manual fields are required for tank ${tank.tankNo}`);
             }

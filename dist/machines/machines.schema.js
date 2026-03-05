@@ -12,22 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MachineSchema = exports.Machine = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const machines_enum_1 = require("./machines.enum");
 let Nozzle = class Nozzle {
 };
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Nozzle.prototype, "nozzleNumber", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: machines_enum_1.FuelType, required: true }),
     __metadata("design:type", String)
 ], Nozzle.prototype, "fuelType", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Nozzle.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)
 ], Nozzle.prototype, "isActive", void 0);
 Nozzle = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
+    (0, mongoose_1.Schema)()
 ], Nozzle);
 let Machine = class Machine extends mongoose_2.Document {
 };
@@ -43,7 +48,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], Machine.prototype, "machineKey", void 0);
+], Machine.prototype, "machineName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)

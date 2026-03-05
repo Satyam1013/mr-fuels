@@ -22,11 +22,17 @@ let NonFuelProductService = class NonFuelProductService {
         this.nonFuelModel = nonFuelModel;
     }
     async addProducts(adminId, dtos) {
-        const productsToSave = dtos.map((dto) => ({
-            ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-        }));
-        return this.nonFuelModel.insertMany(productsToSave);
+        try {
+            const productsToSave = dtos.map((dto) => ({
+                ...dto,
+                adminId: new mongoose_2.Types.ObjectId(adminId),
+                machineId: new mongoose_2.Types.ObjectId(dto.machineId),
+            }));
+            return this.nonFuelModel.insertMany(productsToSave);
+        }
+        catch {
+            throw new Error("Error adding non-fuel products");
+        }
     }
     async getProducts(adminId) {
         return this.nonFuelModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });

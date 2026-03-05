@@ -10,13 +10,17 @@ import {
 import { Type } from "class-transformer";
 
 class NozzleDto {
+  @IsNumber()
+  @IsNotEmpty()
+  nozzleNumber!: number;
+
   @IsString()
   @IsNotEmpty()
   fuelType!: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  price!: string;
+  price!: number;
 
   @IsOptional()
   @IsBoolean()
@@ -30,7 +34,7 @@ export class CreateMachineDto {
 
   @IsString()
   @IsNotEmpty()
-  machineKey!: string;
+  machineName!: string;
 
   @IsNumber()
   nozzleCount!: number;

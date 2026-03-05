@@ -3,8 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { DsrDetails } from "./dsr.schema";
 import { CreateDsrDetailsDto } from "./dsr.dto";
-import { TankInputType } from "../types/dsr-details-types";
 import { Admin } from "../admin/admin.schema";
+import { TankInputType } from "./dsr.enum";
 
 @Injectable()
 export class DsrDetailsService {

@@ -18,6 +18,11 @@ import { TankModule } from "./tank-details/tank-details.module";
 import { PumpStatusModule } from "./pump-status/pump-status.module";
 import { SalesModule } from "./sales/sales.module";
 import { ShiftMachineModule } from "./shift-machine/shift-machine.module";
+import { CreditorModule } from "./creditors/creditors.module";
+import { PumpExpenseModule } from "./pump-expense/pump-expense.module";
+import { PersonalExpenseModule } from "./personal-expense/personal-expense.module";
+import { PrepaidModule } from "./prepaid/prepaid.module";
+import { CashCollectionModule } from "./cash-collection/cash-collection.module";
 
 @Module({
   imports: [
@@ -39,6 +44,11 @@ import { ShiftMachineModule } from "./shift-machine/shift-machine.module";
     PumpStatusModule,
     SalesModule,
     ShiftMachineModule,
+    CreditorModule,
+    PumpExpenseModule,
+    PersonalExpenseModule,
+    PrepaidModule,
+    CashCollectionModule,
   ],
   providers: [],
 })

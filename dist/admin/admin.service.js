@@ -20,6 +20,7 @@ const admin_schema_1 = require("../admin/admin.schema");
 const plan_details_schema_1 = require("../plan-details/plan-details.schema");
 const subscription_schema_1 = require("../subscription/subscription.schema");
 const plan_details_enums_1 = require("../plan-details/plan-details.enums");
+const subscription_enum_1 = require("../subscription/subscription.enum");
 let AdminService = class AdminService {
     constructor(adminModel, planModel, subscriptionModel) {
         this.adminModel = adminModel;
@@ -36,7 +37,7 @@ let AdminService = class AdminService {
         }
         const existingSubscription = await this.subscriptionModel.findOne({
             adminId,
-            status: subscription_schema_1.SubscriptionStatus.ACTIVE,
+            status: subscription_enum_1.SubscriptionStatus.ACTIVE,
         });
         if (existingSubscription) {
             throw new common_1.BadRequestException("Active subscription already exists");
@@ -63,7 +64,7 @@ let AdminService = class AdminService {
             planId,
             startDate,
             expiryDate,
-            status: subscription_schema_1.SubscriptionStatus.ACTIVE,
+            status: subscription_enum_1.SubscriptionStatus.ACTIVE,
         });
         await this.adminModel.findByIdAndUpdate(adminId, {
             currentSubscriptionId: subscription._id,

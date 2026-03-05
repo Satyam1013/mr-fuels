@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { TankInputType } from "../types/dsr-details-types";
+import { TankInputType } from "./dsr.enum";
 
 @Schema({ _id: false })
 class TankConfig {

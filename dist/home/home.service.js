@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeService = void 0;
 const common_1 = require("@nestjs/common");
-const home_dto_1 = require("./home.dto");
+const time_enum_1 = require("./time.enum");
 let HomeService = class HomeService {
     // ✅ HOME DASHBOARD
     getHomeData(adminId, query) {
@@ -73,7 +73,7 @@ let HomeService = class HomeService {
                     ],
                 },
             },
-            filterApplied: query.filter ?? home_dto_1.TimeFilter.ALL,
+            filterApplied: query.filter ?? time_enum_1.TimeFilter.ALL,
             dateRange: { startDate, endDate },
             message: "Home data fetched successfully",
             timestamp: new Date(),
@@ -83,7 +83,7 @@ let HomeService = class HomeService {
     getSalesData(adminId, query) {
         const { startDate, endDate } = this.buildDateRange(query);
         return {
-            filterApplied: query.filter ?? home_dto_1.TimeFilter.ALL,
+            filterApplied: query.filter ?? time_enum_1.TimeFilter.ALL,
             dateRange: { startDate, endDate },
             salesData: {
                 salesInLiters: {
@@ -125,14 +125,14 @@ let HomeService = class HomeService {
     buildDateRange(query) {
         const now = new Date();
         // ✅ DAILY
-        if (query.filter === home_dto_1.TimeFilter.DAILY && query.date) {
+        if (query.filter === time_enum_1.TimeFilter.DAILY && query.date) {
             const start = new Date(query.date);
             const end = new Date(query.date);
             end.setHours(23, 59, 59, 999);
             return { startDate: start, endDate: end };
         }
         // ✅ WEEKLY (Default + Optional Override)
-        if (query.filter === home_dto_1.TimeFilter.WEEKLY) {
+        if (query.filter === time_enum_1.TimeFilter.WEEKLY) {
             // agar weekly me bhi custom range diya hai
             if (query.startDate && query.endDate) {
                 const start = new Date(query.startDate);
@@ -149,14 +149,14 @@ let HomeService = class HomeService {
             return { startDate: start, endDate: now };
         }
         // ✅ MONTHLY
-        if (query.filter === home_dto_1.TimeFilter.MONTHLY && query.month) {
+        if (query.filter === time_enum_1.TimeFilter.MONTHLY && query.month) {
             const [year, month] = query.month.split("-");
             const start = new Date(Number(year), Number(month) - 1, 1);
             const end = new Date(Number(year), Number(month), 0, 23, 59, 59);
             return { startDate: start, endDate: end };
         }
         // ✅ CUSTOM (Unlimited Date Range)
-        if (query.filter === home_dto_1.TimeFilter.CUSTOM) {
+        if (query.filter === time_enum_1.TimeFilter.CUSTOM) {
             if (!query.startDate || !query.endDate) {
                 throw new Error("startDate and endDate are required for custom filter");
             }

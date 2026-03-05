@@ -1,12 +1,5 @@
 import { IsEnum, IsOptional, IsString } from "class-validator";
-
-export enum TimeFilter {
-  DAILY = "daily",
-  WEEKLY = "weekly",
-  MONTHLY = "monthly",
-  CUSTOM = "custom",
-  ALL = "all",
-}
+import { TimeFilter } from "./time.enum";
 
 export class TimeFilterQueryDto {
   @IsOptional()

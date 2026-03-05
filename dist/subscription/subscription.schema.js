@@ -9,15 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SubscriptionSchema = exports.Subscription = exports.SubscriptionStatus = void 0;
+exports.SubscriptionSchema = exports.Subscription = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-var SubscriptionStatus;
-(function (SubscriptionStatus) {
-    SubscriptionStatus["ACTIVE"] = "active";
-    SubscriptionStatus["EXPIRED"] = "expired";
-    SubscriptionStatus["CANCELLED"] = "cancelled";
-})(SubscriptionStatus || (exports.SubscriptionStatus = SubscriptionStatus = {}));
+const subscription_enum_1 = require("./subscription.enum");
 let Subscription = class Subscription extends mongoose_2.Document {
 };
 exports.Subscription = Subscription;
@@ -38,7 +33,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Subscription.prototype, "expiryDate", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: SubscriptionStatus, default: SubscriptionStatus.ACTIVE }),
+    (0, mongoose_1.Prop)({ enum: subscription_enum_1.SubscriptionStatus, default: subscription_enum_1.SubscriptionStatus.ACTIVE }),
     __metadata("design:type", String)
 ], Subscription.prototype, "status", void 0);
 __decorate([

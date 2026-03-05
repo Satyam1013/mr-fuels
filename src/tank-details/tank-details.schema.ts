@@ -13,7 +13,7 @@ class Tank {
   fuelType!: string;
 
   @Prop({ required: true })
-  price!: string;
+  price!: number;
 
   @Prop({ required: true })
   tankNo!: number;

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DsrDetailsSchema = exports.DsrDetails = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const dsr_details_types_1 = require("../types/dsr-details-types");
+const dsr_enum_1 = require("./dsr.enum");
 let TankConfig = class TankConfig {
 };
 __decorate([
@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", String)
 ], TankConfig.prototype, "tankNo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: dsr_details_types_1.TankInputType, required: true }),
+    (0, mongoose_1.Prop)({ enum: dsr_enum_1.TankInputType, required: true }),
     __metadata("design:type", String)
 ], TankConfig.prototype, "inputType", void 0);
 __decorate([

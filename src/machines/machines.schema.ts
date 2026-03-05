@@ -1,13 +1,17 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { FuelType } from "./machines.enum";
 
-@Schema({ _id: false })
+@Schema()
 class Nozzle {
   @Prop({ required: true })
-  fuelType!: string;
+  nozzleNumber!: number;
+
+  @Prop({ enum: FuelType, required: true })
+  fuelType!: FuelType;
 
   @Prop({ required: true })
-  price!: string;
+  price!: number;
 
   @Prop({ default: true })
   isActive!: boolean;
@@ -22,7 +26,7 @@ export class Machine extends Document {
   machineNumber!: string;
 
   @Prop({ required: true })
-  machineKey!: string;
+  machineName!: string;
 
   @Prop({ required: true })
   nozzleCount!: number;
