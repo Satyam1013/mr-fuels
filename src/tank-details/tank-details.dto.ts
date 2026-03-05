@@ -12,7 +12,7 @@ class TankDto {
   @IsString()
   fuelType!: string;
 
-  @IsString()
+  @IsNumber()
   price!: number;
 
   @IsNumber()
