@@ -31,6 +31,8 @@ const pump_expense_module_1 = require("./pump-expense/pump-expense.module");
 const personal_expense_module_1 = require("./personal-expense/personal-expense.module");
 const prepaid_module_1 = require("./prepaid/prepaid.module");
 const cash_collection_module_1 = require("./cash-collection/cash-collection.module");
+const digital_payment_module_1 = require("./digital-payment/digital-payment.module");
+const machine_calculation_module_1 = require("./machine-calculation/machine-calculation.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -60,6 +62,8 @@ exports.AppModule = AppModule = __decorate([
             personal_expense_module_1.PersonalExpenseModule,
             prepaid_module_1.PrepaidModule,
             cash_collection_module_1.CashCollectionModule,
+            digital_payment_module_1.DigitalPaymentModule,
+            machine_calculation_module_1.MachineCalculationModule,
         ],
         providers: [],
     })

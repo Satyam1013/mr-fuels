@@ -23,6 +23,8 @@ import { PumpExpenseModule } from "./pump-expense/pump-expense.module";
 import { PersonalExpenseModule } from "./personal-expense/personal-expense.module";
 import { PrepaidModule } from "./prepaid/prepaid.module";
 import { CashCollectionModule } from "./cash-collection/cash-collection.module";
+import { DigitalPaymentModule } from "./digital-payment/digital-payment.module";
+import { MachineCalculationModule } from "./machine-calculation/machine-calculation.module";
 
 @Module({
   imports: [
@@ -49,6 +51,8 @@ import { CashCollectionModule } from "./cash-collection/cash-collection.module";
     PersonalExpenseModule,
     PrepaidModule,
     CashCollectionModule,
+    DigitalPaymentModule,
+    MachineCalculationModule,
   ],
   providers: [],
 })
