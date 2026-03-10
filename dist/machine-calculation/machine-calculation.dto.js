@@ -9,43 +9,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateMachineCalculationDto = exports.NozzleCalculationDto = void 0;
+exports.CreateMachineCalculationDto = exports.NozzleDto = void 0;
 const class_validator_1 = require("class-validator");
-class NozzleCalculationDto {
+class NozzleDto {
 }
-exports.NozzleCalculationDto = NozzleCalculationDto;
+exports.NozzleDto = NozzleDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], NozzleDto.prototype, "nozzleName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], NozzleDto.prototype, "fuelType", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], NozzleCalculationDto.prototype, "nozzleNumber", void 0);
+], NozzleDto.prototype, "lastReading", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "currentReading", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "testingLiters", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "faultTestingLiters", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "pricePerLiter", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "upiAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "posAmount", void 0);
 __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
-], NozzleCalculationDto.prototype, "staffId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], NozzleCalculationDto.prototype, "fuelSaleAmount", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], NozzleCalculationDto.prototype, "creditIds", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], NozzleCalculationDto.prototype, "pumpExpenseIds", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], NozzleCalculationDto.prototype, "personalExpenseIds", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], NozzleCalculationDto.prototype, "prepaidIds", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], NozzleCalculationDto.prototype, "nonFuelProductIds", void 0);
+], NozzleDto.prototype, "staffId", void 0);
 class CreateMachineCalculationDto {
 }
 exports.CreateMachineCalculationDto = CreateMachineCalculationDto;

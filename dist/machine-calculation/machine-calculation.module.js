@@ -16,6 +16,7 @@ const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
 const prepaid_schema_1 = require("../prepaid/prepaid.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 const creditors_schema_1 = require("../creditors/creditors.schema");
+const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
 let MachineCalculationModule = class MachineCalculationModule {
 };
 exports.MachineCalculationModule = MachineCalculationModule;
@@ -25,6 +26,7 @@ exports.MachineCalculationModule = MachineCalculationModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: machine_calculation_schema_1.MachineCalculation.name, schema: machine_calculation_schema_1.MachineCalculationSchema },
                 { name: pump_expense_schema_1.PumpExpense.name, schema: pump_expense_schema_1.PumpExpenseSchema },
+                { name: personal_expense_schema_1.PersonalExpense.name, schema: personal_expense_schema_1.PersonalExpenseSchema },
                 { name: prepaid_schema_1.Prepaid.name, schema: prepaid_schema_1.PrepaidSchema },
                 { name: non_fuel_product_schema_1.NonFuelProduct.name, schema: non_fuel_product_schema_1.NonFuelProductSchema },
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },

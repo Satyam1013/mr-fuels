@@ -1,10 +1,32 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { FuelType } from "./machine-calculation.enum";
 
 @Schema({ _id: false })
 class NozzleCalculation {
   @Prop({ required: true })
-  nozzleNumber!: number;
+  nozzleName!: string;
+
+  @Prop()
+  fuelType!: FuelType;
+
+  @Prop()
+  lastReading!: number;
+
+  @Prop()
+  currentReading!: number;
+
+  @Prop()
+  testingLiters!: number;
+
+  @Prop()
+  faultTestingLiters!: number;
+
+  @Prop()
+  pricePerLiter!: number;
+
+  @Prop()
+  saleLiters!: number;
 
   @Prop({ type: Types.ObjectId, ref: "Staff" })
   staffId!: Types.ObjectId;
@@ -29,26 +51,6 @@ class NozzleCalculation {
     default: [],
   })
   nonFuelProductIds!: Types.ObjectId[];
-
-  // calculated totals
-
-  @Prop()
-  fuelSaleAmount!: number;
-
-  @Prop()
-  creditTotal!: number;
-
-  @Prop()
-  expenseTotal!: number;
-
-  @Prop()
-  prepaidTotal!: number;
-
-  @Prop()
-  lubricantTotal!: number;
-
-  @Prop()
-  finalAmount!: number;
 }
 
 @Schema({ timestamps: true })

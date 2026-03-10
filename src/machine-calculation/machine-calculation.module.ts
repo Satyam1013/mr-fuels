@@ -16,12 +16,17 @@ import {
   NonFuelProductSchema,
 } from "../non-fuel-product/non-fuel-product.schema";
 import { Creditor, CreditorSchema } from "../creditors/creditors.schema";
+import {
+  PersonalExpense,
+  PersonalExpenseSchema,
+} from "../personal-expense/personal-expense.schema";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: MachineCalculation.name, schema: MachineCalculationSchema },
       { name: PumpExpense.name, schema: PumpExpenseSchema },
+      { name: PersonalExpense.name, schema: PersonalExpenseSchema },
       { name: Prepaid.name, schema: PrepaidSchema },
       { name: NonFuelProduct.name, schema: NonFuelProductSchema },
       { name: Creditor.name, schema: CreditorSchema },

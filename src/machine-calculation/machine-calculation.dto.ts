@@ -1,29 +1,41 @@
-import { IsArray, IsDateString, IsMongoId, IsNumber } from "class-validator";
+import {
+  IsArray,
+  IsDateString,
+  IsMongoId,
+  IsNumber,
+  IsString,
+} from "class-validator";
 
-export class NozzleCalculationDto {
+export class NozzleDto {
+  @IsString()
+  nozzleName!: string;
+
+  @IsString()
+  fuelType!: string;
+
   @IsNumber()
-  nozzleNumber!: number;
+  lastReading!: number;
+
+  @IsNumber()
+  currentReading!: number;
+
+  @IsNumber()
+  testingLiters!: number;
+
+  @IsNumber()
+  faultTestingLiters!: number;
+
+  @IsNumber()
+  pricePerLiter!: number;
+
+  @IsNumber()
+  upiAmount!: number;
+
+  @IsNumber()
+  posAmount!: number;
 
   @IsMongoId()
   staffId!: string;
-
-  @IsNumber()
-  fuelSaleAmount!: number;
-
-  @IsArray()
-  creditIds!: string[];
-
-  @IsArray()
-  pumpExpenseIds!: string[];
-
-  @IsArray()
-  personalExpenseIds!: string[];
-
-  @IsArray()
-  prepaidIds!: string[];
-
-  @IsArray()
-  nonFuelProductIds!: string[];
 }
 
 export class CreateMachineCalculationDto {
@@ -37,5 +49,5 @@ export class CreateMachineCalculationDto {
   shiftNumber!: number;
 
   @IsArray()
-  nozzles!: NozzleCalculationDto[];
+  nozzles!: NozzleDto[];
 }
