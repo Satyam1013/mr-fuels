@@ -135,6 +135,52 @@ export class MachineCalculationService {
       .sort({ date: -1 });
   }
 
+  async getMachineDetails(
+    adminId: string,
+    machineId: string,
+    date: string,
+    nozzleNumber?: number,
+    shiftNumber?: number,
+  ) {
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);
+
+    const query: Record<string, any> = {
+      adminId: new Types.ObjectId(adminId),
+      machineId: new Types.ObjectId(machineId),
+      date: { $gte: startDate, $lte: endDate },
+    };
+
+    if (shiftNumber) {
+      query.shiftNumber = shiftNumber;
+    }
+
+    const data = await this.machineCalcModel
+      .find(query)
+      .populate("machineId")
+      .populate("nozzles.staffId")
+      .populate("nozzles.creditIds")
+      .populate("nozzles.pumpExpenseIds")
+      .populate("nozzles.personalExpenseIds")
+      .populate("nozzles.prepaidIds")
+      .populate("nozzles.nonFuelProductIds");
+
+    if (!nozzleNumber) return data;
+
+    // nozzle filter
+    return data.map((item) => ({
+      ...item.toObject(),
+      nozzles: item.nozzles.filter(
+        (n) =>
+          (parseInt(n.nozzleName.replace(/\D/g, "")) || 1) ===
+          Number(nozzleNumber),
+      ),
+    }));
+  }
+
   async getById(id: string) {
     return this.machineCalcModel.findById(id);
   }

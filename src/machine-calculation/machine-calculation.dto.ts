@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsMongoId,
   IsNumber,
+  IsOptional,
   IsString,
 } from "class-validator";
 
@@ -47,6 +48,10 @@ export class CreateMachineCalculationDto {
 
   @IsNumber()
   shiftNumber!: number;
+
+  @IsOptional()
+  @IsNumber()
+  nozzleNumber?: number;
 
   @IsArray()
   nozzles!: NozzleDto[];

@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Delete,
+  Query,
 } from "@nestjs/common";
 import { MachineCalculationService } from "./machine-calculation.service";
 import { CreateMachineCalculationDto } from "./machine-calculation.dto";
@@ -28,6 +29,23 @@ export class MachineCalculationController {
   @Get()
   getAll(@Req() req: AuthenticatedRequest) {
     return this.machineCalculationService.getAll(req.user.adminId);
+  }
+
+  @Get("machine-details")
+  getMachineDetails(
+    @Req() req: AuthenticatedRequest,
+    @Query("machineId") machineId: string,
+    @Query("date") date: string,
+    @Query("nozzleNumber") nozzleNumber?: number,
+    @Query("shiftNumber") shiftNumber?: number,
+  ) {
+    return this.machineCalculationService.getMachineDetails(
+      req.user.adminId,
+      machineId,
+      date,
+      nozzleNumber,
+      shiftNumber,
+    );
   }
 
   @Get(":id")

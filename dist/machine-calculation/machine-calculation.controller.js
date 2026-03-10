@@ -26,6 +26,9 @@ let MachineCalculationController = class MachineCalculationController {
     getAll(req) {
         return this.machineCalculationService.getAll(req.user.adminId);
     }
+    getMachineDetails(req, machineId, date, nozzleNumber, shiftNumber) {
+        return this.machineCalculationService.getMachineDetails(req.user.adminId, machineId, date, nozzleNumber, shiftNumber);
+    }
     getById(id) {
         return this.machineCalculationService.getById(id);
     }
@@ -49,6 +52,17 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "getAll", null);
+__decorate([
+    (0, common_1.Get)("machine-details"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)("machineId")),
+    __param(2, (0, common_1.Query)("date")),
+    __param(3, (0, common_1.Query)("nozzleNumber")),
+    __param(4, (0, common_1.Query)("shiftNumber")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String, Number, Number]),
+    __metadata("design:returntype", void 0)
+], MachineCalculationController.prototype, "getMachineDetails", null);
 __decorate([
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),

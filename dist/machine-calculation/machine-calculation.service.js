@@ -109,6 +109,37 @@ let MachineCalculationService = class MachineCalculationService {
             .populate("nozzles.nonFuelProductIds")
             .sort({ date: -1 });
     }
+    async getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber) {
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999);
+        const query = {
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            machineId: new mongoose_2.Types.ObjectId(machineId),
+            date: { $gte: startDate, $lte: endDate },
+        };
+        if (shiftNumber) {
+            query.shiftNumber = shiftNumber;
+        }
+        const data = await this.machineCalcModel
+            .find(query)
+            .populate("machineId")
+            .populate("nozzles.staffId")
+            .populate("nozzles.creditIds")
+            .populate("nozzles.pumpExpenseIds")
+            .populate("nozzles.personalExpenseIds")
+            .populate("nozzles.prepaidIds")
+            .populate("nozzles.nonFuelProductIds");
+        if (!nozzleNumber)
+            return data;
+        // nozzle filter
+        return data.map((item) => ({
+            ...item.toObject(),
+            nozzles: item.nozzles.filter((n) => (parseInt(n.nozzleName.replace(/\D/g, "")) || 1) ===
+                Number(nozzleNumber)),
+        }));
+    }
     async getById(id) {
         return this.machineCalcModel.findById(id);
     }
