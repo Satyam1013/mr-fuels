@@ -38,9 +38,8 @@ let MachineCalculationService = class MachineCalculationService {
         const endDate = new Date(dto.date);
         endDate.setHours(23, 59, 59, 999);
         for (const nozzle of dto.nozzles) {
-            const nozzleNumber = parseInt(nozzle.nozzleName.replace(/\D/g, "")) || 1;
             nozzles.push({
-                nozzleNumber,
+                nozzleName: nozzle.nozzleName,
                 lastReading: nozzle.lastReading,
                 currentReading: nozzle.currentReading,
                 testingLiters: nozzle.testingLiters,

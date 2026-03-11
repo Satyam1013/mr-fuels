@@ -28,6 +28,12 @@ class NozzleCalculation {
   @Prop()
   salesLiters!: number;
 
+  @Prop()
+  upiAmount!: number;
+
+  @Prop()
+  posAmount!: number;
+
   @Prop({ type: Types.ObjectId, ref: "Staff" })
   staffId!: Types.ObjectId;
 }
