@@ -122,7 +122,7 @@ export class SalesService {
 
     const staffDetails = staff.map((s) => ({
       name: s.staffName,
-      id: s.staffNumber,
+      id: s._id,
       shift: s.shift,
       salary: s.salary,
     }));

@@ -114,7 +114,7 @@ let SalesService = class SalesService {
         const staff = await this.staffModel.find({ adminId: objectAdminId }).lean();
         const staffDetails = staff.map((s) => ({
             name: s.staffName,
-            id: s.staffNumber,
+            id: s._id,
             shift: s.shift,
             salary: s.salary,
         }));
