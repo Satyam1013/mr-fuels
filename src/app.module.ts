@@ -16,7 +16,7 @@ import { NonFuelProductsModule } from "./non-fuel-product/non-fuel-product.modul
 import { HomeModule } from "./home/home.module";
 import { TankModule } from "./tank-details/tank-details.module";
 import { PumpStatusModule } from "./pump-status/pump-status.module";
-import { SellsModule } from "./sells/sells.module";
+import { SalesModule } from "./sales/sales.module";
 import { ShiftMachineModule } from "./shift-machine/shift-machine.module";
 import { CreditorModule } from "./creditors/creditors.module";
 import { PumpExpenseModule } from "./pump-expense/pump-expense.module";
@@ -25,7 +25,7 @@ import { PrepaidModule } from "./prepaid/prepaid.module";
 import { CashCollectionModule } from "./cash-collection/cash-collection.module";
 import { DigitalPaymentModule } from "./digital-payment/digital-payment.module";
 import { MachineCalculationModule } from "./machine-calculation/machine-calculation.module";
-import { NonFuelProductSellModule } from "./non-fuel-product-sell/non-fuel-product-sell.module";
+import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-product-sales.module";
 
 @Module({
   imports: [
@@ -45,7 +45,7 @@ import { NonFuelProductSellModule } from "./non-fuel-product-sell/non-fuel-produ
     HomeModule,
     TankModule,
     PumpStatusModule,
-    SellsModule,
+    SalesModule,
     ShiftMachineModule,
     CreditorModule,
     PumpExpenseModule,

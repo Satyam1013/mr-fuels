@@ -16,7 +16,7 @@ exports.NonFuelProductSellService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const non_fuel_product_sell_schema_1 = require("./non-fuel-product-sell.schema");
+const non_fuel_product_sales_schema_1 = require("./non-fuel-product-sales.schema");
 const machines_schema_1 = require("../machines/machines.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 let NonFuelProductSellService = class NonFuelProductSellService {
@@ -72,7 +72,7 @@ let NonFuelProductSellService = class NonFuelProductSellService {
 exports.NonFuelProductSellService = NonFuelProductSellService;
 exports.NonFuelProductSellService = NonFuelProductSellService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(non_fuel_product_sell_schema_1.NonFuelSellProduct.name)),
+    __param(0, (0, mongoose_1.InjectModel)(non_fuel_product_sales_schema_1.NonFuelSellProduct.name)),
     __param(1, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,

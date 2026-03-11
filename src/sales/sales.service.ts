@@ -7,10 +7,10 @@ import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
 import { PumpDetails } from "../pump-details/pump-details.schema";
-import { NonFuelSellProduct } from "../non-fuel-product-sell/non-fuel-product-sell.schema";
+import { NonFuelSellProduct } from "../non-fuel-product-sales/non-fuel-product-sales.schema";
 
 @Injectable()
-export class SellsService {
+export class SalesService {
   constructor(
     @InjectModel(Machine.name)
     private machineModel: Model<Machine>,
@@ -65,8 +65,8 @@ export class SellsService {
 
     const lubricants: any = {};
 
-    nonFuelSellProductsData.forEach((sell: any) => {
-      const productName = sell.productId?.productName as string;
+    nonFuelSellProductsData.forEach((sales: any) => {
+      const productName = sales.productId?.productName as string;
 
       if (!productName) return;
 
@@ -137,7 +137,7 @@ export class SellsService {
     // =============================
 
     return {
-      overallSells: {
+      overallSales: {
         fuelProducts,
         nonFuelSellProducts: lubricants,
       },

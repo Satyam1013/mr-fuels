@@ -7,11 +7,11 @@ import {
   Delete,
   Param,
 } from "@nestjs/common";
-import { NonFuelProductSellService } from "./non-fuel-product-sell.service";
-import { CreateNonFuelSellProductDto } from "./non-fuel-product-sell.dto";
+import { CreateNonFuelSellProductDto } from "./non-fuel-product-sales.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
+import { NonFuelProductSellService } from "./non-fuel-product-sales.service";
 
-@Controller("non-fuel-product-sells")
+@Controller("non-fuel-product-sales")
 export class NonFuelProductSellController {
   constructor(private readonly nonFuelSellService: NonFuelProductSellService) {}
 

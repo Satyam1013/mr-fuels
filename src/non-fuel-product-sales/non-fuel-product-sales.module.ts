@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { NonFuelProductSellController } from "./non-fuel-product-sell.controller";
-import { NonFuelProductSellService } from "./non-fuel-product-sell.service";
+import { NonFuelProductSellController } from "./non-fuel-product-sales.controller";
+import { NonFuelProductSellService } from "./non-fuel-product-sales.service";
 import {
   NonFuelSellProduct,
   NonFuelSellProductSchema,
-} from "./non-fuel-product-sell.schema";
+} from "./non-fuel-product-sales.schema";
 import { Machine, MachineSchema } from "../machines/machines.schema";
 import {
   NonFuelProducts,

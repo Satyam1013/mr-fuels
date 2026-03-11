@@ -46,7 +46,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
-], NozzleCalculation.prototype, "sellLiters", void 0);
+], NozzleCalculation.prototype, "salesLiters", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff" }),
     __metadata("design:type", mongoose_2.Types.ObjectId)

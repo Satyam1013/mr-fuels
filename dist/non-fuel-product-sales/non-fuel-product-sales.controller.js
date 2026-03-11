@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NonFuelProductSellController = void 0;
 const common_1 = require("@nestjs/common");
-const non_fuel_product_sell_service_1 = require("./non-fuel-product-sell.service");
+const non_fuel_product_sales_service_1 = require("./non-fuel-product-sales.service");
 let NonFuelProductSellController = class NonFuelProductSellController {
     constructor(nonFuelSellService) {
         this.nonFuelSellService = nonFuelSellService;
@@ -53,6 +53,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NonFuelProductSellController.prototype, "deleteProduct", null);
 exports.NonFuelProductSellController = NonFuelProductSellController = __decorate([
-    (0, common_1.Controller)("non-fuel-product-sells"),
-    __metadata("design:paramtypes", [non_fuel_product_sell_service_1.NonFuelProductSellService])
+    (0, common_1.Controller)("non-fuel-product-sales"),
+    __metadata("design:paramtypes", [non_fuel_product_sales_service_1.NonFuelProductSellService])
 ], NonFuelProductSellController);

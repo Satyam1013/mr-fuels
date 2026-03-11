@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { NonFuelSellProduct } from "./non-fuel-product-sell.schema";
-import { CreateNonFuelSellProductDto } from "./non-fuel-product-sell.dto";
+import { NonFuelSellProduct } from "./non-fuel-product-sales.schema";
+import { CreateNonFuelSellProductDto } from "./non-fuel-product-sales.dto";
 import { Machine } from "../machines/machines.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 

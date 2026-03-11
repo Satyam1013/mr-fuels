@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { SellsController } from "./sells.controller";
-import { SellsService } from "./sells.service";
-import { Sells, SellsSchema } from "./sells.schema";
+import { SalesController } from "./sales.controller";
+import { SalesService } from "./sales.service";
+import { Sales, SalesSchema } from "./sales.schema";
 import { Admin, AdminSchema } from "../admin/admin.schema";
 import { Machine, MachineSchema } from "../machines/machines.schema";
 import {
@@ -17,12 +17,12 @@ import {
 import {
   NonFuelSellProduct,
   NonFuelSellProductSchema,
-} from "../non-fuel-product-sell/non-fuel-product-sell.schema";
+} from "../non-fuel-product-sales/non-fuel-product-sales.schema";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Sells.name, schema: SellsSchema },
+      { name: Sales.name, schema: SalesSchema },
       { name: Admin.name, schema: AdminSchema },
       { name: Machine.name, schema: MachineSchema },
       { name: TransactionDetails.name, schema: TransactionDetailsSchema },
@@ -31,7 +31,7 @@ import {
       { name: PumpDetails.name, schema: PumpDetailsSchema },
     ]),
   ],
-  controllers: [SellsController],
-  providers: [SellsService],
+  controllers: [SalesController],
+  providers: [SalesService],
 })
-export class SellsModule {}
+export class SalesModule {}
