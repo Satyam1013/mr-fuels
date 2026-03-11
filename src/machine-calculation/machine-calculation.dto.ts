@@ -11,6 +11,9 @@ export class NozzleDto {
   @IsString()
   nozzleName!: string;
 
+  @IsNumber()
+  nozzleNo!: number;
+
   @IsString()
   fuelType!: string;
 

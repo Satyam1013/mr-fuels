@@ -20,6 +20,10 @@ __decorate([
     __metadata("design:type", String)
 ], NozzleCalculation.prototype, "nozzleName", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], NozzleCalculation.prototype, "nozzleNo", void 0);
+__decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], NozzleCalculation.prototype, "fuelType", void 0);
