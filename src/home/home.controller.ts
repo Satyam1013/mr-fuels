@@ -15,11 +15,11 @@ export class HomeController {
     return this.homeService.getHomeData(req.user.adminId, query);
   }
 
-  @Get("sales")
-  getSales(
+  @Get("sells")
+  getSells(
     @Req() req: AuthenticatedRequest,
     @Query() query: TimeFilterQueryDto,
   ) {
-    return this.homeService.getSalesData(req.user.adminId, query);
+    return this.homeService.getSellsData(req.user.adminId, query);
   }
 }

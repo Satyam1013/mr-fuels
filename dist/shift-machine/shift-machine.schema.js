@@ -49,7 +49,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
-], NozzleReading.prototype, "totalSaleLiters", void 0);
+], NozzleReading.prototype, "totalSellLiters", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)

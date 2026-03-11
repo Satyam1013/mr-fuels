@@ -12,11 +12,11 @@ import { ProductDetailsModule } from "./product-details/product-details.module";
 import { MachineModule } from "./machines/machines.module";
 import { DsrDetailsModule } from "./dsr/dsr.module";
 import { PlanModule } from "./plan-details/plan-details.module";
-import { NonFuelProductModule } from "./non-fuel-product/non-fuel-product.module";
+import { NonFuelProductsModule } from "./non-fuel-product/non-fuel-product.module";
 import { HomeModule } from "./home/home.module";
 import { TankModule } from "./tank-details/tank-details.module";
 import { PumpStatusModule } from "./pump-status/pump-status.module";
-import { SalesModule } from "./sales/sales.module";
+import { SellsModule } from "./sells/sells.module";
 import { ShiftMachineModule } from "./shift-machine/shift-machine.module";
 import { CreditorModule } from "./creditors/creditors.module";
 import { PumpExpenseModule } from "./pump-expense/pump-expense.module";
@@ -25,6 +25,7 @@ import { PrepaidModule } from "./prepaid/prepaid.module";
 import { CashCollectionModule } from "./cash-collection/cash-collection.module";
 import { DigitalPaymentModule } from "./digital-payment/digital-payment.module";
 import { MachineCalculationModule } from "./machine-calculation/machine-calculation.module";
+import { NonFuelProductSellModule } from "./non-fuel-product-sell/non-fuel-product-sell.module";
 
 @Module({
   imports: [
@@ -40,11 +41,11 @@ import { MachineCalculationModule } from "./machine-calculation/machine-calculat
     MachineModule,
     DsrDetailsModule,
     PlanModule,
-    NonFuelProductModule,
+    NonFuelProductsModule,
     HomeModule,
     TankModule,
     PumpStatusModule,
-    SalesModule,
+    SellsModule,
     ShiftMachineModule,
     CreditorModule,
     PumpExpenseModule,
@@ -53,6 +54,7 @@ import { MachineCalculationModule } from "./machine-calculation/machine-calculat
     CashCollectionModule,
     DigitalPaymentModule,
     MachineCalculationModule,
+    NonFuelProductSellModule,
   ],
   providers: [],
 })

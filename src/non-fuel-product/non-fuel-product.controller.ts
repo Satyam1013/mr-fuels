@@ -1,35 +1,22 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  Req,
-  Delete,
-  Param,
-} from "@nestjs/common";
-import { NonFuelProductService } from "./non-fuel-product.service";
-import { CreateNonFuelProductDto } from "./non-fuel-product.dto";
+import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { NonFuelProductsService } from "./non-fuel-product.service";
+import { CreateNonFuelProductsDto } from "./non-fuel-product.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("non-fuel-products")
-export class NonFuelProductController {
-  constructor(private readonly nonFuelService: NonFuelProductService) {}
+export class NonFuelProductsController {
+  constructor(private readonly nonFuelService: NonFuelProductsService) {}
 
   @Post()
-  async addProducts(
+  create(
     @Req() req: AuthenticatedRequest,
-    @Body() dtos: CreateNonFuelProductDto[],
+    @Body() dto: CreateNonFuelProductsDto,
   ) {
-    return this.nonFuelService.addProducts(req.user.adminId, dtos);
+    return this.nonFuelService.create(req.user.adminId, dto);
   }
 
   @Get()
-  async getProducts(@Req() req: AuthenticatedRequest) {
-    return this.nonFuelService.getProducts(req.user.adminId);
-  }
-
-  @Delete(":id")
-  async deleteProduct(@Param("id") id: string) {
-    return this.nonFuelService.deleteProduct(id);
+  getAll(@Req() req: AuthenticatedRequest) {
+    return this.nonFuelService.getAll(req.user.adminId);
   }
 }

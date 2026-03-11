@@ -26,7 +26,7 @@ class NozzleCalculation {
   pricePerLiter!: number;
 
   @Prop()
-  saleLiters!: number;
+  sellLiters!: number;
 
   @Prop({ type: Types.ObjectId, ref: "Staff" })
   staffId!: Types.ObjectId;

@@ -33,15 +33,15 @@ let ShiftMachineService = class ShiftMachineService {
         }
         let totalMachineAmount = 0;
         const calculatedNozzles = dto.nozzles.map((n) => {
-            const totalSaleLiters = n.currentReading -
+            const totalSellLiters = n.currentReading -
                 n.lastReading -
                 n.testingLiters -
                 n.faultTestingLiters;
-            const totalAmount = totalSaleLiters * n.pricePerLiter;
+            const totalAmount = totalSellLiters * n.pricePerLiter;
             totalMachineAmount += totalAmount;
             return {
                 ...n,
-                totalSaleLiters,
+                totalSellLiters,
                 totalAmount,
             };
         });

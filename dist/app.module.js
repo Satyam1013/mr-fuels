@@ -24,7 +24,7 @@ const non_fuel_product_module_1 = require("./non-fuel-product/non-fuel-product.m
 const home_module_1 = require("./home/home.module");
 const tank_details_module_1 = require("./tank-details/tank-details.module");
 const pump_status_module_1 = require("./pump-status/pump-status.module");
-const sales_module_1 = require("./sales/sales.module");
+const sells_module_1 = require("./sells/sells.module");
 const shift_machine_module_1 = require("./shift-machine/shift-machine.module");
 const creditors_module_1 = require("./creditors/creditors.module");
 const pump_expense_module_1 = require("./pump-expense/pump-expense.module");
@@ -33,6 +33,7 @@ const prepaid_module_1 = require("./prepaid/prepaid.module");
 const cash_collection_module_1 = require("./cash-collection/cash-collection.module");
 const digital_payment_module_1 = require("./digital-payment/digital-payment.module");
 const machine_calculation_module_1 = require("./machine-calculation/machine-calculation.module");
+const non_fuel_product_sell_module_1 = require("./non-fuel-product-sell/non-fuel-product-sell.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -51,11 +52,11 @@ exports.AppModule = AppModule = __decorate([
             machines_module_1.MachineModule,
             dsr_module_1.DsrDetailsModule,
             plan_details_module_1.PlanModule,
-            non_fuel_product_module_1.NonFuelProductModule,
+            non_fuel_product_module_1.NonFuelProductsModule,
             home_module_1.HomeModule,
             tank_details_module_1.TankModule,
             pump_status_module_1.PumpStatusModule,
-            sales_module_1.SalesModule,
+            sells_module_1.SellsModule,
             shift_machine_module_1.ShiftMachineModule,
             creditors_module_1.CreditorModule,
             pump_expense_module_1.PumpExpenseModule,
@@ -64,6 +65,7 @@ exports.AppModule = AppModule = __decorate([
             cash_collection_module_1.CashCollectionModule,
             digital_payment_module_1.DigitalPaymentModule,
             machine_calculation_module_1.MachineCalculationModule,
+            non_fuel_product_sell_module_1.NonFuelProductSellModule,
         ],
         providers: [],
     })

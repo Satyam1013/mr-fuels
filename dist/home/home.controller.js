@@ -23,8 +23,8 @@ let HomeController = class HomeController {
     getHomeData(req, query) {
         return this.homeService.getHomeData(req.user.adminId, query);
     }
-    getSales(req, query) {
-        return this.homeService.getSalesData(req.user.adminId, query);
+    getSells(req, query) {
+        return this.homeService.getSellsData(req.user.adminId, query);
     }
 };
 exports.HomeController = HomeController;
@@ -37,13 +37,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], HomeController.prototype, "getHomeData", null);
 __decorate([
-    (0, common_1.Get)("sales"),
+    (0, common_1.Get)("sells"),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, home_dto_1.TimeFilterQueryDto]),
     __metadata("design:returntype", void 0)
-], HomeController.prototype, "getSales", null);
+], HomeController.prototype, "getSells", null);
 exports.HomeController = HomeController = __decorate([
     (0, common_1.Controller)("home"),
     __metadata("design:paramtypes", [home_service_1.HomeService])

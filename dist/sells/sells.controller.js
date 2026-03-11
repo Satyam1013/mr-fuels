@@ -12,38 +12,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SalesController = void 0;
+exports.SellsController = void 0;
 const common_1 = require("@nestjs/common");
-const sales_service_1 = require("./sales.service");
-let SalesController = class SalesController {
-    constructor(salesService) {
-        this.salesService = salesService;
+const sells_service_1 = require("./sells.service");
+let SellsController = class SellsController {
+    constructor(sellsService) {
+        this.sellsService = sellsService;
     }
     async getDashboardSetup(req) {
         const adminId = req.user.adminId;
-        return this.salesService.getDashboardSetup(adminId);
+        return this.sellsService.getDashboardSetup(adminId);
     }
     async getShiftDashboard(req) {
         const adminId = req.user.adminId;
-        return this.salesService.getShiftDashboard(adminId);
+        return this.sellsService.getShiftDashboard(adminId);
     }
 };
-exports.SalesController = SalesController;
+exports.SellsController = SellsController;
 __decorate([
     (0, common_1.Get)("dashboard-setup"),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], SalesController.prototype, "getDashboardSetup", null);
+], SellsController.prototype, "getDashboardSetup", null);
 __decorate([
     (0, common_1.Get)("shift-dashboard"),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], SalesController.prototype, "getShiftDashboard", null);
-exports.SalesController = SalesController = __decorate([
-    (0, common_1.Controller)("sales"),
-    __metadata("design:paramtypes", [sales_service_1.SalesService])
-], SalesController);
+], SellsController.prototype, "getShiftDashboard", null);
+exports.SellsController = SellsController = __decorate([
+    (0, common_1.Controller)("sells"),
+    __metadata("design:paramtypes", [sells_service_1.SellsService])
+], SellsController);

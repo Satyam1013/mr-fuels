@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { ShiftStatus } from "./sales.enum";
+import { ShiftStatus } from "./sells.enum";
 
 @Schema({ timestamps: true })
-export class Sales extends Document {
+export class Sells extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
@@ -20,4 +20,4 @@ export class Sales extends Document {
   date!: Date;
 }
 
-export const SalesSchema = SchemaFactory.createForClass(Sales);
+export const SellsSchema = SchemaFactory.createForClass(Sells);

@@ -6,23 +6,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductsModule = void 0;
+exports.NonFuelProductSellModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const non_fuel_product_schema_1 = require("./non-fuel-product.schema");
-const non_fuel_product_service_1 = require("./non-fuel-product.service");
-const non_fuel_product_controller_1 = require("./non-fuel-product.controller");
-let NonFuelProductsModule = class NonFuelProductsModule {
+const non_fuel_product_sell_controller_1 = require("./non-fuel-product-sell.controller");
+const non_fuel_product_sell_service_1 = require("./non-fuel-product-sell.service");
+const non_fuel_product_sell_schema_1 = require("./non-fuel-product-sell.schema");
+let NonFuelProductSellModule = class NonFuelProductSellModule {
 };
-exports.NonFuelProductsModule = NonFuelProductsModule;
-exports.NonFuelProductsModule = NonFuelProductsModule = __decorate([
+exports.NonFuelProductSellModule = NonFuelProductSellModule;
+exports.NonFuelProductSellModule = NonFuelProductSellModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: non_fuel_product_schema_1.NonFuelProducts.name, schema: non_fuel_product_schema_1.NonFuelProductsSchema },
+                { name: non_fuel_product_sell_schema_1.NonFuelSellProduct.name, schema: non_fuel_product_sell_schema_1.NonFuelSellProductSchema },
             ]),
         ],
-        controllers: [non_fuel_product_controller_1.NonFuelProductsController],
-        providers: [non_fuel_product_service_1.NonFuelProductsService],
+        controllers: [non_fuel_product_sell_controller_1.NonFuelProductSellController],
+        providers: [non_fuel_product_sell_service_1.NonFuelProductSellService],
     })
-], NonFuelProductsModule);
+], NonFuelProductSellModule);

@@ -12,38 +12,31 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductService = void 0;
+exports.NonFuelProductsService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const non_fuel_product_schema_1 = require("./non-fuel-product.schema");
-let NonFuelProductService = class NonFuelProductService {
+let NonFuelProductsService = class NonFuelProductsService {
     constructor(nonFuelModel) {
         this.nonFuelModel = nonFuelModel;
     }
-    async addProducts(adminId, dtos) {
-        try {
-            const productsToSave = dtos.map((dto) => ({
-                ...dto,
-                adminId: new mongoose_2.Types.ObjectId(adminId),
-                machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-            }));
-            return this.nonFuelModel.insertMany(productsToSave);
-        }
-        catch {
-            throw new Error("Error adding non-fuel products");
-        }
+    async create(adminId, dto) {
+        const data = new this.nonFuelModel({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            nonFuelProducts: dto.nonFuelProducts,
+        });
+        return data.save();
     }
-    async getProducts(adminId) {
-        return this.nonFuelModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
-    }
-    async deleteProduct(productId) {
-        return this.nonFuelModel.findByIdAndDelete(productId);
+    async getAll(adminId) {
+        return this.nonFuelModel.find({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
     }
 };
-exports.NonFuelProductService = NonFuelProductService;
-exports.NonFuelProductService = NonFuelProductService = __decorate([
+exports.NonFuelProductsService = NonFuelProductsService;
+exports.NonFuelProductsService = NonFuelProductsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProduct.name)),
+    __param(0, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
-], NonFuelProductService);
+], NonFuelProductsService);

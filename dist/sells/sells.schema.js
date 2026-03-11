@@ -9,33 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SalesSchema = exports.Sales = void 0;
+exports.SellsSchema = exports.Sells = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const sales_enum_1 = require("./sales.enum");
-let Sales = class Sales extends mongoose_2.Document {
+const sells_enum_1 = require("./sells.enum");
+let Sells = class Sells extends mongoose_2.Document {
 };
-exports.Sales = Sales;
+exports.Sells = Sells;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], Sales.prototype, "adminId", void 0);
+], Sells.prototype, "adminId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], Sales.prototype, "shift", void 0);
+], Sells.prototype, "shift", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        enum: sales_enum_1.ShiftStatus,
-        default: sales_enum_1.ShiftStatus.OPEN,
+        enum: sells_enum_1.ShiftStatus,
+        default: sells_enum_1.ShiftStatus.OPEN,
     }),
     __metadata("design:type", String)
-], Sales.prototype, "shiftStatus", void 0);
+], Sells.prototype, "shiftStatus", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], Sales.prototype, "date", void 0);
-exports.Sales = Sales = __decorate([
+], Sells.prototype, "date", void 0);
+exports.Sells = Sells = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], Sales);
-exports.SalesSchema = mongoose_1.SchemaFactory.createForClass(Sales);
+], Sells);
+exports.SellsSchema = mongoose_1.SchemaFactory.createForClass(Sells);

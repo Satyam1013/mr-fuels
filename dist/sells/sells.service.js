@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SalesService = void 0;
+exports.SellsService = void 0;
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 const common_1 = require("@nestjs/common");
@@ -20,10 +20,10 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const transactions_schema_1 = require("../transactions/transactions.schema");
 const machines_schema_1 = require("../machines/machines.schema");
-const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 const staff_schema_1 = require("../staff/staff.schema");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
-let SalesService = class SalesService {
+const non_fuel_product_sell_schema_1 = require("../non-fuel-product-sell/non-fuel-product-sell.schema");
+let SellsService = class SellsService {
     constructor(machineModel, transactionModel, nonFuelModel, staffModel, pumpDetailsModel) {
         this.machineModel = machineModel;
         this.transactionModel = transactionModel;
@@ -57,11 +57,11 @@ let SalesService = class SalesService {
         // =============================
         // 2️⃣ Non Fuel Products (Lubricants)
         // =============================
-        const nonFuelProductsData = await this.nonFuelModel
+        const nonFuelSellProductsData = await this.nonFuelModel
             .find({ adminId: objectAdminId })
             .lean();
         const lubricants = {};
-        nonFuelProductsData.forEach((product) => {
+        nonFuelSellProductsData.forEach((product) => {
             lubricants[product.name.toLowerCase()] = {
                 liters: 0,
                 amount: 0,
@@ -120,9 +120,9 @@ let SalesService = class SalesService {
         // FINAL RESPONSE
         // =============================
         return {
-            overallSales: {
+            overallSells: {
                 fuelProducts,
-                nonFuelProducts: lubricants,
+                nonFuelSellProducts: lubricants,
             },
             upiApps,
             posMachines,
@@ -169,12 +169,12 @@ let SalesService = class SalesService {
         };
     }
 };
-exports.SalesService = SalesService;
-exports.SalesService = SalesService = __decorate([
+exports.SellsService = SellsService;
+exports.SellsService = SellsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __param(1, (0, mongoose_1.InjectModel)(transactions_schema_1.TransactionDetails.name)),
-    __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProduct.name)),
+    __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_sell_schema_1.NonFuelSellProduct.name)),
     __param(3, (0, mongoose_1.InjectModel)(staff_schema_1.Staff.name)),
     __param(4, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
@@ -182,4 +182,4 @@ exports.SalesService = SalesService = __decorate([
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])
-], SalesService);
+], SellsService);

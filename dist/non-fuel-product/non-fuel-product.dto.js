@@ -9,59 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateNonFuelProductDto = void 0;
+exports.CreateNonFuelProductsDto = exports.NonFuelProductDto = void 0;
 const class_validator_1 = require("class-validator");
-const creditors_enum_1 = require("../creditors/creditors.enum");
-class CreateNonFuelProductDto {
+const class_transformer_1 = require("class-transformer");
+class NonFuelProductDto {
 }
-exports.CreateNonFuelProductDto = CreateNonFuelProductDto;
-__decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "machineId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateNonFuelProductDto.prototype, "nozzleNumber", void 0);
+exports.NonFuelProductDto = NonFuelProductDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "name", void 0);
+], NonFuelProductDto.prototype, "productName", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NonFuelProductDto.prototype, "price", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NonFuelProductDto.prototype, "totalStock", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "category", void 0);
+], NonFuelProductDto.prototype, "unitType", void 0);
+class CreateNonFuelProductsDto {
+}
+exports.CreateNonFuelProductsDto = CreateNonFuelProductsDto;
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateNonFuelProductDto.prototype, "quantity", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateNonFuelProductDto.prototype, "pricePerUnit", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateNonFuelProductDto.prototype, "amount", void 0);
-__decorate([
-    (0, class_validator_1.IsEnum)(creditors_enum_1.CreditBy),
-    __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "creditBy", void 0);
-__decorate([
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "date", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateNonFuelProductDto.prototype, "shiftNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "narration", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateNonFuelProductDto.prototype, "photoUrl", void 0);
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => NonFuelProductDto),
+    __metadata("design:type", Array)
+], CreateNonFuelProductsDto.prototype, "nonFuelProducts", void 0);

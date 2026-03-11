@@ -12,47 +12,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductController = void 0;
+exports.NonFuelProductsController = void 0;
 const common_1 = require("@nestjs/common");
 const non_fuel_product_service_1 = require("./non-fuel-product.service");
-let NonFuelProductController = class NonFuelProductController {
+const non_fuel_product_dto_1 = require("./non-fuel-product.dto");
+let NonFuelProductsController = class NonFuelProductsController {
     constructor(nonFuelService) {
         this.nonFuelService = nonFuelService;
     }
-    async addProducts(req, dtos) {
-        return this.nonFuelService.addProducts(req.user.adminId, dtos);
+    create(req, dto) {
+        return this.nonFuelService.create(req.user.adminId, dto);
     }
-    async getProducts(req) {
-        return this.nonFuelService.getProducts(req.user.adminId);
-    }
-    async deleteProduct(id) {
-        return this.nonFuelService.deleteProduct(id);
+    getAll(req) {
+        return this.nonFuelService.getAll(req.user.adminId);
     }
 };
-exports.NonFuelProductController = NonFuelProductController;
+exports.NonFuelProductsController = NonFuelProductsController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Array]),
-    __metadata("design:returntype", Promise)
-], NonFuelProductController.prototype, "addProducts", null);
+    __metadata("design:paramtypes", [Object, non_fuel_product_dto_1.CreateNonFuelProductsDto]),
+    __metadata("design:returntype", void 0)
+], NonFuelProductsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], NonFuelProductController.prototype, "getProducts", null);
-__decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], NonFuelProductController.prototype, "deleteProduct", null);
-exports.NonFuelProductController = NonFuelProductController = __decorate([
+    __metadata("design:returntype", void 0)
+], NonFuelProductsController.prototype, "getAll", null);
+exports.NonFuelProductsController = NonFuelProductsController = __decorate([
     (0, common_1.Controller)("non-fuel-products"),
-    __metadata("design:paramtypes", [non_fuel_product_service_1.NonFuelProductService])
-], NonFuelProductController);
+    __metadata("design:paramtypes", [non_fuel_product_service_1.NonFuelProductsService])
+], NonFuelProductsController);

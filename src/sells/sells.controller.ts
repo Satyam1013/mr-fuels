@@ -1,20 +1,20 @@
 import { Controller, Get, Req } from "@nestjs/common";
-import { SalesService } from "./sales.service";
+import { SellsService } from "./sells.service";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
-@Controller("sales")
-export class SalesController {
-  constructor(private readonly salesService: SalesService) {}
+@Controller("sells")
+export class SellsController {
+  constructor(private readonly sellsService: SellsService) {}
 
   @Get("dashboard-setup")
   async getDashboardSetup(@Req() req: AuthenticatedRequest) {
     const adminId = req.user.adminId;
-    return this.salesService.getDashboardSetup(adminId);
+    return this.sellsService.getDashboardSetup(adminId);
   }
 
   @Get("shift-dashboard")
   async getShiftDashboard(@Req() req: AuthenticatedRequest) {
     const adminId = req.user.adminId;
-    return this.salesService.getShiftDashboard(adminId);
+    return this.sellsService.getShiftDashboard(adminId);
   }
 }

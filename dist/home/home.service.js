@@ -17,11 +17,11 @@ let HomeService = class HomeService {
             homeData: {
                 performance: [
                     {
-                        type: "sales",
-                        totalSales: 150000,
-                        salesTarget: 200000,
-                        lastSales: "99.5%",
-                        desc: "This shows performance of sales",
+                        type: "sells",
+                        totalSells: 150000,
+                        sellsTarget: 200000,
+                        lastSells: "99.5%",
+                        desc: "This shows performance of sells",
                     },
                     {
                         type: "discount",
@@ -80,13 +80,13 @@ let HomeService = class HomeService {
         };
     }
     // ✅ SALES DASHBOARD
-    getSalesData(adminId, query) {
+    getSellsData(adminId, query) {
         const { startDate, endDate } = this.buildDateRange(query);
         return {
             filterApplied: query.filter ?? time_enum_1.TimeFilter.ALL,
             dateRange: { startDate, endDate },
-            salesData: {
-                salesInLiters: {
+            sellsData: {
+                sellsInLiters: {
                     petrol: { liters: 1200, amount: 96000 },
                     diesel: { liters: 800, amount: 64000 },
                 },
@@ -111,13 +111,13 @@ let HomeService = class HomeService {
                 },
                 summary: {
                     totalLiters: 2000,
-                    totalSalesAmount: 160000,
+                    totalSellsAmount: 160000,
                     collectionAmount: 160000,
                     netDeposited: 150000,
                     pendingAmount: 10000,
                 },
             },
-            message: "Sales data fetched successfully",
+            message: "Sells data fetched successfully",
             timestamp: new Date(),
         };
     }

@@ -1,49 +1,23 @@
-import {
-  IsString,
-  IsNumber,
-  IsEnum,
-  IsMongoId,
-  IsOptional,
-  IsDateString,
-} from "class-validator";
-import { CreditBy } from "../creditors/creditors.enum";
+import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 
-export class CreateNonFuelProductDto {
-  @IsMongoId()
-  machineId!: string;
+export class NonFuelProductDto {
+  @IsString()
+  productName!: string;
 
   @IsNumber()
-  nozzleNumber!: number;
+  price!: number;
+
+  @IsNumber()
+  totalStock!: number;
 
   @IsString()
-  name!: string;
+  unitType!: string;
+}
 
-  @IsString()
-  category!: string;
-
-  @IsNumber()
-  quantity!: number;
-
-  @IsNumber()
-  pricePerUnit!: number;
-
-  @IsNumber()
-  amount!: number;
-
-  @IsEnum(CreditBy)
-  creditBy!: CreditBy;
-
-  @IsDateString()
-  date!: string;
-
-  @IsNumber()
-  shiftNumber!: number;
-
-  @IsOptional()
-  @IsString()
-  narration?: string;
-
-  @IsOptional()
-  @IsString()
-  photoUrl?: string;
+export class CreateNonFuelProductsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => NonFuelProductDto)
+  nonFuelProducts!: NonFuelProductDto[];
 }

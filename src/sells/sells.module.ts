@@ -1,37 +1,37 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { SalesController } from "./sales.controller";
-import { SalesService } from "./sales.service";
-import { Sales, SalesSchema } from "./sales.schema";
+import { SellsController } from "./sells.controller";
+import { SellsService } from "./sells.service";
+import { Sells, SellsSchema } from "./sells.schema";
 import { Admin, AdminSchema } from "../admin/admin.schema";
 import { Machine, MachineSchema } from "../machines/machines.schema";
 import {
   TransactionDetails,
   TransactionDetailsSchema,
 } from "../transactions/transactions.schema";
-import {
-  NonFuelProduct,
-  NonFuelProductSchema,
-} from "../non-fuel-product/non-fuel-product.schema";
 import { Staff, StaffSchema } from "../staff/staff.schema";
 import {
   PumpDetails,
   PumpDetailsSchema,
 } from "../pump-details/pump-details.schema";
+import {
+  NonFuelSellProduct,
+  NonFuelSellProductSchema,
+} from "../non-fuel-product-sell/non-fuel-product-sell.schema";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Sales.name, schema: SalesSchema },
+      { name: Sells.name, schema: SellsSchema },
       { name: Admin.name, schema: AdminSchema },
       { name: Machine.name, schema: MachineSchema },
       { name: TransactionDetails.name, schema: TransactionDetailsSchema },
-      { name: NonFuelProduct.name, schema: NonFuelProductSchema },
+      { name: NonFuelSellProduct.name, schema: NonFuelSellProductSchema },
       { name: Staff.name, schema: StaffSchema },
       { name: PumpDetails.name, schema: PumpDetailsSchema },
     ]),
   ],
-  controllers: [SalesController],
-  providers: [SalesService],
+  controllers: [SellsController],
+  providers: [SellsService],
 })
-export class SalesModule {}
+export class SellsModule {}

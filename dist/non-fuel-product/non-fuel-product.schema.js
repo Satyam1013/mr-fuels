@@ -9,66 +9,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductSchema = exports.NonFuelProduct = void 0;
+exports.NonFuelProductsSchema = exports.NonFuelProducts = exports.NonFuelProductSchema = exports.NonFuelProduct = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const creditors_enum_1 = require("../creditors/creditors.enum");
-let NonFuelProduct = class NonFuelProduct extends mongoose_2.Document {
+let NonFuelProduct = class NonFuelProduct {
 };
 exports.NonFuelProduct = NonFuelProduct;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], NonFuelProduct.prototype, "adminId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], NonFuelProduct.prototype, "machineId", void 0);
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], NonFuelProduct.prototype, "productName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelProduct.prototype, "nozzleNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], NonFuelProduct.prototype, "name", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], NonFuelProduct.prototype, "category", void 0);
+], NonFuelProduct.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelProduct.prototype, "quantity", void 0);
+], NonFuelProduct.prototype, "totalStock", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], NonFuelProduct.prototype, "pricePerUnit", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], NonFuelProduct.prototype, "amount", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
     __metadata("design:type", String)
-], NonFuelProduct.prototype, "creditBy", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Date)
-], NonFuelProduct.prototype, "date", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], NonFuelProduct.prototype, "shiftNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], NonFuelProduct.prototype, "narration", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], NonFuelProduct.prototype, "photoUrl", void 0);
+], NonFuelProduct.prototype, "unitType", void 0);
 exports.NonFuelProduct = NonFuelProduct = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true })
+    (0, mongoose_1.Schema)({ _id: false })
 ], NonFuelProduct);
 exports.NonFuelProductSchema = mongoose_1.SchemaFactory.createForClass(NonFuelProduct);
+let NonFuelProducts = class NonFuelProducts extends mongoose_2.Document {
+};
+exports.NonFuelProducts = NonFuelProducts;
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], NonFuelProducts.prototype, "adminId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [exports.NonFuelProductSchema], default: [] }),
+    __metadata("design:type", Array)
+], NonFuelProducts.prototype, "nonFuelProducts", void 0);
+exports.NonFuelProducts = NonFuelProducts = __decorate([
+    (0, mongoose_1.Schema)({ timestamps: true })
+], NonFuelProducts);
+exports.NonFuelProductsSchema = mongoose_1.SchemaFactory.createForClass(NonFuelProducts);

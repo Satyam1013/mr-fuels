@@ -5,12 +5,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
-import { NonFuelProduct } from "../non-fuel-product/non-fuel-product.schema";
 import { Staff } from "../staff/staff.schema";
 import { PumpDetails } from "../pump-details/pump-details.schema";
+import { NonFuelSellProduct } from "../non-fuel-product-sell/non-fuel-product-sell.schema";
 
 @Injectable()
-export class SalesService {
+export class SellsService {
   constructor(
     @InjectModel(Machine.name)
     private machineModel: Model<Machine>,
@@ -18,8 +18,8 @@ export class SalesService {
     @InjectModel(TransactionDetails.name)
     private transactionModel: Model<TransactionDetails>,
 
-    @InjectModel(NonFuelProduct.name)
-    private nonFuelModel: Model<NonFuelProduct>,
+    @InjectModel(NonFuelSellProduct.name)
+    private nonFuelModel: Model<NonFuelSellProduct>,
 
     @InjectModel(Staff.name)
     private staffModel: Model<Staff>,
@@ -58,12 +58,12 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel
+    const nonFuelSellProductsData = await this.nonFuelModel
       .find({ adminId: objectAdminId })
       .lean();
 
     const lubricants: any = {};
-    nonFuelProductsData.forEach((product) => {
+    nonFuelSellProductsData.forEach((product) => {
       lubricants[product.name.toLowerCase()] = {
         liters: 0,
         amount: 0,
@@ -131,9 +131,9 @@ export class SalesService {
     // =============================
 
     return {
-      overallSales: {
+      overallSells: {
         fuelProducts,
-        nonFuelProducts: lubricants,
+        nonFuelSellProducts: lubricants,
       },
 
       upiApps,

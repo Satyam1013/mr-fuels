@@ -1,48 +1,32 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { CreditBy } from "../creditors/creditors.enum";
 
-@Schema({ timestamps: true })
-export class NonFuelProduct extends Document {
-  @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
-  adminId!: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
-  machineId!: Types.ObjectId;
+@Schema({ _id: false })
+export class NonFuelProduct {
+  @Prop({ required: true })
+  productName!: string;
 
   @Prop({ required: true })
-  nozzleNumber!: number;
+  price!: number;
 
   @Prop({ required: true })
-  name!: string;
+  totalStock!: number;
 
   @Prop({ required: true })
-  category!: string;
-
-  @Prop({ required: true })
-  quantity!: number;
-
-  @Prop({ required: true })
-  pricePerUnit!: number;
-
-  @Prop({ required: true })
-  amount!: number;
-
-  @Prop({ enum: CreditBy, required: true })
-  creditBy!: CreditBy;
-
-  @Prop({ required: true })
-  date!: Date;
-
-  @Prop({ required: true })
-  shiftNumber!: number;
-
-  @Prop()
-  narration?: string;
-
-  @Prop()
-  photoUrl?: string;
+  unitType!: string;
 }
 
 export const NonFuelProductSchema =
   SchemaFactory.createForClass(NonFuelProduct);
+
+@Schema({ timestamps: true })
+export class NonFuelProducts extends Document {
+  @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
+  adminId!: Types.ObjectId;
+
+  @Prop({ type: [NonFuelProductSchema], default: [] })
+  nonFuelProducts!: NonFuelProduct[];
+}
+
+export const NonFuelProductsSchema =
+  SchemaFactory.createForClass(NonFuelProducts);
