@@ -57,19 +57,16 @@ let SalesService = class SalesService {
         // =============================
         // 2️⃣ Non Fuel Products (Lubricants)
         // =============================
-        const nonFuelProductsData = await this.nonFuelModel.find({
-            adminId: objectAdminId,
-        });
-        const lubricants = {};
-        nonFuelProductsData.forEach((sales) => {
-            const productName = sales.productName;
-            if (!productName || typeof productName !== "string")
-                return;
-            lubricants[productName.toLowerCase()] = {
-                liters: 0,
-                amount: 0,
-            };
-        });
+        const nonFuelProductsData = await this.nonFuelModel
+            .find({ adminId: objectAdminId })
+            .lean();
+        const nonFuelProducts = nonFuelProductsData.map((product) => ({
+            productName: product.productName,
+            unitType: product.unitType,
+            quantity: 0,
+            pricePerUnit: product.price,
+            amountCollected: product.amountCollected ?? 0,
+        }));
         // =============================
         // 3️⃣ Transaction Details
         // =============================
@@ -127,7 +124,7 @@ let SalesService = class SalesService {
         return {
             overallSales: {
                 fuelProducts,
-                nonFuelProducts: lubricants,
+                nonFuelProducts,
             },
             upiApps,
             posMachines,

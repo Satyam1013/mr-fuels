@@ -58,23 +58,17 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel.find({
-      adminId: objectAdminId,
-    });
+    const nonFuelProductsData = await this.nonFuelModel
+      .find({ adminId: objectAdminId })
+      .lean();
 
-    const lubricants: any = {};
-
-    nonFuelProductsData.forEach((sales: any) => {
-      const productName = sales.productName;
-
-      if (!productName || typeof productName !== "string") return;
-
-      lubricants[productName.toLowerCase()] = {
-        liters: 0,
-        amount: 0,
-      };
-    });
-
+    const nonFuelProducts = nonFuelProductsData.map((product) => ({
+      productName: product.productName,
+      unitType: product.unitType,
+      quantity: 0,
+      pricePerUnit: product.price,
+      amountCollected: product.amountCollected ?? 0,
+    }));
     // =============================
     // 3️⃣ Transaction Details
     // =============================
@@ -140,7 +134,7 @@ export class SalesService {
     return {
       overallSales: {
         fuelProducts,
-        nonFuelProducts: lubricants,
+        nonFuelProducts,
       },
 
       upiApps,
