@@ -63,7 +63,7 @@ let SalesService = class SalesService {
         const nonFuelProducts = nonFuelProductsData.map((product) => ({
             productName: product.productName,
             unitType: product.unitType,
-            quantity: 0,
+            quantity: product.totalStock,
             pricePerUnit: product.price,
             amountCollected: product.amountCollected ?? 0,
         }));
@@ -118,9 +118,6 @@ let SalesService = class SalesService {
             shift: s.shift,
             salary: s.salary,
         }));
-        // =============================
-        // FINAL RESPONSE
-        // =============================
         return {
             overallSales: {
                 fuelProducts,
