@@ -22,7 +22,7 @@ export class Creditor extends Document {
   @Prop({ enum: CreditBy, required: true })
   creditBy!: CreditBy;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   phoneNumber!: string;
 
   @Prop()

@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", String)
 ], Creditor.prototype, "creditBy", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Creditor.prototype, "phoneNumber", void 0);
 __decorate([
