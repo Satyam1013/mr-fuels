@@ -39,4 +39,4 @@ __decorate([
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => NonFuelProductDto),
     __metadata("design:type", Array)
-], CreateNonFuelProductsDto.prototype, "nonFuelProducts", void 0);
+], CreateNonFuelProductsDto.prototype, "products", void 0);

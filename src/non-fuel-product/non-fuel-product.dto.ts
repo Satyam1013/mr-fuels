@@ -19,5 +19,5 @@ export class CreateNonFuelProductsDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => NonFuelProductDto)
-  nonFuelProducts!: NonFuelProductDto[];
+  products!: NonFuelProductDto[];
 }

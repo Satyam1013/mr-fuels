@@ -21,10 +21,16 @@ let NonFuelProductsController = class NonFuelProductsController {
         this.nonFuelService = nonFuelService;
     }
     create(req, dto) {
-        return this.nonFuelService.create(req.user.adminId, dto);
+        return this.nonFuelService.create(req.user.adminId, dto.products);
     }
     getAll(req) {
         return this.nonFuelService.getAll(req.user.adminId);
+    }
+    update(req, id, dto) {
+        return this.nonFuelService.update(req.user.adminId, id, dto);
+    }
+    delete(req, id) {
+        return this.nonFuelService.delete(req.user.adminId, id);
     }
 };
 exports.NonFuelProductsController = NonFuelProductsController;
@@ -43,6 +49,23 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], NonFuelProductsController.prototype, "getAll", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, non_fuel_product_dto_1.NonFuelProductDto]),
+    __metadata("design:returntype", void 0)
+], NonFuelProductsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], NonFuelProductsController.prototype, "delete", null);
 exports.NonFuelProductsController = NonFuelProductsController = __decorate([
     (0, common_1.Controller)("non-fuel-products"),
     __metadata("design:paramtypes", [non_fuel_product_service_1.NonFuelProductsService])

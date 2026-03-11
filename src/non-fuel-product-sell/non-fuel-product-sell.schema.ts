@@ -10,14 +10,8 @@ export class NonFuelSellProduct extends Document {
   @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
   machineId!: Types.ObjectId;
 
-  @Prop({ required: true })
-  nozzleNumber!: number;
-
-  @Prop({ required: true })
-  name!: string;
-
-  @Prop({ required: true })
-  category!: string;
+  @Prop({ type: Types.ObjectId, ref: "NonFuelProducts", required: true })
+  productId!: Types.ObjectId;
 
   @Prop({ required: true })
   quantity!: number;

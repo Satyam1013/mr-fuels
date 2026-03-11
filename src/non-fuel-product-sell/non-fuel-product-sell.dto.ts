@@ -12,14 +12,11 @@ export class CreateNonFuelSellProductDto {
   @IsMongoId()
   machineId!: string;
 
+  @IsMongoId()
+  productId!: string;
+
   @IsNumber()
   nozzleNumber!: number;
-
-  @IsString()
-  name!: string;
-
-  @IsString()
-  category!: string;
 
   @IsNumber()
   quantity!: number;

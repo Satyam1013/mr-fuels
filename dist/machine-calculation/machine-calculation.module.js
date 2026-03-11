@@ -28,7 +28,7 @@ exports.MachineCalculationModule = MachineCalculationModule = __decorate([
                 { name: pump_expense_schema_1.PumpExpense.name, schema: pump_expense_schema_1.PumpExpenseSchema },
                 { name: personal_expense_schema_1.PersonalExpense.name, schema: personal_expense_schema_1.PersonalExpenseSchema },
                 { name: prepaid_schema_1.Prepaid.name, schema: prepaid_schema_1.PrepaidSchema },
-                { name: non_fuel_product_schema_1.NonFuelProduct.name, schema: non_fuel_product_schema_1.NonFuelProductSchema },
+                { name: non_fuel_product_schema_1.NonFuelProducts.name, schema: non_fuel_product_schema_1.NonFuelProductsSchema },
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
             ]),
         ],

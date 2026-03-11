@@ -4,7 +4,7 @@ import { Model, Types } from "mongoose";
 import { MachineCalculation } from "./machine-calculation.schema";
 import { PumpExpense } from "../pump-expense/pump-expense.schema";
 import { Prepaid } from "../prepaid/prepaid.schema";
-import { NonFuelProduct } from "../non-fuel-product/non-fuel-product.schema";
+import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import { Creditor } from "../creditors/creditors.schema";
 import { CreateMachineCalculationDto } from "./machine-calculation.dto";
 import { PersonalExpense } from "../personal-expense/personal-expense.schema";
@@ -24,8 +24,8 @@ export class MachineCalculationService {
     @InjectModel(Prepaid.name)
     private prepaidModel: Model<Prepaid>,
 
-    @InjectModel(NonFuelProduct.name)
-    private nonFuelModel: Model<NonFuelProduct>,
+    @InjectModel(NonFuelProducts.name)
+    private nonFuelModel: Model<NonFuelProducts>,
 
     @InjectModel(Creditor.name)
     private creditorModel: Model<Creditor>,

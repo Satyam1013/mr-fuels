@@ -154,7 +154,7 @@ exports.MachineCalculationService = MachineCalculationService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)(pump_expense_schema_1.PumpExpense.name)),
     __param(2, (0, mongoose_1.InjectModel)(personal_expense_schema_1.PersonalExpense.name)),
     __param(3, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
-    __param(4, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProduct.name)),
+    __param(4, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __param(5, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,

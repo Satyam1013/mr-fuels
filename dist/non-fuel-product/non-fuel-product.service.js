@@ -18,20 +18,40 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const non_fuel_product_schema_1 = require("./non-fuel-product.schema");
 let NonFuelProductsService = class NonFuelProductsService {
-    constructor(nonFuelModel) {
-        this.nonFuelModel = nonFuelModel;
+    constructor(nonFuelProductModel) {
+        this.nonFuelProductModel = nonFuelProductModel;
     }
-    async create(adminId, dto) {
-        const data = new this.nonFuelModel({
+    async create(adminId, products) {
+        const data = products.map((p) => ({
+            ...p,
             adminId: new mongoose_2.Types.ObjectId(adminId),
-            nonFuelProducts: dto.nonFuelProducts,
-        });
-        return data.save();
+        }));
+        return this.nonFuelProductModel.insertMany(data);
     }
     async getAll(adminId) {
-        return this.nonFuelModel.find({
+        return this.nonFuelProductModel.find({
             adminId: new mongoose_2.Types.ObjectId(adminId),
         });
+    }
+    async update(adminId, id, dto) {
+        const product = await this.nonFuelProductModel.findOneAndUpdate({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        }, dto, { new: true });
+        if (!product) {
+            throw new common_1.NotFoundException("Product not found");
+        }
+        return product;
+    }
+    async delete(adminId, id) {
+        const product = await this.nonFuelProductModel.findOneAndDelete({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
+        if (!product) {
+            throw new common_1.NotFoundException("Product not found");
+        }
+        return { message: "Product deleted successfully" };
     }
 };
 exports.NonFuelProductsService = NonFuelProductsService;

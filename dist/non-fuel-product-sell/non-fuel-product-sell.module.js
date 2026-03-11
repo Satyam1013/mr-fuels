@@ -12,6 +12,8 @@ const mongoose_1 = require("@nestjs/mongoose");
 const non_fuel_product_sell_controller_1 = require("./non-fuel-product-sell.controller");
 const non_fuel_product_sell_service_1 = require("./non-fuel-product-sell.service");
 const non_fuel_product_sell_schema_1 = require("./non-fuel-product-sell.schema");
+const machines_schema_1 = require("../machines/machines.schema");
+const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 let NonFuelProductSellModule = class NonFuelProductSellModule {
 };
 exports.NonFuelProductSellModule = NonFuelProductSellModule;
@@ -20,6 +22,8 @@ exports.NonFuelProductSellModule = NonFuelProductSellModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: non_fuel_product_sell_schema_1.NonFuelSellProduct.name, schema: non_fuel_product_sell_schema_1.NonFuelSellProductSchema },
+                { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
+                { name: non_fuel_product_schema_1.NonFuelProducts.name, schema: non_fuel_product_schema_1.NonFuelProductsSchema },
             ]),
         ],
         controllers: [non_fuel_product_sell_controller_1.NonFuelProductSellController],

@@ -12,8 +12,8 @@ import {
 } from "../pump-expense/pump-expense.schema";
 import { Prepaid, PrepaidSchema } from "../prepaid/prepaid.schema";
 import {
-  NonFuelProduct,
-  NonFuelProductSchema,
+  NonFuelProducts,
+  NonFuelProductsSchema,
 } from "../non-fuel-product/non-fuel-product.schema";
 import { Creditor, CreditorSchema } from "../creditors/creditors.schema";
 import {
@@ -28,7 +28,7 @@ import {
       { name: PumpExpense.name, schema: PumpExpenseSchema },
       { name: PersonalExpense.name, schema: PersonalExpenseSchema },
       { name: Prepaid.name, schema: PrepaidSchema },
-      { name: NonFuelProduct.name, schema: NonFuelProductSchema },
+      { name: NonFuelProducts.name, schema: NonFuelProductsSchema },
       { name: Creditor.name, schema: CreditorSchema },
     ]),
   ],
