@@ -22,7 +22,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NozzleCalculation.prototype, "nozzleNo", void 0);
+], NozzleCalculation.prototype, "nozzleNumber", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)

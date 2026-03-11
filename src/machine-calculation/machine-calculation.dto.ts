@@ -12,7 +12,7 @@ export class NozzleDto {
   nozzleName!: string;
 
   @IsNumber()
-  nozzleNo!: number;
+  nozzleNumber!: number;
 
   @IsString()
   fuelType!: string;

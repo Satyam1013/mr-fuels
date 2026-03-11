@@ -43,7 +43,7 @@ export class MachineCalculationService {
     for (const nozzle of dto.nozzles) {
       nozzles.push({
         nozzleName: nozzle.nozzleName,
-        nozzleNo: nozzle.nozzleNo,
+        nozzleNumber: nozzle.nozzleNumber,
         lastReading: nozzle.lastReading,
         currentReading: nozzle.currentReading,
         testingLiters: nozzle.testingLiters,

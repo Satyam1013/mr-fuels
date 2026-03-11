@@ -99,7 +99,7 @@ let SalesService = class SalesService {
             nozzles: Array.isArray(machine.nozzle)
                 ? machine.nozzle.map((n, index) => ({
                     nozzleName: `Nozzle ${index + 1}`,
-                    nozzleNo: n?.nozzleNumber || 0,
+                    nozzleNumber: n?.nozzleNumber || 0,
                     lastReading: 0,
                     currentReading: 0,
                     fuelType: n?.fuelType || "",

@@ -10,7 +10,7 @@ export class PumpStatus {
   machineNo!: number;
 
   @Prop({ required: true })
-  nozzleNo!: string;
+  nozzleNumber!: string;
 
   @Prop({ required: true })
   fuelType!: string;

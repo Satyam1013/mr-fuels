@@ -8,7 +8,7 @@ class NozzleCalculation {
   nozzleName!: string;
 
   @Prop({ required: true })
-  nozzleNo!: number;
+  nozzleNumber!: number;
 
   @Prop()
   fuelType!: FuelType;

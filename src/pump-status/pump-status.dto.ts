@@ -5,7 +5,7 @@ export class CreatePumpStatusDto {
   machineNo!: number;
 
   @IsString()
-  nozzleNo!: string;
+  nozzleNumber!: string;
 
   @IsString()
   fuelType!: string;

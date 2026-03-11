@@ -21,7 +21,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePumpStatusDto.prototype, "nozzleNo", void 0);
+], CreatePumpStatusDto.prototype, "nozzleNumber", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
