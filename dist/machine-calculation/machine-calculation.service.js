@@ -60,16 +60,42 @@ let MachineCalculationService = class MachineCalculationService {
         return calculation.save();
     }
     async getAll(adminId) {
-        return this.machineCalcModel
-            .find({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
+        const machineCalcs = await this.machineCalcModel
+            .find({ adminId: objectAdminId })
             .populate("machineId")
             .populate("nozzles.staffId")
-            .populate("nozzles.creditIds")
-            .populate("nozzles.pumpExpenseIds")
-            .populate("nozzles.personalExpenseIds")
-            .populate("nozzles.prepaidIds")
-            .populate("nozzles.nonFuelProductIds")
-            .sort({ date: -1 });
+            .sort({ date: -1 })
+            .lean();
+        const results = [];
+        for (const calc of machineCalcs) {
+            const [credits, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales,] = await Promise.all([
+                this.creditorModel.find({
+                    adminId: objectAdminId,
+                }),
+                this.pumpExpenseModel.find({
+                    adminId: objectAdminId,
+                }),
+                this.personalExpenseModel.find({
+                    adminId: objectAdminId,
+                }),
+                this.prepaidModel.find({
+                    adminId: objectAdminId,
+                }),
+                this.nonFuelModel.find({
+                    adminId: objectAdminId,
+                }),
+            ]);
+            results.push({
+                ...calc,
+                credits,
+                pumpExpenses,
+                personalExpenses,
+                prepaidEntries,
+                nonFuelSales,
+            });
+        }
+        return results;
     }
     async getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber) {
         const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
