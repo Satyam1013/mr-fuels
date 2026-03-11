@@ -7,7 +7,7 @@ import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
 import { PumpDetails } from "../pump-details/pump-details.schema";
-import { NonFuelSellProduct } from "../non-fuel-product-sales/non-fuel-product-sales.schema";
+import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 
 @Injectable()
 export class SalesService {
@@ -18,8 +18,8 @@ export class SalesService {
     @InjectModel(TransactionDetails.name)
     private transactionModel: Model<TransactionDetails>,
 
-    @InjectModel(NonFuelSellProduct.name)
-    private nonFuelModel: Model<NonFuelSellProduct>,
+    @InjectModel(NonFuelProducts.name)
+    private nonFuelModel: Model<NonFuelProducts>,
 
     @InjectModel(Staff.name)
     private staffModel: Model<Staff>,
@@ -58,14 +58,14 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelSellProductsData = await this.nonFuelModel
+    const nonFuelProductsData = await this.nonFuelModel
       .find({ adminId: objectAdminId })
       .populate("productId")
       .lean();
 
     const lubricants: any = {};
 
-    nonFuelSellProductsData.forEach((sales: any) => {
+    nonFuelProductsData.forEach((sales: any) => {
       const productName = sales.productId?.productName as string;
 
       if (!productName) return;
@@ -109,6 +109,7 @@ export class SalesService {
       nozzles: Array.isArray(machine.nozzle)
         ? machine.nozzle.map((n, index) => ({
             nozzleName: `Nozzle ${index + 1}`,
+            nozzleNo: n?.nozzleNumber || 0,
             lastReading: 0,
             currentReading: 0,
             fuelType: n?.fuelType || "",
@@ -140,7 +141,7 @@ export class SalesService {
     return {
       overallSales: {
         fuelProducts,
-        nonFuelSellProducts: lubricants,
+        nonFuelProducts: lubricants,
       },
 
       upiApps,

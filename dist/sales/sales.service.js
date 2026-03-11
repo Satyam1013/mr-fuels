@@ -22,7 +22,7 @@ const transactions_schema_1 = require("../transactions/transactions.schema");
 const machines_schema_1 = require("../machines/machines.schema");
 const staff_schema_1 = require("../staff/staff.schema");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
-const non_fuel_product_sales_schema_1 = require("../non-fuel-product-sales/non-fuel-product-sales.schema");
+const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 let SalesService = class SalesService {
     constructor(machineModel, transactionModel, nonFuelModel, staffModel, pumpDetailsModel) {
         this.machineModel = machineModel;
@@ -57,12 +57,12 @@ let SalesService = class SalesService {
         // =============================
         // 2️⃣ Non Fuel Products (Lubricants)
         // =============================
-        const nonFuelSellProductsData = await this.nonFuelModel
+        const nonFuelProductsData = await this.nonFuelModel
             .find({ adminId: objectAdminId })
             .populate("productId")
             .lean();
         const lubricants = {};
-        nonFuelSellProductsData.forEach((sales) => {
+        nonFuelProductsData.forEach((sales) => {
             const productName = sales.productId?.productName;
             if (!productName)
                 return;
@@ -100,6 +100,7 @@ let SalesService = class SalesService {
             nozzles: Array.isArray(machine.nozzle)
                 ? machine.nozzle.map((n, index) => ({
                     nozzleName: `Nozzle ${index + 1}`,
+                    nozzleNo: n?.nozzleNumber || 0,
                     lastReading: 0,
                     currentReading: 0,
                     fuelType: n?.fuelType || "",
@@ -127,7 +128,7 @@ let SalesService = class SalesService {
         return {
             overallSales: {
                 fuelProducts,
-                nonFuelSellProducts: lubricants,
+                nonFuelProducts: lubricants,
             },
             upiApps,
             posMachines,
@@ -179,7 +180,7 @@ exports.SalesService = SalesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __param(1, (0, mongoose_1.InjectModel)(transactions_schema_1.TransactionDetails.name)),
-    __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_sales_schema_1.NonFuelSellProduct.name)),
+    __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __param(3, (0, mongoose_1.InjectModel)(staff_schema_1.Staff.name)),
     __param(4, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
