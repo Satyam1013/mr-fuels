@@ -105,6 +105,7 @@ export class SalesService {
     // =============================
     const machineDetails = machines.map((machine) => ({
       name: machine.machineNumber,
+      machineId: machine._id,
       nozzles: Array.isArray(machine.nozzle)
         ? machine.nozzle.map((n, index) => ({
             nozzleName: `Nozzle ${index + 1}`,
