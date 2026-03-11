@@ -35,6 +35,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], NonFuelProducts.prototype, "unitType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], NonFuelProducts.prototype, "amountCollected", void 0);
 exports.NonFuelProducts = NonFuelProducts = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], NonFuelProducts);

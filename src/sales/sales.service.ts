@@ -58,17 +58,16 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel
-      .find({ adminId: objectAdminId })
-      .populate("productId")
-      .lean();
+    const nonFuelProductsData = await this.nonFuelModel.find({
+      adminId: objectAdminId,
+    });
 
     const lubricants: any = {};
 
     nonFuelProductsData.forEach((sales: any) => {
-      const productName = sales.productId?.productName as string;
+      const productName = sales.productName;
 
-      if (!productName) return;
+      if (!productName || typeof productName !== "string") return;
 
       lubricants[productName.toLowerCase()] = {
         liters: 0,

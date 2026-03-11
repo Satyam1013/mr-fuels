@@ -17,6 +17,9 @@ export class NonFuelProducts extends Document {
 
   @Prop({ required: true })
   unitType!: string;
+
+  @Prop({ default: 0 })
+  amountCollected?: number;
 }
 
 export const NonFuelProductsSchema =

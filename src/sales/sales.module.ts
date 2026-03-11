@@ -15,9 +15,9 @@ import {
   PumpDetailsSchema,
 } from "../pump-details/pump-details.schema";
 import {
-  NonFuelSellProduct,
-  NonFuelSellProductSchema,
-} from "../non-fuel-product-sales/non-fuel-product-sales.schema";
+  NonFuelProducts,
+  NonFuelProductsSchema,
+} from "../non-fuel-product/non-fuel-product.schema";
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import {
       { name: Admin.name, schema: AdminSchema },
       { name: Machine.name, schema: MachineSchema },
       { name: TransactionDetails.name, schema: TransactionDetailsSchema },
-      { name: NonFuelSellProduct.name, schema: NonFuelSellProductSchema },
+      { name: NonFuelProducts.name, schema: NonFuelProductsSchema },
       { name: Staff.name, schema: StaffSchema },
       { name: PumpDetails.name, schema: PumpDetailsSchema },
     ]),

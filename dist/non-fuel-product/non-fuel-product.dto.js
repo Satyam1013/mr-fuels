@@ -31,6 +31,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], NonFuelProductDto.prototype, "unitType", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NonFuelProductDto.prototype, "amountCollected", void 0);
 class CreateNonFuelProductsDto {
 }
 exports.CreateNonFuelProductsDto = CreateNonFuelProductsDto;

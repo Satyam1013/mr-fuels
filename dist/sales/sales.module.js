@@ -17,7 +17,7 @@ const machines_schema_1 = require("../machines/machines.schema");
 const transactions_schema_1 = require("../transactions/transactions.schema");
 const staff_schema_1 = require("../staff/staff.schema");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
-const non_fuel_product_sales_schema_1 = require("../non-fuel-product-sales/non-fuel-product-sales.schema");
+const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 let SalesModule = class SalesModule {
 };
 exports.SalesModule = SalesModule;
@@ -29,7 +29,7 @@ exports.SalesModule = SalesModule = __decorate([
                 { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
                 { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
                 { name: transactions_schema_1.TransactionDetails.name, schema: transactions_schema_1.TransactionDetailsSchema },
-                { name: non_fuel_product_sales_schema_1.NonFuelSellProduct.name, schema: non_fuel_product_sales_schema_1.NonFuelSellProductSchema },
+                { name: non_fuel_product_schema_1.NonFuelProducts.name, schema: non_fuel_product_schema_1.NonFuelProductsSchema },
                 { name: staff_schema_1.Staff.name, schema: staff_schema_1.StaffSchema },
                 { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
             ]),

@@ -1,4 +1,10 @@
-import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 export class NonFuelProductDto {
@@ -13,6 +19,10 @@ export class NonFuelProductDto {
 
   @IsString()
   unitType!: string;
+
+  @IsOptional()
+  @IsNumber()
+  amountCollected?: number;
 }
 
 export class CreateNonFuelProductsDto {
