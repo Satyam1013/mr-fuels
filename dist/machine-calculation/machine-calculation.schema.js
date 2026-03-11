@@ -51,32 +51,6 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff" }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], NozzleCalculation.prototype, "staffId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Types.ObjectId, ref: "Creditor" }], default: [] }),
-    __metadata("design:type", Array)
-], NozzleCalculation.prototype, "creditIds", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Types.ObjectId, ref: "PumpExpense" }], default: [] }),
-    __metadata("design:type", Array)
-], NozzleCalculation.prototype, "pumpExpenseIds", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
-        type: [{ type: mongoose_2.Types.ObjectId, ref: "PersonalExpense" }],
-        default: [],
-    }),
-    __metadata("design:type", Array)
-], NozzleCalculation.prototype, "personalExpenseIds", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Types.ObjectId, ref: "Prepaid" }], default: [] }),
-    __metadata("design:type", Array)
-], NozzleCalculation.prototype, "prepaidIds", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
-        type: [{ type: mongoose_2.Types.ObjectId, ref: "NonFuelProduct" }],
-        default: [],
-    }),
-    __metadata("design:type", Array)
-], NozzleCalculation.prototype, "nonFuelProductIds", void 0);
 NozzleCalculation = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], NozzleCalculation);

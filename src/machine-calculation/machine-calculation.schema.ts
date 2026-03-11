@@ -30,27 +30,6 @@ class NozzleCalculation {
 
   @Prop({ type: Types.ObjectId, ref: "Staff" })
   staffId!: Types.ObjectId;
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: "Creditor" }], default: [] })
-  creditIds!: Types.ObjectId[];
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: "PumpExpense" }], default: [] })
-  pumpExpenseIds!: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "PersonalExpense" }],
-    default: [],
-  })
-  personalExpenseIds!: Types.ObjectId[];
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: "Prepaid" }], default: [] })
-  prepaidIds!: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "NonFuelProduct" }],
-    default: [],
-  })
-  nonFuelProductIds!: Types.ObjectId[];
 }
 
 @Schema({ timestamps: true })

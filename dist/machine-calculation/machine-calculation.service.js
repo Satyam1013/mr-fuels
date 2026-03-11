@@ -39,38 +39,6 @@ let MachineCalculationService = class MachineCalculationService {
         endDate.setHours(23, 59, 59, 999);
         for (const nozzle of dto.nozzles) {
             const nozzleNumber = parseInt(nozzle.nozzleName.replace(/\D/g, "")) || 1;
-            const [creditData, pumpExpenseData, personalExpenseData, prepaidData, nonFuelData,] = await Promise.all([
-                this.creditorModel.find({
-                    machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                    nozzleNumber,
-                    shiftNumber: dto.shiftNumber,
-                    date: { $gte: startDate, $lte: endDate },
-                }),
-                this.pumpExpenseModel.find({
-                    machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                    nozzleNumber,
-                    shiftNumber: dto.shiftNumber,
-                    date: { $gte: startDate, $lte: endDate },
-                }),
-                this.personalExpenseModel.find({
-                    machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                    nozzleNumber,
-                    shiftNumber: dto.shiftNumber,
-                    date: { $gte: startDate, $lte: endDate },
-                }),
-                this.prepaidModel.find({
-                    machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                    nozzleNumber,
-                    shiftNumber: dto.shiftNumber,
-                    date: { $gte: startDate, $lte: endDate },
-                }),
-                this.nonFuelModel.find({
-                    machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                    nozzleNumber,
-                    shiftNumber: dto.shiftNumber,
-                    date: { $gte: startDate, $lte: endDate },
-                }),
-            ]);
             nozzles.push({
                 nozzleNumber,
                 lastReading: nozzle.lastReading,
@@ -81,11 +49,6 @@ let MachineCalculationService = class MachineCalculationService {
                 upiAmount: nozzle.upiAmount,
                 posAmount: nozzle.posAmount,
                 staffId: new mongoose_2.Types.ObjectId(nozzle.staffId),
-                creditIds: creditData.map((c) => c._id),
-                pumpExpenseIds: pumpExpenseData.map((e) => e._id),
-                personalExpenseIds: personalExpenseData.map((e) => e._id),
-                prepaidIds: prepaidData.map((p) => p._id),
-                nonFuelProductIds: nonFuelData.map((n) => n._id),
             });
         }
         const calculation = new this.machineCalcModel({
@@ -110,35 +73,48 @@ let MachineCalculationService = class MachineCalculationService {
             .sort({ date: -1 });
     }
     async getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber) {
+        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
+        const objectMachineId = new mongoose_2.Types.ObjectId(machineId);
         const startDate = new Date(date);
         startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(date);
         endDate.setHours(23, 59, 59, 999);
-        const query = {
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            machineId: new mongoose_2.Types.ObjectId(machineId),
+        const baseQuery = {
+            adminId: objectAdminId,
+            machineId: objectMachineId,
             date: { $gte: startDate, $lte: endDate },
         };
         if (shiftNumber) {
-            query.shiftNumber = shiftNumber;
+            baseQuery.shiftNumber = shiftNumber;
         }
-        const data = await this.machineCalcModel
-            .find(query)
-            .populate("machineId")
-            .populate("nozzles.staffId")
-            .populate("nozzles.creditIds")
-            .populate("nozzles.pumpExpenseIds")
-            .populate("nozzles.personalExpenseIds")
-            .populate("nozzles.prepaidIds")
-            .populate("nozzles.nonFuelProductIds");
-        if (!nozzleNumber)
-            return data;
-        // nozzle filter
-        return data.map((item) => ({
-            ...item.toObject(),
-            nozzles: item.nozzles.filter((n) => (parseInt(n.nozzleName.replace(/\D/g, "")) || 1) ===
-                Number(nozzleNumber)),
-        }));
+        const [machineCalcData, creditEntries, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales,] = await Promise.all([
+            this.machineCalcModel
+                .find(baseQuery)
+                .populate("machineId")
+                .populate("nozzles.staffId")
+                .lean(),
+            this.creditorModel.find(baseQuery),
+            this.pumpExpenseModel.find(baseQuery),
+            this.personalExpenseModel.find(baseQuery),
+            this.prepaidModel.find(baseQuery),
+            this.nonFuelModel.find(baseQuery),
+        ]);
+        let filteredMachineData = machineCalcData;
+        if (nozzleNumber) {
+            filteredMachineData = machineCalcData.map((item) => ({
+                ...item,
+                nozzles: item.nozzles.filter((n) => (parseInt(n.nozzleName.replace(/\D/g, "")) || 1) ===
+                    Number(nozzleNumber)),
+            }));
+        }
+        return {
+            machine: filteredMachineData,
+            creditors: creditEntries,
+            pumpExpenses,
+            personalExpenses,
+            prepaidEntries,
+            nonFuelSales,
+        };
     }
     async getById(id) {
         return this.machineCalcModel.findById(id);
