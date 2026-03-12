@@ -40,12 +40,8 @@ let PumpDetailsService = class PumpDetailsService {
         }
         const payload = {
             adminId: new mongoose_2.Types.ObjectId(adminId),
-            fuelPartner: dto.fuelPartner,
+            ...dto,
             tank: new mongoose_2.Types.ObjectId(dto.tank),
-            pumpTime: dto.pumpTime,
-            pumpHours: dto.pumpHours,
-            dailyCloseReportTime: dto.dailyCloseReportTime,
-            is24Hour: dto.is24Hour ?? false,
         };
         const existing = await this.pumpDetailsModel.findOne({ adminId });
         if (existing) {

@@ -39,12 +39,8 @@ export class PumpDetailsService {
 
     const payload = {
       adminId: new Types.ObjectId(adminId),
-      fuelPartner: dto.fuelPartner,
+      ...dto,
       tank: new Types.ObjectId(dto.tank),
-      pumpTime: dto.pumpTime,
-      pumpHours: dto.pumpHours,
-      dailyCloseReportTime: dto.dailyCloseReportTime,
-      is24Hour: dto.is24Hour ?? false,
     };
 
     const existing = await this.pumpDetailsModel.findOne({ adminId });

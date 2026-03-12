@@ -63,6 +63,7 @@ export class SalesService {
       .lean();
 
     const nonFuelProducts = nonFuelProductsData.map((product) => ({
+      id: product._id,
       productName: product.productName,
       unitType: product.unitType,
       quantity: product.totalStock,
