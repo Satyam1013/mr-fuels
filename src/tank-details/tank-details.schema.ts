@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-@Schema({ _id: false })
+@Schema()
 class Tank {
   @Prop({ required: true })
   capacityKl!: string;

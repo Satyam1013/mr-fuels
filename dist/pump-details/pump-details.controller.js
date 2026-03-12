@@ -23,15 +23,12 @@ let PumpDetailsController = class PumpDetailsController {
     async addPumpDetails(req, dto) {
         return this.pumpDetailsService.addPumpDetails(req.user.adminId, dto);
     }
-    // 🔹 Get PumpDetails
     async getPumpDetails(req) {
         return this.pumpDetailsService.getPumpDetails(req.user.adminId);
     }
-    // 🔹 Update PumpDetails
     async updatePumpDetails(req, dto) {
         return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
     }
-    // 🔹 Delete PumpDetails
     async deletePumpDetails(req) {
         return this.pumpDetailsService.deletePumpDetails(req.user.adminId);
     }

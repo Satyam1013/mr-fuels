@@ -23,13 +23,11 @@ export class PumpDetailsController {
     return this.pumpDetailsService.addPumpDetails(req.user.adminId, dto);
   }
 
-  // 🔹 Get PumpDetails
   @Get()
   async getPumpDetails(@Req() req: AuthenticatedRequest) {
     return this.pumpDetailsService.getPumpDetails(req.user.adminId);
   }
 
-  // 🔹 Update PumpDetails
   @Patch()
   async updatePumpDetails(
     @Req() req: AuthenticatedRequest,
@@ -38,7 +36,6 @@ export class PumpDetailsController {
     return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
   }
 
-  // 🔹 Delete PumpDetails
   @Delete()
   async deletePumpDetails(@Req() req: AuthenticatedRequest) {
     return this.pumpDetailsService.deletePumpDetails(req.user.adminId);

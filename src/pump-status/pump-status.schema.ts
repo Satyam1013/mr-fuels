@@ -1,4 +1,3 @@
-// pump-status.schema.ts
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types, Document } from "mongoose";
 

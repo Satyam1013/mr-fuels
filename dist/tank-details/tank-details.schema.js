@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Tank.prototype, "tankNo", void 0);
 Tank = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
+    (0, mongoose_1.Schema)()
 ], Tank);
 let TankDetails = class TankDetails extends mongoose_2.Document {
 };
