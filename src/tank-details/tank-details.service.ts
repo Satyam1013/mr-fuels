@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TankDetails } from "./tank-details.schema";
@@ -13,10 +17,20 @@ export class TankService {
 
   // 🔹 Create
   async create(adminId: string, dto: CreateTankDetailsDto) {
+    const adminIdObj = new Types.ObjectId(adminId);
+
     const tank = await this.tankModel.create({
-      adminId: new Types.ObjectId(adminId),
+      adminId: adminIdObj,
       ...dto,
     });
+
+    const tankExists = await this.tankModel.findOne({
+      adminId: adminIdObj,
+    });
+
+    if (tankExists) {
+      throw new ConflictException("Tank already exist for this admin");
+    }
 
     return {
       message: "Tank details created successfully",

@@ -30,21 +30,22 @@ let PumpDetailsService = class PumpDetailsService {
         if (!adminExists) {
             throw new common_1.NotFoundException("Admin not found");
         }
+        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         const tankExists = await this.tankModel.findOne({
             _id: new mongoose_2.Types.ObjectId(dto.tank),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId: adminIdObj,
         });
         if (!tankExists) {
             throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
         }
         const existing = await this.pumpDetailsModel.findOne({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId: adminIdObj,
         });
         if (existing) {
             throw new common_1.ConflictException("Pump details already exist for this admin");
         }
         const payload = {
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId: adminIdObj,
             ...dto,
             tank: new mongoose_2.Types.ObjectId(dto.tank),
         };

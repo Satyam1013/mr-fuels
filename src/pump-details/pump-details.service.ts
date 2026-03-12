@@ -29,9 +29,11 @@ export class PumpDetailsService {
       throw new NotFoundException("Admin not found");
     }
 
+    const adminIdObj = new Types.ObjectId(adminId);
+
     const tankExists = await this.tankModel.findOne({
       _id: new Types.ObjectId(dto.tank),
-      adminId: new Types.ObjectId(adminId),
+      adminId: adminIdObj,
     });
 
     if (!tankExists) {
@@ -41,7 +43,7 @@ export class PumpDetailsService {
     }
 
     const existing = await this.pumpDetailsModel.findOne({
-      adminId: new Types.ObjectId(adminId),
+      adminId: adminIdObj,
     });
 
     if (existing) {
@@ -49,7 +51,7 @@ export class PumpDetailsService {
     }
 
     const payload = {
-      adminId: new Types.ObjectId(adminId),
+      adminId: adminIdObj,
       ...dto,
       tank: new Types.ObjectId(dto.tank),
     };
