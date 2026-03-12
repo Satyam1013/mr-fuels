@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { PumpDetails } from "./pump-details.schema";
@@ -25,7 +29,6 @@ export class PumpDetailsService {
       throw new NotFoundException("Admin not found");
     }
 
-    // 🔹 Check that the tank exists and belongs to this admin
     const tankExists = await this.tankModel.findOne({
       _id: new Types.ObjectId(dto.tank),
       adminId: new Types.ObjectId(adminId),
@@ -37,19 +40,19 @@ export class PumpDetailsService {
       );
     }
 
+    const existing = await this.pumpDetailsModel.findOne({
+      adminId: new Types.ObjectId(adminId),
+    });
+
+    if (existing) {
+      throw new ConflictException("Pump details already exist for this admin");
+    }
+
     const payload = {
       adminId: new Types.ObjectId(adminId),
       ...dto,
       tank: new Types.ObjectId(dto.tank),
     };
-
-    const existing = await this.pumpDetailsModel.findOne({ adminId });
-
-    if (existing) {
-      return this.pumpDetailsModel.findByIdAndUpdate(existing._id, payload, {
-        new: true,
-      });
-    }
 
     return this.pumpDetailsModel.create(payload);
   }
