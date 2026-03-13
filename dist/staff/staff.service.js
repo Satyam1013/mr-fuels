@@ -51,6 +51,19 @@ let StaffService = class StaffService {
         }
         return [];
     }
+    async getStaff(adminId) {
+        return this.staffModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+    }
+    async updateStaff(adminId, staffId, dto) {
+        const staff = await this.staffModel.findById(staffId);
+        if (!staff)
+            throw new common_1.NotFoundException("Staff not found");
+        if (staff.adminId.toString() !== adminId) {
+            throw new common_1.ConflictException("Staff does not belong to the specified admin");
+        }
+        Object.assign(staff, dto);
+        return staff.save();
+    }
     async removeStaff(adminId, staffId) {
         const admin = await this.adminModel.findById(adminId);
         if (!admin) {

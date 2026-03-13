@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
 import {
   IsArray,
@@ -37,3 +38,5 @@ export class BulkCreateStaffDto {
   @Type(() => CreateStaffDto)
   staff!: CreateStaffDto[];
 }
+
+export class UpdateStaffDto extends PartialType(CreateStaffDto) {}

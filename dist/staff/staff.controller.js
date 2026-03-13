@@ -23,6 +23,12 @@ let StaffController = class StaffController {
     async addStaff(req, dto) {
         return this.staffService.addStaff(req.user.adminId, dto);
     }
+    async getStaff(req) {
+        return this.staffService.getStaff(req.user.adminId);
+    }
+    async updateStaff(req, id, dto) {
+        return this.staffService.updateStaff(req.user.adminId, id, dto);
+    }
     async removeStaff(req, id) {
         return this.staffService.removeStaff(req.user.adminId, id);
     }
@@ -36,6 +42,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, staff_dto_1.BulkCreateStaffDto]),
     __metadata("design:returntype", Promise)
 ], StaffController.prototype, "addStaff", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "getStaff", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, staff_dto_1.UpdateStaffDto]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "updateStaff", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Req)()),

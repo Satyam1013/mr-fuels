@@ -9,7 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BulkCreateStaffDto = exports.CreateStaffDto = void 0;
+exports.UpdateStaffDto = exports.BulkCreateStaffDto = exports.CreateStaffDto = void 0;
+const mapped_types_1 = require("@nestjs/mapped-types");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class CreateStaffDto {
@@ -54,3 +55,6 @@ __decorate([
     (0, class_transformer_1.Type)(() => CreateStaffDto),
     __metadata("design:type", Array)
 ], BulkCreateStaffDto.prototype, "staff", void 0);
+class UpdateStaffDto extends (0, mapped_types_1.PartialType)(CreateStaffDto) {
+}
+exports.UpdateStaffDto = UpdateStaffDto;

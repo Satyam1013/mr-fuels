@@ -7,7 +7,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Staff } from "./staff.schema";
 import { Admin } from "../admin/admin.schema";
-import { BulkCreateStaffDto } from "./staff.dto";
+import { BulkCreateStaffDto, UpdateStaffDto } from "./staff.dto";
 
 @Injectable()
 export class StaffService {
@@ -58,6 +58,24 @@ export class StaffService {
     }
 
     return [];
+  }
+
+  async getStaff(adminId: string) {
+    return this.staffModel.find({ adminId: new Types.ObjectId(adminId) });
+  }
+
+  async updateStaff(adminId: string, staffId: string, dto: UpdateStaffDto) {
+    const staff = await this.staffModel.findById(staffId);
+    if (!staff) throw new NotFoundException("Staff not found");
+
+    if (staff.adminId.toString() !== adminId) {
+      throw new ConflictException(
+        "Staff does not belong to the specified admin",
+      );
+    }
+
+    Object.assign(staff, dto);
+    return staff.save();
   }
 
   async removeStaff(adminId: string, staffId: string) {
