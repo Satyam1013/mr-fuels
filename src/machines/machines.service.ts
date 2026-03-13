@@ -20,7 +20,7 @@ export class MachineService {
   }
 
   async getMachines(adminId: string) {
-    return this.machineModel.find({ adminId });
+    return this.machineModel.find({ adminId: new Types.ObjectId(adminId) });
   }
 
   async getMachineById(machineId: string) {
