@@ -23,6 +23,15 @@ let ManagerController = class ManagerController {
     async addManagers(req, body) {
         return this.managerService.addManagers(req.user.adminId, body);
     }
+    async getManagers(req) {
+        return this.managerService.getManagers(req.user.adminId);
+    }
+    async updateManager(id, body) {
+        return this.managerService.updateManager(id, body);
+    }
+    async deleteManager(id) {
+        return this.managerService.deleteManager(id);
+    }
 };
 exports.ManagerController = ManagerController;
 __decorate([
@@ -33,6 +42,28 @@ __decorate([
     __metadata("design:paramtypes", [Object, managers_dto_1.BulkCreateManagerDto]),
     __metadata("design:returntype", Promise)
 ], ManagerController.prototype, "addManagers", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ManagerController.prototype, "getManagers", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, managers_dto_1.UpdateManagerDto]),
+    __metadata("design:returntype", Promise)
+], ManagerController.prototype, "updateManager", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ManagerController.prototype, "deleteManager", null);
 exports.ManagerController = ManagerController = __decorate([
     (0, common_1.Controller)("manager"),
     __metadata("design:paramtypes", [managers_service_1.ManagerService])

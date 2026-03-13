@@ -8,7 +8,7 @@ import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { Manager } from "./managers.schema";
 import { Admin } from "../admin/admin.schema";
-import { BulkCreateManagerDto } from "./managers.dto";
+import { BulkCreateManagerDto, UpdateManagerDto } from "./managers.dto";
 
 @Injectable()
 export class ManagerService {
@@ -65,5 +65,29 @@ export class ManagerService {
     }
 
     return insertedManagers;
+  }
+
+  async getManagers(adminId: string) {
+    return this.managerModel.find({ adminId: new Types.ObjectId(adminId) });
+  }
+
+  async updateManager(managerId: string, payload: UpdateManagerDto) {
+    const manager = await this.managerModel.findById(managerId);
+    if (!manager) throw new NotFoundException("Manager not found");
+
+    if (payload.password) {
+      payload.password = await bcrypt.hash(payload.password, 10);
+    }
+
+    Object.assign(manager, payload);
+    return manager.save();
+  }
+
+  async deleteManager(managerId: string) {
+    const manager = await this.managerModel.findById(managerId);
+    if (!manager) throw new NotFoundException("Manager not found");
+
+    await this.managerModel.deleteOne({ _id: managerId });
+    return { message: "Manager deleted successfully" };
   }
 }

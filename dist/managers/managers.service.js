@@ -87,6 +87,26 @@ let ManagerService = class ManagerService {
         }
         return insertedManagers;
     }
+    async getManagers(adminId) {
+        return this.managerModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+    }
+    async updateManager(managerId, payload) {
+        const manager = await this.managerModel.findById(managerId);
+        if (!manager)
+            throw new common_1.NotFoundException("Manager not found");
+        if (payload.password) {
+            payload.password = await bcrypt.hash(payload.password, 10);
+        }
+        Object.assign(manager, payload);
+        return manager.save();
+    }
+    async deleteManager(managerId) {
+        const manager = await this.managerModel.findById(managerId);
+        if (!manager)
+            throw new common_1.NotFoundException("Manager not found");
+        await this.managerModel.deleteOne({ _id: managerId });
+        return { message: "Manager deleted successfully" };
+    }
 };
 exports.ManagerService = ManagerService;
 exports.ManagerService = ManagerService = __decorate([

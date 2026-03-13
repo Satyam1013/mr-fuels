@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
 import {
   IsArray,
@@ -44,3 +45,5 @@ export class BulkCreateManagerDto {
   @IsNumber()
   numberOfShift!: number;
 }
+
+export class UpdateManagerDto extends PartialType(CreateManagerDto) {}
