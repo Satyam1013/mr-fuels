@@ -19,11 +19,6 @@ export class TankService {
   async create(adminId: string, dto: CreateTankDetailsDto) {
     const adminIdObj = new Types.ObjectId(adminId);
 
-    const tank = await this.tankModel.create({
-      adminId: adminIdObj,
-      ...dto,
-    });
-
     const tankExists = await this.tankModel.findOne({
       adminId: adminIdObj,
     });
@@ -32,12 +27,16 @@ export class TankService {
       throw new ConflictException("Tank already exist for this admin");
     }
 
+    const tank = await this.tankModel.create({
+      adminId: adminIdObj,
+      ...dto,
+    });
+
     return {
       message: "Tank details created successfully",
       data: tank,
     };
   }
-
   // 🔹 Get All (by admin)
   async findAll(adminId: string) {
     const objectAdminId = new Types.ObjectId(adminId);

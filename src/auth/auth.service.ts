@@ -87,6 +87,8 @@ export class AuthService {
 
     const subscription = admin.currentSubscriptionId as Subscription | null;
 
+    const newUser = !subscription;
+
     return {
       success: true,
       message: "Login successful",
@@ -97,7 +99,7 @@ export class AuthService {
         businessName: admin.businessName,
         mobileNo: admin.mobileNo,
         setupComplete: admin.setupComplete,
-        newUser: false,
+        newUser,
       },
       subscription: subscription
         ? {

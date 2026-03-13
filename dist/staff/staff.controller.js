@@ -23,6 +23,9 @@ let StaffController = class StaffController {
     async addStaff(req, dto) {
         return this.staffService.addStaff(req.user.adminId, dto);
     }
+    async removeStaff(req, id) {
+        return this.staffService.removeStaff(req.user.adminId, id);
+    }
 };
 exports.StaffController = StaffController;
 __decorate([
@@ -33,6 +36,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, staff_dto_1.BulkCreateStaffDto]),
     __metadata("design:returntype", Promise)
 ], StaffController.prototype, "addStaff", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "removeStaff", null);
 exports.StaffController = StaffController = __decorate([
     (0, common_1.Controller)("staff"),
     __metadata("design:paramtypes", [staff_service_1.StaffService])

@@ -24,16 +24,16 @@ let TankService = class TankService {
     // 🔹 Create
     async create(adminId, dto) {
         const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
-        const tank = await this.tankModel.create({
-            adminId: adminIdObj,
-            ...dto,
-        });
         const tankExists = await this.tankModel.findOne({
             adminId: adminIdObj,
         });
         if (tankExists) {
             throw new common_1.ConflictException("Tank already exist for this admin");
         }
+        const tank = await this.tankModel.create({
+            adminId: adminIdObj,
+            ...dto,
+        });
         return {
             message: "Tank details created successfully",
             data: tank,

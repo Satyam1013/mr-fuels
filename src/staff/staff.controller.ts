@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post, Req } from "@nestjs/common";
 import { StaffService } from "./staff.service";
 import { BulkCreateStaffDto } from "./staff.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
@@ -13,5 +13,10 @@ export class StaffController {
     @Body() dto: BulkCreateStaffDto,
   ) {
     return this.staffService.addStaff(req.user.adminId, dto);
+  }
+
+  @Delete(":id")
+  async removeStaff(@Req() req: AuthenticatedRequest, @Param("id") id: string) {
+    return this.staffService.removeStaff(req.user.adminId, id);
   }
 }

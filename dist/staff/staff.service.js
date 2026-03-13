@@ -51,6 +51,20 @@ let StaffService = class StaffService {
         }
         return [];
     }
+    async removeStaff(adminId, staffId) {
+        const admin = await this.adminModel.findById(adminId);
+        if (!admin) {
+            throw new common_1.NotFoundException("Admin not found");
+        }
+        const staff = await this.staffModel.findById(staffId);
+        if (!staff) {
+            throw new common_1.NotFoundException("Staff not found");
+        }
+        if (staff.adminId.toString() !== adminId) {
+            throw new common_1.ConflictException("Staff does not belong to the specified admin");
+        }
+        return await this.staffModel.findByIdAndDelete(staffId);
+    }
 };
 exports.StaffService = StaffService;
 exports.StaffService = StaffService = __decorate([

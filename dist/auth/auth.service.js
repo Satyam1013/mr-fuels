@@ -112,6 +112,7 @@ let AuthService = class AuthService {
             role: "admin",
         });
         const subscription = admin.currentSubscriptionId;
+        const newUser = !subscription;
         return {
             success: true,
             message: "Login successful",
@@ -122,7 +123,7 @@ let AuthService = class AuthService {
                 businessName: admin.businessName,
                 mobileNo: admin.mobileNo,
                 setupComplete: admin.setupComplete,
-                newUser: false,
+                newUser,
             },
             subscription: subscription
                 ? {

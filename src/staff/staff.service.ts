@@ -59,4 +59,24 @@ export class StaffService {
 
     return [];
   }
+
+  async removeStaff(adminId: string, staffId: string) {
+    const admin = await this.adminModel.findById(adminId);
+    if (!admin) {
+      throw new NotFoundException("Admin not found");
+    }
+
+    const staff = await this.staffModel.findById(staffId);
+    if (!staff) {
+      throw new NotFoundException("Staff not found");
+    }
+
+    if (staff.adminId.toString() !== adminId) {
+      throw new ConflictException(
+        "Staff does not belong to the specified admin",
+      );
+    }
+
+    return await this.staffModel.findByIdAndDelete(staffId);
+  }
 }
