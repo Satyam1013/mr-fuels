@@ -15,6 +15,9 @@ class Nozzle {
 
   @Prop({ default: true })
   isActive!: boolean;
+
+  @Prop({ type: Types.ObjectId, ref: "Tank", required: true, index: true })
+  tankId!: Types.ObjectId;
 }
 
 @Schema({ timestamps: true })

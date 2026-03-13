@@ -10,4 +10,5 @@ var FuelType;
     FuelType["POWER_PETROL"] = "power_petrol";
     FuelType["XP95"] = "xp95";
     FuelType["NORMAL"] = "normal";
+    FuelType["POWER"] = "power";
 })(FuelType || (exports.FuelType = FuelType = {}));

@@ -31,6 +31,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)
 ], Nozzle.prototype, "isActive", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Tank", required: true, index: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Nozzle.prototype, "tankId", void 0);
 Nozzle = __decorate([
     (0, mongoose_1.Schema)()
 ], Nozzle);

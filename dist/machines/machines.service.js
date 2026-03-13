@@ -25,6 +25,10 @@ let MachineService = class MachineService {
         const docs = machines.map((m) => ({
             ...m,
             adminId: new mongoose_2.Types.ObjectId(adminId),
+            nozzle: m.nozzle.map((n) => ({
+                ...n,
+                tankId: new mongoose_2.Types.ObjectId(n.tankId),
+            })),
         }));
         return this.machineModel.insertMany(docs);
     }

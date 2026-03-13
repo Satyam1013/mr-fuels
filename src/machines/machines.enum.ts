@@ -6,4 +6,5 @@ export enum FuelType {
   POWER_PETROL = "power_petrol",
   XP95 = "xp95",
   NORMAL = "normal",
+  POWER = "power",
 }

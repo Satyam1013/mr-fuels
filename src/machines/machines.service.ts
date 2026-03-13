@@ -14,6 +14,10 @@ export class MachineService {
     const docs = machines.map((m) => ({
       ...m,
       adminId: new Types.ObjectId(adminId),
+      nozzle: m.nozzle.map((n) => ({
+        ...n,
+        tankId: new Types.ObjectId(n.tankId),
+      })),
     }));
 
     return this.machineModel.insertMany(docs);

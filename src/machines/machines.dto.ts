@@ -25,6 +25,10 @@ class NozzleDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  tankId!: string;
 }
 
 export class CreateMachineDto {
