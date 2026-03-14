@@ -53,13 +53,14 @@ let CustomerService = class CustomerService {
         return { message: "Customer deleted successfully" };
     }
     async findOrCreateCustomer(adminId, name, phoneNumber) {
+        const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
         let customer = await this.customerModel.findOne({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-            phoneNumber,
+            adminId: adminObjectId,
+            phoneNumber: phoneNumber,
         });
         if (!customer) {
             customer = await this.customerModel.create({
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId: adminObjectId,
                 name,
                 phoneNumber,
             });

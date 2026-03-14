@@ -38,7 +38,6 @@ let CreditorService = class CreditorService {
             if (!nozzle) {
                 throw new common_1.BadRequestException("Invalid nozzle number");
             }
-            // 🔹 find or create customer
             const customer = await this.customerService.findOrCreateCustomer(adminId, dto.creditorName, dto.phoneNumber);
             const saved = await this.creditorModel.create({
                 adminId: new mongoose_2.Types.ObjectId(adminId),
@@ -60,12 +59,7 @@ let CreditorService = class CreditorService {
             };
         }
         catch (error) {
-            if (typeof error === "object" &&
-                error !== null &&
-                "code" in error &&
-                error.code === 11000) {
-                throw new common_1.ConflictException("Phone number already exists");
-            }
+            console.error(error);
             throw error;
         }
     }

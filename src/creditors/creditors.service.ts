@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Creditor } from "./creditors.schema";
@@ -41,7 +37,6 @@ export class CreditorService {
         throw new BadRequestException("Invalid nozzle number");
       }
 
-      // 🔹 find or create customer
       const customer = await this.customerService.findOrCreateCustomer(
         adminId,
         dto.creditorName,
@@ -67,16 +62,8 @@ export class CreditorService {
         message: "Credit entry added successfully",
         data: saved,
       };
-    } catch (error: unknown) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        (error as { code: number }).code === 11000
-      ) {
-        throw new ConflictException("Phone number already exists");
-      }
-
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   }

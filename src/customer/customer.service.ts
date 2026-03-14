@@ -51,14 +51,16 @@ export class CustomerService {
     name: string,
     phoneNumber: string,
   ) {
+    const adminObjectId = new Types.ObjectId(adminId);
+
     let customer = await this.customerModel.findOne({
-      adminId: new Types.ObjectId(adminId),
-      phoneNumber,
+      adminId: adminObjectId,
+      phoneNumber: phoneNumber,
     });
 
     if (!customer) {
       customer = await this.customerModel.create({
-        adminId: new Types.ObjectId(adminId),
+        adminId: adminObjectId,
         name,
         phoneNumber,
       });

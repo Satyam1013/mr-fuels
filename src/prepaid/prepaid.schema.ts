@@ -7,6 +7,9 @@ export class Prepaid extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: "Machine", required: true, index: true })
+  machineId!: Types.ObjectId;
+
   @Prop({ type: Types.ObjectId, ref: "Customer", required: true })
   customerId!: Types.ObjectId;
 
@@ -33,9 +36,6 @@ export class Prepaid extends Document {
 
   @Prop()
   photoUrl?: string;
-
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true, index: true })
-  machineId!: Types.ObjectId;
 
   @Prop({ required: true })
   nozzleNumber!: number;
