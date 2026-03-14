@@ -61,7 +61,9 @@ let PumpDetailsService = class PumpDetailsService {
     }
     // 🔹 Update PumpDetails
     async updatePumpDetails(adminId, dto) {
-        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+        const pumpDetails = await this.pumpDetailsModel.findOne({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
         if (!pumpDetails)
             throw new common_1.NotFoundException("Pump details not found");
         const tankExists = await this.tankModel.findOne({
@@ -75,6 +77,7 @@ let PumpDetailsService = class PumpDetailsService {
             tank: new mongoose_2.Types.ObjectId(dto.tank),
             pumpTime: dto.pumpTime,
             pumpHours: dto.pumpHours,
+            numberOfShifts: dto.numberOfShifts,
             dailyCloseReportTime: dto.dailyCloseReportTime,
             is24Hour: dto.is24Hour ?? false,
         };
@@ -84,7 +87,9 @@ let PumpDetailsService = class PumpDetailsService {
     }
     // 🔹 Delete PumpDetails
     async deletePumpDetails(adminId) {
-        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId });
+        const pumpDetails = await this.pumpDetailsModel.findOne({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
         if (!pumpDetails)
             throw new common_1.NotFoundException("Pump details not found");
         await this.pumpDetailsModel.findByIdAndDelete(pumpDetails._id);
