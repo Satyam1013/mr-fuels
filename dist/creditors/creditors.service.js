@@ -18,10 +18,12 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const creditors_schema_1 = require("./creditors.schema");
 const machines_schema_1 = require("../machines/machines.schema");
+const customer_service_1 = require("../customer/customer.service");
 let CreditorService = class CreditorService {
-    constructor(creditorModel, machineModel) {
+    constructor(creditorModel, machineModel, customerService) {
         this.creditorModel = creditorModel;
         this.machineModel = machineModel;
+        this.customerService = customerService;
     }
     async create(adminId, dto) {
         try {
@@ -36,8 +38,11 @@ let CreditorService = class CreditorService {
             if (!nozzle) {
                 throw new common_1.BadRequestException("Invalid nozzle number");
             }
+            // 🔹 find or create customer
+            const customer = await this.customerService.findOrCreateCustomer(adminId, dto.creditorName, dto.phoneNumber);
             const saved = await this.creditorModel.create({
                 adminId: new mongoose_2.Types.ObjectId(adminId),
+                customerId: customer._id,
                 machineId: new mongoose_2.Types.ObjectId(dto.machineId),
                 nozzleNumber: dto.nozzleNumber,
                 creditorName: dto.creditorName,
@@ -76,5 +81,6 @@ exports.CreditorService = CreditorService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
     __param(1, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        customer_service_1.CustomerService])
 ], CreditorService);

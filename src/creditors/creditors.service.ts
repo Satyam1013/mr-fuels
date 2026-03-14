@@ -8,6 +8,7 @@ import { Model, Types } from "mongoose";
 import { Creditor } from "./creditors.schema";
 import { CreateCreditorDto } from "./creditors.dto";
 import { Machine } from "../machines/machines.schema";
+import { CustomerService } from "../customer/customer.service";
 
 @Injectable()
 export class CreditorService {
@@ -17,6 +18,8 @@ export class CreditorService {
 
     @InjectModel(Machine.name)
     private machineModel: Model<Machine>,
+
+    private customerService: CustomerService,
   ) {}
 
   async create(adminId: string, dto: CreateCreditorDto) {
@@ -38,8 +41,16 @@ export class CreditorService {
         throw new BadRequestException("Invalid nozzle number");
       }
 
+      // 🔹 find or create customer
+      const customer = await this.customerService.findOrCreateCustomer(
+        adminId,
+        dto.creditorName,
+        dto.phoneNumber,
+      );
+
       const saved = await this.creditorModel.create({
         adminId: new Types.ObjectId(adminId),
+        customerId: customer._id,
         machineId: new Types.ObjectId(dto.machineId),
         nozzleNumber: dto.nozzleNumber,
         creditorName: dto.creditorName,

@@ -26,3 +26,5 @@ export class Customer extends Document {
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(Customer);
+
+CustomerSchema.index({ adminId: 1, phoneNumber: 1 }, { unique: true });

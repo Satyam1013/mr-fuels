@@ -13,6 +13,7 @@ const prepaid_schema_1 = require("./prepaid.schema");
 const prepaid_service_1 = require("./prepaid.service");
 const prepaid_controller_1 = require("./prepaid.controller");
 const machines_schema_1 = require("../machines/machines.schema");
+const customer_module_1 = require("../customer/customer.module");
 let PrepaidModule = class PrepaidModule {
 };
 exports.PrepaidModule = PrepaidModule;
@@ -23,6 +24,7 @@ exports.PrepaidModule = PrepaidModule = __decorate([
                 { name: prepaid_schema_1.Prepaid.name, schema: prepaid_schema_1.PrepaidSchema },
                 { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
             ]),
+            customer_module_1.CustomerModule,
         ],
         controllers: [prepaid_controller_1.PrepaidController],
         providers: [prepaid_service_1.PrepaidService],

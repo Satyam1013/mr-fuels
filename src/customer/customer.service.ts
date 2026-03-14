@@ -45,4 +45,25 @@ export class CustomerService {
 
     return { message: "Customer deleted successfully" };
   }
+
+  async findOrCreateCustomer(
+    adminId: string,
+    name: string,
+    phoneNumber: string,
+  ) {
+    let customer = await this.customerModel.findOne({
+      adminId: new Types.ObjectId(adminId),
+      phoneNumber,
+    });
+
+    if (!customer) {
+      customer = await this.customerModel.create({
+        adminId: new Types.ObjectId(adminId),
+        name,
+        phoneNumber,
+      });
+    }
+
+    return customer;
+  }
 }

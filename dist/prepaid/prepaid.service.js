@@ -18,10 +18,12 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const prepaid_schema_1 = require("./prepaid.schema");
 const machines_schema_1 = require("../machines/machines.schema");
+const customer_service_1 = require("../customer/customer.service");
 let PrepaidService = class PrepaidService {
-    constructor(prepaidModel, machineModel) {
+    constructor(prepaidModel, machineModel, customerService) {
         this.prepaidModel = prepaidModel;
         this.machineModel = machineModel;
+        this.customerService = customerService;
     }
     async create(adminId, dto) {
         const machine = await this.machineModel.findOne({
@@ -35,8 +37,10 @@ let PrepaidService = class PrepaidService {
         if (!nozzle) {
             throw new common_1.BadRequestException("Invalid nozzle number");
         }
+        const customer = await this.customerService.findOrCreateCustomer(adminId, dto.partyName, dto.phoneNumber);
         const saved = await this.prepaidModel.create({
             adminId: new mongoose_2.Types.ObjectId(adminId),
+            customerId: customer._id,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
             nozzleNumber: dto.nozzleNumber,
             partyName: dto.partyName,
@@ -65,5 +69,6 @@ exports.PrepaidService = PrepaidService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
     __param(1, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        customer_service_1.CustomerService])
 ], PrepaidService);

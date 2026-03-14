@@ -47,3 +47,4 @@ exports.Customer = Customer = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Customer);
 exports.CustomerSchema = mongoose_1.SchemaFactory.createForClass(Customer);
+exports.CustomerSchema.index({ adminId: 1, phoneNumber: 1 }, { unique: true });

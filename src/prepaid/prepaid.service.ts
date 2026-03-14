@@ -4,6 +4,7 @@ import { Model, Types } from "mongoose";
 import { Prepaid } from "./prepaid.schema";
 import { CreatePrepaidDto } from "./prepaid.dto";
 import { Machine } from "../machines/machines.schema";
+import { CustomerService } from "../customer/customer.service";
 
 @Injectable()
 export class PrepaidService {
@@ -13,6 +14,8 @@ export class PrepaidService {
 
     @InjectModel(Machine.name)
     private machineModel: Model<Machine>,
+
+    private customerService: CustomerService,
   ) {}
 
   async create(adminId: string, dto: CreatePrepaidDto) {
@@ -33,8 +36,15 @@ export class PrepaidService {
       throw new BadRequestException("Invalid nozzle number");
     }
 
+    const customer = await this.customerService.findOrCreateCustomer(
+      adminId,
+      dto.partyName,
+      dto.phoneNumber,
+    );
+
     const saved = await this.prepaidModel.create({
       adminId: new Types.ObjectId(adminId),
+      customerId: customer._id,
       machineId: new Types.ObjectId(dto.machineId),
       nozzleNumber: dto.nozzleNumber,
       partyName: dto.partyName,
