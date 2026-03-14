@@ -26,6 +26,8 @@ import { CashCollectionModule } from "./cash-collection/cash-collection.module";
 import { DigitalPaymentModule } from "./digital-payment/digital-payment.module";
 import { MachineCalculationModule } from "./machine-calculation/machine-calculation.module";
 import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-product-sales.module";
+import { ShiftStatusModule } from "./shift-status/shift-status.module";
+import { CustomerModule } from "./customer/customer.module";
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-prod
     DigitalPaymentModule,
     MachineCalculationModule,
     NonFuelProductSellModule,
+    ShiftStatusModule,
+    CustomerModule,
   ],
   providers: [],
 })

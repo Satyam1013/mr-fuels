@@ -1,0 +1,81 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShiftStatusSchema = exports.ShiftStatus = exports.ClosedBy = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+var ClosedBy;
+(function (ClosedBy) {
+    ClosedBy["STAFF"] = "staff";
+    ClosedBy["MANAGER"] = "manager";
+    ClosedBy["OWNER"] = "owner";
+})(ClosedBy || (exports.ClosedBy = ClosedBy = {}));
+class Shift {
+}
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Shift.prototype, "shiftId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Shift.prototype, "name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Shift.prototype, "startTime", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Shift.prototype, "endTime", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: "Pending" }),
+    __metadata("design:type", String)
+], Shift.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: ClosedBy }),
+    __metadata("design:type", String)
+], Shift.prototype, "closedBy", void 0);
+let ShiftStatus = class ShiftStatus extends mongoose_2.Document {
+};
+exports.ShiftStatus = ShiftStatus;
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], ShiftStatus.prototype, "adminId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], ShiftStatus.prototype, "date", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], ShiftStatus.prototype, "totalShifts", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Shift }),
+    __metadata("design:type", Shift)
+], ShiftStatus.prototype, "currentShift", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [Shift] }),
+    __metadata("design:type", Array)
+], ShiftStatus.prototype, "shifts", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], ShiftStatus.prototype, "dailyClose", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Sales" }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], ShiftStatus.prototype, "salesId", void 0);
+exports.ShiftStatus = ShiftStatus = __decorate([
+    (0, mongoose_1.Schema)({ timestamps: true })
+], ShiftStatus);
+exports.ShiftStatusSchema = mongoose_1.SchemaFactory.createForClass(ShiftStatus);
