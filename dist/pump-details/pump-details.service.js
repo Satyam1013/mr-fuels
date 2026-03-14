@@ -31,8 +31,9 @@ let PumpDetailsService = class PumpDetailsService {
             throw new common_1.NotFoundException("Admin not found");
         }
         const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
+        const tankIdObj = new mongoose_2.Types.ObjectId(dto.tank);
         const tankExists = await this.tankModel.findOne({
-            _id: new mongoose_2.Types.ObjectId(dto.tank),
+            _id: tankIdObj,
             adminId: adminIdObj,
         });
         if (!tankExists) {
@@ -47,7 +48,7 @@ let PumpDetailsService = class PumpDetailsService {
         const payload = {
             adminId: adminIdObj,
             ...dto,
-            tank: new mongoose_2.Types.ObjectId(dto.tank),
+            tank: tankIdObj,
         };
         return this.pumpDetailsModel.create(payload);
     }
@@ -59,40 +60,42 @@ let PumpDetailsService = class PumpDetailsService {
             throw new common_1.NotFoundException("Pump details not found");
         return pumpDetails;
     }
-    // 🔹 Update PumpDetails
     async updatePumpDetails(adminId, dto) {
+        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         const pumpDetails = await this.pumpDetailsModel.findOne({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId: adminIdObj,
         });
-        if (!pumpDetails)
+        if (!pumpDetails) {
             throw new common_1.NotFoundException("Pump details not found");
-        const tankExists = await this.tankModel.findOne({
-            _id: new mongoose_2.Types.ObjectId(dto.tank),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
-        });
-        if (!tankExists)
-            throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
+        }
+        if (dto.tank) {
+            const tankExists = await this.tankModel.findOne({
+                _id: new mongoose_2.Types.ObjectId(dto.tank),
+                adminId: adminIdObj,
+            });
+            if (!tankExists) {
+                throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
+            }
+        }
         const payload = {
             fuelPartner: dto.fuelPartner,
-            tank: new mongoose_2.Types.ObjectId(dto.tank),
-            pumpTime: dto.pumpTime,
             pumpHours: dto.pumpHours,
             numberOfShifts: dto.numberOfShifts,
+            pumpTime: dto.pumpTime,
             dailyCloseReportTime: dto.dailyCloseReportTime,
-            is24Hour: dto.is24Hour ?? false,
+            is24Hour: dto.is24Hour,
         };
-        return this.pumpDetailsModel.findByIdAndUpdate(pumpDetails._id, payload, {
-            new: true,
-        });
+        if (dto.tank) {
+            payload.tank = new mongoose_2.Types.ObjectId(dto.tank);
+        }
+        return this.pumpDetailsModel.findOneAndUpdate({ adminId: adminIdObj }, payload, { new: true });
     }
-    // 🔹 Delete PumpDetails
     async deletePumpDetails(adminId) {
-        const pumpDetails = await this.pumpDetailsModel.findOne({
+        const deleted = await this.pumpDetailsModel.findOneAndDelete({
             adminId: new mongoose_2.Types.ObjectId(adminId),
         });
-        if (!pumpDetails)
+        if (!deleted)
             throw new common_1.NotFoundException("Pump details not found");
-        await this.pumpDetailsModel.findByIdAndDelete(pumpDetails._id);
         return { message: "Pump details deleted successfully" };
     }
 };

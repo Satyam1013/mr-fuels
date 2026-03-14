@@ -1,5 +1,13 @@
-import { IsMongoId, IsNumber, IsString, ValidateNested } from "class-validator";
+import {
+  IsBoolean,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { PartialType } from "@nestjs/mapped-types";
 
 class PumpTimeDto {
   @IsString()
@@ -29,6 +37,9 @@ export class CreatePumpDetailsDto {
   @IsString()
   dailyCloseReportTime!: string;
 
-  @Type(() => Boolean)
+  @IsBoolean()
+  @IsOptional()
   is24Hour?: boolean;
 }
+
+export class UpdatePumpDetailsDto extends PartialType(CreatePumpDetailsDto) {}

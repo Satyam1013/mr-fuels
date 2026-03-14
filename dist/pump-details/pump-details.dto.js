@@ -9,9 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePumpDetailsDto = void 0;
+exports.UpdatePumpDetailsDto = exports.CreatePumpDetailsDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const mapped_types_1 = require("@nestjs/mapped-types");
 class PumpTimeDto {
 }
 __decorate([
@@ -51,6 +52,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePumpDetailsDto.prototype, "dailyCloseReportTime", void 0);
 __decorate([
-    (0, class_transformer_1.Type)(() => Boolean),
+    (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], CreatePumpDetailsDto.prototype, "is24Hour", void 0);
+class UpdatePumpDetailsDto extends (0, mapped_types_1.PartialType)(CreatePumpDetailsDto) {
+}
+exports.UpdatePumpDetailsDto = UpdatePumpDetailsDto;

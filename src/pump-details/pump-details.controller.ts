@@ -8,7 +8,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { PumpDetailsService } from "./pump-details.service";
-import { CreatePumpDetailsDto } from "./pump-details.dto";
+import { CreatePumpDetailsDto, UpdatePumpDetailsDto } from "./pump-details.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
 
 @Controller("pump-details")
@@ -31,7 +31,7 @@ export class PumpDetailsController {
   @Patch()
   async updatePumpDetails(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreatePumpDetailsDto,
+    @Body() dto: UpdatePumpDetailsDto,
   ) {
     return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
   }

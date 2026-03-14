@@ -7,7 +7,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { PumpDetails } from "./pump-details.schema";
 import { Admin } from "../admin/admin.schema";
-import { CreatePumpDetailsDto } from "./pump-details.dto";
+import { CreatePumpDetailsDto, UpdatePumpDetailsDto } from "./pump-details.dto";
 import { TankDetails } from "../tank-details/tank-details.schema";
 
 @Injectable()
@@ -30,9 +30,10 @@ export class PumpDetailsService {
     }
 
     const adminIdObj = new Types.ObjectId(adminId);
+    const tankIdObj = new Types.ObjectId(dto.tank);
 
     const tankExists = await this.tankModel.findOne({
-      _id: new Types.ObjectId(dto.tank),
+      _id: tankIdObj,
       adminId: adminIdObj,
     });
 
@@ -53,7 +54,7 @@ export class PumpDetailsService {
     const payload = {
       adminId: adminIdObj,
       ...dto,
-      tank: new Types.ObjectId(dto.tank),
+      tank: tankIdObj,
     };
 
     return this.pumpDetailsModel.create(payload);
@@ -69,45 +70,57 @@ export class PumpDetailsService {
     return pumpDetails;
   }
 
-  // 🔹 Update PumpDetails
-  async updatePumpDetails(adminId: string, dto: CreatePumpDetailsDto) {
+  async updatePumpDetails(adminId: string, dto: UpdatePumpDetailsDto) {
+    const adminIdObj = new Types.ObjectId(adminId);
+
     const pumpDetails = await this.pumpDetailsModel.findOne({
-      adminId: new Types.ObjectId(adminId),
+      adminId: adminIdObj,
     });
-    if (!pumpDetails) throw new NotFoundException("Pump details not found");
 
-    const tankExists = await this.tankModel.findOne({
-      _id: new Types.ObjectId(dto.tank),
-      adminId: new Types.ObjectId(adminId),
-    });
-    if (!tankExists)
-      throw new NotFoundException(
-        "Tank not found or does not belong to this admin",
-      );
+    if (!pumpDetails) {
+      throw new NotFoundException("Pump details not found");
+    }
 
-    const payload = {
+    if (dto.tank) {
+      const tankExists = await this.tankModel.findOne({
+        _id: new Types.ObjectId(dto.tank),
+        adminId: adminIdObj,
+      });
+
+      if (!tankExists) {
+        throw new NotFoundException(
+          "Tank not found or does not belong to this admin",
+        );
+      }
+    }
+
+    const payload: Partial<PumpDetails> = {
       fuelPartner: dto.fuelPartner,
-      tank: new Types.ObjectId(dto.tank),
-      pumpTime: dto.pumpTime,
       pumpHours: dto.pumpHours,
       numberOfShifts: dto.numberOfShifts,
+      pumpTime: dto.pumpTime,
       dailyCloseReportTime: dto.dailyCloseReportTime,
-      is24Hour: dto.is24Hour ?? false,
+      is24Hour: dto.is24Hour,
     };
 
-    return this.pumpDetailsModel.findByIdAndUpdate(pumpDetails._id, payload, {
-      new: true,
-    });
+    if (dto.tank) {
+      payload.tank = new Types.ObjectId(dto.tank);
+    }
+
+    return this.pumpDetailsModel.findOneAndUpdate(
+      { adminId: adminIdObj },
+      payload,
+      { new: true },
+    );
   }
 
-  // 🔹 Delete PumpDetails
   async deletePumpDetails(adminId: string) {
-    const pumpDetails = await this.pumpDetailsModel.findOne({
+    const deleted = await this.pumpDetailsModel.findOneAndDelete({
       adminId: new Types.ObjectId(adminId),
     });
-    if (!pumpDetails) throw new NotFoundException("Pump details not found");
 
-    await this.pumpDetailsModel.findByIdAndDelete(pumpDetails._id);
+    if (!deleted) throw new NotFoundException("Pump details not found");
+
     return { message: "Pump details deleted successfully" };
   }
 }

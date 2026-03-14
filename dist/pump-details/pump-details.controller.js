@@ -54,7 +54,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, pump_details_dto_1.CreatePumpDetailsDto]),
+    __metadata("design:paramtypes", [Object, pump_details_dto_1.UpdatePumpDetailsDto]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "updatePumpDetails", null);
 __decorate([
