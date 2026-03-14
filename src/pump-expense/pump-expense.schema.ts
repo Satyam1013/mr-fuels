@@ -7,6 +7,9 @@ export class PumpExpense extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
+  machineId!: Types.ObjectId;
+
   @Prop({ required: true })
   name!: string;
 
@@ -30,9 +33,6 @@ export class PumpExpense extends Document {
 
   @Prop()
   photoUrl?: string;
-
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
-  machineId!: Types.ObjectId;
 
   @Prop({ required: true })
   nozzleNumber!: number;

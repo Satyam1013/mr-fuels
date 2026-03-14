@@ -22,7 +22,9 @@ export class PersonalExpenseService {
   }
 
   async findAll(adminId: string) {
-    return this.personalExpenseModel.find({ adminId }).sort({ createdAt: -1 });
+    return this.personalExpenseModel
+      .find({ adminId: new Types.ObjectId(adminId) })
+      .sort({ createdAt: -1 });
   }
 
   async findOne(id: string) {

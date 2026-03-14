@@ -21,6 +21,10 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpExpense.prototype, "adminId", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], PumpExpense.prototype, "machineId", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], PumpExpense.prototype, "name", void 0);
@@ -52,10 +56,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpExpense.prototype, "photoUrl", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], PumpExpense.prototype, "machineId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
