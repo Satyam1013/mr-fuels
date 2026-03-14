@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreditorSchema = exports.Creditor = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
@@ -20,10 +21,6 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Creditor.prototype, "adminId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Customer", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Creditor.prototype, "customerId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
@@ -42,7 +39,7 @@ __decorate([
 ], Creditor.prototype, "amount", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
-    __metadata("design:type", String)
+    __metadata("design:type", typeof (_a = typeof creditors_enum_1.CreditBy !== "undefined" && creditors_enum_1.CreditBy) === "function" ? _a : Object)
 ], Creditor.prototype, "creditBy", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),

@@ -7,6 +7,9 @@ export class Prepaid extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: "Customer", required: true })
+  customerId!: Types.ObjectId;
+
   @Prop({ required: true })
   partyName!: string;
 

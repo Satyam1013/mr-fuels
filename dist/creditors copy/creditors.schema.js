@@ -21,10 +21,6 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Creditor.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Customer", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Creditor.prototype, "customerId", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Creditor.prototype, "creditorName", void 0);
