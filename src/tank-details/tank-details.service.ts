@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TankDetails } from "./tank-details.schema";
@@ -15,21 +11,24 @@ export class TankService {
     private tankModel: Model<TankDetails>,
   ) {}
 
-  // 🔹 Create
   async create(adminId: string, dto: CreateTankDetailsDto) {
     const adminIdObj = new Types.ObjectId(adminId);
 
-    const tankExists = await this.tankModel.findOne({
-      adminId: adminIdObj,
-    });
+    const existing = await this.tankModel.findOne({ adminId: adminIdObj });
 
-    if (tankExists) {
-      throw new ConflictException("Tank already exist for this admin");
+    if (existing) {
+      existing.tanks.push(...dto.tanks);
+      await existing.save();
+
+      return {
+        message: "Tanks added successfully",
+        data: existing,
+      };
     }
 
     const tank = await this.tankModel.create({
       adminId: adminIdObj,
-      ...dto,
+      tanks: dto.tanks,
     });
 
     return {
@@ -37,13 +36,12 @@ export class TankService {
       data: tank,
     };
   }
-  // 🔹 Get All (by admin)
+
   async findAll(adminId: string) {
     const objectAdminId = new Types.ObjectId(adminId);
     return this.tankModel.find({ adminId: objectAdminId }).lean();
   }
 
-  // 🔹 Get Single
   async findOne(id: string) {
     const tank = await this.tankModel.findById(id).lean();
 
@@ -52,11 +50,14 @@ export class TankService {
     return tank;
   }
 
-  // 🔹 Update
-  async update(id: string, dto: UpdateTankDetailsDto) {
-    const updated = await this.tankModel.findByIdAndUpdate(id, dto, {
-      new: true,
-    });
+  async update(adminId: string, id: string, dto: UpdateTankDetailsDto) {
+    const adminIdObj = new Types.ObjectId(adminId);
+
+    const updated = await this.tankModel.findOneAndUpdate(
+      { _id: id, adminId: adminIdObj },
+      dto,
+      { new: true },
+    );
 
     if (!updated) throw new NotFoundException("Tank not found");
 
@@ -66,7 +67,6 @@ export class TankService {
     };
   }
 
-  // 🔹 Delete
   async remove(id: string) {
     const deleted = await this.tankModel.findByIdAndDelete(id);
 

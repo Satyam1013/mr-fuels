@@ -32,8 +32,12 @@ export class TankController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() dto: UpdateTankDetailsDto) {
-    return this.tankService.update(id, dto);
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Param("id") id: string,
+    @Body() dto: UpdateTankDetailsDto,
+  ) {
+    return this.tankService.update(req.user.adminId, id, dto);
   }
 
   @Delete(":id")

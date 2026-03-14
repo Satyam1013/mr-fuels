@@ -21,41 +21,39 @@ let TankService = class TankService {
     constructor(tankModel) {
         this.tankModel = tankModel;
     }
-    // 🔹 Create
     async create(adminId, dto) {
         const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
-        const tankExists = await this.tankModel.findOne({
-            adminId: adminIdObj,
-        });
-        if (tankExists) {
-            throw new common_1.ConflictException("Tank already exist for this admin");
+        const existing = await this.tankModel.findOne({ adminId: adminIdObj });
+        if (existing) {
+            existing.tanks.push(...dto.tanks);
+            await existing.save();
+            return {
+                message: "Tanks added successfully",
+                data: existing,
+            };
         }
         const tank = await this.tankModel.create({
             adminId: adminIdObj,
-            ...dto,
+            tanks: dto.tanks,
         });
         return {
             message: "Tank details created successfully",
             data: tank,
         };
     }
-    // 🔹 Get All (by admin)
     async findAll(adminId) {
         const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
         return this.tankModel.find({ adminId: objectAdminId }).lean();
     }
-    // 🔹 Get Single
     async findOne(id) {
         const tank = await this.tankModel.findById(id).lean();
         if (!tank)
             throw new common_1.NotFoundException("Tank not found");
         return tank;
     }
-    // 🔹 Update
-    async update(id, dto) {
-        const updated = await this.tankModel.findByIdAndUpdate(id, dto, {
-            new: true,
-        });
+    async update(adminId, id, dto) {
+        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
+        const updated = await this.tankModel.findOneAndUpdate({ _id: id, adminId: adminIdObj }, dto, { new: true });
         if (!updated)
             throw new common_1.NotFoundException("Tank not found");
         return {
@@ -63,7 +61,6 @@ let TankService = class TankService {
             data: updated,
         };
     }
-    // 🔹 Delete
     async remove(id) {
         const deleted = await this.tankModel.findByIdAndDelete(id);
         if (!deleted)
