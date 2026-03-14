@@ -21,17 +21,36 @@ __decorate([
 UpiApp = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], UpiApp);
+let PosMachine = class PosMachine {
+};
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], PosMachine.prototype, "name", void 0);
+PosMachine = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], PosMachine);
 let TransactionDetails = class TransactionDetails extends mongoose_2.Document {
 };
 exports.TransactionDetails = TransactionDetails;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
+    (0, mongoose_1.Prop)({
+        type: mongoose_2.Types.ObjectId,
+        ref: "Admin",
+        required: true,
+        unique: true,
+        index: true,
+    }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], TransactionDetails.prototype, "adminId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: [UpiApp], default: [] }),
     __metadata("design:type", Array)
 ], TransactionDetails.prototype, "upiApps", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [PosMachine], default: [] }),
+    __metadata("design:type", Array)
+], TransactionDetails.prototype, "posMachines", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)

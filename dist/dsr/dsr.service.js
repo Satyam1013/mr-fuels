@@ -52,6 +52,31 @@ let DsrDetailsService = class DsrDetailsService {
     async getByAdmin(adminId) {
         return this.dsrModel.findOne({ adminId });
     }
+    async updateDsr(adminId, dto) {
+        for (const tank of dto.tankConfig) {
+            if (tank.inputType === dsr_enum_1.TankInputType.CHART && !tank.dsrChart) {
+                throw new Error(`DSR Chart is required for tank ${tank.tankNo}`);
+            }
+            if (tank.inputType === dsr_enum_1.TankInputType.MANUAL &&
+                (!tank.capacity || !tank.diameter || !tank.length || !tank.tankType)) {
+                throw new Error(`All manual fields are required for tank ${tank.tankNo}`);
+            }
+        }
+        const dsr = await this.dsrModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, { tankConfig: dto.tankConfig }, { new: true });
+        if (!dsr) {
+            throw new common_1.NotFoundException("DSR details not found");
+        }
+        return dsr;
+    }
+    async deleteDsr(adminId) {
+        const dsr = await this.dsrModel.findOneAndDelete({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
+        if (!dsr) {
+            throw new common_1.NotFoundException("DSR details not found");
+        }
+        return { message: "DSR details deleted successfully" };
+    }
 };
 exports.DsrDetailsService = DsrDetailsService;
 exports.DsrDetailsService = DsrDetailsService = __decorate([

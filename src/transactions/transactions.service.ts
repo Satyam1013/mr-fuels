@@ -38,4 +38,45 @@ export class TransactionDetailsService {
       ...dto,
     });
   }
+
+  async getTransactionDetails(adminId: string) {
+    const transaction = await this.transactionDetailsModel.findOne({
+      adminId: new Types.ObjectId(adminId),
+    });
+
+    if (!transaction) {
+      throw new NotFoundException("Transaction details not found");
+    }
+
+    return transaction;
+  }
+
+  async updateTransactionDetails(
+    adminId: string,
+    dto: CreateTransactionDetailsDto,
+  ) {
+    const transaction = await this.transactionDetailsModel.findOneAndUpdate(
+      { adminId: new Types.ObjectId(adminId) },
+      dto,
+      { new: true },
+    );
+
+    if (!transaction) {
+      throw new NotFoundException("Transaction details not found");
+    }
+
+    return transaction;
+  }
+
+  async deleteTransactionDetails(adminId: string) {
+    const transaction = await this.transactionDetailsModel.findOneAndDelete({
+      adminId: new Types.ObjectId(adminId),
+    });
+
+    if (!transaction) {
+      throw new NotFoundException("Transaction details not found");
+    }
+
+    return { message: "Transaction details deleted successfully" };
+  }
 }

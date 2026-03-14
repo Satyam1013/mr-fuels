@@ -6,11 +6,21 @@ class UpiAppDto {
   name!: string;
 }
 
+class PosMachineDto {
+  @IsString()
+  name!: string;
+}
+
 export class CreateTransactionDetailsDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpiAppDto)
   upiApps!: UpiAppDto[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PosMachineDto)
+  posMachines!: PosMachineDto[];
 
   @IsString()
   swipeMachine!: string;

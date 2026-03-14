@@ -23,6 +23,15 @@ let TransactionDetailsController = class TransactionDetailsController {
     async addTransactionDetails(req, dto) {
         return this.transactionDetailsService.addTransactionDetails(req.user.adminId, dto);
     }
+    async getTransactionDetails(req) {
+        return this.transactionDetailsService.getTransactionDetails(req.user.adminId);
+    }
+    async updateTransactionDetails(req, dto) {
+        return this.transactionDetailsService.updateTransactionDetails(req.user.adminId, dto);
+    }
+    async deleteTransactionDetails(req) {
+        return this.transactionDetailsService.deleteTransactionDetails(req.user.adminId);
+    }
 };
 exports.TransactionDetailsController = TransactionDetailsController;
 __decorate([
@@ -33,6 +42,28 @@ __decorate([
     __metadata("design:paramtypes", [Object, transactions_dto_1.CreateTransactionDetailsDto]),
     __metadata("design:returntype", Promise)
 ], TransactionDetailsController.prototype, "addTransactionDetails", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TransactionDetailsController.prototype, "getTransactionDetails", null);
+__decorate([
+    (0, common_1.Patch)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, transactions_dto_1.CreateTransactionDetailsDto]),
+    __metadata("design:returntype", Promise)
+], TransactionDetailsController.prototype, "updateTransactionDetails", null);
+__decorate([
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TransactionDetailsController.prototype, "deleteTransactionDetails", null);
 exports.TransactionDetailsController = TransactionDetailsController = __decorate([
     (0, common_1.Controller)("transactions"),
     __metadata("design:paramtypes", [transactions_service_1.TransactionDetailsService])

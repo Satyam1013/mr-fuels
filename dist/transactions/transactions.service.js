@@ -40,6 +40,31 @@ let TransactionDetailsService = class TransactionDetailsService {
             ...dto,
         });
     }
+    async getTransactionDetails(adminId) {
+        const transaction = await this.transactionDetailsModel.findOne({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
+        if (!transaction) {
+            throw new common_1.NotFoundException("Transaction details not found");
+        }
+        return transaction;
+    }
+    async updateTransactionDetails(adminId, dto) {
+        const transaction = await this.transactionDetailsModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, dto, { new: true });
+        if (!transaction) {
+            throw new common_1.NotFoundException("Transaction details not found");
+        }
+        return transaction;
+    }
+    async deleteTransactionDetails(adminId) {
+        const transaction = await this.transactionDetailsModel.findOneAndDelete({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+        });
+        if (!transaction) {
+            throw new common_1.NotFoundException("Transaction details not found");
+        }
+        return { message: "Transaction details deleted successfully" };
+    }
 };
 exports.TransactionDetailsService = TransactionDetailsService;
 exports.TransactionDetailsService = TransactionDetailsService = __decorate([

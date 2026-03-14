@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { DsrDetails } from "./dsr.schema";
@@ -54,5 +54,46 @@ export class DsrDetailsService {
 
   async getByAdmin(adminId: string) {
     return this.dsrModel.findOne({ adminId });
+  }
+
+  async updateDsr(adminId: string, dto: CreateDsrDetailsDto) {
+    for (const tank of dto.tankConfig) {
+      if (tank.inputType === TankInputType.CHART && !tank.dsrChart) {
+        throw new Error(`DSR Chart is required for tank ${tank.tankNo}`);
+      }
+
+      if (
+        tank.inputType === TankInputType.MANUAL &&
+        (!tank.capacity || !tank.diameter || !tank.length || !tank.tankType)
+      ) {
+        throw new Error(
+          `All manual fields are required for tank ${tank.tankNo}`,
+        );
+      }
+    }
+
+    const dsr = await this.dsrModel.findOneAndUpdate(
+      { adminId: new Types.ObjectId(adminId) },
+      { tankConfig: dto.tankConfig },
+      { new: true },
+    );
+
+    if (!dsr) {
+      throw new NotFoundException("DSR details not found");
+    }
+
+    return dsr;
+  }
+
+  async deleteDsr(adminId: string) {
+    const dsr = await this.dsrModel.findOneAndDelete({
+      adminId: new Types.ObjectId(adminId),
+    });
+
+    if (!dsr) {
+      throw new NotFoundException("DSR details not found");
+    }
+
+    return { message: "DSR details deleted successfully" };
   }
 }

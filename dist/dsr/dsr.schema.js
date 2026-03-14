@@ -50,7 +50,13 @@ let DsrDetails = class DsrDetails extends mongoose_2.Document {
 };
 exports.DsrDetails = DsrDetails;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
+    (0, mongoose_1.Prop)({
+        type: mongoose_2.Types.ObjectId,
+        ref: "Admin",
+        required: true,
+        unique: true,
+        index: true,
+    }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], DsrDetails.prototype, "adminId", void 0);
 __decorate([

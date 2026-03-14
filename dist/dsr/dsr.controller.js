@@ -28,6 +28,14 @@ let DsrDetailsController = class DsrDetailsController {
         const adminId = req.user.adminId;
         return this.dsrService.getByAdmin(adminId);
     }
+    async updateDsr(req, dto) {
+        const adminId = req.user.adminId;
+        return this.dsrService.updateDsr(adminId, dto);
+    }
+    async deleteDsr(req) {
+        const adminId = req.user.adminId;
+        return this.dsrService.deleteDsr(adminId);
+    }
 };
 exports.DsrDetailsController = DsrDetailsController;
 __decorate([
@@ -45,6 +53,21 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], DsrDetailsController.prototype, "getMyDsr", null);
+__decorate([
+    (0, common_1.Patch)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, dsr_dto_1.CreateDsrDetailsDto]),
+    __metadata("design:returntype", Promise)
+], DsrDetailsController.prototype, "updateDsr", null);
+__decorate([
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], DsrDetailsController.prototype, "deleteDsr", null);
 exports.DsrDetailsController = DsrDetailsController = __decorate([
     (0, common_1.Controller)("dsr-details"),
     __metadata("design:paramtypes", [dsr_service_1.DsrDetailsService])

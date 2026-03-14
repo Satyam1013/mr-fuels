@@ -18,6 +18,12 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpiAppDto.prototype, "name", void 0);
+class PosMachineDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PosMachineDto.prototype, "name", void 0);
 class CreateTransactionDetailsDto {
 }
 exports.CreateTransactionDetailsDto = CreateTransactionDetailsDto;
@@ -27,6 +33,12 @@ __decorate([
     (0, class_transformer_1.Type)(() => UpiAppDto),
     __metadata("design:type", Array)
 ], CreateTransactionDetailsDto.prototype, "upiApps", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => PosMachineDto),
+    __metadata("design:type", Array)
+], CreateTransactionDetailsDto.prototype, "posMachines", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

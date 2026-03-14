@@ -31,7 +31,13 @@ class TankConfig {
 
 @Schema({ timestamps: true })
 export class DsrDetails extends Document {
-  @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: "Admin",
+    required: true,
+    unique: true,
+    index: true,
+  })
   adminId!: Types.ObjectId;
 
   @Prop({ type: [TankConfig], default: [] })
