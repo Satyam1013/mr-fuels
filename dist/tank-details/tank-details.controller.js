@@ -29,8 +29,8 @@ let TankController = class TankController {
     findOne(id) {
         return this.tankService.findOne(id);
     }
-    update(req, id, dto) {
-        return this.tankService.update(req.user.adminId, id, dto);
+    updateMany(req, dto) {
+        return this.tankService.updateMany(req.user.adminId, dto);
     }
     remove(id) {
         return this.tankService.remove(id);
@@ -60,14 +60,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TankController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(":id"),
+    (0, common_1.Patch)(),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Param)("id")),
-    __param(2, (0, common_1.Body)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, tank_details_dto_1.UpdateTankDetailsDto]),
+    __metadata("design:paramtypes", [Object, tank_details_dto_1.UpdateTankDetailsDto]),
     __metadata("design:returntype", void 0)
-], TankController.prototype, "update", null);
+], TankController.prototype, "updateMany", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),

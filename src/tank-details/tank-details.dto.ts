@@ -1,8 +1,17 @@
-import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
-import { PartialType } from "@nestjs/mapped-types";
+import { Types } from "mongoose";
 
 class TankDto {
+  @IsOptional()
+  _id?: Types.ObjectId;
+
   @IsString()
   capacityKl!: string;
 
@@ -26,4 +35,34 @@ export class CreateTankDetailsDto {
   tanks!: TankDto[];
 }
 
-export class UpdateTankDetailsDto extends PartialType(CreateTankDetailsDto) {}
+export class UpdateTankDto {
+  @IsOptional()
+  _id?: Types.ObjectId;
+
+  @IsOptional()
+  @IsString()
+  capacityKl?: string;
+
+  @IsOptional()
+  @IsString()
+  dsrTankStock?: string;
+
+  @IsOptional()
+  @IsString()
+  fuelType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @IsOptional()
+  @IsNumber()
+  tankNo?: number;
+}
+
+export class UpdateTankDetailsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateTankDto)
+  tanks!: UpdateTankDto[];
+}

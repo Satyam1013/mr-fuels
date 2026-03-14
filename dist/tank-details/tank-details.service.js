@@ -25,12 +25,7 @@ let TankService = class TankService {
         const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         const existing = await this.tankModel.findOne({ adminId: adminIdObj });
         if (existing) {
-            existing.tanks.push(...dto.tanks);
-            await existing.save();
-            return {
-                message: "Tanks added successfully",
-                data: existing,
-            };
+            throw new common_1.ConflictException("Tank details already created for this admin");
         }
         const tank = await this.tankModel.create({
             adminId: adminIdObj,
@@ -51,14 +46,28 @@ let TankService = class TankService {
             throw new common_1.NotFoundException("Tank not found");
         return tank;
     }
-    async update(adminId, id, dto) {
+    async updateMany(adminId, dto) {
         const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
-        const updated = await this.tankModel.findOneAndUpdate({ _id: id, adminId: adminIdObj }, dto, { new: true });
-        if (!updated)
-            throw new common_1.NotFoundException("Tank not found");
+        if (!dto.tanks || dto.tanks.length === 0) {
+            throw new common_1.NotFoundException("No tanks provided for update");
+        }
+        const tankDoc = await this.tankModel.findOne({ adminId: adminIdObj });
+        if (!tankDoc)
+            throw new common_1.NotFoundException("Tank document not found");
+        dto.tanks.forEach((updateTank) => {
+            const tank = tankDoc.tanks.find((t) => updateTank._id && String(t._id) === String(updateTank._id));
+            if (tank) {
+                tank.capacityKl = updateTank.capacityKl ?? tank.capacityKl;
+                tank.dsrTankStock = updateTank.dsrTankStock ?? tank.dsrTankStock;
+                tank.fuelType = updateTank.fuelType ?? tank.fuelType;
+                tank.price = updateTank.price ?? tank.price;
+                tank.tankNo = updateTank.tankNo ?? tank.tankNo;
+            }
+        });
+        await tankDoc.save();
         return {
-            message: "Tank updated successfully",
-            data: updated,
+            message: "Tanks updated successfully",
+            data: tankDoc,
         };
     }
     async remove(id) {

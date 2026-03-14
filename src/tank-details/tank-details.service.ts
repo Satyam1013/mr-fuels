@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TankDetails } from "./tank-details.schema";
@@ -17,13 +21,9 @@ export class TankService {
     const existing = await this.tankModel.findOne({ adminId: adminIdObj });
 
     if (existing) {
-      existing.tanks.push(...dto.tanks);
-      await existing.save();
-
-      return {
-        message: "Tanks added successfully",
-        data: existing,
-      };
+      throw new ConflictException(
+        "Tank details already created for this admin",
+      );
     }
 
     const tank = await this.tankModel.create({
@@ -50,20 +50,36 @@ export class TankService {
     return tank;
   }
 
-  async update(adminId: string, id: string, dto: UpdateTankDetailsDto) {
+  async updateMany(adminId: string, dto: UpdateTankDetailsDto) {
     const adminIdObj = new Types.ObjectId(adminId);
 
-    const updated = await this.tankModel.findOneAndUpdate(
-      { _id: id, adminId: adminIdObj },
-      dto,
-      { new: true },
-    );
+    if (!dto.tanks || dto.tanks.length === 0) {
+      throw new NotFoundException("No tanks provided for update");
+    }
 
-    if (!updated) throw new NotFoundException("Tank not found");
+    const tankDoc = await this.tankModel.findOne({ adminId: adminIdObj });
+
+    if (!tankDoc) throw new NotFoundException("Tank document not found");
+
+    dto.tanks.forEach((updateTank) => {
+      const tank = tankDoc.tanks.find(
+        (t) => updateTank._id && String(t._id) === String(updateTank._id),
+      );
+
+      if (tank) {
+        tank.capacityKl = updateTank.capacityKl ?? tank.capacityKl;
+        tank.dsrTankStock = updateTank.dsrTankStock ?? tank.dsrTankStock;
+        tank.fuelType = updateTank.fuelType ?? tank.fuelType;
+        tank.price = updateTank.price ?? tank.price;
+        tank.tankNo = updateTank.tankNo ?? tank.tankNo;
+      }
+    });
+
+    await tankDoc.save();
 
     return {
-      message: "Tank updated successfully",
-      data: updated,
+      message: "Tanks updated successfully",
+      data: tankDoc,
     };
   }
 

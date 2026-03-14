@@ -9,39 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TankDetailsSchema = exports.TankDetails = void 0;
+exports.TankDetailsSchema = exports.TankDetails = exports.Tank = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let Tank = class Tank {
 };
+exports.Tank = Tank;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Tank.prototype, "capacityKl", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Tank.prototype, "dsrTankStock", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Tank.prototype, "fuelType", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Tank.prototype, "price", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Tank.prototype, "tankNo", void 0);
-Tank = __decorate([
-    (0, mongoose_1.Schema)()
+exports.Tank = Tank = __decorate([
+    (0, mongoose_1.Schema)({ _id: true })
 ], Tank);
 let TankDetails = class TankDetails extends mongoose_2.Document {
 };
 exports.TankDetails = TankDetails;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
+    (0, mongoose_1.Prop)({
+        type: mongoose_2.Types.ObjectId,
+        ref: "Admin",
+        required: true,
+        unique: true,
+        index: true,
+    }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], TankDetails.prototype, "adminId", void 0);
 __decorate([

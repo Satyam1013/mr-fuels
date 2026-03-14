@@ -1,27 +1,35 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-@Schema()
-class Tank {
-  @Prop({ required: true })
+@Schema({ _id: true })
+export class Tank {
+  _id!: Types.ObjectId;
+
+  @Prop()
   capacityKl!: string;
 
-  @Prop({ required: true })
+  @Prop()
   dsrTankStock!: string;
 
-  @Prop({ required: true })
+  @Prop()
   fuelType!: string;
 
-  @Prop({ required: true })
+  @Prop()
   price!: number;
 
-  @Prop({ required: true })
+  @Prop()
   tankNo!: number;
 }
 
 @Schema({ timestamps: true })
 export class TankDetails extends Document {
-  @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: "Admin",
+    required: true,
+    unique: true,
+    index: true,
+  })
   adminId!: Types.ObjectId;
 
   @Prop({ type: [Tank], default: [] })

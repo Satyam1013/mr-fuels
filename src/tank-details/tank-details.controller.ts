@@ -31,13 +31,12 @@ export class TankController {
     return this.tankService.findOne(id);
   }
 
-  @Patch(":id")
-  update(
+  @Patch()
+  updateMany(
     @Req() req: AuthenticatedRequest,
-    @Param("id") id: string,
     @Body() dto: UpdateTankDetailsDto,
   ) {
-    return this.tankService.update(req.user.adminId, id, dto);
+    return this.tankService.updateMany(req.user.adminId, dto);
   }
 
   @Delete(":id")
