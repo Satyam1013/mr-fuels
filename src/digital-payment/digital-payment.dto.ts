@@ -52,12 +52,6 @@ export class CreateDigitalPaymentDto {
   @IsNumber()
   shiftNumber!: number;
 
-  @IsString()
-  machineId!: string;
-
-  @IsNumber()
-  nozzleNumber!: number;
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpiPaymentDto)

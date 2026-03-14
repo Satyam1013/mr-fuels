@@ -48,12 +48,6 @@ export class DigitalPayment extends Document {
   @Prop()
   shiftNumber!: number;
 
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
-  machineId!: Types.ObjectId;
-
-  @Prop({ required: true })
-  nozzleNumber!: number;
-
   @Prop({ type: [UpiPayment], default: [] })
   upiPayments!: UpiPayment[];
 

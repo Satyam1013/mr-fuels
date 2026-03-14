@@ -78,14 +78,6 @@ __decorate([
     __metadata("design:type", Number)
 ], DigitalPayment.prototype, "shiftNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], DigitalPayment.prototype, "machineId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], DigitalPayment.prototype, "nozzleNumber", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ type: [UpiPayment], default: [] }),
     __metadata("design:type", Array)
 ], DigitalPayment.prototype, "upiPayments", void 0);

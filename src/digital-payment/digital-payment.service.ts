@@ -15,7 +15,6 @@ export class DigitalPaymentService {
     const data = new this.digitalPaymentModel({
       ...dto,
       adminId: new Types.ObjectId(adminId),
-      machineId: new Types.ObjectId(dto.machineId),
     });
 
     return data.save();

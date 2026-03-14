@@ -25,7 +25,6 @@ let DigitalPaymentService = class DigitalPaymentService {
         const data = new this.digitalPaymentModel({
             ...dto,
             adminId: new mongoose_2.Types.ObjectId(adminId),
-            machineId: new mongoose_2.Types.ObjectId(dto.machineId),
         });
         return data.save();
     }
