@@ -17,9 +17,12 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const shift_status_schema_1 = require("./shift-status.schema");
+const pump_details_schema_1 = require("../pump-details/pump-details.schema");
+const shift_status_enum_1 = require("./shift-status.enum");
 let ShiftStatusService = class ShiftStatusService {
-    constructor(shiftStatusModel) {
+    constructor(shiftStatusModel, pumpDetailsModel) {
         this.shiftStatusModel = shiftStatusModel;
+        this.pumpDetailsModel = pumpDetailsModel;
     }
     async create(adminId, dto) {
         const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
@@ -35,75 +38,111 @@ let ShiftStatusService = class ShiftStatusService {
             adminId: adminObjectId,
         });
     }
+    buildTemplate(pumpDetails, date, shiftId) {
+        return {
+            date,
+            totalShifts: pumpDetails.numberOfShifts,
+            currentShift: {
+                shiftId: 1,
+                staffId: shiftId,
+                name: `Shift 1`,
+                startTime: pumpDetails.pumpTime.start,
+                endTime: "",
+                status: "Active",
+            },
+            shifts: [],
+            dailyProgress: {
+                completedShifts: 0,
+                pendingShifts: pumpDetails.numberOfShifts,
+                overallCompletionPercent: 0,
+            },
+            dailyClose: false,
+            pumpStatus: "open",
+        };
+    }
     async getByDate(adminId, date) {
         const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
+        const pumpDetails = await this.pumpDetailsModel
+            .findOne({ adminId: adminObjectId })
+            .lean();
+        if (!pumpDetails) {
+            throw new Error("Pump details not found");
+        }
         const today = new Date().toISOString().split("T")[0];
         const requestedDate = date || today;
-        // exact match
+        const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
+        // check exact data
         const exact = await this.shiftStatusModel.findOne({
             adminId: adminObjectId,
             date: requestedDate,
         });
+        // ----------- EXACT DATA -----------
         if (exact) {
+            const completedShifts = exact.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
+            const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
+            const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
             return {
-                mode: "exact",
-                data: exact,
+                date: requestedDate,
+                totalShifts: pumpDetails.numberOfShifts,
+                currentShift: exact.currentShift,
+                shifts: exact.shifts,
+                dailyProgress: {
+                    completedShifts,
+                    pendingShifts,
+                    overallCompletionPercent: percent,
+                },
+                dailyClose: exact.dailyClose,
+                pumpStatus: exact.pumpStatus,
             };
         }
-        // find latest record
+        // ----------- LATEST RECORD -----------
         const latest = await this.shiftStatusModel
             .findOne({ adminId: adminObjectId })
             .sort({ date: -1 });
-        // no history
         if (!latest) {
-            return {
-                mode: "template",
-                reason: "no_history",
-                date: requestedDate,
-            };
+            return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
         const first = await this.shiftStatusModel
             .findOne({ adminId: adminObjectId })
             .sort({ date: 1 });
         if (!first) {
-            return {
-                mode: "template",
-                reason: "no_history",
-                date: requestedDate,
-            };
+            return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
-        const firstDate = first.date;
-        if (requestedDate < firstDate) {
+        if (requestedDate < first.date) {
             return {
-                mode: "out_of_range",
                 message: "Selected date does not come in range, please try after the first registered date",
-                firstRegisteredDate: firstDate,
+                firstRegisteredDate: first.date,
             };
         }
         // unfinished previous day
         if (!latest.dailyClose && requestedDate > latest.date) {
+            const completedShifts = latest.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
+            const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
+            const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
             return {
-                mode: "fallback",
                 date: latest.date,
                 requestedDate,
                 reason: "previous_unfinished_day",
-                data: latest,
+                totalShifts: pumpDetails.numberOfShifts,
+                currentShift: latest.currentShift,
+                shifts: latest.shifts,
+                dailyProgress: {
+                    completedShifts,
+                    pendingShifts,
+                    overallCompletionPercent: percent,
+                },
+                dailyClose: latest.dailyClose,
+                pumpStatus: latest.pumpStatus,
             };
         }
-        // missing row between first date and today
         if (requestedDate <= today) {
             return {
-                mode: "no_data",
-                reason: "no_data_for_date",
+                message: "No data available for this date",
                 date: requestedDate,
             };
         }
-        // future date with all previous closed
-        return {
-            mode: "template",
-            reason: "no_data_for_date",
-            date: requestedDate,
-        };
+        // future template
+        return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
     }
     async update(id, dto) {
         return this.shiftStatusModel.findByIdAndUpdate(id, dto, {
@@ -118,5 +157,7 @@ exports.ShiftStatusService = ShiftStatusService;
 exports.ShiftStatusService = ShiftStatusService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(shift_status_schema_1.ShiftStatus.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], ShiftStatusService);

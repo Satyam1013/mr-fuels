@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const shift_status_schema_1 = require("./shift-status.schema");
 const shift_status_service_1 = require("./shift-status.service");
 const shift_status_controller_1 = require("./shift-status.controller");
+const pump_details_schema_1 = require("../pump-details/pump-details.schema");
 let ShiftStatusModule = class ShiftStatusModule {
 };
 exports.ShiftStatusModule = ShiftStatusModule;
@@ -20,6 +21,7 @@ exports.ShiftStatusModule = ShiftStatusModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: shift_status_schema_1.ShiftStatus.name, schema: shift_status_schema_1.ShiftStatusSchema },
+                { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
             ]),
         ],
         controllers: [shift_status_controller_1.ShiftStatusController],
