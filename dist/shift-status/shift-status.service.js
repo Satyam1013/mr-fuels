@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const shift_status_schema_1 = require("./shift-status.schema");
-const shift_status_enum_1 = require("./shift-status.enum");
 let ShiftStatusService = class ShiftStatusService {
     constructor(shiftStatusModel) {
         this.shiftStatusModel = shiftStatusModel;
@@ -38,46 +37,72 @@ let ShiftStatusService = class ShiftStatusService {
     }
     async getByDate(adminId, date) {
         const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
-        // 1️⃣ exact date find
-        const data = await this.shiftStatusModel.findOne({
+        const today = new Date().toISOString().split("T")[0];
+        const requestedDate = date || today;
+        // exact match
+        const exact = await this.shiftStatusModel.findOne({
             adminId: adminObjectId,
-            date,
+            date: requestedDate,
         });
-        if (data) {
-            if (data.pumpStatus === shift_status_enum_1.PumpStatusEnum.CLOSED ||
-                data.pumpStatus === shift_status_enum_1.PumpStatusEnum.HOLIDAY) {
-                return {
-                    message: "Pump is closed",
-                    pumpStatus: data.pumpStatus,
-                };
-            }
-            return data;
+        if (exact) {
+            return {
+                mode: "exact",
+                data: exact,
+            };
         }
-        // 2️⃣ latest record find
+        // find latest record
         const latest = await this.shiftStatusModel
             .findOne({ adminId: adminObjectId })
             .sort({ date: -1 });
+        // no history
         if (!latest) {
             return {
-                message: "no data is available",
-                pumpStatus: shift_status_enum_1.PumpStatusEnum.OPEN,
+                mode: "template",
+                reason: "no_history",
+                date: requestedDate,
             };
         }
-        const today = new Date().toISOString().split("T")[0];
-        // agar last day close nahi hua → wahi chal raha hai
-        if (!latest.dailyClose) {
-            return latest;
-        }
-        // agar requested date today hai aur aaj ka record nahi bana
-        if (date === today) {
+        const first = await this.shiftStatusModel
+            .findOne({ adminId: adminObjectId })
+            .sort({ date: 1 });
+        if (!first) {
             return {
-                message: "no data is available",
-                pumpStatus: shift_status_enum_1.PumpStatusEnum.OPEN,
+                mode: "template",
+                reason: "no_history",
+                date: requestedDate,
             };
         }
+        const firstDate = first.date;
+        if (requestedDate < firstDate) {
+            return {
+                mode: "out_of_range",
+                message: "Selected date does not come in range, please try after the first registered date",
+                firstRegisteredDate: firstDate,
+            };
+        }
+        // unfinished previous day
+        if (!latest.dailyClose && requestedDate > latest.date) {
+            return {
+                mode: "fallback",
+                date: latest.date,
+                requestedDate,
+                reason: "previous_unfinished_day",
+                data: latest,
+            };
+        }
+        // missing row between first date and today
+        if (requestedDate <= today) {
+            return {
+                mode: "no_data",
+                reason: "no_data_for_date",
+                date: requestedDate,
+            };
+        }
+        // future date with all previous closed
         return {
-            message: "no data is available",
-            pumpStatus: shift_status_enum_1.PumpStatusEnum.OPEN,
+            mode: "template",
+            reason: "no_data_for_date",
+            date: requestedDate,
         };
     }
     async update(id, dto) {

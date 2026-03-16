@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { ShiftStatus } from "./shift-status.schema";
 import { CreateShiftStatusDto } from "./shift-status.dto";
-import { PumpStatusEnum } from "./shift-status.enum";
 
 @Injectable()
 export class ShiftStatusService {
@@ -34,57 +33,85 @@ export class ShiftStatusService {
 
   async getByDate(adminId: string, date: string) {
     const adminObjectId = new Types.ObjectId(adminId);
+    const today = new Date().toISOString().split("T")[0];
 
-    // 1️⃣ exact date find
-    const data = await this.shiftStatusModel.findOne({
+    const requestedDate = date || today;
+
+    // exact match
+    const exact = await this.shiftStatusModel.findOne({
       adminId: adminObjectId,
-      date,
+      date: requestedDate,
     });
 
-    if (data) {
-      if (
-        data.pumpStatus === PumpStatusEnum.CLOSED ||
-        data.pumpStatus === PumpStatusEnum.HOLIDAY
-      ) {
-        return {
-          message: "Pump is closed",
-          pumpStatus: data.pumpStatus,
-        };
-      }
-
-      return data;
+    if (exact) {
+      return {
+        mode: "exact",
+        data: exact,
+      };
     }
 
-    // 2️⃣ latest record find
+    // find latest record
     const latest = await this.shiftStatusModel
       .findOne({ adminId: adminObjectId })
       .sort({ date: -1 });
 
+    // no history
     if (!latest) {
       return {
-        message: "no data is available",
-        pumpStatus: PumpStatusEnum.OPEN,
+        mode: "template",
+        reason: "no_history",
+        date: requestedDate,
       };
     }
 
-    const today = new Date().toISOString().split("T")[0];
+    const first = await this.shiftStatusModel
+      .findOne({ adminId: adminObjectId })
+      .sort({ date: 1 });
 
-    // agar last day close nahi hua → wahi chal raha hai
-    if (!latest.dailyClose) {
-      return latest;
-    }
-
-    // agar requested date today hai aur aaj ka record nahi bana
-    if (date === today) {
+    if (!first) {
       return {
-        message: "no data is available",
-        pumpStatus: PumpStatusEnum.OPEN,
+        mode: "template",
+        reason: "no_history",
+        date: requestedDate,
       };
     }
 
+    const firstDate = first.date;
+
+    if (requestedDate < firstDate) {
+      return {
+        mode: "out_of_range",
+        message:
+          "Selected date does not come in range, please try after the first registered date",
+        firstRegisteredDate: firstDate,
+      };
+    }
+
+    // unfinished previous day
+    if (!latest.dailyClose && requestedDate > latest.date) {
+      return {
+        mode: "fallback",
+        date: latest.date,
+        requestedDate,
+        reason: "previous_unfinished_day",
+        data: latest,
+      };
+    }
+
+    // missing row between first date and today
+    if (requestedDate <= today) {
+      return {
+        mode: "no_data",
+        reason: "no_data_for_date",
+        date: requestedDate,
+      };
+    }
+
+    // future date with all previous closed
     return {
-      message: "no data is available",
-      pumpStatus: PumpStatusEnum.OPEN,
+      mode: "template",
+      reason: "no_data_for_date",
+      date: requestedDate,
     };
   }
 
