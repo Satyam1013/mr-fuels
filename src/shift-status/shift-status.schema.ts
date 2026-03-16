@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { ClosedBy, ShiftStatusEnum } from "./shift-status.enum";
+import { ClosedBy, PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 
 @Schema({ _id: false })
 class Shift {
@@ -42,6 +42,11 @@ export class ShiftStatus extends Document {
 
   @Prop({ default: false })
   dailyClose!: boolean;
+
+  @Prop({ enum: PumpStatusEnum, default: PumpStatusEnum.OPEN })
+  pumpStatus?: PumpStatusEnum;
 }
 
 export const ShiftStatusSchema = SchemaFactory.createForClass(ShiftStatus);
+
+ShiftStatusSchema.index({ adminId: 1, date: 1 }, { unique: true });

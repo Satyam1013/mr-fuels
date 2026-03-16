@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { ClosedBy, ShiftStatusEnum } from "./shift-status.enum";
+import { ClosedBy, PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 
 class ShiftDto {
   @IsNumber()
@@ -52,4 +52,8 @@ export class CreateShiftStatusDto {
   @IsOptional()
   @IsBoolean()
   dailyClose?: boolean;
+
+  @IsOptional()
+  @IsEnum(PumpStatusEnum)
+  pumpStatus?: PumpStatusEnum;
 }

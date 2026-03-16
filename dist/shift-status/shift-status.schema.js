@@ -69,7 +69,12 @@ __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], ShiftStatus.prototype, "dailyClose", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: shift_status_enum_1.PumpStatusEnum, default: shift_status_enum_1.PumpStatusEnum.OPEN }),
+    __metadata("design:type", String)
+], ShiftStatus.prototype, "pumpStatus", void 0);
 exports.ShiftStatus = ShiftStatus = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], ShiftStatus);
 exports.ShiftStatusSchema = mongoose_1.SchemaFactory.createForClass(ShiftStatus);
+exports.ShiftStatusSchema.index({ adminId: 1, date: 1 }, { unique: true });

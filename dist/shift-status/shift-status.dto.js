@@ -69,3 +69,8 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateShiftStatusDto.prototype, "dailyClose", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(shift_status_enum_1.PumpStatusEnum),
+    __metadata("design:type", String)
+], CreateShiftStatusDto.prototype, "pumpStatus", void 0);
