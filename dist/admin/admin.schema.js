@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminSchema = exports.Admin = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const admin_enum_1 = require("./admin.enum");
 let Admin = class Admin extends mongoose_2.Document {
 };
 exports.Admin = Admin;
@@ -35,6 +36,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Admin.prototype, "password", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: admin_enum_1.Role.ADMIN }),
+    __metadata("design:type", String)
+], Admin.prototype, "role", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)

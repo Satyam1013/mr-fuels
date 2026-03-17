@@ -40,7 +40,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(shift_status_enum_1.ClosedBy),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], ShiftDto.prototype, "closedBy", void 0);
 class CreateShiftStatusDto {
 }

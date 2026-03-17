@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { Role } from "../admin/admin.enum";
 
 @Schema({ timestamps: true })
 export class Staff extends Document {
@@ -23,6 +24,9 @@ export class Staff extends Document {
 
   @Prop({ required: true })
   salary!: string;
+
+  @Prop({ enum: Role, default: Role.STAFF })
+  role!: Role;
 }
 
 export const StaffSchema = SchemaFactory.createForClass(Staff);

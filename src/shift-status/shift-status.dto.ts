@@ -30,7 +30,7 @@ class ShiftDto {
 
   @IsOptional()
   @IsEnum(ClosedBy)
-  closedBy?: ClosedBy;
+  closedBy?: ClosedBy | null;
 }
 
 export class CreateShiftStatusDto {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Subscription } from "../subscription/subscription.schema";
+import { Role } from "./admin.enum";
 
 @Schema({ timestamps: true })
 export class Admin extends Document {
@@ -18,6 +19,9 @@ export class Admin extends Document {
 
   @Prop({ required: true })
   password!: string;
+
+  @Prop({ default: Role.ADMIN })
+  role!: Role;
 
   @Prop({ default: false })
   setupComplete!: boolean;
