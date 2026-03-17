@@ -13,6 +13,7 @@ exports.CreateShiftStatusDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const shift_status_enum_1 = require("./shift-status.enum");
+const admin_enum_1 = require("../admin/admin.enum");
 class ShiftDto {
 }
 __decorate([
@@ -39,9 +40,14 @@ __decorate([
 ], ShiftDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(shift_status_enum_1.ClosedBy),
-    __metadata("design:type", Object)
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
 ], ShiftDto.prototype, "closedBy", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(admin_enum_1.Role),
+    __metadata("design:type", String)
+], ShiftDto.prototype, "closedByModel", void 0);
 class CreateShiftStatusDto {
 }
 exports.CreateShiftStatusDto = CreateShiftStatusDto;

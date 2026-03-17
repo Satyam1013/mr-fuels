@@ -149,8 +149,12 @@ let ShiftStatusService = class ShiftStatusService {
             new: true,
         });
     }
-    async closeDay(id) {
-        return this.shiftStatusModel.findByIdAndUpdate(id, { dailyClose: true }, { new: true });
+    async closeDay(user, id) {
+        return this.shiftStatusModel.findByIdAndUpdate(id, {
+            dailyClose: true,
+            closedBy: new mongoose_2.Types.ObjectId(user._id),
+            closedByModel: user.role,
+        }, { new: true });
     }
 };
 exports.ShiftStatusService = ShiftStatusService;

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Patch, Post, Query, Req } from "@nestjs/common";
 import { ShiftStatusService } from "./shift-status.service";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
+import { ShiftStatus } from "./shift-status.schema";
 
 @Controller("shift-status")
 export class ShiftStatusController {
@@ -23,7 +24,10 @@ export class ShiftStatusController {
   }
 
   @Patch("close-day")
-  closeDay(@Query("id") id: string) {
-    return this.service.closeDay(id);
+  closeDay(
+    @Req() req: AuthenticatedRequest,
+    @Query("id") id: string,
+  ): Promise<ShiftStatus | null> {
+    return this.service.closeDay(req.user, id);
   }
 }

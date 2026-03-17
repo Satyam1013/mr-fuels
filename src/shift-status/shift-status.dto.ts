@@ -2,13 +2,15 @@ import {
   IsArray,
   IsBoolean,
   IsEnum,
+  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { ClosedBy, PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
+import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
+import { Role } from "../admin/admin.enum";
 
 class ShiftDto {
   @IsNumber()
@@ -29,8 +31,12 @@ class ShiftDto {
   status!: ShiftStatusEnum;
 
   @IsOptional()
-  @IsEnum(ClosedBy)
-  closedBy?: ClosedBy | null;
+  @IsMongoId()
+  closedBy?: string;
+
+  @IsOptional()
+  @IsEnum(Role)
+  closedByModel?: Role;
 }
 
 export class CreateShiftStatusDto {

@@ -1,8 +1,3 @@
-export enum ClosedBy {
-  MANAGER = "manager",
-  ADMIN = "admin",
-}
-
 export enum ShiftStatusEnum {
   ACTIVE = "active",
   PENDING = "pending",

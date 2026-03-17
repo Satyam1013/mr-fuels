@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { ClosedBy, PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
+import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
+import { Role } from "../admin/admin.enum";
 
 @Schema({ _id: false })
 class Shift {
@@ -19,8 +20,11 @@ class Shift {
   @Prop({ enum: ShiftStatusEnum, default: ShiftStatusEnum.PENDING })
   status!: ShiftStatusEnum;
 
-  @Prop({ enum: ClosedBy })
-  closedBy?: ClosedBy;
+  @Prop({ type: Types.ObjectId, refPath: "closedByModel" })
+  closedBy?: Types.ObjectId;
+
+  @Prop({ enum: [Role.ADMIN, Role.MANAGER] })
+  closedByModel?: Role;
 }
 
 @Schema({ timestamps: true })

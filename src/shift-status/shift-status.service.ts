@@ -5,6 +5,7 @@ import { ShiftStatus } from "./shift-status.schema";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { PumpDetails } from "../pump-details/pump-details.schema";
 import { ShiftStatusEnum } from "./shift-status.enum";
+import { AuthUser } from "../auth/user.type";
 
 interface PumpDetailsLean {
   numberOfShifts: number;
@@ -206,10 +207,14 @@ export class ShiftStatusService {
     });
   }
 
-  async closeDay(id: string) {
+  async closeDay(user: AuthUser, id: string): Promise<ShiftStatus | null> {
     return this.shiftStatusModel.findByIdAndUpdate(
       id,
-      { dailyClose: true },
+      {
+        dailyClose: true,
+        closedBy: new Types.ObjectId(user._id),
+        closedByModel: user.role,
+      },
       { new: true },
     );
   }

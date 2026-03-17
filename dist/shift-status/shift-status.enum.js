@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PumpStatusEnum = exports.ShiftStatusEnum = exports.ClosedBy = void 0;
-var ClosedBy;
-(function (ClosedBy) {
-    ClosedBy["MANAGER"] = "manager";
-    ClosedBy["ADMIN"] = "admin";
-})(ClosedBy || (exports.ClosedBy = ClosedBy = {}));
+exports.PumpStatusEnum = exports.ShiftStatusEnum = void 0;
 var ShiftStatusEnum;
 (function (ShiftStatusEnum) {
     ShiftStatusEnum["ACTIVE"] = "active";

@@ -13,6 +13,7 @@ exports.ShiftStatusSchema = exports.ShiftStatus = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const shift_status_enum_1 = require("./shift-status.enum");
+const admin_enum_1 = require("../admin/admin.enum");
 let Shift = class Shift {
 };
 __decorate([
@@ -36,9 +37,13 @@ __decorate([
     __metadata("design:type", String)
 ], Shift.prototype, "status", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: shift_status_enum_1.ClosedBy }),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, refPath: "closedByModel" }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Shift.prototype, "closedBy", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: [admin_enum_1.Role.ADMIN, admin_enum_1.Role.MANAGER] }),
+    __metadata("design:type", String)
+], Shift.prototype, "closedByModel", void 0);
 Shift = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], Shift);

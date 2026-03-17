@@ -29,8 +29,8 @@ let ShiftStatusController = class ShiftStatusController {
     update(dto, id) {
         return this.service.update(id, dto);
     }
-    closeDay(id) {
-        return this.service.closeDay(id);
+    closeDay(req, id) {
+        return this.service.closeDay(req.user, id);
     }
 };
 exports.ShiftStatusController = ShiftStatusController;
@@ -60,10 +60,11 @@ __decorate([
 ], ShiftStatusController.prototype, "update", null);
 __decorate([
     (0, common_1.Patch)("close-day"),
-    __param(0, (0, common_1.Query)("id")),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)("id")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
 ], ShiftStatusController.prototype, "closeDay", null);
 exports.ShiftStatusController = ShiftStatusController = __decorate([
     (0, common_1.Controller)("shift-status"),
