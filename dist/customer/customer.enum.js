@@ -5,5 +5,5 @@ var CreditBy;
 (function (CreditBy) {
     CreditBy["STAFF"] = "staff";
     CreditBy["MANAGER"] = "manager";
-    CreditBy["OWNER"] = "owner";
+    CreditBy["ADMIN"] = "admin";
 })(CreditBy || (exports.CreditBy = CreditBy = {}));

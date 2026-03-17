@@ -4,7 +4,7 @@ exports.PumpStatusEnum = exports.ShiftStatusEnum = exports.ClosedBy = void 0;
 var ClosedBy;
 (function (ClosedBy) {
     ClosedBy["MANAGER"] = "manager";
-    ClosedBy["OWNER"] = "owner";
+    ClosedBy["ADMIN"] = "admin";
 })(ClosedBy || (exports.ClosedBy = ClosedBy = {}));
 var ShiftStatusEnum;
 (function (ShiftStatusEnum) {

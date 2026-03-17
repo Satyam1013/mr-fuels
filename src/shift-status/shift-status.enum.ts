@@ -1,6 +1,6 @@
 export enum ClosedBy {
   MANAGER = "manager",
-  OWNER = "owner",
+  ADMIN = "admin",
 }
 
 export enum ShiftStatusEnum {
