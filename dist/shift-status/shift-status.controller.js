@@ -26,11 +26,8 @@ let ShiftStatusController = class ShiftStatusController {
     getByDate(req, date) {
         return this.service.getByDate(req.user.adminId, date);
     }
-    update(dto, id) {
-        return this.service.update(id, dto);
-    }
-    closeDay(req, id) {
-        return this.service.closeDay(req.user, id);
+    update(req, id, dto) {
+        return this.service.update(req.user, id, dto);
     }
 };
 exports.ShiftStatusController = ShiftStatusController;
@@ -52,20 +49,13 @@ __decorate([
 ], ShiftStatusController.prototype, "getByDate", null);
 __decorate([
     (0, common_1.Patch)(":id"),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Query)("id")),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "update", null);
-__decorate([
-    (0, common_1.Patch)("close-day"),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Query)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", Promise)
-], ShiftStatusController.prototype, "closeDay", null);
 exports.ShiftStatusController = ShiftStatusController = __decorate([
     (0, common_1.Controller)("shift-status"),
     __metadata("design:paramtypes", [shift_status_service_1.ShiftStatusService])

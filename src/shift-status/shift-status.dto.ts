@@ -12,7 +12,7 @@ import { Type } from "class-transformer";
 import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 import { Role } from "../admin/admin.enum";
 
-class ShiftDto {
+export class ShiftDto {
   @IsNumber()
   shiftNumber!: number;
 

@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Patch, Post, Query, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+} from "@nestjs/common";
 import { ShiftStatusService } from "./shift-status.service";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { AuthenticatedRequest } from "../auth/auth.request";
-import { ShiftStatus } from "./shift-status.schema";
 
 @Controller("shift-status")
 export class ShiftStatusController {
@@ -19,15 +27,11 @@ export class ShiftStatusController {
   }
 
   @Patch(":id")
-  update(@Body() dto: Partial<CreateShiftStatusDto>, @Query("id") id: string) {
-    return this.service.update(id, dto);
-  }
-
-  @Patch("close-day")
-  closeDay(
+  update(
     @Req() req: AuthenticatedRequest,
-    @Query("id") id: string,
-  ): Promise<ShiftStatus | null> {
-    return this.service.closeDay(req.user, id);
+    @Param("id") id: string,
+    @Body() dto: Partial<CreateShiftStatusDto>,
+  ) {
+    return this.service.update(req.user, id, dto);
   }
 }

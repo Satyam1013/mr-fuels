@@ -1,11 +1,16 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, Types, UpdateQuery } from "mongoose";
 import { ShiftStatus } from "./shift-status.schema";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { PumpDetails } from "../pump-details/pump-details.schema";
-import { ShiftStatusEnum } from "./shift-status.enum";
+import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 import { AuthUser } from "../auth/user.type";
+import { Role } from "../admin/admin.enum";
 
 interface PumpDetailsLean {
   numberOfShifts: number;
@@ -13,6 +18,28 @@ interface PumpDetailsLean {
     start: string;
   };
 }
+
+type PopulatedShift = {
+  shiftNumber: number;
+  name: string;
+  startTime?: string;
+  endTime?: string;
+  status: ShiftStatusEnum;
+  closedBy?: {
+    _id: Types.ObjectId;
+    name: string;
+  };
+  closedByModel?: Role;
+};
+
+type ShiftStatusPopulated = {
+  date: string;
+  shifts: PopulatedShift[];
+  currentShift: PopulatedShift;
+  dailyClose: boolean;
+  pumpStatus: PumpStatusEnum;
+};
+
 @Injectable()
 export class ShiftStatusService {
   constructor(
@@ -90,15 +117,19 @@ export class ShiftStatusService {
 
     const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
 
-    // check exact data
-    const exact = await this.shiftStatusModel.findOne({
-      adminId: adminObjectId,
-      date: requestedDate,
-    });
+    // helper
+    const mapClosedBy = (shift: PopulatedShift) => {
+      if (!shift?.closedBy) return "";
 
-    // ----------- EXACT DATA -----------
-    if (exact) {
-      const completedShifts = exact.shifts.filter(
+      return {
+        id: shift.closedBy._id.toString(),
+        name: shift.closedBy.name,
+        role: shift.closedByModel,
+      };
+    };
+
+    const mapResponse = (data: ShiftStatusPopulated) => {
+      const completedShifts = data.shifts.filter(
         (s) => s.status === ShiftStatusEnum.COMPLETED,
       ).length;
 
@@ -107,12 +138,18 @@ export class ShiftStatusService {
       const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
 
       return {
-        date: requestedDate,
+        date: data.date,
         totalShifts: pumpDetails.numberOfShifts,
 
-        currentShift: exact.currentShift,
+        currentShift: {
+          ...data.currentShift,
+          closedBy: mapClosedBy(data.currentShift),
+        },
 
-        shifts: exact.shifts,
+        shifts: data.shifts.map((s) => ({
+          ...s,
+          closedBy: mapClosedBy(s),
+        })),
 
         dailyProgress: {
           completedShifts,
@@ -120,15 +157,32 @@ export class ShiftStatusService {
           overallCompletionPercent: percent,
         },
 
-        dailyClose: exact.dailyClose,
-        pumpStatus: exact.pumpStatus,
+        dailyClose: data.dailyClose,
+        pumpStatus: data.pumpStatus,
       };
+    };
+
+    // ----------- EXACT DATA -----------
+    const exact = await this.shiftStatusModel
+      .findOne({
+        adminId: adminObjectId,
+        date: requestedDate,
+      })
+      .populate("shifts.closedBy", "name")
+      .populate("currentShift.closedBy", "name")
+      .lean<ShiftStatusPopulated>(); // ✅ KEY FIX
+
+    if (exact) {
+      return mapResponse(exact);
     }
 
     // ----------- LATEST RECORD -----------
     const latest = await this.shiftStatusModel
       .findOne({ adminId: adminObjectId })
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .populate("shifts.closedBy", "name")
+      .populate("currentShift.closedBy", "name")
+      .lean<ShiftStatusPopulated>(); // ✅ KEY FIX
 
     if (!latest) {
       return this.buildTemplate(
@@ -140,7 +194,8 @@ export class ShiftStatusService {
 
     const first = await this.shiftStatusModel
       .findOne({ adminId: adminObjectId })
-      .sort({ date: 1 });
+      .sort({ date: 1 })
+      .lean();
 
     if (!first) {
       return this.buildTemplate(
@@ -158,35 +213,12 @@ export class ShiftStatusService {
       };
     }
 
-    // unfinished previous day
+    // ----------- PREVIOUS UNFINISHED -----------
     if (!latest.dailyClose && requestedDate > latest.date) {
-      const completedShifts = latest.shifts.filter(
-        (s) => s.status === ShiftStatusEnum.COMPLETED,
-      ).length;
-
-      const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
-
-      const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
-
       return {
-        date: latest.date,
+        ...mapResponse(latest),
         requestedDate,
         reason: "previous_unfinished_day",
-
-        totalShifts: pumpDetails.numberOfShifts,
-
-        currentShift: latest.currentShift,
-
-        shifts: latest.shifts,
-
-        dailyProgress: {
-          completedShifts,
-          pendingShifts,
-          overallCompletionPercent: percent,
-        },
-
-        dailyClose: latest.dailyClose,
-        pumpStatus: latest.pumpStatus,
       };
     }
 
@@ -197,25 +229,48 @@ export class ShiftStatusService {
       };
     }
 
-    // future template
+    // ----------- FUTURE TEMPLATE -----------
     return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
   }
 
-  async update(id: string, dto: Partial<CreateShiftStatusDto>) {
-    return this.shiftStatusModel.findByIdAndUpdate(id, dto, {
+  async update(
+    user: AuthUser,
+    id: string,
+    dto: Partial<CreateShiftStatusDto> & { dailyClose?: boolean },
+  ) {
+    const existing = await this.shiftStatusModel.findById(id);
+
+    if (!existing) {
+      throw new NotFoundException("Shift status not found");
+    }
+
+    const updatePayload: UpdateQuery<ShiftStatus> = {
+      ...dto,
+    };
+
+    if (dto.dailyClose === true) {
+      if (existing.currentShift?.status !== ShiftStatusEnum.COMPLETED) {
+        existing.currentShift.status = ShiftStatusEnum.COMPLETED;
+        existing.currentShift.endTime = new Date().toISOString();
+        existing.currentShift.closedBy = new Types.ObjectId(user._id);
+      }
+
+      const lastShiftIndex = existing.shifts.length - 1;
+
+      if (lastShiftIndex >= 0) {
+        existing.shifts[lastShiftIndex].status = ShiftStatusEnum.COMPLETED;
+        existing.shifts[lastShiftIndex].endTime = new Date().toISOString();
+      }
+
+      updatePayload.pumpStatus = PumpStatusEnum.CLOSED;
+      updatePayload.dailyClose = true;
+
+      updatePayload.shifts = existing.shifts;
+      updatePayload.currentShift = existing.currentShift;
+    }
+
+    return this.shiftStatusModel.findByIdAndUpdate(id, updatePayload, {
       new: true,
     });
-  }
-
-  async closeDay(user: AuthUser, id: string): Promise<ShiftStatus | null> {
-    return this.shiftStatusModel.findByIdAndUpdate(
-      id,
-      {
-        dailyClose: true,
-        closedBy: new Types.ObjectId(user._id),
-        closedByModel: user.role,
-      },
-      { new: true },
-    );
   }
 }

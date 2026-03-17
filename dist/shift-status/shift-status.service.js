@@ -71,40 +71,66 @@ let ShiftStatusService = class ShiftStatusService {
         const today = new Date().toISOString().split("T")[0];
         const requestedDate = date || today;
         const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
-        // check exact data
-        const exact = await this.shiftStatusModel.findOne({
-            adminId: adminObjectId,
-            date: requestedDate,
-        });
-        // ----------- EXACT DATA -----------
-        if (exact) {
-            const completedShifts = exact.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
+        // helper
+        const mapClosedBy = (shift) => {
+            if (!shift?.closedBy)
+                return "";
+            return {
+                id: shift.closedBy._id.toString(),
+                name: shift.closedBy.name,
+                role: shift.closedByModel,
+            };
+        };
+        const mapResponse = (data) => {
+            const completedShifts = data.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
             const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
             const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
             return {
-                date: requestedDate,
+                date: data.date,
                 totalShifts: pumpDetails.numberOfShifts,
-                currentShift: exact.currentShift,
-                shifts: exact.shifts,
+                currentShift: {
+                    ...data.currentShift,
+                    closedBy: mapClosedBy(data.currentShift),
+                },
+                shifts: data.shifts.map((s) => ({
+                    ...s,
+                    closedBy: mapClosedBy(s),
+                })),
                 dailyProgress: {
                     completedShifts,
                     pendingShifts,
                     overallCompletionPercent: percent,
                 },
-                dailyClose: exact.dailyClose,
-                pumpStatus: exact.pumpStatus,
+                dailyClose: data.dailyClose,
+                pumpStatus: data.pumpStatus,
             };
+        };
+        // ----------- EXACT DATA -----------
+        const exact = await this.shiftStatusModel
+            .findOne({
+            adminId: adminObjectId,
+            date: requestedDate,
+        })
+            .populate("shifts.closedBy", "name")
+            .populate("currentShift.closedBy", "name")
+            .lean(); // ✅ KEY FIX
+        if (exact) {
+            return mapResponse(exact);
         }
         // ----------- LATEST RECORD -----------
         const latest = await this.shiftStatusModel
             .findOne({ adminId: adminObjectId })
-            .sort({ date: -1 });
+            .sort({ date: -1 })
+            .populate("shifts.closedBy", "name")
+            .populate("currentShift.closedBy", "name")
+            .lean(); // ✅ KEY FIX
         if (!latest) {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
         const first = await this.shiftStatusModel
             .findOne({ adminId: adminObjectId })
-            .sort({ date: 1 });
+            .sort({ date: 1 })
+            .lean();
         if (!first) {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
@@ -114,25 +140,12 @@ let ShiftStatusService = class ShiftStatusService {
                 firstRegisteredDate: first.date,
             };
         }
-        // unfinished previous day
+        // ----------- PREVIOUS UNFINISHED -----------
         if (!latest.dailyClose && requestedDate > latest.date) {
-            const completedShifts = latest.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
-            const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
-            const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
             return {
-                date: latest.date,
+                ...mapResponse(latest),
                 requestedDate,
                 reason: "previous_unfinished_day",
-                totalShifts: pumpDetails.numberOfShifts,
-                currentShift: latest.currentShift,
-                shifts: latest.shifts,
-                dailyProgress: {
-                    completedShifts,
-                    pendingShifts,
-                    overallCompletionPercent: percent,
-                },
-                dailyClose: latest.dailyClose,
-                pumpStatus: latest.pumpStatus,
             };
         }
         if (requestedDate <= today) {
@@ -141,20 +154,36 @@ let ShiftStatusService = class ShiftStatusService {
                 date: requestedDate,
             };
         }
-        // future template
+        // ----------- FUTURE TEMPLATE -----------
         return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
     }
-    async update(id, dto) {
-        return this.shiftStatusModel.findByIdAndUpdate(id, dto, {
+    async update(user, id, dto) {
+        const existing = await this.shiftStatusModel.findById(id);
+        if (!existing) {
+            throw new common_1.NotFoundException("Shift status not found");
+        }
+        const updatePayload = {
+            ...dto,
+        };
+        if (dto.dailyClose === true) {
+            if (existing.currentShift?.status !== shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
+                existing.currentShift.status = shift_status_enum_1.ShiftStatusEnum.COMPLETED;
+                existing.currentShift.endTime = new Date().toISOString();
+                existing.currentShift.closedBy = new mongoose_2.Types.ObjectId(user._id);
+            }
+            const lastShiftIndex = existing.shifts.length - 1;
+            if (lastShiftIndex >= 0) {
+                existing.shifts[lastShiftIndex].status = shift_status_enum_1.ShiftStatusEnum.COMPLETED;
+                existing.shifts[lastShiftIndex].endTime = new Date().toISOString();
+            }
+            updatePayload.pumpStatus = shift_status_enum_1.PumpStatusEnum.CLOSED;
+            updatePayload.dailyClose = true;
+            updatePayload.shifts = existing.shifts;
+            updatePayload.currentShift = existing.currentShift;
+        }
+        return this.shiftStatusModel.findByIdAndUpdate(id, updatePayload, {
             new: true,
         });
-    }
-    async closeDay(user, id) {
-        return this.shiftStatusModel.findByIdAndUpdate(id, {
-            dailyClose: true,
-            closedBy: new mongoose_2.Types.ObjectId(user._id),
-            closedByModel: user.role,
-        }, { new: true });
     }
 };
 exports.ShiftStatusService = ShiftStatusService;
