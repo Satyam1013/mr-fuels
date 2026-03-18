@@ -113,7 +113,7 @@ let ShiftStatusService = class ShiftStatusService {
         })
             .populate("shifts.closedBy", "name")
             .populate("currentShift.closedBy", "name")
-            .lean(); // ✅ KEY FIX
+            .lean();
         if (exact) {
             return mapResponse(exact);
         }
@@ -123,7 +123,7 @@ let ShiftStatusService = class ShiftStatusService {
             .sort({ date: -1 })
             .populate("shifts.closedBy", "name")
             .populate("currentShift.closedBy", "name")
-            .lean(); // ✅ KEY FIX
+            .lean();
         if (!latest) {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }

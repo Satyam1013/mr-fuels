@@ -10,35 +10,11 @@ import { CreateShiftStatusDto } from "./shift-status.dto";
 import { PumpDetails } from "../pump-details/pump-details.schema";
 import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 import { AuthUser } from "../auth/user.type";
-import { Role } from "../admin/admin.enum";
-
-interface PumpDetailsLean {
-  numberOfShifts: number;
-  pumpTime: {
-    start: string;
-  };
-}
-
-type PopulatedShift = {
-  shiftNumber: number;
-  name: string;
-  startTime?: string;
-  endTime?: string;
-  status: ShiftStatusEnum;
-  closedBy?: {
-    _id: Types.ObjectId;
-    name: string;
-  };
-  closedByModel?: Role;
-};
-
-type ShiftStatusPopulated = {
-  date: string;
-  shifts: PopulatedShift[];
-  currentShift: PopulatedShift;
-  dailyClose: boolean;
-  pumpStatus: PumpStatusEnum;
-};
+import {
+  PopulatedShift,
+  PumpDetailsLean,
+  ShiftStatusPopulated,
+} from "./shift-status.types";
 
 @Injectable()
 export class ShiftStatusService {
@@ -170,7 +146,7 @@ export class ShiftStatusService {
       })
       .populate("shifts.closedBy", "name")
       .populate("currentShift.closedBy", "name")
-      .lean<ShiftStatusPopulated>(); // ✅ KEY FIX
+      .lean<ShiftStatusPopulated>();
 
     if (exact) {
       return mapResponse(exact);
@@ -182,7 +158,7 @@ export class ShiftStatusService {
       .sort({ date: -1 })
       .populate("shifts.closedBy", "name")
       .populate("currentShift.closedBy", "name")
-      .lean<ShiftStatusPopulated>(); // ✅ KEY FIX
+      .lean<ShiftStatusPopulated>();
 
     if (!latest) {
       return this.buildTemplate(
