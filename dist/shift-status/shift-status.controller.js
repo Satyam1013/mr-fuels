@@ -16,44 +16,46 @@ exports.ShiftStatusController = void 0;
 const common_1 = require("@nestjs/common");
 const shift_status_service_1 = require("./shift-status.service");
 const shift_status_dto_1 = require("./shift-status.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let ShiftStatusController = class ShiftStatusController {
     constructor(service) {
         this.service = service;
     }
-    create(req, dto) {
-        return this.service.create(req.user.adminId, dto);
+    create(adminId, dto) {
+        return this.service.create(adminId, dto);
     }
-    getByDate(req, date) {
-        return this.service.getByDate(req.user.adminId, date);
+    getByDate(adminId, date) {
+        return this.service.getByDate(adminId, date);
     }
-    update(req, id, dto) {
-        return this.service.update(req.user, id, dto);
+    update(adminId, id, dto) {
+        return this.service.update(adminId, id, dto);
     }
 };
 exports.ShiftStatusController = ShiftStatusController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, shift_status_dto_1.CreateShiftStatusDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, shift_status_dto_1.CreateShiftStatusDto]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Query)("date")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "getByDate", null);
 __decorate([
     (0, common_1.Patch)(":id"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Param)("id")),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, Object]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "update", null);
 exports.ShiftStatusController = ShiftStatusController = __decorate([

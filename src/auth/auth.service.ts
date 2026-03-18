@@ -10,6 +10,7 @@ import { Model } from "mongoose";
 import { Admin } from "../admin/admin.schema";
 import { AdminLoginDto, CreateAdminDto } from "./create-user.dto";
 import { Subscription } from "../subscription/subscription.schema";
+import { Role } from "../admin/admin.enum";
 
 @Injectable()
 export class AuthService {
@@ -95,7 +96,7 @@ export class AuthService {
       token,
       user: {
         _id: admin._id,
-        role: "admin",
+        role: Role.ADMIN,
         businessName: admin.businessName,
         mobileNo: admin.mobileNo,
         setupComplete: admin.setupComplete,

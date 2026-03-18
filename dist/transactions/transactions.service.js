@@ -36,13 +36,13 @@ let TransactionDetailsService = class TransactionDetailsService {
             });
         }
         return this.transactionDetailsModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             ...dto,
         });
     }
     async getTransactionDetails(adminId) {
         const transaction = await this.transactionDetailsModel.findOne({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!transaction) {
             throw new common_1.NotFoundException("Transaction details not found");
@@ -58,7 +58,7 @@ let TransactionDetailsService = class TransactionDetailsService {
     }
     async deleteTransactionDetails(adminId) {
         const transaction = await this.transactionDetailsModel.findOneAndDelete({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!transaction) {
             throw new common_1.NotFoundException("Transaction details not found");

@@ -24,19 +24,19 @@ let NonFuelProductsService = class NonFuelProductsService {
     async create(adminId, products) {
         const data = products.map((p) => ({
             ...p,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         }));
         return this.nonFuelProductModel.insertMany(data);
     }
     async getAll(adminId) {
         return this.nonFuelProductModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
     async update(adminId, id, dto) {
         const product = await this.nonFuelProductModel.findOneAndUpdate({
             _id: new mongoose_2.Types.ObjectId(id),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         }, dto, { new: true });
         if (!product) {
             throw new common_1.NotFoundException("Product not found");
@@ -46,7 +46,7 @@ let NonFuelProductsService = class NonFuelProductsService {
     async delete(adminId, id) {
         const product = await this.nonFuelProductModel.findOneAndDelete({
             _id: new mongoose_2.Types.ObjectId(id),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!product) {
             throw new common_1.NotFoundException("Product not found");

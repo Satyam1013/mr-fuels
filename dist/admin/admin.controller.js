@@ -16,21 +16,23 @@ exports.AdminController = void 0;
 const common_1 = require("@nestjs/common");
 const admin_dto_1 = require("./admin.dto");
 const admin_service_1 = require("./admin.service");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let AdminController = class AdminController {
     constructor(adminService) {
         this.adminService = adminService;
     }
-    selectPlan(req, dto) {
-        return this.adminService.selectPlan(req.user.adminId, dto.planId);
+    selectPlan(adminId, dto) {
+        return this.adminService.selectPlan(adminId, dto.planId);
     }
 };
 exports.AdminController = AdminController;
 __decorate([
     (0, common_1.Patch)("select-plan"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, admin_dto_1.SelectPlanDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, admin_dto_1.SelectPlanDto]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "selectPlan", null);
 exports.AdminController = AdminController = __decorate([

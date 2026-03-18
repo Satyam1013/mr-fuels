@@ -15,10 +15,8 @@ export class TankService {
     private tankModel: Model<TankDetails>,
   ) {}
 
-  async create(adminId: string, dto: CreateTankDetailsDto) {
-    const adminIdObj = new Types.ObjectId(adminId);
-
-    const existing = await this.tankModel.findOne({ adminId: adminIdObj });
+  async create(adminId: Types.ObjectId, dto: CreateTankDetailsDto) {
+    const existing = await this.tankModel.findOne({ adminId });
 
     if (existing) {
       throw new ConflictException(
@@ -27,7 +25,7 @@ export class TankService {
     }
 
     const tank = await this.tankModel.create({
-      adminId: adminIdObj,
+      adminId,
       tanks: dto.tanks,
     });
 
@@ -37,9 +35,8 @@ export class TankService {
     };
   }
 
-  async findAll(adminId: string) {
-    const objectAdminId = new Types.ObjectId(adminId);
-    return this.tankModel.find({ adminId: objectAdminId }).lean();
+  async findAll(adminId: Types.ObjectId) {
+    return this.tankModel.find(adminId).lean();
   }
 
   async findOne(id: string) {
@@ -50,14 +47,12 @@ export class TankService {
     return tank;
   }
 
-  async updateMany(adminId: string, dto: UpdateTankDetailsDto) {
-    const adminIdObj = new Types.ObjectId(adminId);
-
+  async updateMany(adminId: Types.ObjectId, dto: UpdateTankDetailsDto) {
     if (!dto.tanks || dto.tanks.length === 0) {
       throw new NotFoundException("No tanks provided for update");
     }
 
-    const tankDoc = await this.tankModel.findOne({ adminId: adminIdObj });
+    const tankDoc = await this.tankModel.findOne({ adminId });
 
     if (!tankDoc) throw new NotFoundException("Tank document not found");
 

@@ -24,14 +24,14 @@ let PumpExpenseService = class PumpExpenseService {
     async create(adminId, dto) {
         const expense = new this.pumpExpenseModel({
             ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
         });
         return expense.save();
     }
     async findAll(adminId) {
         return this.pumpExpenseModel
-            .find({ adminId })
+            .find(adminId)
             .populate("machineId")
             .sort({ createdAt: -1 });
     }

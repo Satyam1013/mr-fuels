@@ -28,7 +28,7 @@ let ProductDetailsService = class ProductDetailsService {
         if (!admin) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        return this.productDetailsModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, { $set: dto }, {
+        return this.productDetailsModel.findOneAndUpdate(adminId, { $set: dto }, {
             new: true,
             upsert: true,
             runValidators: true,

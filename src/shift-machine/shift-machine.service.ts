@@ -16,9 +16,9 @@ export class ShiftMachineService {
     private machineModel: Model<Machine>,
   ) {}
 
-  async create(adminId: string, dto: CreateShiftMachineDto) {
+  async create(adminId: Types.ObjectId, dto: CreateShiftMachineDto) {
     const machine = await this.machineModel.findOne({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       machineNumber: dto.machineName,
     });
 
@@ -47,7 +47,7 @@ export class ShiftMachineService {
     });
 
     const saved = await this.shiftModel.create({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       date: dto.date,
       shiftId: dto.shiftId,
       shiftNumber: dto.shiftNumber,

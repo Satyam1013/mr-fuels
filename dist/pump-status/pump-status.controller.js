@@ -17,15 +17,17 @@ exports.PumpStatusController = void 0;
 const common_1 = require("@nestjs/common");
 const pump_status_service_1 = require("./pump-status.service");
 const pump_status_dto_1 = require("./pump-status.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let PumpStatusController = class PumpStatusController {
     constructor(service) {
         this.service = service;
     }
-    create(req, dto) {
-        return this.service.create(req.user.adminId, dto);
+    create(adminId, dto) {
+        return this.service.create(adminId, dto);
     }
-    findAll(req) {
-        return this.service.findAll(req.user.adminId);
+    findAll(adminId) {
+        return this.service.findAll(adminId);
     }
     updateStatus(id, status) {
         return this.service.updateStatus(id, status);
@@ -37,17 +39,17 @@ let PumpStatusController = class PumpStatusController {
 exports.PumpStatusController = PumpStatusController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, pump_status_dto_1.CreatePumpStatusDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, pump_status_dto_1.CreatePumpStatusDto]),
     __metadata("design:returntype", void 0)
 ], PumpStatusController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], PumpStatusController.prototype, "findAll", null);
 __decorate([

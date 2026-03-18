@@ -11,16 +11,16 @@ export class CustomerService {
     private customerModel: Model<Customer>,
   ) {}
 
-  async create(adminId: string, dto: CreateCustomerDto) {
+  async create(adminId: Types.ObjectId, dto: CreateCustomerDto) {
     return this.customerModel.create({
       ...dto,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.customerModel.find({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
   }
 
@@ -47,20 +47,18 @@ export class CustomerService {
   }
 
   async findOrCreateCustomer(
-    adminId: string,
+    adminId: Types.ObjectId,
     name: string,
     phoneNumber: string,
   ) {
-    const adminObjectId = new Types.ObjectId(adminId);
-
     let customer = await this.customerModel.findOne({
-      adminId: adminObjectId,
+      adminId,
       phoneNumber: phoneNumber,
     });
 
     if (!customer) {
       customer = await this.customerModel.create({
-        adminId: adminObjectId,
+        adminId,
         name,
         phoneNumber,
       });

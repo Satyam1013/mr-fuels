@@ -6,11 +6,11 @@ import {
   Param,
   Patch,
   Post,
-  Req,
 } from "@nestjs/common";
 import { StaffService } from "./staff.service";
 import { BulkCreateStaffDto, UpdateStaffDto } from "./staff.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("staff")
 export class StaffController {
@@ -18,28 +18,31 @@ export class StaffController {
 
   @Post()
   async addStaff(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: BulkCreateStaffDto,
   ) {
-    return this.staffService.addStaff(req.user.adminId, dto);
+    return this.staffService.addStaff(adminId, dto);
   }
 
   @Get()
-  async getStaff(@Req() req: AuthenticatedRequest) {
-    return this.staffService.getStaff(req.user.adminId);
+  async getStaff(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.staffService.getStaff(adminId);
   }
 
   @Patch(":id")
   async updateStaff(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Param("id") id: string,
     @Body() dto: UpdateStaffDto,
   ) {
-    return this.staffService.updateStaff(req.user.adminId, id, dto);
+    return this.staffService.updateStaff(adminId, id, dto);
   }
 
   @Delete(":id")
-  async removeStaff(@Req() req: AuthenticatedRequest, @Param("id") id: string) {
-    return this.staffService.removeStaff(req.user.adminId, id);
+  async removeStaff(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+  ) {
+    return this.staffService.removeStaff(adminId, id);
   }
 }

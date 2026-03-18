@@ -16,16 +16,16 @@ exports.PersonalExpenseController = void 0;
 const common_1 = require("@nestjs/common");
 const personal_expense_service_1 = require("./personal-expense.service");
 const personal_expense_dto_1 = require("./personal-expense.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let PersonalExpenseController = class PersonalExpenseController {
     constructor(personalExpenseService) {
         this.personalExpenseService = personalExpenseService;
     }
-    create(dto, req) {
-        const adminId = req.user.adminId;
+    create(dto, adminId) {
         return this.personalExpenseService.create(adminId, dto);
     }
-    findAll(req) {
-        const adminId = req.user.adminId;
+    findAll(adminId) {
         return this.personalExpenseService.findAll(adminId);
     }
     findOne(id) {
@@ -39,16 +39,16 @@ exports.PersonalExpenseController = PersonalExpenseController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [personal_expense_dto_1.CreatePersonalExpenseDto, Object]),
+    __metadata("design:paramtypes", [personal_expense_dto_1.CreatePersonalExpenseDto, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], PersonalExpenseController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], PersonalExpenseController.prototype, "findAll", null);
 __decorate([

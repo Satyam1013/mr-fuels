@@ -6,24 +6,27 @@ import {
   Param,
   Patch,
   Post,
-  Req,
 } from "@nestjs/common";
 import { CustomerService } from "./customer.service";
 import { CreateCustomerDto, UpdateCustomerDto } from "./customer.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("customers")
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreateCustomerDto) {
-    return this.customerService.create(req.user.adminId, dto);
+  create(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: CreateCustomerDto,
+  ) {
+    return this.customerService.create(adminId, dto);
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.customerService.findAll(req.user.adminId);
+  findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.customerService.findAll(adminId);
   }
 
   @Get(":id")

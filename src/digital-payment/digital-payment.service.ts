@@ -11,24 +11,24 @@ export class DigitalPaymentService {
     private digitalPaymentModel: Model<DigitalPayment>,
   ) {}
 
-  async create(adminId: string, dto: CreateDigitalPaymentDto) {
+  async create(adminId: Types.ObjectId, dto: CreateDigitalPaymentDto) {
     const data = new this.digitalPaymentModel({
       ...dto,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     return data.save();
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.digitalPaymentModel.find({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
   }
 
-  async findByShift(adminId: string, date: string, shiftId: number) {
+  async findByShift(adminId: Types.ObjectId, date: string, shiftId: number) {
     return this.digitalPaymentModel.find({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       date,
       shiftId,
     });

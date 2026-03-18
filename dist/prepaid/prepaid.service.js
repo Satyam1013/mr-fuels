@@ -28,7 +28,7 @@ let PrepaidService = class PrepaidService {
     async create(adminId, dto) {
         const machine = await this.machineModel.findOne({
             _id: new mongoose_2.Types.ObjectId(dto.machineId),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!machine) {
             throw new common_1.BadRequestException("Machine not found");
@@ -39,7 +39,7 @@ let PrepaidService = class PrepaidService {
         }
         const customer = await this.customerService.findOrCreateCustomer(adminId, dto.partyName, dto.phoneNumber);
         const saved = await this.prepaidModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             customerId: customer._id,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
             nozzleNumber: dto.nozzleNumber,
@@ -59,7 +59,7 @@ let PrepaidService = class PrepaidService {
     }
     async findAll(adminId) {
         return this.prepaidModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
 };

@@ -1,19 +1,23 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { PrepaidService } from "./prepaid.service";
 import { CreatePrepaidDto } from "./prepaid.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("prepaid")
 export class PrepaidController {
   constructor(private readonly service: PrepaidService) {}
 
   @Post()
-  create(@Body() dto: CreatePrepaidDto, @Req() req: AuthenticatedRequest) {
-    return this.service.create(req.user.adminId, dto);
+  create(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: CreatePrepaidDto,
+  ) {
+    return this.service.create(adminId, dto);
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.service.findAll(req.user.adminId);
+  findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.service.findAll(adminId);
   }
 }

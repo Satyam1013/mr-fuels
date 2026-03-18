@@ -24,18 +24,18 @@ let DigitalPaymentService = class DigitalPaymentService {
     async create(adminId, dto) {
         const data = new this.digitalPaymentModel({
             ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         return data.save();
     }
     async findAll(adminId) {
         return this.digitalPaymentModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
     async findByShift(adminId, date, shiftId) {
         return this.digitalPaymentModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             date,
             shiftId,
         });

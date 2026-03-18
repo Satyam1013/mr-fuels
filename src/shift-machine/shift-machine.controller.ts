@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Req } from "@nestjs/common";
+import { Controller, Post, Body } from "@nestjs/common";
 import { ShiftMachineService } from "./shift-machine.service";
-import { AuthenticatedRequest } from "../auth/auth.request";
 import { CreateShiftMachineDto } from "./shift-machine.dto";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("shift-machine")
 export class ShiftMachineController {
@@ -9,10 +10,9 @@ export class ShiftMachineController {
 
   @Post()
   async create(
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateShiftMachineDto,
-    @Req() req: AuthenticatedRequest,
   ) {
-    const adminId = req.user.adminId;
     return this.service.create(adminId, dto);
   }
 }

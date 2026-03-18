@@ -52,7 +52,7 @@ let MachineCalculationService = class MachineCalculationService {
             });
         }
         const calculation = new this.machineCalcModel({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
             date: new Date(dto.date),
             shiftNumber: dto.shiftNumber,

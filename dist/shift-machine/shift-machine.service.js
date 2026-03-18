@@ -25,7 +25,7 @@ let ShiftMachineService = class ShiftMachineService {
     }
     async create(adminId, dto) {
         const machine = await this.machineModel.findOne({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             machineNumber: dto.machineName,
         });
         if (!machine) {
@@ -46,7 +46,7 @@ let ShiftMachineService = class ShiftMachineService {
             };
         });
         const saved = await this.shiftModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             date: dto.date,
             shiftId: dto.shiftId,
             shiftNumber: dto.shiftNumber,

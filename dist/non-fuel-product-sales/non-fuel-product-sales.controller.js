@@ -15,15 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NonFuelProductSellController = void 0;
 const common_1 = require("@nestjs/common");
 const non_fuel_product_sales_service_1 = require("./non-fuel-product-sales.service");
+const mongoose_1 = require("mongoose");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
 let NonFuelProductSellController = class NonFuelProductSellController {
     constructor(nonFuelSellService) {
         this.nonFuelSellService = nonFuelSellService;
     }
-    addProducts(req, dtos) {
-        return this.nonFuelSellService.addProducts(req.user.adminId, dtos);
+    addProducts(adminId, dtos) {
+        return this.nonFuelSellService.addProducts(adminId, dtos);
     }
-    async getProducts(req) {
-        return this.nonFuelSellService.getProducts(req.user.adminId);
+    async getProducts(adminId) {
+        return this.nonFuelSellService.getProducts(adminId);
     }
     async deleteProduct(id) {
         return this.nonFuelSellService.deleteProduct(id);
@@ -32,17 +34,17 @@ let NonFuelProductSellController = class NonFuelProductSellController {
 exports.NonFuelProductSellController = NonFuelProductSellController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, Array]),
     __metadata("design:returntype", void 0)
 ], NonFuelProductSellController.prototype, "addProducts", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], NonFuelProductSellController.prototype, "getProducts", null);
 __decorate([

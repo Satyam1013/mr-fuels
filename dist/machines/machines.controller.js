@@ -16,16 +16,16 @@ exports.MachineController = void 0;
 const common_1 = require("@nestjs/common");
 const machines_service_1 = require("./machines.service");
 const machines_dto_1 = require("./machines.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let MachineController = class MachineController {
     constructor(machineService) {
         this.machineService = machineService;
     }
-    async createMachines(req, body) {
-        const adminId = req.user.adminId;
+    async createMachines(adminId, body) {
         return this.machineService.createMachines(adminId, body.machines);
     }
-    async getMachines(req) {
-        const adminId = req.user.adminId;
+    async getMachines(adminId) {
         return this.machineService.getMachines(adminId);
     }
     async getMachineById(id) {
@@ -41,17 +41,17 @@ let MachineController = class MachineController {
 exports.MachineController = MachineController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, machines_dto_1.BulkCreateMachineDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, machines_dto_1.BulkCreateMachineDto]),
     __metadata("design:returntype", Promise)
 ], MachineController.prototype, "createMachines", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], MachineController.prototype, "getMachines", null);
 __decorate([

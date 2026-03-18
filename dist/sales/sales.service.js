@@ -32,12 +32,11 @@ let SalesService = class SalesService {
         this.pumpDetailsModel = pumpDetailsModel;
     }
     async getDashboardSetup(adminId) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
         // =============================
         // 1️⃣ Machines
         // =============================
         const machines = await this.machineModel
-            .find({ adminId: objectAdminId, isActive: true })
+            .find({ adminId, isActive: true })
             .lean();
         // Fuel Types from Nozzles
         const fuelSet = new Set();
@@ -57,9 +56,7 @@ let SalesService = class SalesService {
         // =============================
         // 2️⃣ Non Fuel Products (Lubricants)
         // =============================
-        const nonFuelProductsData = await this.nonFuelModel
-            .find({ adminId: objectAdminId })
-            .lean();
+        const nonFuelProductsData = await this.nonFuelModel.find(adminId).lean();
         const nonFuelProducts = nonFuelProductsData.map((product) => ({
             id: product._id,
             productName: product.productName,
@@ -71,9 +68,7 @@ let SalesService = class SalesService {
         // =============================
         // 3️⃣ Transaction Details
         // =============================
-        const transaction = await this.transactionModel
-            .findOne({ adminId: objectAdminId })
-            .lean();
+        const transaction = await this.transactionModel.findOne({ adminId }).lean();
         const upiApps = transaction?.upiApps.map((app) => ({
             name: app.name,
             amount: 0,
@@ -112,7 +107,7 @@ let SalesService = class SalesService {
         // =============================
         // 5️⃣ Staff (Last 4 sections replacement)
         // =============================
-        const staff = await this.staffModel.find({ adminId: objectAdminId }).lean();
+        const staff = await this.staffModel.find(adminId).lean();
         const staffDetails = staff.map((s) => ({
             name: s.staffName,
             id: s._id,
@@ -138,10 +133,7 @@ let SalesService = class SalesService {
         };
     }
     async getShiftDashboard(adminId) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
-        const pumpDetails = await this.pumpDetailsModel
-            .findOne({ adminId: objectAdminId })
-            .lean();
+        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
         if (!pumpDetails) {
             throw new Error("Pump details not found");
         }

@@ -16,21 +16,23 @@ exports.TankController = void 0;
 const common_1 = require("@nestjs/common");
 const tank_details_service_1 = require("./tank-details.service");
 const tank_details_dto_1 = require("./tank-details.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let TankController = class TankController {
     constructor(tankService) {
         this.tankService = tankService;
     }
-    create(req, dto) {
-        return this.tankService.create(req.user.adminId, dto);
+    create(adminId, dto) {
+        return this.tankService.create(adminId, dto);
     }
-    findAll(req) {
-        return this.tankService.findAll(req.user.adminId);
+    findAll(adminId) {
+        return this.tankService.findAll(adminId);
     }
     findOne(id) {
         return this.tankService.findOne(id);
     }
-    updateMany(req, dto) {
-        return this.tankService.updateMany(req.user.adminId, dto);
+    updateMany(adminId, dto) {
+        return this.tankService.updateMany(adminId, dto);
     }
     remove(id) {
         return this.tankService.remove(id);
@@ -39,17 +41,17 @@ let TankController = class TankController {
 exports.TankController = TankController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, tank_details_dto_1.CreateTankDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, tank_details_dto_1.CreateTankDetailsDto]),
     __metadata("design:returntype", void 0)
 ], TankController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], TankController.prototype, "findAll", null);
 __decorate([
@@ -61,10 +63,10 @@ __decorate([
 ], TankController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, tank_details_dto_1.UpdateTankDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, tank_details_dto_1.UpdateTankDetailsDto]),
     __metadata("design:returntype", void 0)
 ], TankController.prototype, "updateMany", null);
 __decorate([

@@ -18,10 +18,10 @@ export class PrepaidService {
     private customerService: CustomerService,
   ) {}
 
-  async create(adminId: string, dto: CreatePrepaidDto) {
+  async create(adminId: Types.ObjectId, dto: CreatePrepaidDto) {
     const machine = await this.machineModel.findOne({
       _id: new Types.ObjectId(dto.machineId),
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!machine) {
@@ -43,7 +43,7 @@ export class PrepaidService {
     );
 
     const saved = await this.prepaidModel.create({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       customerId: customer._id,
       machineId: new Types.ObjectId(dto.machineId),
       nozzleNumber: dto.nozzleNumber,
@@ -63,9 +63,9 @@ export class PrepaidService {
     };
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.prepaidModel.find({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
   }
 }

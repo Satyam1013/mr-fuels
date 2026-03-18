@@ -14,7 +14,7 @@ export class DsrDetailsService {
     @InjectModel(Admin.name) private adminModel: Model<Admin>,
   ) {}
 
-  async addOrUpdate(adminId: string, dto: CreateDsrDetailsDto) {
+  async addOrUpdate(adminId: Types.ObjectId, dto: CreateDsrDetailsDto) {
     for (const tank of dto.tankConfig) {
       if (tank.inputType === TankInputType.CHART && !tank.dsrChart) {
         throw new Error(`DSR Chart is required for tank ${tank.tankNo}`);
@@ -39,7 +39,7 @@ export class DsrDetailsService {
       result = await existing.save();
     } else {
       result = await this.dsrModel.create({
-        adminId: new Types.ObjectId(adminId),
+        adminId,
         tankConfig: dto.tankConfig,
       });
     }
@@ -52,11 +52,11 @@ export class DsrDetailsService {
     return result;
   }
 
-  async getByAdmin(adminId: string) {
+  async getByAdmin(adminId: Types.ObjectId) {
     return this.dsrModel.findOne({ adminId });
   }
 
-  async updateDsr(adminId: string, dto: CreateDsrDetailsDto) {
+  async updateDsr(adminId: Types.ObjectId, dto: CreateDsrDetailsDto) {
     for (const tank of dto.tankConfig) {
       if (tank.inputType === TankInputType.CHART && !tank.dsrChart) {
         throw new Error(`DSR Chart is required for tank ${tank.tankNo}`);
@@ -85,9 +85,9 @@ export class DsrDetailsService {
     return dsr;
   }
 
-  async deleteDsr(adminId: string) {
+  async deleteDsr(adminId: Types.ObjectId) {
     const dsr = await this.dsrModel.findOneAndDelete({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!dsr) {

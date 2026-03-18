@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Req,
   Get,
   Param,
   Delete,
@@ -10,7 +9,8 @@ import {
 } from "@nestjs/common";
 import { MachineCalculationService } from "./machine-calculation.service";
 import { CreateMachineCalculationDto } from "./machine-calculation.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("machine-calculation")
 export class MachineCalculationController {
@@ -20,27 +20,27 @@ export class MachineCalculationController {
 
   @Post()
   create(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateMachineCalculationDto,
   ) {
-    return this.machineCalculationService.create(req.user.adminId, dto);
+    return this.machineCalculationService.create(adminId, dto);
   }
 
   @Get()
-  getAll(@Req() req: AuthenticatedRequest) {
-    return this.machineCalculationService.getAll(req.user.adminId);
+  getAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.machineCalculationService.getAll(adminId);
   }
 
   @Get("machine-details")
   getMachineDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Query("machineId") machineId: string,
     @Query("date") date: string,
     @Query("nozzleNumber") nozzleNumber?: number,
     @Query("shiftNumber") shiftNumber?: number,
   ) {
     return this.machineCalculationService.getMachineDetails(
-      req.user.adminId,
+      adminId,
       machineId,
       date,
       nozzleNumber,

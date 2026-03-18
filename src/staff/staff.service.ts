@@ -19,7 +19,7 @@ export class StaffService {
     private adminModel: Model<Admin>,
   ) {}
 
-  async addStaff(adminId: string, payload: BulkCreateStaffDto) {
+  async addStaff(adminId: Types.ObjectId, payload: BulkCreateStaffDto) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) {
       throw new NotFoundException("Admin not found");
@@ -48,7 +48,7 @@ export class StaffService {
       }
 
       docs.push({
-        adminId: new Types.ObjectId(adminId),
+        adminId,
         ...dto,
       });
     }
@@ -60,15 +60,19 @@ export class StaffService {
     return [];
   }
 
-  async getStaff(adminId: string) {
-    return this.staffModel.find({ adminId: new Types.ObjectId(adminId) });
+  async getStaff(adminId: Types.ObjectId) {
+    return this.staffModel.find(adminId);
   }
 
-  async updateStaff(adminId: string, staffId: string, dto: UpdateStaffDto) {
+  async updateStaff(
+    adminId: Types.ObjectId,
+    staffId: string,
+    dto: UpdateStaffDto,
+  ) {
     const staff = await this.staffModel.findById(staffId);
     if (!staff) throw new NotFoundException("Staff not found");
 
-    if (staff.adminId.toString() !== adminId) {
+    if (staff.adminId !== adminId) {
       throw new ConflictException(
         "Staff does not belong to the specified admin",
       );
@@ -78,7 +82,7 @@ export class StaffService {
     return staff.save();
   }
 
-  async removeStaff(adminId: string, staffId: string) {
+  async removeStaff(adminId: Types.ObjectId, staffId: string) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) {
       throw new NotFoundException("Admin not found");
@@ -89,7 +93,7 @@ export class StaffService {
       throw new NotFoundException("Staff not found");
     }
 
-    if (staff.adminId.toString() !== adminId) {
+    if (staff.adminId !== adminId) {
       throw new ConflictException(
         "Staff does not belong to the specified admin",
       );

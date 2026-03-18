@@ -6,11 +6,11 @@ import {
   Get,
   Patch,
   Delete,
-  Req,
 } from "@nestjs/common";
 import { MachineService } from "./machines.service";
 import { BulkCreateMachineDto, CreateMachineDto } from "./machines.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("machines")
 export class MachineController {
@@ -18,16 +18,14 @@ export class MachineController {
 
   @Post()
   async createMachines(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() body: BulkCreateMachineDto,
   ) {
-    const adminId = req.user.adminId;
     return this.machineService.createMachines(adminId, body.machines);
   }
 
   @Get()
-  async getMachines(@Req() req: AuthenticatedRequest) {
-    const adminId = req.user.adminId;
+  async getMachines(@GetUser("adminId") adminId: Types.ObjectId) {
     return this.machineService.getMachines(adminId);
   }
 

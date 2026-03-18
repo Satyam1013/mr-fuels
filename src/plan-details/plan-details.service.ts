@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Plan, PlanDocument } from "./plan-details.schema";
 import { PlanDetailsDto } from "./plan-details.dto";
 import { DurationType, PlanStatus } from "./plan-details.enums";
@@ -46,7 +46,7 @@ export class PlanService {
     return plan.save();
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     const usedTrial = !!(await this.subscriptionModel.exists({
       adminId,
       isTrial: true,

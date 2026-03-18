@@ -19,7 +19,10 @@ export class NonFuelProductSellService {
     private nonFuelProductsModel: Model<NonFuelProducts>,
   ) {}
 
-  async addProducts(adminId: string, dtos: CreateNonFuelSellProductDto[]) {
+  async addProducts(
+    adminId: Types.ObjectId,
+    dtos: CreateNonFuelSellProductDto[],
+  ) {
     const objectAdminId = new Types.ObjectId(adminId);
 
     try {
@@ -60,7 +63,7 @@ export class NonFuelProductSellService {
     }
   }
 
-  async getProducts(adminId: string) {
+  async getProducts(adminId: Types.ObjectId) {
     return this.nonFuelSellModel
       .find({ adminId: new Types.ObjectId(adminId) })
       .populate("productId")

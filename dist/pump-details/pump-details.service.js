@@ -30,23 +30,22 @@ let PumpDetailsService = class PumpDetailsService {
         if (!adminExists) {
             throw new common_1.NotFoundException("Admin not found");
         }
-        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         const tankIdObj = new mongoose_2.Types.ObjectId(dto.tank);
         const tankExists = await this.tankModel.findOne({
             _id: tankIdObj,
-            adminId: adminIdObj,
+            adminId,
         });
         if (!tankExists) {
             throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
         }
         const existing = await this.pumpDetailsModel.findOne({
-            adminId: adminIdObj,
+            adminId,
         });
         if (existing) {
             throw new common_1.ConflictException("Pump details already exist for this admin");
         }
         const payload = {
-            adminId: adminIdObj,
+            adminId,
             ...dto,
             tank: tankIdObj,
         };
@@ -61,9 +60,8 @@ let PumpDetailsService = class PumpDetailsService {
         return pumpDetails;
     }
     async updatePumpDetails(adminId, dto) {
-        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         const pumpDetails = await this.pumpDetailsModel.findOne({
-            adminId: adminIdObj,
+            adminId,
         });
         if (!pumpDetails) {
             throw new common_1.NotFoundException("Pump details not found");
@@ -71,7 +69,7 @@ let PumpDetailsService = class PumpDetailsService {
         if (dto.tank) {
             const tankExists = await this.tankModel.findOne({
                 _id: new mongoose_2.Types.ObjectId(dto.tank),
-                adminId: adminIdObj,
+                adminId,
             });
             if (!tankExists) {
                 throw new common_1.NotFoundException("Tank not found or does not belong to this admin");
@@ -88,11 +86,13 @@ let PumpDetailsService = class PumpDetailsService {
         if (dto.tank) {
             payload.tank = new mongoose_2.Types.ObjectId(dto.tank);
         }
-        return this.pumpDetailsModel.findOneAndUpdate({ adminId: adminIdObj }, payload, { new: true });
+        return this.pumpDetailsModel.findOneAndUpdate(adminId, payload, {
+            new: true,
+        });
     }
     async deletePumpDetails(adminId) {
         const deleted = await this.pumpDetailsModel.findOneAndDelete({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!deleted)
             throw new common_1.NotFoundException("Pump details not found");

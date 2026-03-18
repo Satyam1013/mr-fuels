@@ -16,31 +16,33 @@ exports.PrepaidController = void 0;
 const common_1 = require("@nestjs/common");
 const prepaid_service_1 = require("./prepaid.service");
 const prepaid_dto_1 = require("./prepaid.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let PrepaidController = class PrepaidController {
     constructor(service) {
         this.service = service;
     }
-    create(dto, req) {
-        return this.service.create(req.user.adminId, dto);
+    create(adminId, dto) {
+        return this.service.create(adminId, dto);
     }
-    findAll(req) {
-        return this.service.findAll(req.user.adminId);
+    findAll(adminId) {
+        return this.service.findAll(adminId);
     }
 };
 exports.PrepaidController = PrepaidController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [prepaid_dto_1.CreatePrepaidDto, Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, prepaid_dto_1.CreatePrepaidDto]),
     __metadata("design:returntype", void 0)
 ], PrepaidController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], PrepaidController.prototype, "findAll", null);
 exports.PrepaidController = PrepaidController = __decorate([

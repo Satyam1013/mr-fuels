@@ -11,26 +11,26 @@ export class NonFuelProductsService {
     private nonFuelProductModel: Model<NonFuelProducts>,
   ) {}
 
-  async create(adminId: string, products: NonFuelProductDto[]) {
+  async create(adminId: Types.ObjectId, products: NonFuelProductDto[]) {
     const data = products.map((p) => ({
       ...p,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     }));
 
     return this.nonFuelProductModel.insertMany(data);
   }
 
-  async getAll(adminId: string) {
+  async getAll(adminId: Types.ObjectId) {
     return this.nonFuelProductModel.find({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
   }
 
-  async update(adminId: string, id: string, dto: NonFuelProductDto) {
+  async update(adminId: Types.ObjectId, id: string, dto: NonFuelProductDto) {
     const product = await this.nonFuelProductModel.findOneAndUpdate(
       {
         _id: new Types.ObjectId(id),
-        adminId: new Types.ObjectId(adminId),
+        adminId,
       },
       dto,
       { new: true },
@@ -43,10 +43,10 @@ export class NonFuelProductsService {
     return product;
   }
 
-  async delete(adminId: string, id: string) {
+  async delete(adminId: Types.ObjectId, id: string) {
     const product = await this.nonFuelProductModel.findOneAndDelete({
       _id: new Types.ObjectId(id),
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!product) {

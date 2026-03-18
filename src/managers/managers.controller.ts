@@ -6,11 +6,11 @@ import {
   Param,
   Patch,
   Post,
-  Req,
 } from "@nestjs/common";
 import { ManagerService } from "./managers.service";
 import { BulkCreateManagerDto, UpdateManagerDto } from "./managers.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("manager")
 export class ManagerController {
@@ -18,15 +18,15 @@ export class ManagerController {
 
   @Post()
   async addManagers(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() body: BulkCreateManagerDto,
   ) {
-    return this.managerService.addManagers(req.user.adminId, body);
+    return this.managerService.addManagers(adminId, body);
   }
 
   @Get()
-  async getManagers(@Req() req: AuthenticatedRequest) {
-    return this.managerService.getManagers(req.user.adminId);
+  async getManagers(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.managerService.getManagers(adminId);
   }
 
   @Patch(":id")

@@ -1,7 +1,8 @@
-import { Body, Controller, Post, Req } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { ProductDetailsService } from "./product-details.service";
 import { CreateProductDetailsDto } from "./product-details.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("product-details")
 export class ProductDetailsController {
@@ -9,9 +10,9 @@ export class ProductDetailsController {
 
   @Post()
   async addProductDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateProductDetailsDto,
   ) {
-    return this.productDetailsService.addProductDetails(req.user.adminId, dto);
+    return this.productDetailsService.addProductDetails(adminId, dto);
   }
 }

@@ -16,18 +16,20 @@ exports.MachineCalculationController = void 0;
 const common_1 = require("@nestjs/common");
 const machine_calculation_service_1 = require("./machine-calculation.service");
 const machine_calculation_dto_1 = require("./machine-calculation.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let MachineCalculationController = class MachineCalculationController {
     constructor(machineCalculationService) {
         this.machineCalculationService = machineCalculationService;
     }
-    create(req, dto) {
-        return this.machineCalculationService.create(req.user.adminId, dto);
+    create(adminId, dto) {
+        return this.machineCalculationService.create(adminId, dto);
     }
-    getAll(req) {
-        return this.machineCalculationService.getAll(req.user.adminId);
+    getAll(adminId) {
+        return this.machineCalculationService.getAll(adminId);
     }
-    getMachineDetails(req, machineId, date, nozzleNumber, shiftNumber) {
-        return this.machineCalculationService.getMachineDetails(req.user.adminId, machineId, date, nozzleNumber, shiftNumber);
+    getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber) {
+        return this.machineCalculationService.getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber);
     }
     getById(id) {
         return this.machineCalculationService.getById(id);
@@ -39,28 +41,28 @@ let MachineCalculationController = class MachineCalculationController {
 exports.MachineCalculationController = MachineCalculationController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, machine_calculation_dto_1.CreateMachineCalculationDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, machine_calculation_dto_1.CreateMachineCalculationDto]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)("machine-details"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Query)("machineId")),
     __param(2, (0, common_1.Query)("date")),
     __param(3, (0, common_1.Query)("nozzleNumber")),
     __param(4, (0, common_1.Query)("shiftNumber")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String, Number, Number]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "getMachineDetails", null);
 __decorate([

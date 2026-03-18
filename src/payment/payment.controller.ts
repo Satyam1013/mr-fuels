@@ -4,13 +4,13 @@ import {
   Body,
   UseInterceptors,
   UploadedFiles,
-  Req,
   BadRequestException,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { AuthenticatedRequest } from "../auth/auth.request";
 import { UpiService } from "./payment.service";
 import { SubmitUpiDto } from "./payment.dto";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("payments")
 export class UpiController {
@@ -21,10 +21,8 @@ export class UpiController {
   async submitUpiPayments(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() body: { date: string; shiftId: string; upiPayments: string },
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
   ) {
-    const adminId = req.user.adminId;
-
     let parsedPayments: SubmitUpiDto["upiPayments"];
 
     try {

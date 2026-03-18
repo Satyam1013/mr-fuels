@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param } from "@nestjs/common";
 import { PlanService } from "./plan-details.service";
 import { PlanDetailsDto } from "./plan-details.dto";
 import { Plan } from "./plan-details.schema";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("plans")
 export class PlanController {
@@ -14,8 +15,7 @@ export class PlanController {
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest): Promise<any> {
-    const adminId = req.user.adminId;
+  findAll(@GetUser("adminId") adminId: Types.ObjectId): Promise<any> {
     return this.planService.findAll(adminId);
   }
 

@@ -1,15 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Req,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Patch, Post } from "@nestjs/common";
 import { PumpDetailsService } from "./pump-details.service";
 import { CreatePumpDetailsDto, UpdatePumpDetailsDto } from "./pump-details.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("pump-details")
 export class PumpDetailsController {
@@ -17,27 +10,27 @@ export class PumpDetailsController {
 
   @Post()
   async addPumpDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreatePumpDetailsDto,
   ) {
-    return this.pumpDetailsService.addPumpDetails(req.user.adminId, dto);
+    return this.pumpDetailsService.addPumpDetails(adminId, dto);
   }
 
   @Get()
-  async getPumpDetails(@Req() req: AuthenticatedRequest) {
-    return this.pumpDetailsService.getPumpDetails(req.user.adminId);
+  async getPumpDetails(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.pumpDetailsService.getPumpDetails(adminId);
   }
 
   @Patch()
   async updatePumpDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: UpdatePumpDetailsDto,
   ) {
-    return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
+    return this.pumpDetailsService.updatePumpDetails(adminId, dto);
   }
 
   @Delete()
-  async deletePumpDetails(@Req() req: AuthenticatedRequest) {
-    return this.pumpDetailsService.deletePumpDetails(req.user.adminId);
+  async deletePumpDetails(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.pumpDetailsService.deletePumpDetails(adminId);
   }
 }

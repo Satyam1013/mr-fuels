@@ -16,31 +16,33 @@ exports.CreditorController = void 0;
 const common_1 = require("@nestjs/common");
 const creditors_service_1 = require("./creditors.service");
 const creditors_dto_1 = require("./creditors.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let CreditorController = class CreditorController {
     constructor(service) {
         this.service = service;
     }
-    async create(dto, req) {
-        return this.service.create(req.user.adminId, dto);
+    async create(adminId, dto) {
+        return this.service.create(adminId, dto);
     }
-    async findAll(req) {
-        return this.service.findAll(req.user.adminId);
+    async findAll(adminId) {
+        return this.service.findAll(adminId);
     }
 };
 exports.CreditorController = CreditorController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [creditors_dto_1.CreateCreditorDto, Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, creditors_dto_1.CreateCreditorDto]),
     __metadata("design:returntype", Promise)
 ], CreditorController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], CreditorController.prototype, "findAll", null);
 exports.CreditorController = CreditorController = __decorate([

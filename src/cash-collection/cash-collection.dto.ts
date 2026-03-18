@@ -6,6 +6,7 @@ import {
   IsArray,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { PartialType } from "@nestjs/mapped-types";
 
 class DenominationDto {
   @IsNumber()
@@ -39,3 +40,7 @@ export class CreateCashCollectionDto {
   @IsNumber()
   totalAmount!: number;
 }
+
+export class UpdateCashCollectionDto extends PartialType(
+  CreateCashCollectionDto,
+) {}

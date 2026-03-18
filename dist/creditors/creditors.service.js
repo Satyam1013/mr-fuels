@@ -29,7 +29,7 @@ let CreditorService = class CreditorService {
         try {
             const machine = await this.machineModel.findOne({
                 _id: new mongoose_2.Types.ObjectId(dto.machineId),
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId,
             });
             if (!machine) {
                 throw new common_1.BadRequestException("Machine not found");
@@ -40,7 +40,7 @@ let CreditorService = class CreditorService {
             }
             const customer = await this.customerService.findOrCreateCustomer(adminId, dto.creditorName, dto.phoneNumber);
             const saved = await this.creditorModel.create({
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId,
                 customerId: customer._id,
                 machineId: new mongoose_2.Types.ObjectId(dto.machineId),
                 nozzleNumber: dto.nozzleNumber,
@@ -65,7 +65,7 @@ let CreditorService = class CreditorService {
     }
     async findAll(adminId) {
         return this.creditorModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
 };

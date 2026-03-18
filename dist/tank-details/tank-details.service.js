@@ -22,13 +22,12 @@ let TankService = class TankService {
         this.tankModel = tankModel;
     }
     async create(adminId, dto) {
-        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
-        const existing = await this.tankModel.findOne({ adminId: adminIdObj });
+        const existing = await this.tankModel.findOne({ adminId });
         if (existing) {
             throw new common_1.ConflictException("Tank details already created for this admin");
         }
         const tank = await this.tankModel.create({
-            adminId: adminIdObj,
+            adminId,
             tanks: dto.tanks,
         });
         return {
@@ -37,8 +36,7 @@ let TankService = class TankService {
         };
     }
     async findAll(adminId) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
-        return this.tankModel.find({ adminId: objectAdminId }).lean();
+        return this.tankModel.find(adminId).lean();
     }
     async findOne(id) {
         const tank = await this.tankModel.findById(id).lean();
@@ -47,11 +45,10 @@ let TankService = class TankService {
         return tank;
     }
     async updateMany(adminId, dto) {
-        const adminIdObj = new mongoose_2.Types.ObjectId(adminId);
         if (!dto.tanks || dto.tanks.length === 0) {
             throw new common_1.NotFoundException("No tanks provided for update");
         }
-        const tankDoc = await this.tankModel.findOne({ adminId: adminIdObj });
+        const tankDoc = await this.tankModel.findOne({ adminId });
         if (!tankDoc)
             throw new common_1.NotFoundException("Tank document not found");
         dto.tanks.forEach((updateTank) => {

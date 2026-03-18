@@ -7,24 +7,27 @@ import {
   Delete,
   Body,
   Param,
-  Req,
 } from "@nestjs/common";
 import { PumpStatusService } from "./pump-status.service";
 import { CreatePumpStatusDto } from "./pump-status.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("pump-status")
 export class PumpStatusController {
   constructor(private readonly service: PumpStatusService) {}
 
   @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreatePumpStatusDto) {
-    return this.service.create(req.user.adminId, dto);
+  create(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: CreatePumpStatusDto,
+  ) {
+    return this.service.create(adminId, dto);
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.service.findAll(req.user.adminId);
+  findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.service.findAll(adminId);
   }
 
   @Patch(":id/:status")

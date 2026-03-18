@@ -16,6 +16,8 @@ exports.PlanController = void 0;
 const common_1 = require("@nestjs/common");
 const plan_details_service_1 = require("./plan-details.service");
 const plan_details_dto_1 = require("./plan-details.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let PlanController = class PlanController {
     constructor(planService) {
         this.planService = planService;
@@ -23,8 +25,7 @@ let PlanController = class PlanController {
     create(planDetailsDto) {
         return this.planService.create(planDetailsDto);
     }
-    findAll(req) {
-        const adminId = req.user.adminId;
+    findAll(adminId) {
         return this.planService.findAll(adminId);
     }
     findByName(name) {
@@ -41,9 +42,9 @@ __decorate([
 ], PlanController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], PlanController.prototype, "findAll", null);
 __decorate([

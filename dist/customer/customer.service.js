@@ -24,12 +24,12 @@ let CustomerService = class CustomerService {
     async create(adminId, dto) {
         return this.customerModel.create({
             ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
     async findAll(adminId) {
         return this.customerModel.find({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
     }
     async findOne(id) {
@@ -53,14 +53,13 @@ let CustomerService = class CustomerService {
         return { message: "Customer deleted successfully" };
     }
     async findOrCreateCustomer(adminId, name, phoneNumber) {
-        const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
         let customer = await this.customerModel.findOne({
-            adminId: adminObjectId,
+            adminId,
             phoneNumber: phoneNumber,
         });
         if (!customer) {
             customer = await this.customerModel.create({
-                adminId: adminObjectId,
+                adminId,
                 name,
                 phoneNumber,
             });

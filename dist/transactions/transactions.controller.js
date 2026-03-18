@@ -16,52 +16,54 @@ exports.TransactionDetailsController = void 0;
 const common_1 = require("@nestjs/common");
 const transactions_service_1 = require("./transactions.service");
 const transactions_dto_1 = require("./transactions.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let TransactionDetailsController = class TransactionDetailsController {
     constructor(transactionDetailsService) {
         this.transactionDetailsService = transactionDetailsService;
     }
-    async addTransactionDetails(req, dto) {
-        return this.transactionDetailsService.addTransactionDetails(req.user.adminId, dto);
+    async addTransactionDetails(adminId, dto) {
+        return this.transactionDetailsService.addTransactionDetails(adminId, dto);
     }
-    async getTransactionDetails(req) {
-        return this.transactionDetailsService.getTransactionDetails(req.user.adminId);
+    async getTransactionDetails(adminId) {
+        return this.transactionDetailsService.getTransactionDetails(adminId);
     }
-    async updateTransactionDetails(req, dto) {
-        return this.transactionDetailsService.updateTransactionDetails(req.user.adminId, dto);
+    async updateTransactionDetails(adminId, dto) {
+        return this.transactionDetailsService.updateTransactionDetails(adminId, dto);
     }
-    async deleteTransactionDetails(req) {
-        return this.transactionDetailsService.deleteTransactionDetails(req.user.adminId);
+    async deleteTransactionDetails(adminId) {
+        return this.transactionDetailsService.deleteTransactionDetails(adminId);
     }
 };
 exports.TransactionDetailsController = TransactionDetailsController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, transactions_dto_1.CreateTransactionDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, transactions_dto_1.CreateTransactionDetailsDto]),
     __metadata("design:returntype", Promise)
 ], TransactionDetailsController.prototype, "addTransactionDetails", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], TransactionDetailsController.prototype, "getTransactionDetails", null);
 __decorate([
     (0, common_1.Patch)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, transactions_dto_1.CreateTransactionDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, transactions_dto_1.CreateTransactionDetailsDto]),
     __metadata("design:returntype", Promise)
 ], TransactionDetailsController.prototype, "updateTransactionDetails", null);
 __decorate([
     (0, common_1.Delete)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], TransactionDetailsController.prototype, "deleteTransactionDetails", null);
 exports.TransactionDetailsController = TransactionDetailsController = __decorate([

@@ -26,7 +26,7 @@ let CashCollectionService = class CashCollectionService {
     async create(adminId, dto) {
         const machine = await this.machineModel.findOne({
             _id: new mongoose_2.Types.ObjectId(dto.machineId),
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!machine) {
             throw new common_1.BadRequestException("Machine not found");
@@ -36,7 +36,7 @@ let CashCollectionService = class CashCollectionService {
             throw new common_1.BadRequestException("Invalid nozzle number");
         }
         const cash = await this.cashCollectionModel.create({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
             nozzleNumber: dto.nozzleNumber,
             shiftNumber: dto.shiftNumber,
@@ -47,6 +47,61 @@ let CashCollectionService = class CashCollectionService {
         return {
             message: "Cash collection saved successfully",
             data: cash,
+        };
+    }
+    async findAll(adminId) {
+        const data = await this.cashCollectionModel
+            .find({
+            adminId,
+        })
+            .sort({ createdAt: -1 });
+        return {
+            message: "Cash collections fetched successfully",
+            data,
+        };
+    }
+    async findOne(adminId, id) {
+        const data = await this.cashCollectionModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!data) {
+            throw new common_1.BadRequestException("Cash collection not found");
+        }
+        return {
+            message: "Cash collection fetched successfully",
+            data,
+        };
+    }
+    async update(adminId, id, dto) {
+        const existing = await this.cashCollectionModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.BadRequestException("Cash collection not found");
+        }
+        const updated = await this.cashCollectionModel.findByIdAndUpdate(id, {
+            ...dto,
+            ...(dto.machineId && { machineId: new mongoose_2.Types.ObjectId(dto.machineId) }),
+            ...(dto.date && { date: new Date(dto.date) }),
+        }, { new: true });
+        return {
+            message: "Cash collection updated successfully",
+            data: updated,
+        };
+    }
+    async remove(adminId, id) {
+        const existing = await this.cashCollectionModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.BadRequestException("Cash collection not found");
+        }
+        await this.cashCollectionModel.findByIdAndDelete(id);
+        return {
+            message: "Cash collection deleted successfully",
         };
     }
 };

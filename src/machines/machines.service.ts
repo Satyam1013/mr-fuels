@@ -10,10 +10,10 @@ export class MachineService {
     @InjectModel(Machine.name) private machineModel: Model<Machine>,
   ) {}
 
-  async createMachines(adminId: string, machines: CreateMachineDto[]) {
+  async createMachines(adminId: Types.ObjectId, machines: CreateMachineDto[]) {
     const docs = machines.map((m) => ({
       ...m,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       nozzle: m.nozzle.map((n) => ({
         ...n,
         tankId: new Types.ObjectId(n.tankId),
@@ -23,7 +23,7 @@ export class MachineService {
     return this.machineModel.insertMany(docs);
   }
 
-  async getMachines(adminId: string) {
+  async getMachines(adminId: Types.ObjectId) {
     return this.machineModel.find({ adminId: new Types.ObjectId(adminId) });
   }
 

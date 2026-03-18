@@ -16,52 +16,54 @@ exports.PumpDetailsController = void 0;
 const common_1 = require("@nestjs/common");
 const pump_details_service_1 = require("./pump-details.service");
 const pump_details_dto_1 = require("./pump-details.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let PumpDetailsController = class PumpDetailsController {
     constructor(pumpDetailsService) {
         this.pumpDetailsService = pumpDetailsService;
     }
-    async addPumpDetails(req, dto) {
-        return this.pumpDetailsService.addPumpDetails(req.user.adminId, dto);
+    async addPumpDetails(adminId, dto) {
+        return this.pumpDetailsService.addPumpDetails(adminId, dto);
     }
-    async getPumpDetails(req) {
-        return this.pumpDetailsService.getPumpDetails(req.user.adminId);
+    async getPumpDetails(adminId) {
+        return this.pumpDetailsService.getPumpDetails(adminId);
     }
-    async updatePumpDetails(req, dto) {
-        return this.pumpDetailsService.updatePumpDetails(req.user.adminId, dto);
+    async updatePumpDetails(adminId, dto) {
+        return this.pumpDetailsService.updatePumpDetails(adminId, dto);
     }
-    async deletePumpDetails(req) {
-        return this.pumpDetailsService.deletePumpDetails(req.user.adminId);
+    async deletePumpDetails(adminId) {
+        return this.pumpDetailsService.deletePumpDetails(adminId);
     }
 };
 exports.PumpDetailsController = PumpDetailsController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, pump_details_dto_1.CreatePumpDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, pump_details_dto_1.CreatePumpDetailsDto]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "addPumpDetails", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "getPumpDetails", null);
 __decorate([
     (0, common_1.Patch)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, pump_details_dto_1.UpdatePumpDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, pump_details_dto_1.UpdatePumpDetailsDto]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "updatePumpDetails", null);
 __decorate([
     (0, common_1.Delete)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], PumpDetailsController.prototype, "deletePumpDetails", null);
 exports.PumpDetailsController = PumpDetailsController = __decorate([

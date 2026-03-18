@@ -16,22 +16,23 @@ exports.ShiftMachineController = void 0;
 const common_1 = require("@nestjs/common");
 const shift_machine_service_1 = require("./shift-machine.service");
 const shift_machine_dto_1 = require("./shift-machine.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let ShiftMachineController = class ShiftMachineController {
     constructor(service) {
         this.service = service;
     }
-    async create(dto, req) {
-        const adminId = req.user.adminId;
+    async create(adminId, dto) {
         return this.service.create(adminId, dto);
     }
 };
 exports.ShiftMachineController = ShiftMachineController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [shift_machine_dto_1.CreateShiftMachineDto, Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, shift_machine_dto_1.CreateShiftMachineDto]),
     __metadata("design:returntype", Promise)
 ], ShiftMachineController.prototype, "create", null);
 exports.ShiftMachineController = ShiftMachineController = __decorate([

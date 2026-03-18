@@ -42,7 +42,7 @@ let DsrDetailsService = class DsrDetailsService {
         }
         else {
             result = await this.dsrModel.create({
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId,
                 tankConfig: dto.tankConfig,
             });
         }
@@ -70,7 +70,7 @@ let DsrDetailsService = class DsrDetailsService {
     }
     async deleteDsr(adminId) {
         const dsr = await this.dsrModel.findOneAndDelete({
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
         });
         if (!dsr) {
             throw new common_1.NotFoundException("DSR details not found");

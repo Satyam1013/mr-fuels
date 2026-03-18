@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Admin } from "../admin/admin.schema";
 import { Plan } from "../plan-details/plan-details.schema";
 import { Subscription } from "../subscription/subscription.schema";
@@ -16,7 +16,7 @@ export class AdminService {
     private subscriptionModel: Model<Subscription>,
   ) {}
 
-  async selectPlan(adminId: string, planId: string) {
+  async selectPlan(adminId: Types.ObjectId, planId: string) {
     const plan = await this.planModel.findById(planId);
 
     if (!plan) {

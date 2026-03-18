@@ -76,7 +76,7 @@ let ManagerService = class ManagerService {
             }
             const hashedPassword = await bcrypt.hash(dto.password, 10);
             docs.push({
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId,
                 ...dto,
                 password: hashedPassword,
             });

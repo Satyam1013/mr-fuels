@@ -25,9 +25,8 @@ let ShiftStatusService = class ShiftStatusService {
         this.pumpDetailsModel = pumpDetailsModel;
     }
     async create(adminId, dto) {
-        const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
         const existing = await this.shiftStatusModel.findOne({
-            adminId: adminObjectId,
+            adminId,
             date: dto.date,
         });
         if (existing) {
@@ -35,7 +34,7 @@ let ShiftStatusService = class ShiftStatusService {
         }
         return this.shiftStatusModel.create({
             ...dto,
-            adminId: adminObjectId,
+            adminId,
         });
     }
     buildTemplate(pumpDetails, date, shiftId) {
@@ -61,10 +60,7 @@ let ShiftStatusService = class ShiftStatusService {
         };
     }
     async getByDate(adminId, date) {
-        const adminObjectId = new mongoose_2.Types.ObjectId(adminId);
-        const pumpDetails = await this.pumpDetailsModel
-            .findOne({ adminId: adminObjectId })
-            .lean();
+        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
         if (!pumpDetails) {
             throw new Error("Pump details not found");
         }
@@ -108,7 +104,7 @@ let ShiftStatusService = class ShiftStatusService {
         // ----------- EXACT DATA -----------
         const exact = await this.shiftStatusModel
             .findOne({
-            adminId: adminObjectId,
+            adminId,
             date: requestedDate,
         })
             .populate("shifts.closedBy", "name")
@@ -119,7 +115,7 @@ let ShiftStatusService = class ShiftStatusService {
         }
         // ----------- LATEST RECORD -----------
         const latest = await this.shiftStatusModel
-            .findOne({ adminId: adminObjectId })
+            .findOne({ adminId })
             .sort({ date: -1 })
             .populate("shifts.closedBy", "name")
             .populate("currentShift.closedBy", "name")
@@ -128,7 +124,7 @@ let ShiftStatusService = class ShiftStatusService {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
         const first = await this.shiftStatusModel
-            .findOne({ adminId: adminObjectId })
+            .findOne({ adminId })
             .sort({ date: 1 })
             .lean();
         if (!first) {

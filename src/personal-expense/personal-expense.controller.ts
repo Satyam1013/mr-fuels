@@ -1,15 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Param,
-  Delete,
-  Req,
-} from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, Delete } from "@nestjs/common";
 import { PersonalExpenseService } from "./personal-expense.service";
 import { CreatePersonalExpenseDto } from "./personal-expense.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("personal-expense")
 export class PersonalExpenseController {
@@ -20,15 +13,13 @@ export class PersonalExpenseController {
   @Post()
   create(
     @Body() dto: CreatePersonalExpenseDto,
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
   ) {
-    const adminId = req.user.adminId;
     return this.personalExpenseService.create(adminId, dto);
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    const adminId = req.user.adminId;
+  findAll(@GetUser("adminId") adminId: Types.ObjectId) {
     return this.personalExpenseService.findAll(adminId);
   }
 

@@ -6,24 +6,27 @@ import {
   Delete,
   Param,
   Body,
-  Req,
 } from "@nestjs/common";
 import { TankService } from "./tank-details.service";
 import { CreateTankDetailsDto, UpdateTankDetailsDto } from "./tank-details.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("tanks")
 export class TankController {
   constructor(private readonly tankService: TankService) {}
 
   @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreateTankDetailsDto) {
-    return this.tankService.create(req.user.adminId, dto);
+  create(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: CreateTankDetailsDto,
+  ) {
+    return this.tankService.create(adminId, dto);
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.tankService.findAll(req.user.adminId);
+  findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.tankService.findAll(adminId);
   }
 
   @Get(":id")
@@ -33,10 +36,10 @@ export class TankController {
 
   @Patch()
   updateMany(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: UpdateTankDetailsDto,
   ) {
-    return this.tankService.updateMany(req.user.adminId, dto);
+    return this.tankService.updateMany(adminId, dto);
   }
 
   @Delete(":id")

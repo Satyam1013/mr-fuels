@@ -28,14 +28,12 @@ export class SalesService {
     private pumpDetailsModel: Model<PumpDetails>,
   ) {}
 
-  async getDashboardSetup(adminId: string) {
-    const objectAdminId = new Types.ObjectId(adminId);
-
+  async getDashboardSetup(adminId: Types.ObjectId) {
     // =============================
     // 1️⃣ Machines
     // =============================
     const machines = await this.machineModel
-      .find({ adminId: objectAdminId, isActive: true })
+      .find({ adminId, isActive: true })
       .lean();
 
     // Fuel Types from Nozzles
@@ -58,9 +56,7 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel
-      .find({ adminId: objectAdminId })
-      .lean();
+    const nonFuelProductsData = await this.nonFuelModel.find(adminId).lean();
 
     const nonFuelProducts = nonFuelProductsData.map((product) => ({
       id: product._id,
@@ -73,9 +69,7 @@ export class SalesService {
     // =============================
     // 3️⃣ Transaction Details
     // =============================
-    const transaction = await this.transactionModel
-      .findOne({ adminId: objectAdminId })
-      .lean();
+    const transaction = await this.transactionModel.findOne({ adminId }).lean();
 
     const upiApps =
       transaction?.upiApps.map((app) => ({
@@ -119,7 +113,7 @@ export class SalesService {
     // =============================
     // 5️⃣ Staff (Last 4 sections replacement)
     // =============================
-    const staff = await this.staffModel.find({ adminId: objectAdminId }).lean();
+    const staff = await this.staffModel.find(adminId).lean();
 
     const staffDetails = staff.map((s) => ({
       name: s.staffName,
@@ -152,12 +146,8 @@ export class SalesService {
     };
   }
 
-  async getShiftDashboard(adminId: string) {
-    const objectAdminId = new Types.ObjectId(adminId);
-
-    const pumpDetails = await this.pumpDetailsModel
-      .findOne({ adminId: objectAdminId })
-      .lean();
+  async getShiftDashboard(adminId: Types.ObjectId) {
+    const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
 
     if (!pumpDetails) {
       throw new Error("Pump details not found");

@@ -23,18 +23,17 @@ export class PumpDetailsService {
     private tankModel: Model<TankDetails>,
   ) {}
 
-  async addPumpDetails(adminId: string, dto: CreatePumpDetailsDto) {
+  async addPumpDetails(adminId: Types.ObjectId, dto: CreatePumpDetailsDto) {
     const adminExists = await this.adminModel.findById(adminId);
     if (!adminExists) {
       throw new NotFoundException("Admin not found");
     }
 
-    const adminIdObj = new Types.ObjectId(adminId);
     const tankIdObj = new Types.ObjectId(dto.tank);
 
     const tankExists = await this.tankModel.findOne({
       _id: tankIdObj,
-      adminId: adminIdObj,
+      adminId,
     });
 
     if (!tankExists) {
@@ -44,7 +43,7 @@ export class PumpDetailsService {
     }
 
     const existing = await this.pumpDetailsModel.findOne({
-      adminId: adminIdObj,
+      adminId,
     });
 
     if (existing) {
@@ -52,7 +51,7 @@ export class PumpDetailsService {
     }
 
     const payload = {
-      adminId: adminIdObj,
+      adminId,
       ...dto,
       tank: tankIdObj,
     };
@@ -60,7 +59,7 @@ export class PumpDetailsService {
     return this.pumpDetailsModel.create(payload);
   }
 
-  async getPumpDetails(adminId: string) {
+  async getPumpDetails(adminId: Types.ObjectId) {
     const pumpDetails = await this.pumpDetailsModel
       .findOne({ adminId: new Types.ObjectId(adminId) })
       .populate("tank");
@@ -70,11 +69,9 @@ export class PumpDetailsService {
     return pumpDetails;
   }
 
-  async updatePumpDetails(adminId: string, dto: UpdatePumpDetailsDto) {
-    const adminIdObj = new Types.ObjectId(adminId);
-
+  async updatePumpDetails(adminId: Types.ObjectId, dto: UpdatePumpDetailsDto) {
     const pumpDetails = await this.pumpDetailsModel.findOne({
-      adminId: adminIdObj,
+      adminId,
     });
 
     if (!pumpDetails) {
@@ -84,7 +81,7 @@ export class PumpDetailsService {
     if (dto.tank) {
       const tankExists = await this.tankModel.findOne({
         _id: new Types.ObjectId(dto.tank),
-        adminId: adminIdObj,
+        adminId,
       });
 
       if (!tankExists) {
@@ -107,16 +104,14 @@ export class PumpDetailsService {
       payload.tank = new Types.ObjectId(dto.tank);
     }
 
-    return this.pumpDetailsModel.findOneAndUpdate(
-      { adminId: adminIdObj },
-      payload,
-      { new: true },
-    );
+    return this.pumpDetailsModel.findOneAndUpdate(adminId, payload, {
+      new: true,
+    });
   }
 
-  async deletePumpDetails(adminId: string) {
+  async deletePumpDetails(adminId: Types.ObjectId) {
     const deleted = await this.pumpDetailsModel.findOneAndDelete({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!deleted) throw new NotFoundException("Pump details not found");

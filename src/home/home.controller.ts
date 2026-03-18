@@ -1,7 +1,8 @@
-import { Controller, Get, Query, Req } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { HomeService } from "./home.service";
 import { TimeFilterQueryDto } from "./home.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("home")
 export class HomeController {
@@ -9,17 +10,17 @@ export class HomeController {
 
   @Get()
   getHomeData(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Query() query: TimeFilterQueryDto,
   ) {
-    return this.homeService.getHomeData(req.user.adminId, query);
+    return this.homeService.getHomeData(adminId, query);
   }
 
   @Get("sales")
   getSales(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Query() query: TimeFilterQueryDto,
   ) {
-    return this.homeService.getSalesData(req.user.adminId, query);
+    return this.homeService.getSalesData(adminId, query);
   }
 }

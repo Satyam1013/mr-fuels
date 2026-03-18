@@ -24,7 +24,7 @@ let PersonalExpenseService = class PersonalExpenseService {
     async create(adminId, dto) {
         const expense = new this.personalExpenseModel({
             ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
         });
         return expense.save();

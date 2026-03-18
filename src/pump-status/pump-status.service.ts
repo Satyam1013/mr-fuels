@@ -11,15 +11,15 @@ export class PumpStatusService {
     private pumpModel: Model<PumpStatus>,
   ) {}
 
-  async create(adminId: string, dto: CreatePumpStatusDto) {
+  async create(adminId: Types.ObjectId, dto: CreatePumpStatusDto) {
     return this.pumpModel.create({
       ...dto,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       handledBy: new Types.ObjectId(dto.handledBy),
     });
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.pumpModel
       .find({ adminId: new Types.ObjectId(adminId) })
       .populate({

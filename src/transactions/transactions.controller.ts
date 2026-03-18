@@ -1,15 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Req,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Patch, Post } from "@nestjs/common";
 import { TransactionDetailsService } from "./transactions.service";
 import { CreateTransactionDetailsDto } from "./transactions.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("transactions")
 export class TransactionDetailsController {
@@ -19,37 +12,30 @@ export class TransactionDetailsController {
 
   @Post()
   async addTransactionDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateTransactionDetailsDto,
   ) {
-    return this.transactionDetailsService.addTransactionDetails(
-      req.user.adminId,
-      dto,
-    );
+    return this.transactionDetailsService.addTransactionDetails(adminId, dto);
   }
 
   @Get()
-  async getTransactionDetails(@Req() req: AuthenticatedRequest) {
-    return this.transactionDetailsService.getTransactionDetails(
-      req.user.adminId,
-    );
+  async getTransactionDetails(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.transactionDetailsService.getTransactionDetails(adminId);
   }
 
   @Patch()
   async updateTransactionDetails(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateTransactionDetailsDto,
   ) {
     return this.transactionDetailsService.updateTransactionDetails(
-      req.user.adminId,
+      adminId,
       dto,
     );
   }
 
   @Delete()
-  async deleteTransactionDetails(@Req() req: AuthenticatedRequest) {
-    return this.transactionDetailsService.deleteTransactionDetails(
-      req.user.adminId,
-    );
+  async deleteTransactionDetails(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.transactionDetailsService.deleteTransactionDetails(adminId);
   }
 }

@@ -15,32 +15,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SalesController = void 0;
 const common_1 = require("@nestjs/common");
 const sales_service_1 = require("./sales.service");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let SalesController = class SalesController {
     constructor(salesService) {
         this.salesService = salesService;
     }
-    async getDashboardSetup(req) {
-        const adminId = req.user.adminId;
+    async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getShiftDashboard(req) {
-        const adminId = req.user.adminId;
+    async getShiftDashboard(adminId) {
         return this.salesService.getShiftDashboard(adminId);
     }
 };
 exports.SalesController = SalesController;
 __decorate([
     (0, common_1.Get)("dashboard-setup"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getDashboardSetup", null);
 __decorate([
     (0, common_1.Get)("shift-dashboard"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getShiftDashboard", null);
 exports.SalesController = SalesController = __decorate([

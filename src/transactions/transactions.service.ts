@@ -16,7 +16,7 @@ export class TransactionDetailsService {
   ) {}
 
   async addTransactionDetails(
-    adminId: string,
+    adminId: Types.ObjectId,
     dto: CreateTransactionDetailsDto,
   ) {
     const admin = await this.adminModel.findById(adminId);
@@ -34,14 +34,14 @@ export class TransactionDetailsService {
     }
 
     return this.transactionDetailsModel.create({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       ...dto,
     });
   }
 
-  async getTransactionDetails(adminId: string) {
+  async getTransactionDetails(adminId: Types.ObjectId) {
     const transaction = await this.transactionDetailsModel.findOne({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!transaction) {
@@ -52,7 +52,7 @@ export class TransactionDetailsService {
   }
 
   async updateTransactionDetails(
-    adminId: string,
+    adminId: Types.ObjectId,
     dto: CreateTransactionDetailsDto,
   ) {
     const transaction = await this.transactionDetailsModel.findOneAndUpdate(
@@ -68,9 +68,9 @@ export class TransactionDetailsService {
     return transaction;
   }
 
-  async deleteTransactionDetails(adminId: string) {
+  async deleteTransactionDetails(adminId: Types.ObjectId) {
     const transaction = await this.transactionDetailsModel.findOneAndDelete({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
     });
 
     if (!transaction) {

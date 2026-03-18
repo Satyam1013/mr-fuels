@@ -11,19 +11,19 @@ export class PumpExpenseService {
     private pumpExpenseModel: Model<PumpExpense>,
   ) {}
 
-  async create(adminId: string, dto: CreatePumpExpenseDto) {
+  async create(adminId: Types.ObjectId, dto: CreatePumpExpenseDto) {
     const expense = new this.pumpExpenseModel({
       ...dto,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       machineId: new Types.ObjectId(dto.machineId),
     });
 
     return expense.save();
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.pumpExpenseModel
-      .find({ adminId })
+      .find(adminId)
       .populate("machineId")
       .sort({ createdAt: -1 });
   }

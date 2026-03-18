@@ -9,7 +9,6 @@ import { ShiftStatus } from "./shift-status.schema";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { PumpDetails } from "../pump-details/pump-details.schema";
 import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
-import { AuthUser } from "../auth/user.type";
 import {
   PopulatedShift,
   PumpDetailsLean,
@@ -26,11 +25,9 @@ export class ShiftStatusService {
     private pumpDetailsModel: Model<PumpDetails>,
   ) {}
 
-  async create(adminId: string, dto: CreateShiftStatusDto) {
-    const adminObjectId = new Types.ObjectId(adminId);
-
+  async create(adminId: Types.ObjectId, dto: CreateShiftStatusDto) {
     const existing = await this.shiftStatusModel.findOne({
-      adminId: adminObjectId,
+      adminId,
       date: dto.date,
     });
 
@@ -42,7 +39,7 @@ export class ShiftStatusService {
 
     return this.shiftStatusModel.create({
       ...dto,
-      adminId: adminObjectId,
+      adminId,
     });
   }
 
@@ -77,12 +74,8 @@ export class ShiftStatusService {
     };
   }
 
-  async getByDate(adminId: string, date: string) {
-    const adminObjectId = new Types.ObjectId(adminId);
-
-    const pumpDetails = await this.pumpDetailsModel
-      .findOne({ adminId: adminObjectId })
-      .lean();
+  async getByDate(adminId: Types.ObjectId, date: string) {
+    const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
 
     if (!pumpDetails) {
       throw new Error("Pump details not found");
@@ -141,7 +134,7 @@ export class ShiftStatusService {
     // ----------- EXACT DATA -----------
     const exact = await this.shiftStatusModel
       .findOne({
-        adminId: adminObjectId,
+        adminId,
         date: requestedDate,
       })
       .populate("shifts.closedBy", "name")
@@ -154,7 +147,7 @@ export class ShiftStatusService {
 
     // ----------- LATEST RECORD -----------
     const latest = await this.shiftStatusModel
-      .findOne({ adminId: adminObjectId })
+      .findOne({ adminId })
       .sort({ date: -1 })
       .populate("shifts.closedBy", "name")
       .populate("currentShift.closedBy", "name")
@@ -169,7 +162,7 @@ export class ShiftStatusService {
     }
 
     const first = await this.shiftStatusModel
-      .findOne({ adminId: adminObjectId })
+      .findOne({ adminId })
       .sort({ date: 1 })
       .lean();
 
@@ -210,7 +203,7 @@ export class ShiftStatusService {
   }
 
   async update(
-    user: AuthUser,
+    user: Types.ObjectId,
     id: string,
     dto: Partial<CreateShiftStatusDto> & { dailyClose?: boolean },
   ) {

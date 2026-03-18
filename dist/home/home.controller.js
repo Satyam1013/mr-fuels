@@ -16,32 +16,34 @@ exports.HomeController = void 0;
 const common_1 = require("@nestjs/common");
 const home_service_1 = require("./home.service");
 const home_dto_1 = require("./home.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let HomeController = class HomeController {
     constructor(homeService) {
         this.homeService = homeService;
     }
-    getHomeData(req, query) {
-        return this.homeService.getHomeData(req.user.adminId, query);
+    getHomeData(adminId, query) {
+        return this.homeService.getHomeData(adminId, query);
     }
-    getSales(req, query) {
-        return this.homeService.getSalesData(req.user.adminId, query);
+    getSales(adminId, query) {
+        return this.homeService.getSalesData(adminId, query);
     }
 };
 exports.HomeController = HomeController;
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, home_dto_1.TimeFilterQueryDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, home_dto_1.TimeFilterQueryDto]),
     __metadata("design:returntype", void 0)
 ], HomeController.prototype, "getHomeData", null);
 __decorate([
     (0, common_1.Get)("sales"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, home_dto_1.TimeFilterQueryDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, home_dto_1.TimeFilterQueryDto]),
     __metadata("design:returntype", void 0)
 ], HomeController.prototype, "getSales", null);
 exports.HomeController = HomeController = __decorate([

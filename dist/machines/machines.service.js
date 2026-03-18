@@ -24,7 +24,7 @@ let MachineService = class MachineService {
     async createMachines(adminId, machines) {
         const docs = machines.map((m) => ({
             ...m,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             nozzle: m.nozzle.map((n) => ({
                 ...n,
                 tankId: new mongoose_2.Types.ObjectId(n.tankId),

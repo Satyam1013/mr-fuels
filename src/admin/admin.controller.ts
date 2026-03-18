@@ -1,14 +1,18 @@
-import { Body, Controller, Patch, Req } from "@nestjs/common";
+import { Body, Controller, Patch } from "@nestjs/common";
 import { SelectPlanDto } from "./admin.dto";
 import { AdminService } from "./admin.service";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("admin")
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Patch("select-plan")
-  selectPlan(@Req() req: AuthenticatedRequest, @Body() dto: SelectPlanDto) {
-    return this.adminService.selectPlan(req.user.adminId, dto.planId);
+  selectPlan(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: SelectPlanDto,
+  ) {
+    return this.adminService.selectPlan(adminId, dto.planId);
   }
 }

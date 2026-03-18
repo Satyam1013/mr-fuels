@@ -20,7 +20,7 @@ export class ManagerService {
     private adminModel: Model<Admin>,
   ) {}
 
-  async addManagers(adminId: string, payload: BulkCreateManagerDto) {
+  async addManagers(adminId: Types.ObjectId, payload: BulkCreateManagerDto) {
     const admin = await this.adminModel.findById(adminId);
     if (!admin) {
       throw new NotFoundException("Admin not found");
@@ -50,7 +50,7 @@ export class ManagerService {
       const hashedPassword = await bcrypt.hash(dto.password, 10);
 
       docs.push({
-        adminId: new Types.ObjectId(adminId),
+        adminId,
         ...dto,
         password: hashedPassword,
       });
@@ -67,7 +67,7 @@ export class ManagerService {
     return insertedManagers;
   }
 
-  async getManagers(adminId: string) {
+  async getManagers(adminId: Types.ObjectId) {
     return this.managerModel.find({ adminId: new Types.ObjectId(adminId) });
   }
 

@@ -16,43 +16,45 @@ exports.DigitalPaymentController = void 0;
 const common_1 = require("@nestjs/common");
 const digital_payment_service_1 = require("./digital-payment.service");
 const digital_payment_dto_1 = require("./digital-payment.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let DigitalPaymentController = class DigitalPaymentController {
     constructor(digitalService) {
         this.digitalService = digitalService;
     }
-    async create(req, dto) {
-        return this.digitalService.create(req.user.adminId, dto);
+    async create(adminId, dto) {
+        return this.digitalService.create(adminId, dto);
     }
-    async findAll(req) {
-        return this.digitalService.findAll(req.user.adminId);
+    async findAll(adminId) {
+        return this.digitalService.findAll(adminId);
     }
-    async findByShift(req, date, shiftId) {
-        return this.digitalService.findByShift(req.user.adminId, date, Number(shiftId));
+    async findByShift(adminId, date, shiftId) {
+        return this.digitalService.findByShift(adminId, date, Number(shiftId));
     }
 };
 exports.DigitalPaymentController = DigitalPaymentController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, digital_payment_dto_1.CreateDigitalPaymentDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, digital_payment_dto_1.CreateDigitalPaymentDto]),
     __metadata("design:returntype", Promise)
 ], DigitalPaymentController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], DigitalPaymentController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)("shift"),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Query)("date")),
     __param(2, (0, common_1.Query)("shiftId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, Number]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, Number]),
     __metadata("design:returntype", Promise)
 ], DigitalPaymentController.prototype, "findByShift", null);
 exports.DigitalPaymentController = DigitalPaymentController = __decorate([

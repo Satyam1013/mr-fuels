@@ -11,17 +11,17 @@ export class PersonalExpenseService {
     private personalExpenseModel: Model<PersonalExpense>,
   ) {}
 
-  async create(adminId: string, dto: CreatePersonalExpenseDto) {
+  async create(adminId: Types.ObjectId, dto: CreatePersonalExpenseDto) {
     const expense = new this.personalExpenseModel({
       ...dto,
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       machineId: new Types.ObjectId(dto.machineId),
     });
 
     return expense.save();
   }
 
-  async findAll(adminId: string) {
+  async findAll(adminId: Types.ObjectId) {
     return this.personalExpenseModel
       .find({ adminId: new Types.ObjectId(adminId) })
       .sort({ createdAt: -1 });

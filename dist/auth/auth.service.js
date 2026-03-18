@@ -52,6 +52,7 @@ const bcrypt = __importStar(require("bcrypt"));
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_2 = require("mongoose");
 const admin_schema_1 = require("../admin/admin.schema");
+const admin_enum_1 = require("../admin/admin.enum");
 let AuthService = class AuthService {
     constructor(adminModel, jwtService) {
         this.adminModel = adminModel;
@@ -119,7 +120,7 @@ let AuthService = class AuthService {
             token,
             user: {
                 _id: admin._id,
-                role: "admin",
+                role: admin_enum_1.Role.ADMIN,
                 businessName: admin.businessName,
                 mobileNo: admin.mobileNo,
                 setupComplete: admin.setupComplete,

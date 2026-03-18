@@ -16,12 +16,13 @@ exports.UpiController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const payment_service_1 = require("./payment.service");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let UpiController = class UpiController {
     constructor(upiService) {
         this.upiService = upiService;
     }
-    async submitUpiPayments(files, body, req) {
-        const adminId = req.user.adminId;
+    async submitUpiPayments(files, body, adminId) {
         let parsedPayments;
         try {
             parsedPayments = JSON.parse(body.upiPayments);
@@ -43,9 +44,9 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)("files")),
     __param(0, (0, common_1.UploadedFiles)()),
     __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Req)()),
+    __param(2, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, Object, Object]),
+    __metadata("design:paramtypes", [Array, Object, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], UpiController.prototype, "submitUpiPayments", null);
 exports.UpiController = UpiController = __decorate([

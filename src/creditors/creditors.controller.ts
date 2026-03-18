@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Get, Req } from "@nestjs/common";
+import { Controller, Post, Body, Get } from "@nestjs/common";
 import { CreditorService } from "./creditors.service";
 import { CreateCreditorDto } from "./creditors.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("creditors")
 export class CreditorController {
@@ -9,14 +10,14 @@ export class CreditorController {
 
   @Post()
   async create(
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateCreditorDto,
-    @Req() req: AuthenticatedRequest,
   ) {
-    return this.service.create(req.user.adminId, dto);
+    return this.service.create(adminId, dto);
   }
 
   @Get()
-  async findAll(@Req() req: AuthenticatedRequest) {
-    return this.service.findAll(req.user.adminId);
+  async findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.service.findAll(adminId);
   }
 }

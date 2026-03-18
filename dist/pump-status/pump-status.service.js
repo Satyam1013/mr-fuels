@@ -24,7 +24,7 @@ let PumpStatusService = class PumpStatusService {
     async create(adminId, dto) {
         return this.pumpModel.create({
             ...dto,
-            adminId: new mongoose_2.Types.ObjectId(adminId),
+            adminId,
             handledBy: new mongoose_2.Types.ObjectId(dto.handledBy),
         });
     }

@@ -31,7 +31,7 @@ export class MachineCalculationService {
     private creditorModel: Model<Creditor>,
   ) {}
 
-  async create(adminId: string, dto: CreateMachineCalculationDto) {
+  async create(adminId: Types.ObjectId, dto: CreateMachineCalculationDto) {
     const nozzles = [];
 
     const startDate = new Date(dto.date);
@@ -56,7 +56,7 @@ export class MachineCalculationService {
     }
 
     const calculation = new this.machineCalcModel({
-      adminId: new Types.ObjectId(adminId),
+      adminId,
       machineId: new Types.ObjectId(dto.machineId),
       date: new Date(dto.date),
       shiftNumber: dto.shiftNumber,
@@ -66,7 +66,7 @@ export class MachineCalculationService {
     return calculation.save();
   }
 
-  async getAll(adminId: string) {
+  async getAll(adminId: Types.ObjectId) {
     const objectAdminId = new Types.ObjectId(adminId);
 
     const machineCalcs = await this.machineCalcModel
@@ -121,7 +121,7 @@ export class MachineCalculationService {
   }
 
   async getMachineDetails(
-    adminId: string,
+    adminId: Types.ObjectId,
     machineId: string,
     date: string,
     nozzleNumber?: number,

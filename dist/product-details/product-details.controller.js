@@ -16,21 +16,23 @@ exports.ProductDetailsController = void 0;
 const common_1 = require("@nestjs/common");
 const product_details_service_1 = require("./product-details.service");
 const product_details_dto_1 = require("./product-details.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let ProductDetailsController = class ProductDetailsController {
     constructor(productDetailsService) {
         this.productDetailsService = productDetailsService;
     }
-    async addProductDetails(req, dto) {
-        return this.productDetailsService.addProductDetails(req.user.adminId, dto);
+    async addProductDetails(adminId, dto) {
+        return this.productDetailsService.addProductDetails(adminId, dto);
     }
 };
 exports.ProductDetailsController = ProductDetailsController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, product_details_dto_1.CreateProductDetailsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, product_details_dto_1.CreateProductDetailsDto]),
     __metadata("design:returntype", Promise)
 ], ProductDetailsController.prototype, "addProductDetails", null);
 exports.ProductDetailsController = ProductDetailsController = __decorate([

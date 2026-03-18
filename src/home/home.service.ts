@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { TimeFilterQueryDto } from "./home.dto";
 import { TimeFilter } from "./time.enum";
+import { Types } from "mongoose";
 
 @Injectable()
 export class HomeService {
   // ✅ HOME DASHBOARD
-  getHomeData(adminId: string, query: TimeFilterQueryDto) {
+  getHomeData(adminId: Types.ObjectId, query: TimeFilterQueryDto) {
     const { startDate, endDate } = this.buildDateRange(query);
 
     return {
@@ -76,7 +77,7 @@ export class HomeService {
   }
 
   // ✅ SALES DASHBOARD
-  getSalesData(adminId: string, query: TimeFilterQueryDto) {
+  getSalesData(adminId: Types.ObjectId, query: TimeFilterQueryDto) {
     const { startDate, endDate } = this.buildDateRange(query);
 
     return {

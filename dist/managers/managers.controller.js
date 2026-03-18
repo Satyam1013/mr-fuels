@@ -16,15 +16,17 @@ exports.ManagerController = void 0;
 const common_1 = require("@nestjs/common");
 const managers_service_1 = require("./managers.service");
 const managers_dto_1 = require("./managers.dto");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
 let ManagerController = class ManagerController {
     constructor(managerService) {
         this.managerService = managerService;
     }
-    async addManagers(req, body) {
-        return this.managerService.addManagers(req.user.adminId, body);
+    async addManagers(adminId, body) {
+        return this.managerService.addManagers(adminId, body);
     }
-    async getManagers(req) {
-        return this.managerService.getManagers(req.user.adminId);
+    async getManagers(adminId) {
+        return this.managerService.getManagers(adminId);
     }
     async updateManager(id, body) {
         return this.managerService.updateManager(id, body);
@@ -36,17 +38,17 @@ let ManagerController = class ManagerController {
 exports.ManagerController = ManagerController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, managers_dto_1.BulkCreateManagerDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, managers_dto_1.BulkCreateManagerDto]),
     __metadata("design:returntype", Promise)
 ], ManagerController.prototype, "addManagers", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], ManagerController.prototype, "getManagers", null);
 __decorate([

@@ -42,7 +42,7 @@ let StaffService = class StaffService {
                 throw new common_1.ConflictException(`Staff with number ${dto.staffNumber} already exists`);
             }
             docs.push({
-                adminId: new mongoose_2.Types.ObjectId(adminId),
+                adminId,
                 ...dto,
             });
         }
@@ -52,13 +52,13 @@ let StaffService = class StaffService {
         return [];
     }
     async getStaff(adminId) {
-        return this.staffModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+        return this.staffModel.find(adminId);
     }
     async updateStaff(adminId, staffId, dto) {
         const staff = await this.staffModel.findById(staffId);
         if (!staff)
             throw new common_1.NotFoundException("Staff not found");
-        if (staff.adminId.toString() !== adminId) {
+        if (staff.adminId !== adminId) {
             throw new common_1.ConflictException("Staff does not belong to the specified admin");
         }
         Object.assign(staff, dto);
@@ -73,7 +73,7 @@ let StaffService = class StaffService {
         if (!staff) {
             throw new common_1.NotFoundException("Staff not found");
         }
-        if (staff.adminId.toString() !== adminId) {
+        if (staff.adminId !== adminId) {
             throw new common_1.ConflictException("Staff does not belong to the specified admin");
         }
         return await this.staffModel.findByIdAndDelete(staffId);

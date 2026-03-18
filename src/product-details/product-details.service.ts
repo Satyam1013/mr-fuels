@@ -14,14 +14,17 @@ export class ProductDetailsService {
     private adminModel: Model<Admin>,
   ) {}
 
-  async addProductDetails(adminId: string, dto: CreateProductDetailsDto) {
+  async addProductDetails(
+    adminId: Types.ObjectId,
+    dto: CreateProductDetailsDto,
+  ) {
     const admin = await this.adminModel.exists({ _id: adminId });
     if (!admin) {
       throw new NotFoundException("Admin not found");
     }
 
     return this.productDetailsModel.findOneAndUpdate(
-      { adminId: new Types.ObjectId(adminId) },
+      adminId,
       { $set: dto },
       {
         new: true,

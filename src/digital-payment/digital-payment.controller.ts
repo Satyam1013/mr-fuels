@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Query, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { DigitalPaymentService } from "./digital-payment.service";
 import { CreateDigitalPaymentDto } from "./digital-payment.dto";
-import { AuthenticatedRequest } from "../auth/auth.request";
+import { GetUser } from "../auth/get-user.decoration";
+import { Types } from "mongoose";
 
 @Controller("digital-payments")
 export class DigitalPaymentController {
@@ -9,27 +10,23 @@ export class DigitalPaymentController {
 
   @Post()
   async create(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Body() dto: CreateDigitalPaymentDto,
   ) {
-    return this.digitalService.create(req.user.adminId, dto);
+    return this.digitalService.create(adminId, dto);
   }
 
   @Get()
-  async findAll(@Req() req: AuthenticatedRequest) {
-    return this.digitalService.findAll(req.user.adminId);
+  async findAll(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.digitalService.findAll(adminId);
   }
 
   @Get("shift")
   async findByShift(
-    @Req() req: AuthenticatedRequest,
+    @GetUser("adminId") adminId: Types.ObjectId,
     @Query("date") date: string,
     @Query("shiftId") shiftId: number,
   ) {
-    return this.digitalService.findByShift(
-      req.user.adminId,
-      date,
-      Number(shiftId),
-    );
+    return this.digitalService.findByShift(adminId, date, Number(shiftId));
   }
 }
