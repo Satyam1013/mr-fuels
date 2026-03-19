@@ -61,9 +61,8 @@ let MachineCalculationService = class MachineCalculationService {
         return calculation.save();
     }
     async getAll(adminId) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
         const machineCalcs = await this.machineCalcModel
-            .find({ adminId: objectAdminId })
+            .find({ adminId })
             .populate("machineId")
             .populate("nozzles.staffId")
             .sort({ date: -1 })
@@ -72,19 +71,19 @@ let MachineCalculationService = class MachineCalculationService {
         for (const calc of machineCalcs) {
             const [credits, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales,] = await Promise.all([
                 this.creditorModel.find({
-                    adminId: objectAdminId,
+                    adminId,
                 }),
                 this.pumpExpenseModel.find({
-                    adminId: objectAdminId,
+                    adminId,
                 }),
                 this.personalExpenseModel.find({
-                    adminId: objectAdminId,
+                    adminId,
                 }),
                 this.prepaidModel.find({
-                    adminId: objectAdminId,
+                    adminId,
                 }),
                 this.nonFuelModel.find({
-                    adminId: objectAdminId,
+                    adminId,
                 }),
             ]);
             results.push({

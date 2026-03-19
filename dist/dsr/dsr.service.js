@@ -62,7 +62,7 @@ let DsrDetailsService = class DsrDetailsService {
                 throw new Error(`All manual fields are required for tank ${tank.tankNo}`);
             }
         }
-        const dsr = await this.dsrModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, { tankConfig: dto.tankConfig }, { new: true });
+        const dsr = await this.dsrModel.findOneAndUpdate({ adminId }, { tankConfig: dto.tankConfig }, { new: true });
         if (!dsr) {
             throw new common_1.NotFoundException("DSR details not found");
         }

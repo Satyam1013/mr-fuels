@@ -61,7 +61,7 @@ export class StaffService {
   }
 
   async getStaff(adminId: Types.ObjectId) {
-    return this.staffModel.find(adminId);
+    return this.staffModel.find({ adminId });
   }
 
   async updateStaff(

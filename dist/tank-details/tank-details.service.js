@@ -36,7 +36,7 @@ let TankService = class TankService {
         };
     }
     async findAll(adminId) {
-        return this.tankModel.find(adminId).lean();
+        return this.tankModel.find({ adminId }).lean();
     }
     async findOne(id) {
         const tank = await this.tankModel.findById(id).lean();

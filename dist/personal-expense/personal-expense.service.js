@@ -31,7 +31,7 @@ let PersonalExpenseService = class PersonalExpenseService {
     }
     async findAll(adminId) {
         return this.personalExpenseModel
-            .find({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+            .find({ adminId })
             .sort({ createdAt: -1 });
     }
     async findOne(id) {

@@ -68,7 +68,7 @@ export class ManagerService {
   }
 
   async getManagers(adminId: Types.ObjectId) {
-    return this.managerModel.find({ adminId: new Types.ObjectId(adminId) });
+    return this.managerModel.find({ adminId });
   }
 
   async updateManager(managerId: string, payload: UpdateManagerDto) {

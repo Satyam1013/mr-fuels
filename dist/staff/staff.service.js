@@ -52,7 +52,7 @@ let StaffService = class StaffService {
         return [];
     }
     async getStaff(adminId) {
-        return this.staffModel.find(adminId);
+        return this.staffModel.find({ adminId });
     }
     async updateStaff(adminId, staffId, dto) {
         const staff = await this.staffModel.findById(staffId);

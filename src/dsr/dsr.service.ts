@@ -73,7 +73,7 @@ export class DsrDetailsService {
     }
 
     const dsr = await this.dsrModel.findOneAndUpdate(
-      { adminId: new Types.ObjectId(adminId) },
+      { adminId },
       { tankConfig: dto.tankConfig },
       { new: true },
     );

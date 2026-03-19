@@ -88,7 +88,7 @@ let ManagerService = class ManagerService {
         return insertedManagers;
     }
     async getManagers(adminId) {
-        return this.managerModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+        return this.managerModel.find({ adminId });
     }
     async updateManager(managerId, payload) {
         const manager = await this.managerModel.findById(managerId);

@@ -67,10 +67,8 @@ export class MachineCalculationService {
   }
 
   async getAll(adminId: Types.ObjectId) {
-    const objectAdminId = new Types.ObjectId(adminId);
-
     const machineCalcs = await this.machineCalcModel
-      .find({ adminId: objectAdminId })
+      .find({ adminId })
       .populate("machineId")
       .populate("nozzles.staffId")
       .sort({ date: -1 })
@@ -87,23 +85,23 @@ export class MachineCalculationService {
         nonFuelSales,
       ] = await Promise.all([
         this.creditorModel.find({
-          adminId: objectAdminId,
+          adminId,
         }),
 
         this.pumpExpenseModel.find({
-          adminId: objectAdminId,
+          adminId,
         }),
 
         this.personalExpenseModel.find({
-          adminId: objectAdminId,
+          adminId,
         }),
 
         this.prepaidModel.find({
-          adminId: objectAdminId,
+          adminId,
         }),
 
         this.nonFuelModel.find({
-          adminId: objectAdminId,
+          adminId,
         }),
       ]);
 

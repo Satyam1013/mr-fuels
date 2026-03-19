@@ -53,7 +53,7 @@ let PumpDetailsService = class PumpDetailsService {
     }
     async getPumpDetails(adminId) {
         const pumpDetails = await this.pumpDetailsModel
-            .findOne({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+            .findOne({ adminId })
             .populate("tank");
         if (!pumpDetails)
             throw new common_1.NotFoundException("Pump details not found");

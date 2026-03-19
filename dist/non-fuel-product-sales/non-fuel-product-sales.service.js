@@ -26,21 +26,20 @@ let NonFuelProductSellService = class NonFuelProductSellService {
         this.nonFuelProductsModel = nonFuelProductsModel;
     }
     async addProducts(adminId, dtos) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
         try {
             for (const dto of dtos) {
                 const machineId = new mongoose_2.Types.ObjectId(dto.machineId);
                 const productId = new mongoose_2.Types.ObjectId(dto.productId);
                 const machine = await this.machineModel.findOne({
                     _id: machineId,
-                    adminId: objectAdminId,
+                    adminId,
                 });
                 if (!machine) {
                     throw new Error("Machine not found for this admin");
                 }
                 const product = await this.nonFuelProductsModel.findOne({
                     _id: productId,
-                    adminId: objectAdminId,
+                    adminId,
                 });
                 if (!product) {
                     throw new Error("Product not found for this admin");
@@ -48,7 +47,7 @@ let NonFuelProductSellService = class NonFuelProductSellService {
             }
             const productsToSave = dtos.map((dto) => ({
                 ...dto,
-                adminId: objectAdminId,
+                adminId,
                 machineId: new mongoose_2.Types.ObjectId(dto.machineId),
                 productId: new mongoose_2.Types.ObjectId(dto.productId),
             }));
@@ -61,7 +60,7 @@ let NonFuelProductSellService = class NonFuelProductSellService {
     }
     async getProducts(adminId) {
         return this.nonFuelSellModel
-            .find({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+            .find({ adminId })
             .populate("productId")
             .populate("machineId");
     }

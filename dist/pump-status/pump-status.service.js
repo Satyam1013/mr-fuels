@@ -30,7 +30,7 @@ let PumpStatusService = class PumpStatusService {
     }
     async findAll(adminId) {
         return this.pumpModel
-            .find({ adminId: new mongoose_2.Types.ObjectId(adminId) })
+            .find({ adminId })
             .populate({
             path: "handledBy",
             model: "Staff",

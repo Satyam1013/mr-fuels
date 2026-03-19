@@ -33,7 +33,7 @@ let MachineService = class MachineService {
         return this.machineModel.insertMany(docs);
     }
     async getMachines(adminId) {
-        return this.machineModel.find({ adminId: new mongoose_2.Types.ObjectId(adminId) });
+        return this.machineModel.find({ adminId });
     }
     async getMachineById(machineId) {
         return this.machineModel.findById(machineId);

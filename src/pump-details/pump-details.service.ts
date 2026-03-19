@@ -61,7 +61,7 @@ export class PumpDetailsService {
 
   async getPumpDetails(adminId: Types.ObjectId) {
     const pumpDetails = await this.pumpDetailsModel
-      .findOne({ adminId: new Types.ObjectId(adminId) })
+      .findOne({ adminId })
       .populate("tank");
 
     if (!pumpDetails) throw new NotFoundException("Pump details not found");

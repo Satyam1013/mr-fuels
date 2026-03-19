@@ -31,7 +31,7 @@ let PumpExpenseService = class PumpExpenseService {
     }
     async findAll(adminId) {
         return this.pumpExpenseModel
-            .find(adminId)
+            .find({ adminId })
             .populate("machineId")
             .sort({ createdAt: -1 });
     }

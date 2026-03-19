@@ -56,7 +56,7 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel.find(adminId).lean();
+    const nonFuelProductsData = await this.nonFuelModel.find({ adminId }).lean();
 
     const nonFuelProducts = nonFuelProductsData.map((product) => ({
       id: product._id,
@@ -113,7 +113,7 @@ export class SalesService {
     // =============================
     // 5️⃣ Staff (Last 4 sections replacement)
     // =============================
-    const staff = await this.staffModel.find(adminId).lean();
+    const staff = await this.staffModel.find({ adminId }).lean();
 
     const staffDetails = staff.map((s) => ({
       name: s.staffName,

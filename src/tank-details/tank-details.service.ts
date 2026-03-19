@@ -36,7 +36,7 @@ export class TankService {
   }
 
   async findAll(adminId: Types.ObjectId) {
-    return this.tankModel.find(adminId).lean();
+    return this.tankModel.find({ adminId }).lean();
   }
 
   async findOne(id: string) {

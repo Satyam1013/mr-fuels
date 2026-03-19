@@ -50,7 +50,7 @@ let TransactionDetailsService = class TransactionDetailsService {
         return transaction;
     }
     async updateTransactionDetails(adminId, dto) {
-        const transaction = await this.transactionDetailsModel.findOneAndUpdate({ adminId: new mongoose_2.Types.ObjectId(adminId) }, dto, { new: true });
+        const transaction = await this.transactionDetailsModel.findOneAndUpdate({ adminId }, dto, { new: true });
         if (!transaction) {
             throw new common_1.NotFoundException("Transaction details not found");
         }

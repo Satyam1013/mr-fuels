@@ -23,8 +23,6 @@ export class NonFuelProductSellService {
     adminId: Types.ObjectId,
     dtos: CreateNonFuelSellProductDto[],
   ) {
-    const objectAdminId = new Types.ObjectId(adminId);
-
     try {
       for (const dto of dtos) {
         const machineId = new Types.ObjectId(dto.machineId);
@@ -32,7 +30,7 @@ export class NonFuelProductSellService {
 
         const machine = await this.machineModel.findOne({
           _id: machineId,
-          adminId: objectAdminId,
+          adminId,
         });
 
         if (!machine) {
@@ -41,7 +39,7 @@ export class NonFuelProductSellService {
 
         const product = await this.nonFuelProductsModel.findOne({
           _id: productId,
-          adminId: objectAdminId,
+          adminId,
         });
 
         if (!product) {
@@ -51,7 +49,7 @@ export class NonFuelProductSellService {
 
       const productsToSave = dtos.map((dto) => ({
         ...dto,
-        adminId: objectAdminId,
+        adminId,
         machineId: new Types.ObjectId(dto.machineId),
         productId: new Types.ObjectId(dto.productId),
       }));
@@ -65,7 +63,7 @@ export class NonFuelProductSellService {
 
   async getProducts(adminId: Types.ObjectId) {
     return this.nonFuelSellModel
-      .find({ adminId: new Types.ObjectId(adminId) })
+      .find({ adminId })
       .populate("productId")
       .populate("machineId");
   }

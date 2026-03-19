@@ -21,7 +21,7 @@ export class PumpStatusService {
 
   async findAll(adminId: Types.ObjectId) {
     return this.pumpModel
-      .find({ adminId: new Types.ObjectId(adminId) })
+      .find({ adminId })
       .populate({
         path: "handledBy",
         model: "Staff",

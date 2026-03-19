@@ -23,7 +23,7 @@ export class PumpExpenseService {
 
   async findAll(adminId: Types.ObjectId) {
     return this.pumpExpenseModel
-      .find(adminId)
+      .find({ adminId })
       .populate("machineId")
       .sort({ createdAt: -1 });
   }

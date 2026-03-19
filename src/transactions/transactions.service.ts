@@ -56,7 +56,7 @@ export class TransactionDetailsService {
     dto: CreateTransactionDetailsDto,
   ) {
     const transaction = await this.transactionDetailsModel.findOneAndUpdate(
-      { adminId: new Types.ObjectId(adminId) },
+      { adminId },
       dto,
       { new: true },
     );
