@@ -13,8 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SalesService = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
@@ -37,14 +35,15 @@ let SalesService = class SalesService {
         // =============================
         const machines = await this.machineModel
             .find({ adminId, isActive: true })
-            .lean();
+            .lean()
+            .exec();
         // Fuel Types from Nozzles
         const fuelSet = new Set();
         machines.forEach((machine) => {
             if (!Array.isArray(machine.nozzle))
                 return;
             machine.nozzle.forEach((n) => {
-                if (n?.isActive && n?.fuelType) {
+                if (n.isActive && n.fuelType) {
                     fuelSet.add(n.fuelType.toLowerCase());
                 }
             });
@@ -56,7 +55,9 @@ let SalesService = class SalesService {
         // =============================
         // 2️⃣ Non Fuel Products (Lubricants)
         // =============================
-        const nonFuelProductsData = await this.nonFuelModel.find({ adminId }).lean();
+        const nonFuelProductsData = await this.nonFuelModel
+            .find({ adminId })
+            .lean();
         const nonFuelProducts = nonFuelProductsData.map((product) => ({
             id: product._id,
             productName: product.productName,

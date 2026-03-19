@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
@@ -8,6 +6,7 @@ import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
 import { PumpDetails } from "../pump-details/pump-details.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
+import { FuelProduct } from "./sales.enum";
 
 @Injectable()
 export class SalesService {
@@ -34,7 +33,8 @@ export class SalesService {
     // =============================
     const machines = await this.machineModel
       .find({ adminId, isActive: true })
-      .lean();
+      .lean()
+      .exec();
 
     // Fuel Types from Nozzles
     const fuelSet = new Set<string>();
@@ -43,12 +43,13 @@ export class SalesService {
       if (!Array.isArray(machine.nozzle)) return;
 
       machine.nozzle.forEach((n) => {
-        if (n?.isActive && n?.fuelType) {
+        if (n.isActive && n.fuelType) {
           fuelSet.add(n.fuelType.toLowerCase());
         }
       });
     });
-    const fuelProducts: any = {};
+
+    const fuelProducts: Record<string, FuelProduct> = {};
     fuelSet.forEach((type) => {
       fuelProducts[type] = { liters: 0, amount: 0 };
     });
@@ -56,7 +57,9 @@ export class SalesService {
     // =============================
     // 2️⃣ Non Fuel Products (Lubricants)
     // =============================
-    const nonFuelProductsData = await this.nonFuelModel.find({ adminId }).lean();
+    const nonFuelProductsData = await this.nonFuelModel
+      .find({ adminId })
+      .lean();
 
     const nonFuelProducts = nonFuelProductsData.map((product) => ({
       id: product._id,
