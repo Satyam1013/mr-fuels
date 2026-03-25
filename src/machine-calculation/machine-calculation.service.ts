@@ -141,7 +141,7 @@ export class MachineCalculationService {
     };
 
     if (shiftNumber) {
-      baseQuery.shiftNumber = shiftNumber;
+      baseQuery.shiftNumber = Number(shiftNumber);
     }
 
     const [
@@ -159,27 +159,76 @@ export class MachineCalculationService {
         .lean(),
 
       this.creditorModel.find(baseQuery),
-
       this.pumpExpenseModel.find(baseQuery),
-
       this.personalExpenseModel.find(baseQuery),
-
       this.prepaidModel.find(baseQuery),
-
       this.nonFuelModel.find(baseQuery),
     ]);
 
+    // 🔥 FETCH PREVIOUS ENTRY (important logic)
+    let previousEntry = null;
+
+    if (shiftNumber) {
+      // Case: Shift provided → check same day previous shift OR previous date
+      previousEntry = await this.machineCalcModel
+        .findOne({
+          adminId: objectAdminId,
+          machineId: objectMachineId,
+          $or: [
+            {
+              date: { $gte: startDate, $lte: endDate },
+              shiftNumber: { $lt: Number(shiftNumber) },
+            },
+            {
+              date: { $lt: startDate },
+            },
+          ],
+        })
+        .sort({ date: -1, shiftNumber: -1 })
+        .lean();
+    } else {
+      // Case: No shift → just previous date
+      previousEntry = await this.machineCalcModel
+        .findOne({
+          adminId: objectAdminId,
+          machineId: objectMachineId,
+          date: { $lt: startDate },
+        })
+        .sort({ date: -1, shiftNumber: -1 })
+        .lean();
+    }
+
+    // 🔥 FILTER NOZZLE (if provided)
     let filteredMachineData = machineCalcData;
 
     if (nozzleNumber) {
       filteredMachineData = machineCalcData.map((item) => ({
         ...item,
         nozzles: item.nozzles.filter(
-          (n) =>
-            (parseInt(n.nozzleName.replace(/\D/g, "")) || 1) ===
-            Number(nozzleNumber),
+          (n) => n.nozzleNumber === Number(nozzleNumber),
         ),
       }));
+    }
+
+    // 🔥 APPLY PREVIOUS READING LOGIC
+    if (previousEntry) {
+      filteredMachineData = filteredMachineData.map((item) => {
+        const updatedNozzles = item.nozzles.map((nozzle) => {
+          const prevNozzle = previousEntry.nozzles.find(
+            (n) => n.nozzleNumber === nozzle.nozzleNumber,
+          );
+
+          return {
+            ...nozzle,
+            lastReading: prevNozzle?.currentReading ?? nozzle.lastReading ?? 0,
+          };
+        });
+
+        return {
+          ...item,
+          nozzles: updatedNozzles,
+        };
+      });
     }
 
     return {
