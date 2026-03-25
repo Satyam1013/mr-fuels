@@ -75,14 +75,12 @@ let SalesService = class SalesService {
             amount: 0,
             imageUrl: "",
         })) || [];
-        const posMachines = transaction?.swipeMachine
-            ? [
-                {
-                    machineName: transaction.swipeMachine,
-                    amount: 0,
-                    imgUrl: "",
-                },
-            ]
+        const posMachines = Array.isArray(transaction?.posMachines)
+            ? transaction.posMachines.map((machine) => ({
+                machineName: machine.name,
+                amount: 0,
+                imgUrl: "",
+            }))
             : [];
         // =============================
         // 4️⃣ Machine Details

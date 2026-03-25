@@ -81,14 +81,12 @@ export class SalesService {
         imageUrl: "",
       })) || [];
 
-    const posMachines = transaction?.swipeMachine
-      ? [
-          {
-            machineName: transaction.swipeMachine,
-            amount: 0,
-            imgUrl: "",
-          },
-        ]
+    const posMachines = Array.isArray(transaction?.posMachines)
+      ? transaction.posMachines.map((machine) => ({
+          machineName: machine.name,
+          amount: 0,
+          imgUrl: "",
+        }))
       : [];
 
     // =============================
