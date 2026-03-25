@@ -19,6 +19,7 @@ const mongoose_2 = require("mongoose");
 const shift_status_schema_1 = require("./shift-status.schema");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
 const shift_status_enum_1 = require("./shift-status.enum");
+const admin_enum_1 = require("../admin/admin.enum");
 let ShiftStatusService = class ShiftStatusService {
     constructor(shiftStatusModel, pumpDetailsModel) {
         this.shiftStatusModel = shiftStatusModel;
@@ -180,25 +181,89 @@ let ShiftStatusService = class ShiftStatusService {
         if (!existing) {
             throw new common_1.NotFoundException("Shift status not found");
         }
-        const updatePayload = {
-            ...dto,
+        // ❌ Staff not allowed
+        if (user.role === admin_enum_1.Role.STAFF) {
+            throw new common_1.ForbiddenException("Staff is not allowed to update shift");
+        }
+        const now = new Date().toISOString();
+        // ✅ role for refPath
+        const roleModel = user.role === admin_enum_1.Role.ADMIN ? admin_enum_1.Role.ADMIN : admin_enum_1.Role.MANAGER;
+        const updatePayload = {};
+        // =====================================================
+        // ✅ 1. HANDLE SHIFT UPDATE (FULL SAFE)
+        // =====================================================
+        if (dto.shifts && dto.shifts.length > 0) {
+            dto.shifts.forEach((incomingShift) => {
+                let index = existing.shifts.findIndex((s) => s.shiftNumber === incomingShift.shiftNumber);
+                // 🔥 fallback if corrupted data
+                if (index === -1) {
+                    index = existing.shifts.findIndex((s) => !s.shiftNumber);
+                }
+                if (index !== -1) {
+                    const oldShift = existing.shifts[index];
+                    const updatedStatus = incomingShift.status ?? oldShift.status;
+                    existing.shifts[index] = {
+                        shiftNumber: incomingShift.shiftNumber || oldShift.shiftNumber,
+                        name: oldShift.name ||
+                            incomingShift.name ||
+                            `Shift ${incomingShift.shiftNumber}`,
+                        startTime: incomingShift.startTime ?? oldShift.startTime,
+                        endTime: incomingShift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED
+                            ? now
+                            : (incomingShift.endTime ?? oldShift.endTime),
+                        status: updatedStatus,
+                        ...(incomingShift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED && {
+                            closedBy: new mongoose_2.Types.ObjectId(user.adminId || user._id),
+                            closedByModel: roleModel,
+                        }),
+                    };
+                }
+            });
+            updatePayload.shifts = existing.shifts;
+        }
+        // =====================================================
+        // ✅ 2. UPDATE currentShift (SAFE)
+        // =====================================================
+        const activeShift = existing.shifts.find((s) => s.status === shift_status_enum_1.ShiftStatusEnum.ACTIVE);
+        const lastShift = existing.shifts[existing.shifts.length - 1];
+        existing.currentShift = activeShift || {
+            shiftNumber: lastShift?.shiftNumber,
+            name: lastShift?.name || `Shift ${lastShift?.shiftNumber}`,
+            status: lastShift?.status,
+            startTime: lastShift?.startTime,
+            endTime: lastShift?.endTime,
+            closedBy: lastShift?.closedBy,
+            closedByModel: lastShift?.closedByModel,
         };
+        updatePayload.currentShift = existing.currentShift;
+        // =====================================================
+        // ✅ 3. DAILY CLOSE (FULL SAFE)
+        // =====================================================
         if (dto.dailyClose === true) {
             if (existing.currentShift?.status !== shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
                 existing.currentShift.status = shift_status_enum_1.ShiftStatusEnum.COMPLETED;
-                existing.currentShift.endTime = new Date().toISOString();
-                existing.currentShift.closedBy = new mongoose_2.Types.ObjectId(user._id);
+                existing.currentShift.endTime = now;
+                existing.currentShift.closedBy = user._id;
+                existing.currentShift.closedByModel = roleModel;
             }
             const lastShiftIndex = existing.shifts.length - 1;
             if (lastShiftIndex >= 0) {
-                existing.shifts[lastShiftIndex].status = shift_status_enum_1.ShiftStatusEnum.COMPLETED;
-                existing.shifts[lastShiftIndex].endTime = new Date().toISOString();
+                existing.shifts[lastShiftIndex] = {
+                    ...existing.shifts[lastShiftIndex],
+                    status: shift_status_enum_1.ShiftStatusEnum.COMPLETED,
+                    endTime: now,
+                    closedBy: new mongoose_2.Types.ObjectId(user.adminId || user._id),
+                    closedByModel: roleModel,
+                };
             }
             updatePayload.pumpStatus = shift_status_enum_1.PumpStatusEnum.CLOSED;
             updatePayload.dailyClose = true;
             updatePayload.shifts = existing.shifts;
             updatePayload.currentShift = existing.currentShift;
         }
+        // =====================================================
+        // ✅ FINAL UPDATE
+        // =====================================================
         return this.shiftStatusModel.findByIdAndUpdate(id, updatePayload, {
             new: true,
         });

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -14,6 +15,7 @@ import {
   PumpDetailsLean,
   ShiftStatusPopulated,
 } from "./shift-status.types";
+import { AuthUser, Role } from "../admin/admin.enum";
 
 @Injectable()
 export class ShiftStatusService {
@@ -233,7 +235,7 @@ export class ShiftStatusService {
   }
 
   async update(
-    user: Types.ObjectId,
+    user: AuthUser,
     id: string,
     dto: Partial<CreateShiftStatusDto> & { dailyClose?: boolean },
   ) {
@@ -243,31 +245,118 @@ export class ShiftStatusService {
       throw new NotFoundException("Shift status not found");
     }
 
-    const updatePayload: UpdateQuery<ShiftStatus> = {
-      ...dto,
+    // ❌ Staff not allowed
+    if (user.role === Role.STAFF) {
+      throw new ForbiddenException("Staff is not allowed to update shift");
+    }
+
+    const now = new Date().toISOString();
+
+    // ✅ role for refPath
+    const roleModel = user.role === Role.ADMIN ? Role.ADMIN : Role.MANAGER;
+
+    const updatePayload: UpdateQuery<ShiftStatus> = {};
+
+    // =====================================================
+    // ✅ 1. HANDLE SHIFT UPDATE (FULL SAFE)
+    // =====================================================
+    if (dto.shifts && dto.shifts.length > 0) {
+      dto.shifts.forEach((incomingShift) => {
+        let index = existing.shifts.findIndex(
+          (s) => s.shiftNumber === incomingShift.shiftNumber,
+        );
+
+        // 🔥 fallback if corrupted data
+        if (index === -1) {
+          index = existing.shifts.findIndex((s) => !s.shiftNumber);
+        }
+
+        if (index !== -1) {
+          const oldShift = existing.shifts[index];
+
+          const updatedStatus = incomingShift.status ?? oldShift.status;
+
+          existing.shifts[index] = {
+            shiftNumber: incomingShift.shiftNumber || oldShift.shiftNumber,
+
+            name:
+              oldShift.name ||
+              incomingShift.name ||
+              `Shift ${incomingShift.shiftNumber}`,
+
+            startTime: incomingShift.startTime ?? oldShift.startTime,
+
+            endTime:
+              incomingShift.status === ShiftStatusEnum.COMPLETED
+                ? now
+                : (incomingShift.endTime ?? oldShift.endTime),
+
+            status: updatedStatus,
+
+            ...(incomingShift.status === ShiftStatusEnum.COMPLETED && {
+              closedBy: new Types.ObjectId(user.adminId || user._id),
+              closedByModel: roleModel,
+            }),
+          };
+        }
+      });
+
+      updatePayload.shifts = existing.shifts;
+    }
+
+    // =====================================================
+    // ✅ 2. UPDATE currentShift (SAFE)
+    // =====================================================
+    const activeShift = existing.shifts.find(
+      (s) => s.status === ShiftStatusEnum.ACTIVE,
+    );
+
+    const lastShift = existing.shifts[existing.shifts.length - 1];
+
+    existing.currentShift = activeShift || {
+      shiftNumber: lastShift?.shiftNumber,
+      name: lastShift?.name || `Shift ${lastShift?.shiftNumber}`,
+      status: lastShift?.status,
+      startTime: lastShift?.startTime,
+      endTime: lastShift?.endTime,
+      closedBy: lastShift?.closedBy,
+      closedByModel: lastShift?.closedByModel,
     };
 
+    updatePayload.currentShift = existing.currentShift;
+
+    // =====================================================
+    // ✅ 3. DAILY CLOSE (FULL SAFE)
+    // =====================================================
     if (dto.dailyClose === true) {
       if (existing.currentShift?.status !== ShiftStatusEnum.COMPLETED) {
         existing.currentShift.status = ShiftStatusEnum.COMPLETED;
-        existing.currentShift.endTime = new Date().toISOString();
-        existing.currentShift.closedBy = new Types.ObjectId(user._id);
+        existing.currentShift.endTime = now;
+        existing.currentShift.closedBy = user._id;
+        existing.currentShift.closedByModel = roleModel;
       }
 
       const lastShiftIndex = existing.shifts.length - 1;
 
       if (lastShiftIndex >= 0) {
-        existing.shifts[lastShiftIndex].status = ShiftStatusEnum.COMPLETED;
-        existing.shifts[lastShiftIndex].endTime = new Date().toISOString();
+        existing.shifts[lastShiftIndex] = {
+          ...existing.shifts[lastShiftIndex],
+          status: ShiftStatusEnum.COMPLETED,
+          endTime: now,
+          closedBy: new Types.ObjectId(user.adminId || user._id),
+          closedByModel: roleModel,
+        };
       }
 
       updatePayload.pumpStatus = PumpStatusEnum.CLOSED;
       updatePayload.dailyClose = true;
-
       updatePayload.shifts = existing.shifts;
       updatePayload.currentShift = existing.currentShift;
     }
 
+    // =====================================================
+    // ✅ FINAL UPDATE
+    // =====================================================
     return this.shiftStatusModel.findByIdAndUpdate(id, updatePayload, {
       new: true,
     });

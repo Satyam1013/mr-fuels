@@ -28,8 +28,8 @@ let ShiftStatusController = class ShiftStatusController {
     getByDate(adminId, date) {
         return this.service.getByDate(adminId, date);
     }
-    update(adminId, id, dto) {
-        return this.service.update(adminId, id, dto);
+    update(user, id, dto) {
+        return this.service.update(user, id, dto);
     }
 };
 exports.ShiftStatusController = ShiftStatusController;
@@ -51,11 +51,11 @@ __decorate([
 ], ShiftStatusController.prototype, "getByDate", null);
 __decorate([
     (0, common_1.Patch)(":id"),
-    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(0, (0, get_user_decoration_1.GetUser)()),
     __param(1, (0, common_1.Param)("id")),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, Object]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "update", null);
 exports.ShiftStatusController = ShiftStatusController = __decorate([

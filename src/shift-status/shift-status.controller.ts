@@ -11,6 +11,7 @@ import { ShiftStatusService } from "./shift-status.service";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
+import { AuthUser } from "../admin/admin.enum";
 
 @Controller("shift-status")
 export class ShiftStatusController {
@@ -34,10 +35,10 @@ export class ShiftStatusController {
 
   @Patch(":id")
   update(
-    @GetUser("adminId") adminId: Types.ObjectId,
+    @GetUser() user: AuthUser,
     @Param("id") id: string,
     @Body() dto: Partial<CreateShiftStatusDto>,
   ) {
-    return this.service.update(adminId, id, dto);
+    return this.service.update(user, id, dto);
   }
 }
