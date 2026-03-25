@@ -89,15 +89,31 @@ export class ShiftStatusService {
     const reqDateObj = new Date(requestedDate);
     const todayObj = new Date(today);
 
-    // helper
+    // ✅ SAFE helper (FIXED)
     const mapClosedBy = (shift: PopulatedShift) => {
-      if (!shift?.closedBy) return "";
+      const closedBy = shift?.closedBy;
 
-      return {
-        id: shift.closedBy._id.toString(),
-        name: shift.closedBy.name,
-        role: shift.closedByModel,
-      };
+      if (!closedBy) return null;
+
+      // ✅ ObjectId case
+      if (closedBy instanceof Types.ObjectId) {
+        return {
+          id: closedBy.toString(),
+          name: "",
+          role: shift.closedByModel,
+        };
+      }
+
+      // ✅ Populated object case
+      if (typeof closedBy === "object" && "_id" in closedBy) {
+        return {
+          id: closedBy._id?.toString() || null,
+          name: closedBy.name || "",
+          role: shift.closedByModel,
+        };
+      }
+
+      return null;
     };
 
     const mapResponse = (data: ShiftStatusPopulated) => {
@@ -105,23 +121,25 @@ export class ShiftStatusService {
         (s) => s.status === ShiftStatusEnum.COMPLETED,
       ).length;
 
-      const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
+      const totalShifts = pumpDetails.numberOfShifts || 0;
+
+      const pendingShifts = totalShifts - completedShifts;
 
       const percent =
-        pumpDetails.numberOfShifts > 0
-          ? (completedShifts / pumpDetails.numberOfShifts) * 100
-          : 0;
+        totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
 
       return {
         date: data.date,
-        totalShifts: pumpDetails.numberOfShifts,
+        totalShifts,
 
-        currentShift: {
-          ...data.currentShift,
-          closedBy: mapClosedBy(data.currentShift),
-        },
+        currentShift: data.currentShift
+          ? {
+              ...data.currentShift,
+              closedBy: mapClosedBy(data.currentShift),
+            }
+          : null,
 
-        shifts: data.shifts.map((s) => ({
+        shifts: (data.shifts || []).map((s) => ({
           ...s,
           closedBy: mapClosedBy(s),
         })),
@@ -193,7 +211,7 @@ export class ShiftStatusService {
       };
     }
 
-    // ----------- PREVIOUS UNFINISHED (MAIN FIX) -----------
+    // ✅ ----------- PREVIOUS UNFINISHED (FIXED ORDER + SAFE) -----------
     if (!latest.dailyClose && reqDateObj > latestDateObj) {
       return {
         ...mapResponse(latest),

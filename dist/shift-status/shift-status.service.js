@@ -69,30 +69,44 @@ let ShiftStatusService = class ShiftStatusService {
         const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
         const reqDateObj = new Date(requestedDate);
         const todayObj = new Date(today);
-        // helper
+        // ✅ SAFE helper (FIXED)
         const mapClosedBy = (shift) => {
-            if (!shift?.closedBy)
-                return "";
-            return {
-                id: shift.closedBy._id.toString(),
-                name: shift.closedBy.name,
-                role: shift.closedByModel,
-            };
+            const closedBy = shift?.closedBy;
+            if (!closedBy)
+                return null;
+            // ✅ ObjectId case
+            if (closedBy instanceof mongoose_2.Types.ObjectId) {
+                return {
+                    id: closedBy.toString(),
+                    name: "",
+                    role: shift.closedByModel,
+                };
+            }
+            // ✅ Populated object case
+            if (typeof closedBy === "object" && "_id" in closedBy) {
+                return {
+                    id: closedBy._id?.toString() || null,
+                    name: closedBy.name || "",
+                    role: shift.closedByModel,
+                };
+            }
+            return null;
         };
         const mapResponse = (data) => {
             const completedShifts = data.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
-            const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
-            const percent = pumpDetails.numberOfShifts > 0
-                ? (completedShifts / pumpDetails.numberOfShifts) * 100
-                : 0;
+            const totalShifts = pumpDetails.numberOfShifts || 0;
+            const pendingShifts = totalShifts - completedShifts;
+            const percent = totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
             return {
                 date: data.date,
-                totalShifts: pumpDetails.numberOfShifts,
-                currentShift: {
-                    ...data.currentShift,
-                    closedBy: mapClosedBy(data.currentShift),
-                },
-                shifts: data.shifts.map((s) => ({
+                totalShifts,
+                currentShift: data.currentShift
+                    ? {
+                        ...data.currentShift,
+                        closedBy: mapClosedBy(data.currentShift),
+                    }
+                    : null,
+                shifts: (data.shifts || []).map((s) => ({
                     ...s,
                     closedBy: mapClosedBy(s),
                 })),
@@ -143,7 +157,7 @@ let ShiftStatusService = class ShiftStatusService {
                 firstRegisteredDate: first.date,
             };
         }
-        // ----------- PREVIOUS UNFINISHED (MAIN FIX) -----------
+        // ✅ ----------- PREVIOUS UNFINISHED (FIXED ORDER + SAFE) -----------
         if (!latest.dailyClose && reqDateObj > latestDateObj) {
             return {
                 ...mapResponse(latest),

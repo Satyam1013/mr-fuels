@@ -15,12 +15,17 @@ export type PopulatedShift = {
   startTime?: string;
   endTime?: string;
   status: ShiftStatusEnum;
-  closedBy?: {
-    _id: Types.ObjectId;
-    name: string;
-  };
+  closedBy?: ClosedByType;
   closedByModel?: Role;
 };
+
+type ClosedByType =
+  | {
+      _id: Types.ObjectId;
+      name?: string;
+    }
+  | Types.ObjectId
+  | null;
 
 export type ShiftStatusPopulated = {
   date: string;
