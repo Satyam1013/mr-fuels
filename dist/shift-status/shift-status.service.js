@@ -67,6 +67,8 @@ let ShiftStatusService = class ShiftStatusService {
         const today = new Date().toISOString().split("T")[0];
         const requestedDate = date || today;
         const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
+        const reqDateObj = new Date(requestedDate);
+        const todayObj = new Date(today);
         // helper
         const mapClosedBy = (shift) => {
             if (!shift?.closedBy)
@@ -80,7 +82,9 @@ let ShiftStatusService = class ShiftStatusService {
         const mapResponse = (data) => {
             const completedShifts = data.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
             const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
-            const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
+            const percent = pumpDetails.numberOfShifts > 0
+                ? (completedShifts / pumpDetails.numberOfShifts) * 100
+                : 0;
             return {
                 date: data.date,
                 totalShifts: pumpDetails.numberOfShifts,
@@ -123,6 +127,8 @@ let ShiftStatusService = class ShiftStatusService {
         if (!latest) {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
+        const latestDateObj = new Date(latest.date);
+        // ----------- FIRST RECORD -----------
         const first = await this.shiftStatusModel
             .findOne({ adminId })
             .sort({ date: 1 })
@@ -130,21 +136,23 @@ let ShiftStatusService = class ShiftStatusService {
         if (!first) {
             return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
         }
-        if (requestedDate < first.date) {
+        const firstDateObj = new Date(first.date);
+        if (reqDateObj < firstDateObj) {
             return {
                 message: "Selected date does not come in range, please try after the first registered date",
                 firstRegisteredDate: first.date,
             };
         }
-        // ----------- PREVIOUS UNFINISHED -----------
-        if (!latest.dailyClose && requestedDate > latest.date) {
+        // ----------- PREVIOUS UNFINISHED (MAIN FIX) -----------
+        if (!latest.dailyClose && reqDateObj > latestDateObj) {
             return {
                 ...mapResponse(latest),
                 requestedDate,
                 reason: "previous_unfinished_day",
             };
         }
-        if (requestedDate <= today) {
+        // ----------- NO DATA FOR PAST / TODAY -----------
+        if (reqDateObj <= todayObj) {
             return {
                 message: "No data available for this date",
                 date: requestedDate,

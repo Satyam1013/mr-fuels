@@ -86,6 +86,9 @@ export class ShiftStatusService {
 
     const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
 
+    const reqDateObj = new Date(requestedDate);
+    const todayObj = new Date(today);
+
     // helper
     const mapClosedBy = (shift: PopulatedShift) => {
       if (!shift?.closedBy) return "";
@@ -104,7 +107,10 @@ export class ShiftStatusService {
 
       const pendingShifts = pumpDetails.numberOfShifts - completedShifts;
 
-      const percent = (completedShifts / pumpDetails.numberOfShifts) * 100;
+      const percent =
+        pumpDetails.numberOfShifts > 0
+          ? (completedShifts / pumpDetails.numberOfShifts) * 100
+          : 0;
 
       return {
         date: data.date,
@@ -161,6 +167,9 @@ export class ShiftStatusService {
       );
     }
 
+    const latestDateObj = new Date(latest.date);
+
+    // ----------- FIRST RECORD -----------
     const first = await this.shiftStatusModel
       .findOne({ adminId })
       .sort({ date: 1 })
@@ -174,7 +183,9 @@ export class ShiftStatusService {
       );
     }
 
-    if (requestedDate < first.date) {
+    const firstDateObj = new Date(first.date);
+
+    if (reqDateObj < firstDateObj) {
       return {
         message:
           "Selected date does not come in range, please try after the first registered date",
@@ -182,8 +193,8 @@ export class ShiftStatusService {
       };
     }
 
-    // ----------- PREVIOUS UNFINISHED -----------
-    if (!latest.dailyClose && requestedDate > latest.date) {
+    // ----------- PREVIOUS UNFINISHED (MAIN FIX) -----------
+    if (!latest.dailyClose && reqDateObj > latestDateObj) {
       return {
         ...mapResponse(latest),
         requestedDate,
@@ -191,7 +202,8 @@ export class ShiftStatusService {
       };
     }
 
-    if (requestedDate <= today) {
+    // ----------- NO DATA FOR PAST / TODAY -----------
+    if (reqDateObj <= todayObj) {
       return {
         message: "No data available for this date",
         date: requestedDate,
