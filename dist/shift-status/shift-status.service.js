@@ -99,6 +99,7 @@ let ShiftStatusService = class ShiftStatusService {
             const pendingShifts = totalShifts - completedShifts;
             const percent = totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
             return {
+                _id: data._id?.toString(),
                 date: data.date,
                 totalShifts,
                 currentShift: data.currentShift

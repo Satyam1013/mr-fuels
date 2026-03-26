@@ -28,9 +28,15 @@ type ClosedByType =
   | null;
 
 export type ShiftStatusPopulated = {
+  _id: Types.ObjectId;
+
+  adminId: Types.ObjectId;
   date: string;
-  shifts: PopulatedShift[];
+  totalShifts: number;
+
   currentShift: PopulatedShift;
+  shifts: PopulatedShift[];
+
   dailyClose: boolean;
-  pumpStatus: PumpStatusEnum;
+  pumpStatus?: PumpStatusEnum;
 };
