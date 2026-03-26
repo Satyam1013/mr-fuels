@@ -7,12 +7,16 @@ import {
   PumpDetails,
   PumpDetailsSchema,
 } from "../pump-details/pump-details.schema";
+import { Admin, AdminSchema } from "../admin/admin.schema";
+import { Manager, ManagerSchema } from "../managers/managers.schema";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ShiftStatus.name, schema: ShiftStatusSchema },
       { name: PumpDetails.name, schema: PumpDetailsSchema },
+      { name: Admin.name, schema: AdminSchema },
+      { name: Manager.name, schema: ManagerSchema },
     ]),
   ],
   controllers: [ShiftStatusController],

@@ -13,6 +13,8 @@ const shift_status_schema_1 = require("./shift-status.schema");
 const shift_status_service_1 = require("./shift-status.service");
 const shift_status_controller_1 = require("./shift-status.controller");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
+const admin_schema_1 = require("../admin/admin.schema");
+const managers_schema_1 = require("../managers/managers.schema");
 let ShiftStatusModule = class ShiftStatusModule {
 };
 exports.ShiftStatusModule = ShiftStatusModule;
@@ -22,6 +24,8 @@ exports.ShiftStatusModule = ShiftStatusModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: shift_status_schema_1.ShiftStatus.name, schema: shift_status_schema_1.ShiftStatusSchema },
                 { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
+                { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
+                { name: managers_schema_1.Manager.name, schema: managers_schema_1.ManagerSchema },
             ]),
         ],
         controllers: [shift_status_controller_1.ShiftStatusController],

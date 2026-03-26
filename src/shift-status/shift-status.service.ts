@@ -16,6 +16,8 @@ import {
   ShiftStatusPopulated,
 } from "./shift-status.types";
 import { AuthUser, Role } from "../admin/admin.enum";
+import { Manager } from "../managers/managers.schema";
+import { Admin } from "../admin/admin.schema";
 
 @Injectable()
 export class ShiftStatusService {
@@ -25,6 +27,12 @@ export class ShiftStatusService {
 
     @InjectModel(PumpDetails.name)
     private pumpDetailsModel: Model<PumpDetails>,
+
+    @InjectModel(Admin.name)
+    private adminModel: Model<Admin>,
+
+    @InjectModel(Manager.name)
+    private managerModel: Model<Manager>,
   ) {}
 
   async create(adminId: Types.ObjectId, dto: CreateShiftStatusDto) {
@@ -91,68 +99,108 @@ export class ShiftStatusService {
     const reqDateObj = new Date(requestedDate);
     const todayObj = new Date(today);
 
-    // ✅ SAFE helper (FIXED)
-    const mapClosedBy = (shift: PopulatedShift) => {
-      const closedBy = shift?.closedBy;
+    // ---------------- HELPERS ----------------
+    const fetchClosedByInfo = async (id: Types.ObjectId | string | null) => {
+      if (!id) return null;
 
-      if (!closedBy) return null;
+      // 1️⃣ Check in Admins
+      const admin = await this.adminModel
+        .findById(id)
+        .select("businessName email role")
+        .lean();
 
-      // ✅ ObjectId case
-      if (closedBy instanceof Types.ObjectId) {
+      if (admin)
         return {
-          id: closedBy.toString(),
-          name: "",
-          role: shift.closedByModel,
+          id: admin._id,
+          name: admin.businessName || "",
+          email: admin.email || "",
+          role: admin.role,
         };
-      }
 
-      // ✅ Populated object case
-      if (typeof closedBy === "object" && "_id" in closedBy) {
+      // 2️⃣ Check in Managers
+      const manager = await this.managerModel
+        .findById(id)
+        .select("managerName phone role")
+        .lean();
+
+      if (manager)
         return {
-          id: closedBy._id?.toString() || null,
-          name: closedBy.name || "",
-          role: shift.closedByModel,
+          id: manager._id,
+          name: manager.managerName || "",
+          email: manager.phone || "",
+          role: manager.role,
         };
-      }
 
       return null;
     };
 
-    const mapResponse = (data: ShiftStatusPopulated) => {
+    const mapClosedBy = async (shift: PopulatedShift) => {
+      if (!shift?.closedBy) return null;
+
+      // ✅ Fix: ObjectId instance check — directly fetch karo
+      if (shift.closedBy instanceof Types.ObjectId) {
+        return fetchClosedByInfo(shift.closedBy);
+      }
+
+      // ✅ Populated object — actual fields exist check karo
+      if (
+        typeof shift.closedBy === "object" &&
+        "_id" in shift.closedBy &&
+        ("name" in shift.closedBy || "managerName" in shift.closedBy)
+      ) {
+        const populated = shift.closedBy as {
+          _id: Types.ObjectId;
+          name?: string;
+          email?: string;
+        };
+        return {
+          id: populated._id?.toString() || null,
+          name: populated.name || "",
+          email: populated.email || "",
+          role: shift.closedByModel,
+        };
+      }
+
+      return fetchClosedByInfo(shift.closedBy as Types.ObjectId);
+    };
+
+    const mapResponse = async (data: ShiftStatusPopulated) => {
       const completedShifts = data.shifts.filter(
         (s) => s.status === ShiftStatusEnum.COMPLETED,
       ).length;
 
       const totalShifts = pumpDetails.numberOfShifts || 0;
       const pendingShifts = totalShifts - completedShifts;
-
       const percent =
         totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
 
+      // Map shifts with closedBy info
+      const shiftsWithClosedBy = [];
+      for (const s of data.shifts || []) {
+        shiftsWithClosedBy.push({
+          ...s,
+          closedBy: await mapClosedBy(s),
+        });
+      }
+
+      const currentShiftWithClosedBy = data.currentShift
+        ? {
+            ...data.currentShift,
+            closedBy: await mapClosedBy(data.currentShift),
+          }
+        : null;
+
       return {
         _id: data._id?.toString(),
-
         date: data.date,
         totalShifts,
-
-        currentShift: data.currentShift
-          ? {
-              ...data.currentShift,
-              closedBy: mapClosedBy(data.currentShift),
-            }
-          : null,
-
-        shifts: (data.shifts || []).map((s) => ({
-          ...s,
-          closedBy: mapClosedBy(s),
-        })),
-
+        currentShift: currentShiftWithClosedBy,
+        shifts: shiftsWithClosedBy,
         dailyProgress: {
           completedShifts,
           pendingShifts,
           overallCompletionPercent: percent,
         },
-
         dailyClose: data.dailyClose,
         pumpStatus: data.pumpStatus,
       };
@@ -160,12 +208,7 @@ export class ShiftStatusService {
 
     // ----------- EXACT DATA -----------
     const exact = await this.shiftStatusModel
-      .findOne({
-        adminId,
-        date: requestedDate,
-      })
-      .populate("shifts.closedBy", "name")
-      .populate("currentShift.closedBy", "name")
+      .findOne({ adminId, date: requestedDate })
       .lean<ShiftStatusPopulated>();
 
     if (exact) {
@@ -176,8 +219,6 @@ export class ShiftStatusService {
     const latest = await this.shiftStatusModel
       .findOne({ adminId })
       .sort({ date: -1 })
-      .populate("shifts.closedBy", "name")
-      .populate("currentShift.closedBy", "name")
       .lean<ShiftStatusPopulated>();
 
     if (!latest) {
@@ -214,10 +255,10 @@ export class ShiftStatusService {
       };
     }
 
-    // ✅ ----------- PREVIOUS UNFINISHED (FIXED ORDER + SAFE) -----------
+    // ----------- PREVIOUS UNFINISHED -----------
     if (!latest.dailyClose && reqDateObj > latestDateObj) {
       return {
-        ...mapResponse(latest),
+        ...(await mapResponse(latest)),
         requestedDate,
         reason: "previous_unfinished_day",
       };
@@ -253,8 +294,8 @@ export class ShiftStatusService {
 
     const now = new Date().toISOString();
 
+    // Normalize role string
     let roleModel: Role;
-
     switch (user.role.toLowerCase()) {
       case "admin":
         roleModel = Role.ADMIN;
@@ -272,41 +313,44 @@ export class ShiftStatusService {
     const updatePayload: UpdateQuery<ShiftStatus> = {};
 
     // =====================================================
-    // ✅ 1. HANDLE SHIFT UPDATE (FULL SAFE)
+    // 1️⃣ HANDLE SHIFT UPDATE (PATCH) → ADD ONLY IF PATCH PROVIDES NEW
     // =====================================================
     if (dto.shifts && dto.shifts.length > 0) {
       dto.shifts.forEach((incomingShift) => {
-        let index = existing.shifts.findIndex(
+        const index = existing.shifts.findIndex(
           (s) => s.shiftNumber === incomingShift.shiftNumber,
         );
 
-        // 🔥 fallback if corrupted data
         if (index === -1) {
-          index = existing.shifts.findIndex((s) => !s.shiftNumber);
-        }
-
-        if (index !== -1) {
+          // 🔹 NEW shift → only if patch explicitly has it
+          existing.shifts.push({
+            shiftNumber: incomingShift.shiftNumber,
+            name: incomingShift.name || `Shift ${incomingShift.shiftNumber}`,
+            startTime: incomingShift.startTime,
+            endTime: incomingShift.endTime,
+            status: incomingShift.status || ShiftStatusEnum.PENDING,
+            ...(incomingShift.status === ShiftStatusEnum.COMPLETED && {
+              closedBy: new Types.ObjectId(user.adminId || user._id),
+              closedByModel: roleModel,
+            }),
+          });
+        } else {
+          // 🔹 EXISTING shift → update fields
           const oldShift = existing.shifts[index];
-
           const updatedStatus = incomingShift.status ?? oldShift.status;
 
           existing.shifts[index] = {
             shiftNumber: incomingShift.shiftNumber || oldShift.shiftNumber,
-
             name:
               oldShift.name ||
               incomingShift.name ||
               `Shift ${incomingShift.shiftNumber}`,
-
             startTime: incomingShift.startTime ?? oldShift.startTime,
-
             endTime:
               incomingShift.status === ShiftStatusEnum.COMPLETED
                 ? now
                 : (incomingShift.endTime ?? oldShift.endTime),
-
             status: updatedStatus,
-
             ...(incomingShift.status === ShiftStatusEnum.COMPLETED && {
               closedBy: new Types.ObjectId(user.adminId || user._id),
               closedByModel: roleModel,
@@ -319,28 +363,24 @@ export class ShiftStatusService {
     }
 
     // =====================================================
-    // ✅ 2. UPDATE currentShift (SAFE)
+    // 2️⃣ UPDATE currentShift (SAFE) → IF LAST SHIFT COMPLETED, currentShift points to next number
     // =====================================================
     const activeShift = existing.shifts.find(
       (s) => s.status === ShiftStatusEnum.ACTIVE,
     );
-
     const lastShift = existing.shifts[existing.shifts.length - 1];
 
+    // ✅ Logic: currentShift = activeShift if exists, else last shift (even if completed)
     existing.currentShift = activeShift || {
-      shiftNumber: lastShift?.shiftNumber,
-      name: lastShift?.name || `Shift ${lastShift?.shiftNumber}`,
-      status: lastShift?.status,
-      startTime: lastShift?.startTime,
-      endTime: lastShift?.endTime,
-      closedBy: lastShift?.closedBy,
-      closedByModel: lastShift?.closedByModel,
+      shiftNumber: (lastShift?.shiftNumber || 0) + 1, // next shift number
+      name: `Shift ${(lastShift?.shiftNumber || 0) + 1}`,
+      status: ShiftStatusEnum.PENDING, // not yet started
     };
 
     updatePayload.currentShift = existing.currentShift;
 
     // =====================================================
-    // ✅ 3. DAILY CLOSE (FULL SAFE)
+    // 3️⃣ DAILY CLOSE (FULL SAFE)
     // =====================================================
     if (dto.dailyClose === true) {
       if (existing.currentShift?.status !== ShiftStatusEnum.COMPLETED) {
@@ -369,7 +409,7 @@ export class ShiftStatusService {
     }
 
     // =====================================================
-    // ✅ FINAL UPDATE
+    // 4️⃣ FINAL UPDATE
     // =====================================================
     return this.shiftStatusModel.findByIdAndUpdate(id, updatePayload, {
       new: true,

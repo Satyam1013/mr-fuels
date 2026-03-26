@@ -4,7 +4,7 @@ import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
 import { Role } from "../admin/admin.enum";
 
 @Schema({ _id: false })
-class Shift {
+export class Shift {
   @Prop({ required: true })
   shiftNumber!: number;
 
