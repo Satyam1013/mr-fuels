@@ -253,8 +253,21 @@ export class ShiftStatusService {
 
     const now = new Date().toISOString();
 
-    // ✅ role for refPath
-    const roleModel = user.role === Role.ADMIN ? Role.ADMIN : Role.MANAGER;
+    let roleModel: Role;
+
+    switch (user.role.toLowerCase()) {
+      case "admin":
+        roleModel = Role.ADMIN;
+        break;
+      case "manager":
+        roleModel = Role.MANAGER;
+        break;
+      case "staff":
+        roleModel = Role.STAFF;
+        break;
+      default:
+        roleModel = Role.MANAGER;
+    }
 
     const updatePayload: UpdateQuery<ShiftStatus> = {};
 

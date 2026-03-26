@@ -187,8 +187,20 @@ let ShiftStatusService = class ShiftStatusService {
             throw new common_1.ForbiddenException("Staff is not allowed to update shift");
         }
         const now = new Date().toISOString();
-        // ✅ role for refPath
-        const roleModel = user.role === admin_enum_1.Role.ADMIN ? admin_enum_1.Role.ADMIN : admin_enum_1.Role.MANAGER;
+        let roleModel;
+        switch (user.role.toLowerCase()) {
+            case "admin":
+                roleModel = admin_enum_1.Role.ADMIN;
+                break;
+            case "manager":
+                roleModel = admin_enum_1.Role.MANAGER;
+                break;
+            case "staff":
+                roleModel = admin_enum_1.Role.STAFF;
+                break;
+            default:
+                roleModel = admin_enum_1.Role.MANAGER;
+        }
         const updatePayload = {};
         // =====================================================
         // ✅ 1. HANDLE SHIFT UPDATE (FULL SAFE)
