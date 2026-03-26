@@ -59,3 +59,8 @@ export class CreateMachineCalculationDto {
   @IsArray()
   nozzles!: NozzleDto[];
 }
+
+export class GetNozzleDetailsDto {
+  @IsMongoId()
+  machineId!: string;
+}

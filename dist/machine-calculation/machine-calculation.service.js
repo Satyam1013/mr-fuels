@@ -60,6 +60,19 @@ let MachineCalculationService = class MachineCalculationService {
         });
         return calculation.save();
     }
+    async getNozzleDetails(adminId, machineId) {
+        const calculation = await this.machineCalcModel
+            .findOne({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            machineId: new mongoose_2.Types.ObjectId(machineId),
+        })
+            .sort({ date: -1, shiftNumber: -1 })
+            .lean();
+        if (!calculation) {
+            throw new common_1.NotFoundException("No machine calculation found");
+        }
+        return calculation.nozzles;
+    }
     async getAll(adminId) {
         const machineCalcs = await this.machineCalcModel
             .find({ adminId })

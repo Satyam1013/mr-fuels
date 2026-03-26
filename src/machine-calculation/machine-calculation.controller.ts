@@ -8,7 +8,10 @@ import {
   Query,
 } from "@nestjs/common";
 import { MachineCalculationService } from "./machine-calculation.service";
-import { CreateMachineCalculationDto } from "./machine-calculation.dto";
+import {
+  CreateMachineCalculationDto,
+  GetNozzleDetailsDto,
+} from "./machine-calculation.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -24,6 +27,17 @@ export class MachineCalculationController {
     @Body() dto: CreateMachineCalculationDto,
   ) {
     return this.machineCalculationService.create(adminId, dto);
+  }
+
+  @Get("nozzle-details")
+  async getNozzleDetails(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Query() query: GetNozzleDetailsDto,
+  ) {
+    return this.machineCalculationService.getNozzleDetails(
+      adminId,
+      query.machineId,
+    );
   }
 
   @Get()

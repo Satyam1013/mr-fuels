@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateMachineCalculationDto = exports.NozzleDto = void 0;
+exports.GetNozzleDetailsDto = exports.CreateMachineCalculationDto = exports.NozzleDto = void 0;
 const class_validator_1 = require("class-validator");
 class NozzleDto {
 }
@@ -82,3 +82,10 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], CreateMachineCalculationDto.prototype, "nozzles", void 0);
+class GetNozzleDetailsDto {
+}
+exports.GetNozzleDetailsDto = GetNozzleDetailsDto;
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], GetNozzleDetailsDto.prototype, "machineId", void 0);

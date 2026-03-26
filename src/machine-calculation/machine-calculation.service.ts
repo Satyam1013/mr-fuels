@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { MachineCalculation } from "./machine-calculation.schema";
@@ -64,6 +64,22 @@ export class MachineCalculationService {
     });
 
     return calculation.save();
+  }
+
+  async getNozzleDetails(adminId: Types.ObjectId, machineId: string) {
+    const calculation = await this.machineCalcModel
+      .findOne({
+        adminId: new Types.ObjectId(adminId),
+        machineId: new Types.ObjectId(machineId),
+      })
+      .sort({ date: -1, shiftNumber: -1 })
+      .lean();
+
+    if (!calculation) {
+      throw new NotFoundException("No machine calculation found");
+    }
+
+    return calculation.nozzles;
   }
 
   async getAll(adminId: Types.ObjectId) {

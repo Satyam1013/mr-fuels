@@ -25,6 +25,9 @@ let MachineCalculationController = class MachineCalculationController {
     create(adminId, dto) {
         return this.machineCalculationService.create(adminId, dto);
     }
+    async getNozzleDetails(adminId, query) {
+        return this.machineCalculationService.getNozzleDetails(adminId, query.machineId);
+    }
     getAll(adminId) {
         return this.machineCalculationService.getAll(adminId);
     }
@@ -47,6 +50,14 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, machine_calculation_dto_1.CreateMachineCalculationDto]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)("nozzle-details"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, machine_calculation_dto_1.GetNozzleDetailsDto]),
+    __metadata("design:returntype", Promise)
+], MachineCalculationController.prototype, "getNozzleDetails", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
