@@ -256,6 +256,7 @@ export class ShiftStatusService {
     }
 
     // ----------- PREVIOUS UNFINISHED -----------
+    // Agar latest record ka dailyClose nahi hua aur requested date usse aage hai
     if (!latest.dailyClose && reqDateObj > latestDateObj) {
       return {
         ...(await mapResponse(latest)),
@@ -266,6 +267,34 @@ export class ShiftStatusService {
 
     // ----------- NO DATA FOR PAST / TODAY -----------
     if (reqDateObj <= todayObj) {
+      // ✅ Agar latest record closed hai aur requested date usse aage hai
+      // → Check karo ki koi gap hai ya nahi
+      if (latest.dailyClose && reqDateObj > latestDateObj) {
+        // Next consecutive day calculate karo latest closed record ke baad
+        const dayAfterLatest = new Date(latestDateObj);
+        dayAfterLatest.setDate(dayAfterLatest.getDate() + 1);
+        dayAfterLatest.setHours(0, 0, 0, 0);
+
+        const reqNormalized = new Date(reqDateObj);
+        reqNormalized.setHours(0, 0, 0, 0);
+
+        if (reqNormalized.getTime() === dayAfterLatest.getTime()) {
+          // ✅ No gap — bilkul agla din hai, fresh template return karo
+          return this.buildTemplate(
+            pumpDetails,
+            requestedDate,
+            formattedNumberDate,
+          );
+        }
+
+        // ❌ Gap hai — beech ki dates missing hain
+        return {
+          message: "No data available for this date",
+          date: requestedDate,
+        };
+      }
+
+      // Requested date latest se pehle hai ya same hai but exact record nahi mila
       return {
         message: "No data available for this date",
         date: requestedDate,
