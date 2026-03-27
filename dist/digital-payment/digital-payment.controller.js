@@ -31,6 +31,9 @@ let DigitalPaymentController = class DigitalPaymentController {
     async findByShift(adminId, date, shiftId) {
         return this.digitalService.findByShift(adminId, date, Number(shiftId));
     }
+    async update(adminId, id, dto) {
+        return this.digitalService.update(adminId, id, dto);
+    }
 };
 exports.DigitalPaymentController = DigitalPaymentController;
 __decorate([
@@ -57,6 +60,15 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, Number]),
     __metadata("design:returntype", Promise)
 ], DigitalPaymentController.prototype, "findByShift", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, digital_payment_dto_1.UpdateDigitalPaymentDto]),
+    __metadata("design:returntype", Promise)
+], DigitalPaymentController.prototype, "update", null);
 exports.DigitalPaymentController = DigitalPaymentController = __decorate([
     (0, common_1.Controller)("digital-payments"),
     __metadata("design:paramtypes", [digital_payment_service_1.DigitalPaymentService])

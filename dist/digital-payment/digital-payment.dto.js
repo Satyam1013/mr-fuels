@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateDigitalPaymentDto = void 0;
+exports.UpdateDigitalPaymentDto = exports.CreateDigitalPaymentDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class UpiPaymentDto {
@@ -83,3 +83,40 @@ __decorate([
     (0, class_transformer_1.Type)(() => PosPaymentDto),
     __metadata("design:type", Array)
 ], CreateDigitalPaymentDto.prototype, "posPayments", void 0);
+class UpdateDigitalPaymentDto {
+}
+exports.UpdateDigitalPaymentDto = UpdateDigitalPaymentDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateDigitalPaymentDto.prototype, "date", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateDigitalPaymentDto.prototype, "shiftId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateDigitalPaymentDto.prototype, "shiftName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateDigitalPaymentDto.prototype, "shiftNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => UpiPaymentDto),
+    __metadata("design:type", Array)
+], UpdateDigitalPaymentDto.prototype, "upiPayments", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => PosPaymentDto),
+    __metadata("design:type", Array)
+], UpdateDigitalPaymentDto.prototype, "posPayments", void 0);

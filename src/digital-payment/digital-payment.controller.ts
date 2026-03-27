@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { DigitalPaymentService } from "./digital-payment.service";
-import { CreateDigitalPaymentDto } from "./digital-payment.dto";
+import {
+  CreateDigitalPaymentDto,
+  UpdateDigitalPaymentDto,
+} from "./digital-payment.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -28,5 +39,14 @@ export class DigitalPaymentController {
     @Query("shiftId") shiftId: number,
   ) {
     return this.digitalService.findByShift(adminId, date, Number(shiftId));
+  }
+
+  @Patch(":id")
+  async update(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+    @Body() dto: UpdateDigitalPaymentDto,
+  ) {
+    return this.digitalService.update(adminId, id, dto);
   }
 }

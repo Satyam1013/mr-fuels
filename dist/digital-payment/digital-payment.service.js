@@ -40,6 +40,19 @@ let DigitalPaymentService = class DigitalPaymentService {
             shiftId,
         });
     }
+    async update(adminId, id, dto) {
+        const existing = await this.digitalPaymentModel.findOne({
+            _id: id,
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.NotFoundException("Digital payment record not found");
+        }
+        const updated = await this.digitalPaymentModel
+            .findByIdAndUpdate(id, { $set: dto }, { new: true })
+            .lean();
+        return updated;
+    }
 };
 exports.DigitalPaymentService = DigitalPaymentService;
 exports.DigitalPaymentService = DigitalPaymentService = __decorate([

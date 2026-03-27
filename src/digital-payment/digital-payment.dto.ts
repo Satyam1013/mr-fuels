@@ -62,3 +62,33 @@ export class CreateDigitalPaymentDto {
   @Type(() => PosPaymentDto)
   posPayments!: PosPaymentDto[];
 }
+
+export class UpdateDigitalPaymentDto {
+  @IsOptional()
+  @IsString()
+  date?: string;
+
+  @IsOptional()
+  @IsNumber()
+  shiftId?: number;
+
+  @IsOptional()
+  @IsString()
+  shiftName?: string;
+
+  @IsOptional()
+  @IsNumber()
+  shiftNumber?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpiPaymentDto)
+  upiPayments?: UpiPaymentDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PosPaymentDto)
+  posPayments?: PosPaymentDto[];
+}
