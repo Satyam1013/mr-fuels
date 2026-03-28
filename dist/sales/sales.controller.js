@@ -24,8 +24,13 @@ let SalesController = class SalesController {
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getShiftDashboard(adminId) {
-        return this.salesService.getShiftDashboard(adminId);
+    async getDashboardData(date, shiftNumber, shiftId, adminId) {
+        return this.salesService.getDashboardData({
+            adminId,
+            date,
+            shiftNumber: Number(shiftNumber),
+            shiftId,
+        });
     }
 };
 exports.SalesController = SalesController;
@@ -37,12 +42,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getDashboardSetup", null);
 __decorate([
-    (0, common_1.Get)("shift-dashboard"),
-    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    (0, common_1.Get)("dashboard"),
+    __param(0, (0, common_1.Query)("date")),
+    __param(1, (0, common_1.Query)("shiftNumber")),
+    __param(2, (0, common_1.Query)("shiftId")),
+    __param(3, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
-], SalesController.prototype, "getShiftDashboard", null);
+], SalesController.prototype, "getDashboardData", null);
 exports.SalesController = SalesController = __decorate([
     (0, common_1.Controller)("sales"),
     __metadata("design:paramtypes", [sales_service_1.SalesService])

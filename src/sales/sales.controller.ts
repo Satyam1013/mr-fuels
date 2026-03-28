@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { SalesService } from "./sales.service";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
@@ -12,8 +12,18 @@ export class SalesController {
     return this.salesService.getDashboardSetup(adminId);
   }
 
-  @Get("shift-dashboard")
-  async getShiftDashboard(@GetUser("adminId") adminId: Types.ObjectId) {
-    return this.salesService.getShiftDashboard(adminId);
+  @Get("dashboard")
+  async getDashboardData(
+    @Query("date") date: string, // "2026-03-27"
+    @Query("shiftNumber") shiftNumber: string,
+    @Query("shiftId") shiftId: string,
+    @GetUser("adminId") adminId: Types.ObjectId,
+  ) {
+    return this.salesService.getDashboardData({
+      adminId,
+      date,
+      shiftNumber: Number(shiftNumber),
+      shiftId,
+    });
   }
 }

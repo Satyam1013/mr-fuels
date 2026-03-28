@@ -21,13 +21,27 @@ const machines_schema_1 = require("../machines/machines.schema");
 const staff_schema_1 = require("../staff/staff.schema");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
+const machine_calculation_schema_1 = require("../machine-calculation/machine-calculation.schema");
+const creditors_schema_1 = require("../creditors/creditors.schema");
+const prepaid_schema_1 = require("../prepaid/prepaid.schema");
+const non_fuel_product_sales_schema_1 = require("../non-fuel-product-sales/non-fuel-product-sales.schema");
+const digital_payment_schema_1 = require("../digital-payment/digital-payment.schema");
+const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
+const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
 let SalesService = class SalesService {
-    constructor(machineModel, transactionModel, nonFuelModel, staffModel, pumpDetailsModel) {
+    constructor(machineModel, transactionModel, nonFuelModel, staffModel, pumpDetailsModel, machineCalcModel, creditorModel, prepaidModel, nonFuelSellModel, digitalPaymentModel, pumpExpenseModel, personalExpenseModel) {
         this.machineModel = machineModel;
         this.transactionModel = transactionModel;
         this.nonFuelModel = nonFuelModel;
         this.staffModel = staffModel;
         this.pumpDetailsModel = pumpDetailsModel;
+        this.machineCalcModel = machineCalcModel;
+        this.creditorModel = creditorModel;
+        this.prepaidModel = prepaidModel;
+        this.nonFuelSellModel = nonFuelSellModel;
+        this.digitalPaymentModel = digitalPaymentModel;
+        this.pumpExpenseModel = pumpExpenseModel;
+        this.personalExpenseModel = personalExpenseModel;
     }
     async getDashboardSetup(adminId) {
         // =============================
@@ -131,31 +145,189 @@ let SalesService = class SalesService {
             staffDetails,
         };
     }
-    async getShiftDashboard(adminId) {
-        const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
-        if (!pumpDetails) {
-            throw new Error("Pump details not found");
+    async getDashboardData(params) {
+        const { adminId, date, shiftNumber, shiftId } = params;
+        // Date range: us din ka start aur end (00:00:00 to 23:59:59)
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+        // ─── 1. Saari MachineCalculations fetch karo (us din + shift) ───
+        const machineCalculations = await this.machineCalcModel
+            .find({
+            adminId,
+            shiftNumber,
+            date: { $gte: startOfDay, $lte: endOfDay },
+        })
+            .lean();
+        // ─── 2. Digital Payments (overall UPI + POS) ───
+        const digitalPayments = await this.digitalPaymentModel
+            .find({
+            adminId,
+            date, // DigitalPayment me date string hai schema ke hisab se
+            shiftNumber,
+        })
+            .lean();
+        const overallUpi = digitalPayments.reduce((sum, dp) => sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0), 0);
+        const overallPos = digitalPayments.reduce((sum, dp) => sum + dp.posPayments.reduce((s, p) => s + (p.amount || 0), 0), 0);
+        // ─── 3. Har machine ke nozzles process karo ───
+        let totalOverallSalesLiters = 0;
+        let totalOverallSalesAmount = 0;
+        let totalTestingLiters = 0;
+        let totalTestingAmount = 0;
+        let totalCreditorsAmount = 0;
+        let totalPrepaidAmount = 0;
+        let totalPumpExpenses = 0;
+        let totalPersonalExpenses = 0;
+        const allNozzlesResult = [];
+        for (const machine of machineCalculations) {
+            const machineId = machine.machineId;
+            // Nozzle-level data
+            for (const nozzle of machine.nozzles) {
+                const nozzleNumber = nozzle.nozzleNumber;
+                // ── Sales calculation ──
+                const salesLiters = (nozzle.currentReading || 0) -
+                    (nozzle.lastReading || 0) -
+                    (nozzle.testingLiters || 0) -
+                    (nozzle.faultTestingLiters || 0);
+                const overallNozzleLiters = (nozzle.currentReading || 0) - (nozzle.lastReading || 0);
+                const overallNozzleAmount = overallNozzleLiters * (nozzle.pricePerLiter || 0);
+                const testingLiters = (nozzle.testingLiters || 0) + (nozzle.faultTestingLiters || 0);
+                const testingAmount = testingLiters * (nozzle.pricePerLiter || 0);
+                const netSalesLiters = overallNozzleLiters - testingLiters;
+                const netSalesAmount = netSalesLiters * (nozzle.pricePerLiter || 0);
+                // ── Creditors ──
+                const creditors = await this.creditorModel
+                    .find({
+                    adminId,
+                    machineId,
+                    shiftNumber,
+                    nozzleNumber,
+                    date: { $gte: startOfDay, $lte: endOfDay },
+                })
+                    .lean();
+                const creditorsAmount = creditors.reduce((sum, c) => sum + (c.amount || 0), 0);
+                // ── Prepaid ──
+                const prepaids = await this.prepaidModel
+                    .find({
+                    adminId,
+                    machineId,
+                    shiftNumber,
+                    nozzleNumber,
+                    date: { $gte: startOfDay, $lte: endOfDay },
+                })
+                    .lean();
+                const prepaidAmount = prepaids.reduce((sum, p) => sum + (p.amount || 0), 0);
+                // ── Pump Expenses ──
+                const pumpExpenses = await this.pumpExpenseModel
+                    .find({
+                    adminId,
+                    machineId,
+                    shiftNumber,
+                    nozzleNumber,
+                    date: { $gte: startOfDay, $lte: endOfDay },
+                })
+                    .lean();
+                const pumpExpensesAmount = pumpExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+                // ── Personal Expenses ──
+                const personalExpenses = await this.personalExpenseModel
+                    .find({
+                    adminId,
+                    machineId,
+                    shiftNumber,
+                    nozzleNumber,
+                    date: { $gte: startOfDay, $lte: endOfDay },
+                })
+                    .lean();
+                const personalExpensesAmount = personalExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+                // ── Lubricant (NonFuel) Sales — nozzle level nahi, machine level hai ──
+                // (neeche machine level pe fetch karenge, yahan 0 rakhenge)
+                // ── Nozzle UPI/POS ──
+                const nozzleUpi = nozzle.upiAmount || 0;
+                const nozzlePos = nozzle.posAmount || 0;
+                // Totals update
+                totalOverallSalesLiters += overallNozzleLiters;
+                totalOverallSalesAmount += overallNozzleAmount;
+                totalTestingLiters += testingLiters;
+                totalTestingAmount += testingAmount;
+                totalCreditorsAmount += creditorsAmount;
+                totalPrepaidAmount += prepaidAmount;
+                totalPumpExpenses += pumpExpensesAmount;
+                totalPersonalExpenses += personalExpensesAmount;
+                allNozzlesResult.push({
+                    staffId: nozzle.staffId,
+                    nozzleNumber,
+                    sales: {
+                        liters: overallNozzleLiters, // overall reading difference
+                        amount: overallNozzleAmount,
+                    },
+                    netSales: {
+                        liters: netSalesLiters,
+                        amount: netSalesAmount,
+                    },
+                    testing: {
+                        liters: testingLiters,
+                        amount: testingAmount,
+                    },
+                    creditors: creditorsAmount,
+                    prepaid: prepaidAmount,
+                    transactions: {
+                        upi: nozzleUpi,
+                        pos: nozzlePos,
+                    },
+                    pumpExpenses: pumpExpensesAmount,
+                    personalExpenses: personalExpensesAmount,
+                });
+            }
+            // ── Lubricant (NonFuel) — machine level per shift ──
+            const nonFuelSales = await this.nonFuelSellModel
+                .find({
+                adminId,
+                machineId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean();
+            const lubricantSalesAmount = nonFuelSales.reduce((sum, n) => sum + (n.amount || 0), 0);
+            // Lubricant amount nozzle result me add karo (machine ke saare nozzles me distribute — ya machine level pe rakh sakte ho)
+            // Simple approach: machine ke pehle nozzle pe daal do, ya top-level me dikha do
+            // Yahan hum isko overall response me alag se dikhayenge
         }
-        const today = new Date();
-        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
-        // Generate unique shift staffId from date
-        const generatedShiftId = Number(formattedDate.replace(/-/g, "") + "01");
+        // ── Staff name populate (optional) ──
+        // Agar staffId se name chahiye to Staff model se lookup karo
+        // ─── Final Response ───
+        const netSalesLiters = totalOverallSalesLiters - totalTestingLiters;
+        const netSalesAmount = totalOverallSalesAmount - totalTestingAmount;
         return {
-            date: formattedDate,
-            totalShifts: pumpDetails.numberOfShifts,
-            currentShift: {
-                shiftId: 1,
-                staffId: generatedShiftId,
-                name: `Shift 1`,
-                startTime: pumpDetails.pumpTime.start,
-                endTime: "",
-                status: "Active",
+            date,
+            shiftNumber,
+            shiftId,
+            overallSales: {
+                liters: totalOverallSalesLiters,
+                amount: totalOverallSalesAmount,
             },
-            shifts: [],
-            dailyProgress: {
-                completedShifts: 0,
-                pendingShifts: pumpDetails.numberOfShifts,
-                overallCompletionPercent: 0,
+            netSales: {
+                liters: netSalesLiters,
+                amount: netSalesAmount,
+            },
+            testing: {
+                liters: totalTestingLiters,
+                amount: totalTestingAmount,
+            },
+            overallCreditorsAmount: totalCreditorsAmount,
+            prepaid: totalPrepaidAmount,
+            pumpExpenses: totalPumpExpenses,
+            personalExpenses: totalPersonalExpenses,
+            transactions: {
+                upi: overallUpi,
+                pos: overallPos,
+            },
+            machines: {
+                overallMachineSales: {
+                    liters: totalOverallSalesLiters,
+                    amount: totalOverallSalesAmount,
+                },
+                nozzles: allNozzlesResult,
             },
         };
     }
@@ -168,7 +340,21 @@ exports.SalesService = SalesService = __decorate([
     __param(2, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __param(3, (0, mongoose_1.InjectModel)(staff_schema_1.Staff.name)),
     __param(4, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
+    __param(5, (0, mongoose_1.InjectModel)(machine_calculation_schema_1.MachineCalculation.name)),
+    __param(6, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
+    __param(7, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
+    __param(8, (0, mongoose_1.InjectModel)(non_fuel_product_sales_schema_1.NonFuelSellProduct.name)),
+    __param(9, (0, mongoose_1.InjectModel)(digital_payment_schema_1.DigitalPayment.name)),
+    __param(10, (0, mongoose_1.InjectModel)(pump_expense_schema_1.PumpExpense.name)),
+    __param(11, (0, mongoose_1.InjectModel)(personal_expense_schema_1.PersonalExpense.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
