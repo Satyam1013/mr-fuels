@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const machines_schema_1 = require("./machines.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let MachineService = class MachineService {
-    constructor(machineModel) {
+    constructor(machineModel, fuelProductDetailsModel) {
         this.machineModel = machineModel;
+        this.fuelProductDetailsModel = fuelProductDetailsModel;
     }
     async createMachines(adminId, machines) {
         const docs = machines.map((m) => ({
@@ -27,16 +29,51 @@ let MachineService = class MachineService {
             adminId,
             nozzle: m.nozzle.map((n) => ({
                 ...n,
+                fuelProductId: new mongoose_2.Types.ObjectId(n.fuelProductId),
                 tankId: new mongoose_2.Types.ObjectId(n.tankId),
             })),
         }));
         return this.machineModel.insertMany(docs);
     }
     async getMachines(adminId) {
-        return this.machineModel.find({ adminId });
+        const [machines, fuelProductDetails] = await Promise.all([
+            this.machineModel.find({ adminId }).lean(),
+            this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+        ]);
+        return machines.map((machine) => ({
+            ...machine,
+            nozzle: machine.nozzle.map((nozzle) => {
+                const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                    nozzle.fuelProductId.toString());
+                return {
+                    ...nozzle,
+                    fuelType: product?.fuelType,
+                    price: product?.price,
+                    purchasingPrice: product?.purchasingPrice,
+                };
+            }),
+        }));
     }
     async getMachineById(machineId) {
-        return this.machineModel.findById(machineId);
+        const machine = await this.machineModel.findById(machineId).lean();
+        if (!machine)
+            return null;
+        const fuelProductDetails = await this.fuelProductDetailsModel
+            .findOne({ adminId: machine.adminId })
+            .lean();
+        return {
+            ...machine,
+            nozzle: machine.nozzle.map((nozzle) => {
+                const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                    nozzle.fuelProductId.toString());
+                return {
+                    ...nozzle,
+                    fuelType: product?.fuelType,
+                    price: product?.price,
+                    purchasingPrice: product?.purchasingPrice,
+                };
+            }),
+        };
     }
     async updateMachine(machineId, dto) {
         return this.machineModel.findByIdAndUpdate(machineId, dto, { new: true });
@@ -49,5 +86,7 @@ exports.MachineService = MachineService;
 exports.MachineService = MachineService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], MachineService);

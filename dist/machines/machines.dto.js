@@ -20,15 +20,10 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleDto.prototype, "nozzleNumber", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsMongoId)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], NozzleDto.prototype, "fuelType", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], NozzleDto.prototype, "price", void 0);
+], NozzleDto.prototype, "fuelProductId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),

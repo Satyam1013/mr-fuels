@@ -12,13 +12,17 @@ const mongoose_1 = require("@nestjs/mongoose");
 const machines_schema_1 = require("./machines.schema");
 const machines_service_1 = require("./machines.service");
 const machines_controller_1 = require("./machines.controller");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let MachineModule = class MachineModule {
 };
 exports.MachineModule = MachineModule;
 exports.MachineModule = MachineModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
+                { name: fuel_product_schema_1.FuelProductDetails.name, schema: fuel_product_schema_1.FuelProductDetailsSchema },
+            ]),
         ],
         providers: [machines_service_1.MachineService],
         controllers: [machines_controller_1.MachineController],

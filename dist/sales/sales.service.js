@@ -47,20 +47,25 @@ let SalesService = class SalesService {
     }
     async getDashboardSetup(adminId) {
         // =============================
-        // 1️⃣ Machines
+        // 1️⃣ Machines + FuelProductDetails
         // =============================
-        const machines = await this.machineModel
-            .find({ adminId, isActive: true })
-            .lean()
-            .exec();
+        const [machines, fuelProductDetails] = await Promise.all([
+            this.machineModel.find({ adminId, isActive: true }).lean(),
+            this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+        ]);
+        // Helper — fuelProductId se product nikalo
+        const getProduct = (fuelProductId) => fuelProductDetails?.products.find((p) => p._id.toString() === fuelProductId.toString());
         // Fuel Types from Nozzles
         const fuelSet = new Set();
         machines.forEach((machine) => {
             if (!Array.isArray(machine.nozzle))
                 return;
             machine.nozzle.forEach((n) => {
-                if (n.isActive && n.fuelType) {
-                    fuelSet.add(n.fuelType.toLowerCase());
+                if (n.isActive && n.fuelProductId) {
+                    const product = getProduct(n.fuelProductId);
+                    if (product?.fuelType) {
+                        fuelSet.add(product.fuelType.toLowerCase());
+                    }
                 }
             });
         });
@@ -105,22 +110,25 @@ let SalesService = class SalesService {
             name: machine.machineNumber,
             machineId: machine._id,
             nozzles: Array.isArray(machine.nozzle)
-                ? machine.nozzle.map((n, index) => ({
-                    nozzleName: `Nozzle ${index + 1}`,
-                    nozzleNumber: n?.nozzleNumber || 0,
-                    lastReading: 0,
-                    currentReading: 0,
-                    fuelType: n?.fuelType || "",
-                    fuelPrice: Number(n?.price || 0),
-                    faultTesting: false,
-                    faultDesc: null,
-                    faultImg: null,
-                    imageUrl: "",
-                }))
+                ? machine.nozzle.map((n, index) => {
+                    const product = getProduct(n.fuelProductId);
+                    return {
+                        nozzleName: `Nozzle ${index + 1}`,
+                        nozzleNumber: n?.nozzleNumber || 0,
+                        lastReading: 0,
+                        currentReading: 0,
+                        fuelType: product?.fuelType || "",
+                        fuelPrice: product?.price || 0,
+                        faultTesting: false,
+                        faultDesc: null,
+                        faultImg: null,
+                        imageUrl: "",
+                    };
+                })
                 : [],
         }));
         // =============================
-        // 5️⃣ Staff (Last 4 sections replacement)
+        // 5️⃣ Staff
         // =============================
         const staff = await this.staffModel.find({ adminId }).lean();
         const staffDetails = staff.map((s) => ({

@@ -6,6 +6,7 @@ import {
   IsBoolean,
   ValidateNested,
   IsOptional,
+  IsMongoId,
 } from "class-validator";
 import { Type } from "class-transformer";
 
@@ -14,13 +15,9 @@ class NozzleDto {
   @IsNotEmpty()
   nozzleNumber!: number;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
-  fuelType!: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  price!: number;
+  fuelProductId!: string;
 
   @IsOptional()
   @IsBoolean()
