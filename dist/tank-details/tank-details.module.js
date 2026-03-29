@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const tank_details_schema_1 = require("./tank-details.schema");
 const tank_details_controller_1 = require("./tank-details.controller");
 const tank_details_service_1 = require("./tank-details.service");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let TankModule = class TankModule {
 };
 exports.TankModule = TankModule;
@@ -23,6 +24,7 @@ exports.TankModule = TankModule = __decorate([
                     name: tank_details_schema_1.TankDetails.name,
                     schema: tank_details_schema_1.TankDetailsSchema,
                 },
+                { name: fuel_product_schema_1.FuelProductDetails.name, schema: fuel_product_schema_1.FuelProductDetailsSchema },
             ]),
         ],
         controllers: [tank_details_controller_1.TankController],

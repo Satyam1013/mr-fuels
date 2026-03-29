@@ -99,6 +99,7 @@ export class FuelProductService {
       } else {
         // Naya — push karo
         record.products.push({
+          _id: new Types.ObjectId(),
           fuelType: item.fuelType,
           price: item.price!,
           oldPrice: item.price!,

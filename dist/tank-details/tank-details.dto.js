@@ -20,6 +20,10 @@ __decorate([
     __metadata("design:type", mongoose_1.Types.ObjectId)
 ], TankDto.prototype, "_id", void 0);
 __decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], TankDto.prototype, "fuelProductId", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankDto.prototype, "capacityKl", void 0);
@@ -27,14 +31,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], TankDto.prototype, "dsrTankStock", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], TankDto.prototype, "fuelType", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], TankDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
@@ -56,6 +52,11 @@ __decorate([
     __metadata("design:type", mongoose_1.Types.ObjectId)
 ], UpdateTankDto.prototype, "_id", void 0);
 __decorate([
+    (0, class_validator_1.IsMongoId)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateTankDto.prototype, "fuelProductId", void 0);
+__decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -65,16 +66,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateTankDto.prototype, "dsrTankStock", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateTankDto.prototype, "fuelType", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], UpdateTankDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),

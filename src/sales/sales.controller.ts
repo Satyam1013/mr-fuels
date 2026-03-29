@@ -16,14 +16,14 @@ export class SalesController {
   async getDashboardData(
     @Query("date") date: string, // "2026-03-27"
     @Query("shiftNumber") shiftNumber: string,
-    @Query("shiftId") shiftId: string,
+    @Query("nozzleNumber") nozzleNumber: string,
     @GetUser("adminId") adminId: Types.ObjectId,
   ) {
     return this.salesService.getDashboardData({
       adminId,
       date,
       shiftNumber: Number(shiftNumber),
-      shiftId,
+      nozzleNumber: Number(nozzleNumber),
     });
   }
 }

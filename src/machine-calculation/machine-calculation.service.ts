@@ -8,6 +8,10 @@ import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import { Creditor } from "../creditors/creditors.schema";
 import { CreateMachineCalculationDto } from "./machine-calculation.dto";
 import { PersonalExpense } from "../personal-expense/personal-expense.schema";
+import {
+  FuelProductDetail,
+  FuelProductDetails,
+} from "../fuel-product/fuel-product.schema";
 
 @Injectable()
 export class MachineCalculationService {
@@ -29,7 +33,14 @@ export class MachineCalculationService {
 
     @InjectModel(Creditor.name)
     private creditorModel: Model<Creditor>,
+
+    @InjectModel(FuelProductDetails.name)
+    private fuelProductDetailsModel: Model<FuelProductDetails>,
   ) {}
+
+  private async getFuelProductDetails(adminId: Types.ObjectId) {
+    return this.fuelProductDetailsModel.findOne({ adminId }).lean();
+  }
 
   async create(adminId: Types.ObjectId, dto: CreateMachineCalculationDto) {
     const nozzles = dto.nozzles.map((nozzle) => ({
@@ -80,12 +91,12 @@ export class MachineCalculationService {
       personalExpenses,
       prepaidEntries,
       nonFuelSales,
+      fuelProductDetails,
     ] = await Promise.all([
       this.machineCalcModel
         .find({ adminId })
         .populate("machineId")
         .populate("nozzles.staffId")
-        .populate("nozzles.fuelProductId")
         .sort({ date: -1 })
         .lean(),
 
@@ -94,10 +105,21 @@ export class MachineCalculationService {
       this.personalExpenseModel.find({ adminId }).lean(),
       this.prepaidModel.find({ adminId }).lean(),
       this.nonFuelModel.find({ adminId }).lean(),
+      this.getFuelProductDetails(adminId),
     ]);
 
     return machineCalcs.map((calc) => ({
       ...calc,
+      nozzles: calc.nozzles.map((nozzle) => {
+        const product = fuelProductDetails?.products.find(
+          (p) => p._id.toString() === nozzle.fuelProductId.toString(),
+        );
+        return {
+          ...nozzle,
+          fuelType: product?.fuelType,
+          pricePerLiter: product?.price || 0,
+        };
+      }),
       credits,
       pumpExpenses,
       personalExpenses,
@@ -113,7 +135,6 @@ export class MachineCalculationService {
     nozzleNumber?: number,
     shiftNumber?: number,
   ) {
-    const objectAdminId = new Types.ObjectId(adminId);
     const objectMachineId = new Types.ObjectId(machineId);
 
     const startDate = new Date(date);
@@ -123,7 +144,7 @@ export class MachineCalculationService {
     endDate.setHours(23, 59, 59, 999);
 
     const baseQuery: Record<string, any> = {
-      adminId: objectAdminId,
+      adminId,
       machineId: objectMachineId,
       date: { $gte: startDate, $lte: endDate },
     };
@@ -139,12 +160,12 @@ export class MachineCalculationService {
       personalExpenses,
       prepaidEntries,
       nonFuelSales,
+      fuelProductDetails,
     ] = await Promise.all([
       this.machineCalcModel
         .find(baseQuery)
         .populate("machineId")
         .populate("nozzles.staffId")
-        .populate("nozzles.fuelProductId")
         .lean(),
 
       this.creditorModel.find(baseQuery),
@@ -152,34 +173,47 @@ export class MachineCalculationService {
       this.personalExpenseModel.find(baseQuery),
       this.prepaidModel.find(baseQuery),
       this.nonFuelModel.find(baseQuery),
+      this.getFuelProductDetails(adminId),
     ]);
 
-    // 🔥 FETCH PREVIOUS ENTRY (important logic)
+    // Nozzles me price attach karo
+    const machineCalcWithPrice = machineCalcData.map((item) => ({
+      ...item,
+      nozzles: item.nozzles.map((nozzle) => {
+        const product = fuelProductDetails?.products.find(
+          (p) =>
+            (p as FuelProductDetail)._id.toString() ===
+            nozzle.fuelProductId.toString(),
+        );
+        return {
+          ...nozzle,
+          fuelType: product?.fuelType,
+          pricePerLiter: product?.price || 0,
+        };
+      }),
+    }));
+
     let previousEntry = null;
 
     if (shiftNumber) {
-      // Case: Shift provided → check same day previous shift OR previous date
       previousEntry = await this.machineCalcModel
         .findOne({
-          adminId: objectAdminId,
+          adminId,
           machineId: objectMachineId,
           $or: [
             {
               date: { $gte: startDate, $lte: endDate },
               shiftNumber: { $lt: Number(shiftNumber) },
             },
-            {
-              date: { $lt: startDate },
-            },
+            { date: { $lt: startDate } },
           ],
         })
         .sort({ date: -1, shiftNumber: -1 })
         .lean();
     } else {
-      // Case: No shift → just previous date
       previousEntry = await this.machineCalcModel
         .findOne({
-          adminId: objectAdminId,
+          adminId,
           machineId: objectMachineId,
           date: { $lt: startDate },
         })
@@ -187,11 +221,10 @@ export class MachineCalculationService {
         .lean();
     }
 
-    // 🔥 FILTER NOZZLE (if provided)
-    let filteredMachineData = machineCalcData;
+    let filteredMachineData = machineCalcWithPrice; // machineCalcData → machineCalcWithPrice
 
     if (nozzleNumber) {
-      filteredMachineData = machineCalcData.map((item) => ({
+      filteredMachineData = machineCalcWithPrice.map((item) => ({
         ...item,
         nozzles: item.nozzles.filter(
           (n) => n.nozzleNumber === Number(nozzleNumber),
@@ -199,24 +232,18 @@ export class MachineCalculationService {
       }));
     }
 
-    // 🔥 APPLY PREVIOUS READING LOGIC
     if (previousEntry) {
       filteredMachineData = filteredMachineData.map((item) => {
         const updatedNozzles = item.nozzles.map((nozzle) => {
           const prevNozzle = previousEntry.nozzles.find(
             (n) => n.nozzleNumber === nozzle.nozzleNumber,
           );
-
           return {
             ...nozzle,
             lastReading: prevNozzle?.currentReading ?? nozzle.lastReading ?? 0,
           };
         });
-
-        return {
-          ...item,
-          nozzles: updatedNozzles,
-        };
+        return { ...item, nozzles: updatedNozzles };
       });
     }
 

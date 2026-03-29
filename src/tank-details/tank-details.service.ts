@@ -7,12 +7,19 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TankDetails } from "./tank-details.schema";
 import { CreateTankDetailsDto, UpdateTankDetailsDto } from "./tank-details.dto";
+import {
+  FuelProductDetail,
+  FuelProductDetails,
+} from "../fuel-product/fuel-product.schema";
 
 @Injectable()
 export class TankService {
   constructor(
     @InjectModel(TankDetails.name)
     private tankModel: Model<TankDetails>,
+
+    @InjectModel(FuelProductDetails.name)
+    private fuelProductDetailsModel: Model<FuelProductDetails>,
   ) {}
 
   async create(adminId: Types.ObjectId, dto: CreateTankDetailsDto) {
@@ -26,7 +33,10 @@ export class TankService {
 
     const tank = await this.tankModel.create({
       adminId,
-      tanks: dto.tanks,
+      tanks: dto.tanks.map((t) => ({
+        ...t,
+        fuelProductId: new Types.ObjectId(t.fuelProductId),
+      })),
     });
 
     return {
@@ -36,15 +46,56 @@ export class TankService {
   }
 
   async findAll(adminId: Types.ObjectId) {
-    return this.tankModel.find({ adminId }).lean();
+    const [tankDetails, fuelProductDetails] = await Promise.all([
+      this.tankModel.findOne({ adminId }).lean(),
+      this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+    ]);
+
+    if (!tankDetails) return [];
+
+    const tanks = tankDetails.tanks.map((tank) => {
+      const product = fuelProductDetails?.products.find(
+        (p) =>
+          (p as FuelProductDetail)._id.toString() ===
+          tank.fuelProductId.toString(),
+      );
+
+      return {
+        ...tank,
+        fuelType: product?.fuelType,
+        price: product?.price,
+        purchasingPrice: product?.purchasingPrice,
+      };
+    });
+
+    return tanks;
   }
 
   async findOne(id: string) {
-    const tank = await this.tankModel.findById(id).lean();
+    const tankDoc = await this.tankModel.findById(id).lean();
 
-    if (!tank) throw new NotFoundException("Tank not found");
+    if (!tankDoc) throw new NotFoundException("Tank not found");
 
-    return tank;
+    const fuelProductDetails = await this.fuelProductDetailsModel
+      .findOne({ adminId: tankDoc.adminId })
+      .lean();
+
+    const tanks = tankDoc.tanks.map((tank) => {
+      const product = fuelProductDetails?.products.find(
+        (p) =>
+          (p as FuelProductDetail)._id.toString() ===
+          tank.fuelProductId.toString(),
+      );
+
+      return {
+        ...tank,
+        fuelType: product?.fuelType,
+        price: product?.price,
+        purchasingPrice: product?.purchasingPrice,
+      };
+    });
+
+    return { ...tankDoc, tanks };
   }
 
   async updateMany(adminId: Types.ObjectId, dto: UpdateTankDetailsDto) {
@@ -64,9 +115,10 @@ export class TankService {
       if (tank) {
         tank.capacityKl = updateTank.capacityKl ?? tank.capacityKl;
         tank.dsrTankStock = updateTank.dsrTankStock ?? tank.dsrTankStock;
-        tank.fuelType = updateTank.fuelType ?? tank.fuelType;
-        tank.price = updateTank.price ?? tank.price;
         tank.tankNo = updateTank.tankNo ?? tank.tankNo;
+        if (updateTank.fuelProductId) {
+          tank.fuelProductId = new Types.ObjectId(updateTank.fuelProductId);
+        }
       }
     });
 

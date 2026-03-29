@@ -5,17 +5,14 @@ import { Document, Types } from "mongoose";
 export class Tank {
   _id!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: "FuelProductDetail", required: true })
+  fuelProductId!: Types.ObjectId;
+
   @Prop()
   capacityKl!: string;
 
   @Prop()
   dsrTankStock!: string;
-
-  @Prop()
-  fuelType!: string;
-
-  @Prop()
-  price!: number;
 
   @Prop()
   tankNo!: number;

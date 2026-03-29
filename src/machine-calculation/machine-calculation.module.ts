@@ -20,6 +20,10 @@ import {
   PersonalExpense,
   PersonalExpenseSchema,
 } from "../personal-expense/personal-expense.schema";
+import {
+  FuelProductDetails,
+  FuelProductDetailsSchema,
+} from "../fuel-product/fuel-product.schema";
 
 @Module({
   imports: [
@@ -30,6 +34,7 @@ import {
       { name: Prepaid.name, schema: PrepaidSchema },
       { name: NonFuelProducts.name, schema: NonFuelProductsSchema },
       { name: Creditor.name, schema: CreditorSchema },
+      { name: FuelProductDetails.name, schema: FuelProductDetailsSchema },
     ]),
   ],
   controllers: [MachineCalculationController],

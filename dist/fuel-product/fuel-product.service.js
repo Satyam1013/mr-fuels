@@ -82,6 +82,7 @@ let FuelProductService = class FuelProductService {
             else {
                 // Naya — push karo
                 record.products.push({
+                    _id: new mongoose_2.Types.ObjectId(),
                     fuelType: item.fuelType,
                     price: item.price,
                     oldPrice: item.price,

@@ -24,12 +24,12 @@ let SalesController = class SalesController {
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getDashboardData(date, shiftNumber, shiftId, adminId) {
+    async getDashboardData(date, shiftNumber, nozzleNumber, adminId) {
         return this.salesService.getDashboardData({
             adminId,
             date,
             shiftNumber: Number(shiftNumber),
-            shiftId,
+            nozzleNumber: Number(nozzleNumber),
         });
     }
 };
@@ -45,7 +45,7 @@ __decorate([
     (0, common_1.Get)("dashboard"),
     __param(0, (0, common_1.Query)("date")),
     __param(1, (0, common_1.Query)("shiftNumber")),
-    __param(2, (0, common_1.Query)("shiftId")),
+    __param(2, (0, common_1.Query)("nozzleNumber")),
     __param(3, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),

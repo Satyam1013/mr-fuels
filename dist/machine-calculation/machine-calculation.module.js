@@ -17,6 +17,7 @@ const prepaid_schema_1 = require("../prepaid/prepaid.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 const creditors_schema_1 = require("../creditors/creditors.schema");
 const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let MachineCalculationModule = class MachineCalculationModule {
 };
 exports.MachineCalculationModule = MachineCalculationModule;
@@ -30,6 +31,7 @@ exports.MachineCalculationModule = MachineCalculationModule = __decorate([
                 { name: prepaid_schema_1.Prepaid.name, schema: prepaid_schema_1.PrepaidSchema },
                 { name: non_fuel_product_schema_1.NonFuelProducts.name, schema: non_fuel_product_schema_1.NonFuelProductsSchema },
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
+                { name: fuel_product_schema_1.FuelProductDetails.name, schema: fuel_product_schema_1.FuelProductDetailsSchema },
             ]),
         ],
         controllers: [machine_calculation_controller_1.MachineCalculationController],

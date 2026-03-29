@@ -23,7 +23,7 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "nozzleNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "FuelProductDetails", required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "FuelProductDetail", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], NozzleCalculation.prototype, "fuelProductId", void 0);
 __decorate([

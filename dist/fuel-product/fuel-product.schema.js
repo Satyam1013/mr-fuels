@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", Date)
 ], FuelProductDetail.prototype, "updatedPriceFrom", void 0);
 exports.FuelProductDetail = FuelProductDetail = __decorate([
-    (0, mongoose_1.Schema)({ _id: false })
+    (0, mongoose_1.Schema)({ _id: true })
 ], FuelProductDetail);
 let FuelProductDetails = class FuelProductDetails extends mongoose_2.Document {
 };

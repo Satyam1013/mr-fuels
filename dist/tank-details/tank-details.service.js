@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const tank_details_schema_1 = require("./tank-details.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let TankService = class TankService {
-    constructor(tankModel) {
+    constructor(tankModel, fuelProductDetailsModel) {
         this.tankModel = tankModel;
+        this.fuelProductDetailsModel = fuelProductDetailsModel;
     }
     async create(adminId, dto) {
         const existing = await this.tankModel.findOne({ adminId });
@@ -28,7 +30,10 @@ let TankService = class TankService {
         }
         const tank = await this.tankModel.create({
             adminId,
-            tanks: dto.tanks,
+            tanks: dto.tanks.map((t) => ({
+                ...t,
+                fuelProductId: new mongoose_2.Types.ObjectId(t.fuelProductId),
+            })),
         });
         return {
             message: "Tank details created successfully",
@@ -36,13 +41,42 @@ let TankService = class TankService {
         };
     }
     async findAll(adminId) {
-        return this.tankModel.find({ adminId }).lean();
+        const [tankDetails, fuelProductDetails] = await Promise.all([
+            this.tankModel.findOne({ adminId }).lean(),
+            this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+        ]);
+        if (!tankDetails)
+            return [];
+        const tanks = tankDetails.tanks.map((tank) => {
+            const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                tank.fuelProductId.toString());
+            return {
+                ...tank,
+                fuelType: product?.fuelType,
+                price: product?.price,
+                purchasingPrice: product?.purchasingPrice,
+            };
+        });
+        return tanks;
     }
     async findOne(id) {
-        const tank = await this.tankModel.findById(id).lean();
-        if (!tank)
+        const tankDoc = await this.tankModel.findById(id).lean();
+        if (!tankDoc)
             throw new common_1.NotFoundException("Tank not found");
-        return tank;
+        const fuelProductDetails = await this.fuelProductDetailsModel
+            .findOne({ adminId: tankDoc.adminId })
+            .lean();
+        const tanks = tankDoc.tanks.map((tank) => {
+            const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                tank.fuelProductId.toString());
+            return {
+                ...tank,
+                fuelType: product?.fuelType,
+                price: product?.price,
+                purchasingPrice: product?.purchasingPrice,
+            };
+        });
+        return { ...tankDoc, tanks };
     }
     async updateMany(adminId, dto) {
         if (!dto.tanks || dto.tanks.length === 0) {
@@ -56,9 +90,10 @@ let TankService = class TankService {
             if (tank) {
                 tank.capacityKl = updateTank.capacityKl ?? tank.capacityKl;
                 tank.dsrTankStock = updateTank.dsrTankStock ?? tank.dsrTankStock;
-                tank.fuelType = updateTank.fuelType ?? tank.fuelType;
-                tank.price = updateTank.price ?? tank.price;
                 tank.tankNo = updateTank.tankNo ?? tank.tankNo;
+                if (updateTank.fuelProductId) {
+                    tank.fuelProductId = new mongoose_2.Types.ObjectId(updateTank.fuelProductId);
+                }
             }
         });
         await tankDoc.save();
@@ -80,5 +115,7 @@ exports.TankService = TankService;
 exports.TankService = TankService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(tank_details_schema_1.TankDetails.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], TankService);

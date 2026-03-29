@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
@@ -12,17 +13,14 @@ class TankDto {
   @IsOptional()
   _id?: Types.ObjectId;
 
+  @IsMongoId()
+  fuelProductId!: string;
+
   @IsString()
   capacityKl!: string;
 
   @IsString()
   dsrTankStock!: string;
-
-  @IsString()
-  fuelType!: string;
-
-  @IsNumber()
-  price!: number;
 
   @IsNumber()
   tankNo!: number;
@@ -39,6 +37,10 @@ export class UpdateTankDto {
   @IsOptional()
   _id?: Types.ObjectId;
 
+  @IsMongoId()
+  @IsOptional()
+  fuelProductId?: string;
+
   @IsOptional()
   @IsString()
   capacityKl?: string;
@@ -46,14 +48,6 @@ export class UpdateTankDto {
   @IsOptional()
   @IsString()
   dsrTankStock?: string;
-
-  @IsOptional()
-  @IsString()
-  fuelType?: string;
-
-  @IsOptional()
-  @IsNumber()
-  price?: number;
 
   @IsOptional()
   @IsNumber()

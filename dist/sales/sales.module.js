@@ -25,6 +25,7 @@ const non_fuel_product_sales_schema_1 = require("../non-fuel-product-sales/non-f
 const digital_payment_schema_1 = require("../digital-payment/digital-payment.schema");
 const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
 const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let SalesModule = class SalesModule {
 };
 exports.SalesModule = SalesModule;
@@ -46,6 +47,7 @@ exports.SalesModule = SalesModule = __decorate([
                 { name: digital_payment_schema_1.DigitalPayment.name, schema: digital_payment_schema_1.DigitalPaymentSchema },
                 { name: pump_expense_schema_1.PumpExpense.name, schema: pump_expense_schema_1.PumpExpenseSchema },
                 { name: personal_expense_schema_1.PersonalExpense.name, schema: personal_expense_schema_1.PersonalExpenseSchema },
+                { name: fuel_product_schema_1.FuelProductDetails.name, schema: fuel_product_schema_1.FuelProductDetailsSchema },
             ]),
         ],
         controllers: [sales_controller_1.SalesController],

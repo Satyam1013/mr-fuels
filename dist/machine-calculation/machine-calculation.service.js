@@ -22,14 +22,19 @@ const prepaid_schema_1 = require("../prepaid/prepaid.schema");
 const non_fuel_product_schema_1 = require("../non-fuel-product/non-fuel-product.schema");
 const creditors_schema_1 = require("../creditors/creditors.schema");
 const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let MachineCalculationService = class MachineCalculationService {
-    constructor(machineCalcModel, pumpExpenseModel, personalExpenseModel, prepaidModel, nonFuelModel, creditorModel) {
+    constructor(machineCalcModel, pumpExpenseModel, personalExpenseModel, prepaidModel, nonFuelModel, creditorModel, fuelProductDetailsModel) {
         this.machineCalcModel = machineCalcModel;
         this.pumpExpenseModel = pumpExpenseModel;
         this.personalExpenseModel = personalExpenseModel;
         this.prepaidModel = prepaidModel;
         this.nonFuelModel = nonFuelModel;
         this.creditorModel = creditorModel;
+        this.fuelProductDetailsModel = fuelProductDetailsModel;
+    }
+    async getFuelProductDetails(adminId) {
+        return this.fuelProductDetailsModel.findOne({ adminId }).lean();
     }
     async create(adminId, dto) {
         const nozzles = dto.nozzles.map((nozzle) => ({
@@ -67,12 +72,11 @@ let MachineCalculationService = class MachineCalculationService {
         return calculation.nozzles;
     }
     async getAll(adminId) {
-        const [machineCalcs, credits, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales,] = await Promise.all([
+        const [machineCalcs, credits, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales, fuelProductDetails,] = await Promise.all([
             this.machineCalcModel
                 .find({ adminId })
                 .populate("machineId")
                 .populate("nozzles.staffId")
-                .populate("nozzles.fuelProductId")
                 .sort({ date: -1 })
                 .lean(),
             this.creditorModel.find({ adminId }).lean(),
@@ -80,9 +84,18 @@ let MachineCalculationService = class MachineCalculationService {
             this.personalExpenseModel.find({ adminId }).lean(),
             this.prepaidModel.find({ adminId }).lean(),
             this.nonFuelModel.find({ adminId }).lean(),
+            this.getFuelProductDetails(adminId),
         ]);
         return machineCalcs.map((calc) => ({
             ...calc,
+            nozzles: calc.nozzles.map((nozzle) => {
+                const product = fuelProductDetails?.products.find((p) => p._id.toString() === nozzle.fuelProductId.toString());
+                return {
+                    ...nozzle,
+                    fuelType: product?.fuelType,
+                    pricePerLiter: product?.price || 0,
+                };
+            }),
             credits,
             pumpExpenses,
             personalExpenses,
@@ -91,74 +104,79 @@ let MachineCalculationService = class MachineCalculationService {
         }));
     }
     async getMachineDetails(adminId, machineId, date, nozzleNumber, shiftNumber) {
-        const objectAdminId = new mongoose_2.Types.ObjectId(adminId);
         const objectMachineId = new mongoose_2.Types.ObjectId(machineId);
         const startDate = new Date(date);
         startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(date);
         endDate.setHours(23, 59, 59, 999);
         const baseQuery = {
-            adminId: objectAdminId,
+            adminId,
             machineId: objectMachineId,
             date: { $gte: startDate, $lte: endDate },
         };
         if (shiftNumber) {
             baseQuery.shiftNumber = Number(shiftNumber);
         }
-        const [machineCalcData, creditEntries, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales,] = await Promise.all([
+        const [machineCalcData, creditEntries, pumpExpenses, personalExpenses, prepaidEntries, nonFuelSales, fuelProductDetails,] = await Promise.all([
             this.machineCalcModel
                 .find(baseQuery)
                 .populate("machineId")
                 .populate("nozzles.staffId")
-                .populate("nozzles.fuelProductId")
                 .lean(),
             this.creditorModel.find(baseQuery),
             this.pumpExpenseModel.find(baseQuery),
             this.personalExpenseModel.find(baseQuery),
             this.prepaidModel.find(baseQuery),
             this.nonFuelModel.find(baseQuery),
+            this.getFuelProductDetails(adminId),
         ]);
-        // 🔥 FETCH PREVIOUS ENTRY (important logic)
+        // Nozzles me price attach karo
+        const machineCalcWithPrice = machineCalcData.map((item) => ({
+            ...item,
+            nozzles: item.nozzles.map((nozzle) => {
+                const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                    nozzle.fuelProductId.toString());
+                return {
+                    ...nozzle,
+                    fuelType: product?.fuelType,
+                    pricePerLiter: product?.price || 0,
+                };
+            }),
+        }));
         let previousEntry = null;
         if (shiftNumber) {
-            // Case: Shift provided → check same day previous shift OR previous date
             previousEntry = await this.machineCalcModel
                 .findOne({
-                adminId: objectAdminId,
+                adminId,
                 machineId: objectMachineId,
                 $or: [
                     {
                         date: { $gte: startDate, $lte: endDate },
                         shiftNumber: { $lt: Number(shiftNumber) },
                     },
-                    {
-                        date: { $lt: startDate },
-                    },
+                    { date: { $lt: startDate } },
                 ],
             })
                 .sort({ date: -1, shiftNumber: -1 })
                 .lean();
         }
         else {
-            // Case: No shift → just previous date
             previousEntry = await this.machineCalcModel
                 .findOne({
-                adminId: objectAdminId,
+                adminId,
                 machineId: objectMachineId,
                 date: { $lt: startDate },
             })
                 .sort({ date: -1, shiftNumber: -1 })
                 .lean();
         }
-        // 🔥 FILTER NOZZLE (if provided)
-        let filteredMachineData = machineCalcData;
+        let filteredMachineData = machineCalcWithPrice; // machineCalcData → machineCalcWithPrice
         if (nozzleNumber) {
-            filteredMachineData = machineCalcData.map((item) => ({
+            filteredMachineData = machineCalcWithPrice.map((item) => ({
                 ...item,
                 nozzles: item.nozzles.filter((n) => n.nozzleNumber === Number(nozzleNumber)),
             }));
         }
-        // 🔥 APPLY PREVIOUS READING LOGIC
         if (previousEntry) {
             filteredMachineData = filteredMachineData.map((item) => {
                 const updatedNozzles = item.nozzles.map((nozzle) => {
@@ -168,10 +186,7 @@ let MachineCalculationService = class MachineCalculationService {
                         lastReading: prevNozzle?.currentReading ?? nozzle.lastReading ?? 0,
                     };
                 });
-                return {
-                    ...item,
-                    nozzles: updatedNozzles,
-                };
+                return { ...item, nozzles: updatedNozzles };
             });
         }
         return {
@@ -199,7 +214,9 @@ exports.MachineCalculationService = MachineCalculationService = __decorate([
     __param(3, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
     __param(4, (0, mongoose_1.InjectModel)(non_fuel_product_schema_1.NonFuelProducts.name)),
     __param(5, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
+    __param(6, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,

@@ -16,6 +16,10 @@ let Tank = class Tank {
 };
 exports.Tank = Tank;
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "FuelProductDetail", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Tank.prototype, "fuelProductId", void 0);
+__decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Tank.prototype, "capacityKl", void 0);
@@ -23,14 +27,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Tank.prototype, "dsrTankStock", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Tank.prototype, "fuelType", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
-], Tank.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)

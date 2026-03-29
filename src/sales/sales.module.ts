@@ -40,6 +40,10 @@ import {
   PersonalExpense,
   PersonalExpenseSchema,
 } from "../personal-expense/personal-expense.schema";
+import {
+  FuelProductDetails,
+  FuelProductDetailsSchema,
+} from "../fuel-product/fuel-product.schema";
 
 @Module({
   imports: [
@@ -58,6 +62,7 @@ import {
       { name: DigitalPayment.name, schema: DigitalPaymentSchema },
       { name: PumpExpense.name, schema: PumpExpenseSchema },
       { name: PersonalExpense.name, schema: PersonalExpenseSchema },
+      { name: FuelProductDetails.name, schema: FuelProductDetailsSchema },
     ]),
   ],
   controllers: [SalesController],

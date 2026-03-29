@@ -9,7 +9,7 @@ class NozzleCalculation {
   @Prop({ required: true })
   nozzleNumber!: number;
 
-  @Prop({ type: Types.ObjectId, ref: "FuelProductDetails", required: true })
+  @Prop({ type: Types.ObjectId, ref: "FuelProductDetail", required: true })
   fuelProductId!: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: "Staff" })
