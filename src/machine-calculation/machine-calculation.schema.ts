@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { FuelType } from "../common/enums/fuel-type.enum";
 
 @Schema({ _id: false })
 class NozzleCalculation {
@@ -10,8 +9,11 @@ class NozzleCalculation {
   @Prop({ required: true })
   nozzleNumber!: number;
 
-  @Prop()
-  fuelType!: FuelType;
+  @Prop({ type: Types.ObjectId, ref: "FuelProductDetails", required: true })
+  fuelProductId!: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: "Staff" })
+  staffId!: Types.ObjectId;
 
   @Prop()
   lastReading!: number;
@@ -26,19 +28,10 @@ class NozzleCalculation {
   faultTestingLiters!: number;
 
   @Prop()
-  pricePerLiter!: number;
-
-  @Prop()
-  salesLiters!: number;
-
-  @Prop()
   upiAmount!: number;
 
   @Prop()
   posAmount!: number;
-
-  @Prop({ type: Types.ObjectId, ref: "Staff" })
-  staffId!: Types.ObjectId;
 }
 
 @Schema({ timestamps: true })

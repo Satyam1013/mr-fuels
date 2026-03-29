@@ -1,10 +1,11 @@
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsDateString,
   IsMongoId,
   IsNumber,
-  IsOptional,
   IsString,
+  ValidateNested,
 } from "class-validator";
 
 export class NozzleDto {
@@ -14,8 +15,8 @@ export class NozzleDto {
   @IsNumber()
   nozzleNumber!: number;
 
-  @IsString()
-  fuelType!: string;
+  @IsMongoId()
+  fuelProductId!: string;
 
   @IsNumber()
   lastReading!: number;
@@ -28,9 +29,6 @@ export class NozzleDto {
 
   @IsNumber()
   faultTestingLiters!: number;
-
-  @IsNumber()
-  pricePerLiter!: number;
 
   @IsNumber()
   upiAmount!: number;
@@ -52,11 +50,9 @@ export class CreateMachineCalculationDto {
   @IsNumber()
   shiftNumber!: number;
 
-  @IsOptional()
-  @IsNumber()
-  nozzleNumber?: number;
-
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => NozzleDto)
   nozzles!: NozzleDto[];
 }
 

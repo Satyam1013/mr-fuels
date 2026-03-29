@@ -3,15 +3,15 @@ import { Document, Types } from "mongoose";
 import { FuelType } from "../common/enums/fuel-type.enum";
 
 @Schema({ _id: false })
-export class FuelProduct {
+export class FuelProductDetail {
   @Prop({ enum: FuelType, required: true })
   fuelType!: FuelType;
 
   @Prop({ required: true })
   price!: number;
 
-  @Prop({ required: true })
-  oldPrice!: number;
+  @Prop()
+  oldPrice?: number;
 
   @Prop({ required: true })
   purchasingPrice!: number;
@@ -31,8 +31,8 @@ export class FuelProductDetails extends Document {
   })
   adminId!: Types.ObjectId;
 
-  @Prop({ type: [FuelProduct], default: [] })
-  products!: FuelProduct[];
+  @Prop({ type: [FuelProductDetail], default: [] })
+  products!: FuelProductDetail[];
 }
 
 export const FuelProductDetailsSchema =

@@ -9,36 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FuelProductDetailsSchema = exports.FuelProductDetails = exports.FuelProduct = void 0;
+exports.FuelProductDetailsSchema = exports.FuelProductDetails = exports.FuelProductDetail = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
-let FuelProduct = class FuelProduct {
+let FuelProductDetail = class FuelProductDetail {
 };
-exports.FuelProduct = FuelProduct;
+exports.FuelProductDetail = FuelProductDetail;
 __decorate([
     (0, mongoose_1.Prop)({ enum: fuel_type_enum_1.FuelType, required: true }),
     __metadata("design:type", String)
-], FuelProduct.prototype, "fuelType", void 0);
+], FuelProductDetail.prototype, "fuelType", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], FuelProduct.prototype, "price", void 0);
+], FuelProductDetail.prototype, "price", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], FuelProductDetail.prototype, "oldPrice", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], FuelProduct.prototype, "oldPrice", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], FuelProduct.prototype, "purchasingPrice", void 0);
+], FuelProductDetail.prototype, "purchasingPrice", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], FuelProduct.prototype, "updatedPriceFrom", void 0);
-exports.FuelProduct = FuelProduct = __decorate([
+], FuelProductDetail.prototype, "updatedPriceFrom", void 0);
+exports.FuelProductDetail = FuelProductDetail = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
-], FuelProduct);
+], FuelProductDetail);
 let FuelProductDetails = class FuelProductDetails extends mongoose_2.Document {
 };
 exports.FuelProductDetails = FuelProductDetails;
@@ -53,7 +53,7 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], FuelProductDetails.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [FuelProduct], default: [] }),
+    (0, mongoose_1.Prop)({ type: [FuelProductDetail], default: [] }),
     __metadata("design:type", Array)
 ], FuelProductDetails.prototype, "products", void 0);
 exports.FuelProductDetails = FuelProductDetails = __decorate([

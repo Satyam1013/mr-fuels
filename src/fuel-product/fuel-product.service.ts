@@ -39,6 +39,7 @@ export class FuelProductService {
 
     const productsWithDate = dto.products.map((p) => ({
       ...p,
+      oldPrice: p.oldPrice ?? p.price,
       updatedPriceFrom: new Date(),
     }));
 

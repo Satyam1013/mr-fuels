@@ -147,30 +147,63 @@ let SalesService = class SalesService {
     }
     async getDashboardData(params) {
         const { adminId, date, shiftNumber, shiftId } = params;
-        // Date range: us din ka start aur end (00:00:00 to 23:59:59)
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date(date);
         endOfDay.setHours(23, 59, 59, 999);
-        // ─── 1. Saari MachineCalculations fetch karo (us din + shift) ───
+        // ─── 1. MachineCalculations + fuelProductId populate ───
         const machineCalculations = await this.machineCalcModel
             .find({
             adminId,
             shiftNumber,
             date: { $gte: startOfDay, $lte: endOfDay },
         })
+            .populate("nozzles.fuelProductId") // price yahan se aayega
             .lean();
-        // ─── 2. Digital Payments (overall UPI + POS) ───
+        // ─── 2. Digital Payments ───
         const digitalPayments = await this.digitalPaymentModel
-            .find({
-            adminId,
-            date, // DigitalPayment me date string hai schema ke hisab se
-            shiftNumber,
-        })
+            .find({ adminId, date, shiftNumber })
             .lean();
         const overallUpi = digitalPayments.reduce((sum, dp) => sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0), 0);
         const overallPos = digitalPayments.reduce((sum, dp) => sum + dp.posPayments.reduce((s, p) => s + (p.amount || 0), 0), 0);
-        // ─── 3. Har machine ke nozzles process karo ───
+        // ─── 3. Saare creditors, prepaid, expenses ek saath fetch karo (N+1 avoid) ───
+        const [allCreditors, allPrepaids, allPumpExpenses, allPersonalExpenses, allNonFuelSales,] = await Promise.all([
+            this.creditorModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.prepaidModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.pumpExpenseModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.personalExpenseModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.nonFuelSellModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+        ]);
         let totalOverallSalesLiters = 0;
         let totalOverallSalesAmount = 0;
         let totalTestingLiters = 0;
@@ -182,69 +215,31 @@ let SalesService = class SalesService {
         const allNozzlesResult = [];
         for (const machine of machineCalculations) {
             const machineId = machine.machineId;
-            // Nozzle-level data
             for (const nozzle of machine.nozzles) {
                 const nozzleNumber = nozzle.nozzleNumber;
+                // ── Price — fuelProductId populate se nikalo ──
+                const fuelProduct = nozzle.fuelProductId;
+                const pricePerLiter = fuelProduct?.price || 0;
                 // ── Sales calculation ──
-                const salesLiters = (nozzle.currentReading || 0) -
-                    (nozzle.lastReading || 0) -
-                    (nozzle.testingLiters || 0) -
-                    (nozzle.faultTestingLiters || 0);
                 const overallNozzleLiters = (nozzle.currentReading || 0) - (nozzle.lastReading || 0);
-                const overallNozzleAmount = overallNozzleLiters * (nozzle.pricePerLiter || 0);
+                const overallNozzleAmount = overallNozzleLiters * pricePerLiter;
                 const testingLiters = (nozzle.testingLiters || 0) + (nozzle.faultTestingLiters || 0);
-                const testingAmount = testingLiters * (nozzle.pricePerLiter || 0);
+                const testingAmount = testingLiters * pricePerLiter;
                 const netSalesLiters = overallNozzleLiters - testingLiters;
-                const netSalesAmount = netSalesLiters * (nozzle.pricePerLiter || 0);
-                // ── Creditors ──
-                const creditors = await this.creditorModel
-                    .find({
-                    adminId,
-                    machineId,
-                    shiftNumber,
-                    nozzleNumber,
-                    date: { $gte: startOfDay, $lte: endOfDay },
-                })
-                    .lean();
-                const creditorsAmount = creditors.reduce((sum, c) => sum + (c.amount || 0), 0);
-                // ── Prepaid ──
-                const prepaids = await this.prepaidModel
-                    .find({
-                    adminId,
-                    machineId,
-                    shiftNumber,
-                    nozzleNumber,
-                    date: { $gte: startOfDay, $lte: endOfDay },
-                })
-                    .lean();
-                const prepaidAmount = prepaids.reduce((sum, p) => sum + (p.amount || 0), 0);
-                // ── Pump Expenses ──
-                const pumpExpenses = await this.pumpExpenseModel
-                    .find({
-                    adminId,
-                    machineId,
-                    shiftNumber,
-                    nozzleNumber,
-                    date: { $gte: startOfDay, $lte: endOfDay },
-                })
-                    .lean();
-                const pumpExpensesAmount = pumpExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-                // ── Personal Expenses ──
-                const personalExpenses = await this.personalExpenseModel
-                    .find({
-                    adminId,
-                    machineId,
-                    shiftNumber,
-                    nozzleNumber,
-                    date: { $gte: startOfDay, $lte: endOfDay },
-                })
-                    .lean();
-                const personalExpensesAmount = personalExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-                // ── Lubricant (NonFuel) Sales — nozzle level nahi, machine level hai ──
-                // (neeche machine level pe fetch karenge, yahan 0 rakhenge)
-                // ── Nozzle UPI/POS ──
-                const nozzleUpi = nozzle.upiAmount || 0;
-                const nozzlePos = nozzle.posAmount || 0;
+                const netSalesAmount = netSalesLiters * pricePerLiter;
+                // ── Filter from already fetched data ──
+                const creditorsAmount = allCreditors
+                    .filter((c) => c.machineId.equals(machineId) && c.nozzleNumber === nozzleNumber)
+                    .reduce((sum, c) => sum + (c.amount || 0), 0);
+                const prepaidAmount = allPrepaids
+                    .filter((p) => p.machineId.equals(machineId) && p.nozzleNumber === nozzleNumber)
+                    .reduce((sum, p) => sum + (p.amount || 0), 0);
+                const pumpExpensesAmount = allPumpExpenses
+                    .filter((e) => e.machineId.equals(machineId) && e.nozzleNumber === nozzleNumber)
+                    .reduce((sum, e) => sum + (e.amount || 0), 0);
+                const personalExpensesAmount = allPersonalExpenses
+                    .filter((e) => e.machineId.equals(machineId) && e.nozzleNumber === nozzleNumber)
+                    .reduce((sum, e) => sum + (e.amount || 0), 0);
                 // Totals update
                 totalOverallSalesLiters += overallNozzleLiters;
                 totalOverallSalesAmount += overallNozzleAmount;
@@ -257,45 +252,22 @@ let SalesService = class SalesService {
                 allNozzlesResult.push({
                     staffId: nozzle.staffId,
                     nozzleNumber,
-                    sales: {
-                        liters: overallNozzleLiters,
-                        amount: overallNozzleAmount,
-                    },
-                    netSales: {
-                        liters: netSalesLiters,
-                        amount: netSalesAmount,
-                    },
-                    testing: {
-                        liters: testingLiters,
-                        amount: testingAmount,
-                    },
+                    fuelType: fuelProduct?.fuelType,
+                    sales: { liters: overallNozzleLiters, amount: overallNozzleAmount },
+                    netSales: { liters: netSalesLiters, amount: netSalesAmount },
+                    testing: { liters: testingLiters, amount: testingAmount },
                     creditors: creditorsAmount,
                     prepaid: prepaidAmount,
                     transactions: {
-                        upi: nozzleUpi,
-                        pos: nozzlePos,
+                        upi: nozzle.upiAmount || 0,
+                        pos: nozzle.posAmount || 0,
                     },
                     pumpExpenses: pumpExpensesAmount,
                     personalExpenses: personalExpensesAmount,
                 });
             }
-            // ── Lubricant (NonFuel) — machine level per shift ──
-            const nonFuelSales = await this.nonFuelSellModel
-                .find({
-                adminId,
-                machineId,
-                shiftNumber,
-                date: { $gte: startOfDay, $lte: endOfDay },
-            })
-                .lean();
-            const lubricantSalesAmount = nonFuelSales.reduce((sum, n) => sum + (n.amount || 0), 0);
-            // Lubricant amount nozzle result me add karo (machine ke saare nozzles me distribute — ya machine level pe rakh sakte ho)
-            // Simple approach: machine ke pehle nozzle pe daal do, ya top-level me dikha do
-            // Yahan hum isko overall response me alag se dikhayenge
         }
-        // ── Staff name populate (optional) ──
-        // Agar staffId se name chahiye to Staff model se lookup karo
-        // ─── Final Response ───
+        const lubricantSalesAmount = allNonFuelSales.reduce((sum, n) => sum + (n.amount || 0), 0);
         const netSalesLiters = totalOverallSalesLiters - totalTestingLiters;
         const netSalesAmount = totalOverallSalesAmount - totalTestingAmount;
         return {
@@ -306,22 +278,14 @@ let SalesService = class SalesService {
                 liters: totalOverallSalesLiters,
                 amount: totalOverallSalesAmount,
             },
-            netSales: {
-                liters: netSalesLiters,
-                amount: netSalesAmount,
-            },
-            testing: {
-                liters: totalTestingLiters,
-                amount: totalTestingAmount,
-            },
+            netSales: { liters: netSalesLiters, amount: netSalesAmount },
+            testing: { liters: totalTestingLiters, amount: totalTestingAmount },
             overallCreditorsAmount: totalCreditorsAmount,
             prepaid: totalPrepaidAmount,
             pumpExpenses: totalPumpExpenses,
             personalExpenses: totalPersonalExpenses,
-            transactions: {
-                upi: overallUpi,
-                pos: overallPos,
-            },
+            lubricantSales: lubricantSalesAmount,
+            transactions: { upi: overallUpi, pos: overallPos },
             machines: {
                 overallMachineSales: {
                     liters: totalOverallSalesLiters,

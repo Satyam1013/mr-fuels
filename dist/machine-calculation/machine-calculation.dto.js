@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetNozzleDetailsDto = exports.CreateMachineCalculationDto = exports.NozzleDto = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class NozzleDto {
 }
@@ -23,9 +24,9 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleDto.prototype, "nozzleNumber", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
-], NozzleDto.prototype, "fuelType", void 0);
+], NozzleDto.prototype, "fuelProductId", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
@@ -42,10 +43,6 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], NozzleDto.prototype, "faultTestingLiters", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], NozzleDto.prototype, "pricePerLiter", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
@@ -74,12 +71,9 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateMachineCalculationDto.prototype, "shiftNumber", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateMachineCalculationDto.prototype, "nozzleNumber", void 0);
-__decorate([
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => NozzleDto),
     __metadata("design:type", Array)
 ], CreateMachineCalculationDto.prototype, "nozzles", void 0);
 class GetNozzleDetailsDto {

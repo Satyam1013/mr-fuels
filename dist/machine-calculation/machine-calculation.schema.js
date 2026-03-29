@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MachineCalculationSchema = exports.MachineCalculation = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
 let NozzleCalculation = class NozzleCalculation {
 };
 __decorate([
@@ -24,9 +23,13 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "nozzleNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], NozzleCalculation.prototype, "fuelType", void 0);
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "FuelProductDetails", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], NozzleCalculation.prototype, "fuelProductId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff" }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], NozzleCalculation.prototype, "staffId", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
@@ -46,23 +49,11 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
-], NozzleCalculation.prototype, "pricePerLiter", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
-], NozzleCalculation.prototype, "salesLiters", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "upiAmount", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "posAmount", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff" }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], NozzleCalculation.prototype, "staffId", void 0);
 NozzleCalculation = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], NozzleCalculation);

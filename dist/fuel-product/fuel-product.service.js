@@ -37,6 +37,7 @@ let FuelProductService = class FuelProductService {
         }
         const productsWithDate = dto.products.map((p) => ({
             ...p,
+            oldPrice: p.oldPrice ?? p.price,
             updatedPriceFrom: new Date(),
         }));
         const result = await this.fuelProductDetailsModel.findOneAndUpdate({ adminId }, { $push: { products: { $each: productsWithDate } } }, { upsert: true, new: true });

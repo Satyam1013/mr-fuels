@@ -17,9 +17,9 @@ export class CreateFuelProductDto {
   @Min(0)
   price!: number;
 
-  @IsNumber()
+  @IsOptional()
   @Min(0)
-  oldPrice!: number;
+  oldPrice?: number;
 
   @IsNumber()
   @Min(0)
