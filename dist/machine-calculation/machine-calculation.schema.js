@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MachineCalculationSchema = exports.MachineCalculation = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const machine_calculation_enum_1 = require("./machine-calculation.enum");
+const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
 let NozzleCalculation = class NozzleCalculation {
 };
 __decorate([

@@ -36,6 +36,7 @@ const machine_calculation_module_1 = require("./machine-calculation/machine-calc
 const non_fuel_product_sales_module_1 = require("./non-fuel-product-sales/non-fuel-product-sales.module");
 const shift_status_module_1 = require("./shift-status/shift-status.module");
 const customer_module_1 = require("./customer/customer.module");
+const fuel_product_module_1 = require("./fuel-product/fuel-product.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -70,6 +71,7 @@ exports.AppModule = AppModule = __decorate([
             non_fuel_product_sales_module_1.NonFuelProductSellModule,
             shift_status_module_1.ShiftStatusModule,
             customer_module_1.CustomerModule,
+            fuel_product_module_1.FuelProductModule,
         ],
         providers: [],
     })

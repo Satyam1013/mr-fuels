@@ -28,6 +28,7 @@ import { MachineCalculationModule } from "./machine-calculation/machine-calculat
 import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-product-sales.module";
 import { ShiftStatusModule } from "./shift-status/shift-status.module";
 import { CustomerModule } from "./customer/customer.module";
+import { FuelProductModule } from "./fuel-product/fuel-product.module";
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { CustomerModule } from "./customer/customer.module";
     NonFuelProductSellModule,
     ShiftStatusModule,
     CustomerModule,
+    FuelProductModule,
   ],
   providers: [],
 })

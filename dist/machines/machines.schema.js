@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MachineSchema = exports.Machine = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const machines_enum_1 = require("./machines.enum");
+const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
 let Nozzle = class Nozzle {
 };
 __decorate([
@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Nozzle.prototype, "nozzleNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: machines_enum_1.FuelType, required: true }),
+    (0, mongoose_1.Prop)({ enum: fuel_type_enum_1.FuelType, required: true }),
     __metadata("design:type", String)
 ], Nozzle.prototype, "fuelType", void 0);
 __decorate([

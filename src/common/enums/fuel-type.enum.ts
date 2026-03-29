@@ -1,0 +1,12 @@
+export enum FuelType {
+  PETROL = "PETROL",
+  DIESEL = "DIESEL",
+  CNG = "CNG",
+  PREMIUM_PETROL = "PREMIUM_PETROL",
+  POWER_PETROL = "POWER_PETROL",
+  XP95 = "XP95",
+  SUPER_DIESEL = "SUPER_DIESEL",
+  LPG = "LPG",
+  EV = "EV",
+  NORMAL = "NORMAL",
+}

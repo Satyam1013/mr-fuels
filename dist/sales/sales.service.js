@@ -258,7 +258,7 @@ let SalesService = class SalesService {
                     staffId: nozzle.staffId,
                     nozzleNumber,
                     sales: {
-                        liters: overallNozzleLiters, // overall reading difference
+                        liters: overallNozzleLiters,
                         amount: overallNozzleAmount,
                     },
                     netSales: {
