@@ -52,5 +52,6 @@ exports.SalesModule = SalesModule = __decorate([
         ],
         controllers: [sales_controller_1.SalesController],
         providers: [sales_service_1.SalesService],
+        exports: [sales_service_1.SalesService],
     })
 ], SalesModule);

@@ -9,6 +9,8 @@ import {
 } from "../pump-details/pump-details.schema";
 import { Admin, AdminSchema } from "../admin/admin.schema";
 import { Manager, ManagerSchema } from "../managers/managers.schema";
+import { Sales, SalesSchema } from "../sales/sales.schema";
+import { SalesModule } from "../sales/sales.module";
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { Manager, ManagerSchema } from "../managers/managers.schema";
       { name: PumpDetails.name, schema: PumpDetailsSchema },
       { name: Admin.name, schema: AdminSchema },
       { name: Manager.name, schema: ManagerSchema },
+      { name: Sales.name, schema: SalesSchema },
     ]),
+    SalesModule,
   ],
   controllers: [ShiftStatusController],
   providers: [ShiftStatusService],

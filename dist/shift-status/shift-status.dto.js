@@ -61,11 +61,6 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateShiftStatusDto.prototype, "totalShifts", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => ShiftDto),
-    __metadata("design:type", ShiftDto)
-], CreateShiftStatusDto.prototype, "currentShift", void 0);
-__decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => ShiftDto),

@@ -22,8 +22,8 @@ let ShiftStatusController = class ShiftStatusController {
     constructor(service) {
         this.service = service;
     }
-    create(adminId, dto) {
-        return this.service.create(adminId, dto);
+    create(user, dto) {
+        return this.service.create(user, dto);
     }
     getByDate(adminId, date) {
         return this.service.getByDate(adminId, date);
@@ -35,10 +35,10 @@ let ShiftStatusController = class ShiftStatusController {
 exports.ShiftStatusController = ShiftStatusController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(0, (0, get_user_decoration_1.GetUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, shift_status_dto_1.CreateShiftStatusDto]),
+    __metadata("design:paramtypes", [Object, shift_status_dto_1.CreateShiftStatusDto]),
     __metadata("design:returntype", void 0)
 ], ShiftStatusController.prototype, "create", null);
 __decorate([

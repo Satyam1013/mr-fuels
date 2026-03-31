@@ -22,14 +22,29 @@ const shift_status_enum_1 = require("./shift-status.enum");
 const admin_enum_1 = require("../admin/admin.enum");
 const managers_schema_1 = require("../managers/managers.schema");
 const admin_schema_1 = require("../admin/admin.schema");
+const sales_schema_1 = require("../sales/sales.schema");
+const sales_service_1 = require("../sales/sales.service");
 let ShiftStatusService = class ShiftStatusService {
-    constructor(shiftStatusModel, pumpDetailsModel, adminModel, managerModel) {
+    constructor(shiftStatusModel, pumpDetailsModel, adminModel, managerModel, salesModel, salesService) {
         this.shiftStatusModel = shiftStatusModel;
         this.pumpDetailsModel = pumpDetailsModel;
         this.adminModel = adminModel;
         this.managerModel = managerModel;
+        this.salesModel = salesModel;
+        this.salesService = salesService;
     }
-    async create(adminId, dto) {
+    getRoleModel(role) {
+        switch (role.toLowerCase()) {
+            case "admin":
+                return admin_enum_1.Role.ADMIN;
+            case "manager":
+                return admin_enum_1.Role.MANAGER;
+            default:
+                return admin_enum_1.Role.MANAGER;
+        }
+    }
+    async create(user, dto) {
+        const adminId = new mongoose_2.Types.ObjectId(user.adminId ?? user._id);
         const existing = await this.shiftStatusModel.findOne({
             adminId,
             date: dto.date,
@@ -37,9 +52,59 @@ let ShiftStatusService = class ShiftStatusService {
         if (existing) {
             throw new common_1.BadRequestException("Shift status already created for this date");
         }
+        const now = new Date().toISOString();
+        const shifts = dto.shifts.map((shift) => ({
+            ...shift,
+            ...(shift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED && {
+                closedBy: new mongoose_2.Types.ObjectId(user.adminId ?? user._id),
+                closedByModel: this.getRoleModel(user.role),
+                endTime: shift.endTime ?? now,
+            }),
+        }));
+        // ── Completed shifts ke liye sales save karo ──
+        for (const shift of shifts) {
+            if (shift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
+                const dashboardData = await this.salesService.getDashboardData({
+                    adminId,
+                    date: dto.date,
+                    shiftNumber: shift.shiftNumber,
+                    nozzleNumber: undefined,
+                });
+                await this.salesModel.findOneAndUpdate({
+                    adminId,
+                    date: dto.date,
+                    shiftNumber: shift.shiftNumber,
+                }, {
+                    adminId,
+                    date: dto.date,
+                    shiftNumber: shift.shiftNumber,
+                    shiftStatus: shift_status_enum_1.ShiftStatusEnum.COMPLETED,
+                    overallSales: dashboardData.overallSales,
+                    netSales: dashboardData.netSales,
+                    testing: dashboardData.testing,
+                    overallCreditorsAmount: dashboardData.overallCreditorsAmount,
+                    prepaid: dashboardData.prepaid,
+                    pumpExpenses: dashboardData.pumpExpenses,
+                    personalExpenses: dashboardData.personalExpenses,
+                    lubricantSales: dashboardData.lubricantSales,
+                    transactions: dashboardData.transactions,
+                    machines: dashboardData.machines,
+                }, { upsert: true, new: true });
+            }
+        }
+        const lastShift = shifts[shifts.length - 1];
+        const currentShift = lastShift?.status === shift_status_enum_1.ShiftStatusEnum.PENDING
+            ? lastShift
+            : {
+                shiftNumber: (lastShift?.shiftNumber || 0) + 1,
+                name: `Shift ${(lastShift?.shiftNumber || 0) + 1}`,
+                status: shift_status_enum_1.ShiftStatusEnum.PENDING,
+            };
         return this.shiftStatusModel.create({
             ...dto,
+            shifts,
             adminId,
+            currentShift,
         });
     }
     buildTemplate(pumpDetails, date, shiftId) {
@@ -239,30 +304,15 @@ let ShiftStatusService = class ShiftStatusService {
             throw new common_1.ForbiddenException("Staff is not allowed to update shift");
         }
         const now = new Date().toISOString();
-        // Normalize role string
-        let roleModel;
-        switch (user.role.toLowerCase()) {
-            case "admin":
-                roleModel = admin_enum_1.Role.ADMIN;
-                break;
-            case "manager":
-                roleModel = admin_enum_1.Role.MANAGER;
-                break;
-            case "staff":
-                roleModel = admin_enum_1.Role.STAFF;
-                break;
-            default:
-                roleModel = admin_enum_1.Role.MANAGER;
-        }
+        const roleModel = this.getRoleModel(user.role);
         const updatePayload = {};
         // =====================================================
-        // 1️⃣ HANDLE SHIFT UPDATE (PATCH) → ADD ONLY IF PATCH PROVIDES NEW
+        // 1️⃣ HANDLE SHIFT UPDATE
         // =====================================================
         if (dto.shifts && dto.shifts.length > 0) {
-            dto.shifts.forEach((incomingShift) => {
+            for (const incomingShift of dto.shifts) {
                 const index = existing.shifts.findIndex((s) => s.shiftNumber === incomingShift.shiftNumber);
                 if (index === -1) {
-                    // 🔹 NEW shift → only if patch explicitly has it
                     existing.shifts.push({
                         shiftNumber: incomingShift.shiftNumber,
                         name: incomingShift.name || `Shift ${incomingShift.shiftNumber}`,
@@ -276,7 +326,6 @@ let ShiftStatusService = class ShiftStatusService {
                     });
                 }
                 else {
-                    // 🔹 EXISTING shift → update fields
                     const oldShift = existing.shifts[index];
                     const updatedStatus = incomingShift.status ?? oldShift.status;
                     existing.shifts[index] = {
@@ -295,7 +344,37 @@ let ShiftStatusService = class ShiftStatusService {
                         }),
                     };
                 }
-            });
+                // ── Shift complete hone pe dashboard data save karo ──
+                if (incomingShift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
+                    const dashboardData = await this.salesService.getDashboardData({
+                        adminId: existing.adminId,
+                        date: existing.date,
+                        shiftNumber: incomingShift.shiftNumber,
+                        nozzleNumber: undefined,
+                    });
+                    // Upsert — same date+shift ka record update ya create
+                    await this.salesModel.findOneAndUpdate({
+                        adminId: existing.adminId,
+                        date: existing.date,
+                        shiftNumber: incomingShift.shiftNumber,
+                    }, {
+                        adminId: existing.adminId,
+                        date: existing.date,
+                        shiftNumber: incomingShift.shiftNumber,
+                        shiftStatus: shift_status_enum_1.ShiftStatusEnum.COMPLETED,
+                        overallSales: dashboardData.overallSales,
+                        netSales: dashboardData.netSales,
+                        testing: dashboardData.testing,
+                        overallCreditorsAmount: dashboardData.overallCreditorsAmount,
+                        prepaid: dashboardData.prepaid,
+                        pumpExpenses: dashboardData.pumpExpenses,
+                        personalExpenses: dashboardData.personalExpenses,
+                        lubricantSales: dashboardData.lubricantSales,
+                        transactions: dashboardData.transactions,
+                        machines: dashboardData.machines,
+                    }, { upsert: true, new: true });
+                }
+            }
             updatePayload.shifts = existing.shifts;
         }
         // =====================================================
@@ -350,8 +429,11 @@ exports.ShiftStatusService = ShiftStatusService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __param(2, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
     __param(3, (0, mongoose_1.InjectModel)(managers_schema_1.Manager.name)),
+    __param(4, (0, mongoose_1.InjectModel)(sales_schema_1.Sales.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        mongoose_2.Model,
+        sales_service_1.SalesService])
 ], ShiftStatusService);

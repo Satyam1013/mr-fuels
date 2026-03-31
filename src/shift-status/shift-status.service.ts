@@ -18,6 +18,8 @@ import {
 import { AuthUser, Role } from "../admin/admin.enum";
 import { Manager } from "../managers/managers.schema";
 import { Admin } from "../admin/admin.schema";
+import { Sales } from "../sales/sales.schema";
+import { SalesService } from "../sales/sales.service";
 
 @Injectable()
 export class ShiftStatusService {
@@ -33,9 +35,27 @@ export class ShiftStatusService {
 
     @InjectModel(Manager.name)
     private managerModel: Model<Manager>,
+
+    @InjectModel(Sales.name)
+    private salesModel: Model<Sales>,
+
+    private readonly salesService: SalesService,
   ) {}
 
-  async create(adminId: Types.ObjectId, dto: CreateShiftStatusDto) {
+  private getRoleModel(role: string): Role {
+    switch (role.toLowerCase()) {
+      case "admin":
+        return Role.ADMIN;
+      case "manager":
+        return Role.MANAGER;
+      default:
+        return Role.MANAGER;
+    }
+  }
+
+  async create(user: AuthUser, dto: CreateShiftStatusDto) {
+    const adminId = new Types.ObjectId(user.adminId ?? user._id);
+
     const existing = await this.shiftStatusModel.findOne({
       adminId,
       date: dto.date,
@@ -47,9 +67,70 @@ export class ShiftStatusService {
       );
     }
 
+    const now = new Date().toISOString();
+
+    const shifts = dto.shifts.map((shift) => ({
+      ...shift,
+      ...(shift.status === ShiftStatusEnum.COMPLETED && {
+        closedBy: new Types.ObjectId(user.adminId ?? user._id),
+        closedByModel: this.getRoleModel(user.role),
+        endTime: shift.endTime ?? now,
+      }),
+    }));
+
+    // ── Completed shifts ke liye sales save karo ──
+    for (const shift of shifts) {
+      if (shift.status === ShiftStatusEnum.COMPLETED) {
+        const dashboardData = await this.salesService.getDashboardData({
+          adminId,
+          date: dto.date,
+          shiftNumber: shift.shiftNumber,
+          nozzleNumber: undefined,
+        });
+
+        await this.salesModel.findOneAndUpdate(
+          {
+            adminId,
+            date: dto.date,
+            shiftNumber: shift.shiftNumber,
+          },
+          {
+            adminId,
+            date: dto.date,
+            shiftNumber: shift.shiftNumber,
+            shiftStatus: ShiftStatusEnum.COMPLETED,
+            overallSales: dashboardData.overallSales,
+            netSales: dashboardData.netSales,
+            testing: dashboardData.testing,
+            overallCreditorsAmount: dashboardData.overallCreditorsAmount,
+            prepaid: dashboardData.prepaid,
+            pumpExpenses: dashboardData.pumpExpenses,
+            personalExpenses: dashboardData.personalExpenses,
+            lubricantSales: dashboardData.lubricantSales,
+            transactions: dashboardData.transactions,
+            machines: dashboardData.machines,
+          },
+          { upsert: true, new: true },
+        );
+      }
+    }
+
+    const lastShift = shifts[shifts.length - 1];
+
+    const currentShift =
+      lastShift?.status === ShiftStatusEnum.PENDING
+        ? lastShift
+        : {
+            shiftNumber: (lastShift?.shiftNumber || 0) + 1,
+            name: `Shift ${(lastShift?.shiftNumber || 0) + 1}`,
+            status: ShiftStatusEnum.PENDING,
+          };
+
     return this.shiftStatusModel.create({
       ...dto,
+      shifts,
       adminId,
+      currentShift,
     });
   }
 
@@ -323,35 +404,20 @@ export class ShiftStatusService {
 
     const now = new Date().toISOString();
 
-    // Normalize role string
-    let roleModel: Role;
-    switch (user.role.toLowerCase()) {
-      case "admin":
-        roleModel = Role.ADMIN;
-        break;
-      case "manager":
-        roleModel = Role.MANAGER;
-        break;
-      case "staff":
-        roleModel = Role.STAFF;
-        break;
-      default:
-        roleModel = Role.MANAGER;
-    }
+    const roleModel = this.getRoleModel(user.role);
 
     const updatePayload: UpdateQuery<ShiftStatus> = {};
 
     // =====================================================
-    // 1️⃣ HANDLE SHIFT UPDATE (PATCH) → ADD ONLY IF PATCH PROVIDES NEW
+    // 1️⃣ HANDLE SHIFT UPDATE
     // =====================================================
     if (dto.shifts && dto.shifts.length > 0) {
-      dto.shifts.forEach((incomingShift) => {
+      for (const incomingShift of dto.shifts) {
         const index = existing.shifts.findIndex(
           (s) => s.shiftNumber === incomingShift.shiftNumber,
         );
 
         if (index === -1) {
-          // 🔹 NEW shift → only if patch explicitly has it
           existing.shifts.push({
             shiftNumber: incomingShift.shiftNumber,
             name: incomingShift.name || `Shift ${incomingShift.shiftNumber}`,
@@ -364,7 +430,6 @@ export class ShiftStatusService {
             }),
           });
         } else {
-          // 🔹 EXISTING shift → update fields
           const oldShift = existing.shifts[index];
           const updatedStatus = incomingShift.status ?? oldShift.status;
 
@@ -386,7 +451,43 @@ export class ShiftStatusService {
             }),
           };
         }
-      });
+
+        // ── Shift complete hone pe dashboard data save karo ──
+        if (incomingShift.status === ShiftStatusEnum.COMPLETED) {
+          const dashboardData = await this.salesService.getDashboardData({
+            adminId: existing.adminId,
+            date: existing.date,
+            shiftNumber: incomingShift.shiftNumber,
+            nozzleNumber: undefined,
+          });
+
+          // Upsert — same date+shift ka record update ya create
+          await this.salesModel.findOneAndUpdate(
+            {
+              adminId: existing.adminId,
+              date: existing.date,
+              shiftNumber: incomingShift.shiftNumber,
+            },
+            {
+              adminId: existing.adminId,
+              date: existing.date,
+              shiftNumber: incomingShift.shiftNumber,
+              shiftStatus: ShiftStatusEnum.COMPLETED,
+              overallSales: dashboardData.overallSales,
+              netSales: dashboardData.netSales,
+              testing: dashboardData.testing,
+              overallCreditorsAmount: dashboardData.overallCreditorsAmount,
+              prepaid: dashboardData.prepaid,
+              pumpExpenses: dashboardData.pumpExpenses,
+              personalExpenses: dashboardData.personalExpenses,
+              lubricantSales: dashboardData.lubricantSales,
+              transactions: dashboardData.transactions,
+              machines: dashboardData.machines,
+            },
+            { upsert: true, new: true },
+          );
+        }
+      }
 
       updatePayload.shifts = existing.shifts;
     }

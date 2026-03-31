@@ -18,11 +18,8 @@ export class ShiftStatusController {
   constructor(private readonly service: ShiftStatusService) {}
 
   @Post()
-  create(
-    @GetUser("adminId") adminId: Types.ObjectId,
-    @Body() dto: CreateShiftStatusDto,
-  ) {
-    return this.service.create(adminId, dto);
+  create(@GetUser() user: AuthUser, @Body() dto: CreateShiftStatusDto) {
+    return this.service.create(user, dto);
   }
 
   @Get()

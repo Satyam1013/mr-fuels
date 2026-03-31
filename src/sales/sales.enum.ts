@@ -14,5 +14,5 @@ export interface GetDashboardDataParams {
   adminId: Types.ObjectId;
   date: string;
   shiftNumber: number;
-  nozzleNumber: number;
+  nozzleNumber?: number;
 }

@@ -23,7 +23,7 @@ export class SalesController {
       adminId,
       date,
       shiftNumber: Number(shiftNumber),
-      nozzleNumber: Number(nozzleNumber),
+      nozzleNumber: nozzleNumber ? Number(nozzleNumber) : undefined,
     });
   }
 }

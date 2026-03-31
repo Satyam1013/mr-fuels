@@ -46,10 +46,6 @@ export class CreateShiftStatusDto {
   @IsNumber()
   totalShifts!: number;
 
-  @ValidateNested()
-  @Type(() => ShiftDto)
-  currentShift!: ShiftDto;
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ShiftDto)

@@ -15,6 +15,8 @@ const shift_status_controller_1 = require("./shift-status.controller");
 const pump_details_schema_1 = require("../pump-details/pump-details.schema");
 const admin_schema_1 = require("../admin/admin.schema");
 const managers_schema_1 = require("../managers/managers.schema");
+const sales_schema_1 = require("../sales/sales.schema");
+const sales_module_1 = require("../sales/sales.module");
 let ShiftStatusModule = class ShiftStatusModule {
 };
 exports.ShiftStatusModule = ShiftStatusModule;
@@ -26,7 +28,9 @@ exports.ShiftStatusModule = ShiftStatusModule = __decorate([
                 { name: pump_details_schema_1.PumpDetails.name, schema: pump_details_schema_1.PumpDetailsSchema },
                 { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
                 { name: managers_schema_1.Manager.name, schema: managers_schema_1.ManagerSchema },
+                { name: sales_schema_1.Sales.name, schema: sales_schema_1.SalesSchema },
             ]),
+            sales_module_1.SalesModule,
         ],
         controllers: [shift_status_controller_1.ShiftStatusController],
         providers: [shift_status_service_1.ShiftStatusService],
