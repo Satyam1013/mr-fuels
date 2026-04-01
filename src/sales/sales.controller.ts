@@ -2,6 +2,7 @@ import { Controller, Get, Query } from "@nestjs/common";
 import { SalesService } from "./sales.service";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
+import { FilterType } from "./sales.enum";
 
 @Controller("sales")
 export class SalesController {
@@ -14,7 +15,7 @@ export class SalesController {
 
   @Get("dashboard")
   async getDashboardData(
-    @Query("date") date: string, // "2026-03-27"
+    @Query("date") date: string,
     @Query("shiftNumber") shiftNumber: string,
     @Query("nozzleNumber") nozzleNumber: string,
     @GetUser("adminId") adminId: Types.ObjectId,
@@ -24,6 +25,21 @@ export class SalesController {
       date,
       shiftNumber: Number(shiftNumber),
       nozzleNumber: nozzleNumber ? Number(nozzleNumber) : undefined,
+    });
+  }
+
+  @Get("sales-report")
+  async getSalesReport(
+    @Query("filterType") filterType: FilterType,
+    @Query("startDate") startDate: string,
+    @Query("endDate") endDate: string,
+    @GetUser("adminId") adminId: Types.ObjectId,
+  ) {
+    return this.salesService.getSalesReport({
+      adminId,
+      filterType,
+      startDate,
+      endDate,
     });
   }
 }

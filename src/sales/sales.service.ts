@@ -4,9 +4,8 @@ import { Model, Types } from "mongoose";
 import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
-import { PumpDetails } from "../pump-details/pump-details.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
-import { GetDashboardDataParams } from "./sales.enum";
+import { GetDashboardDataParams, GetSalesReportParams } from "./sales.enum";
 import { MachineCalculation } from "../machine-calculation/machine-calculation.schema";
 import { Creditor } from "../creditors/creditors.schema";
 import { Prepaid } from "../prepaid/prepaid.schema";
@@ -33,9 +32,6 @@ export class SalesService {
 
     @InjectModel(Staff.name)
     private staffModel: Model<Staff>,
-
-    @InjectModel(PumpDetails.name)
-    private pumpDetailsModel: Model<PumpDetails>,
 
     @InjectModel(MachineCalculation.name)
     private machineCalcModel: Model<MachineCalculation>,
@@ -400,6 +396,217 @@ export class SalesService {
       date,
       shiftNumber,
       nozzleNumber,
+      overallSales: {
+        liters: totalOverallSalesLiters,
+        amount: totalOverallSalesAmount,
+      },
+      netSales: { liters: netSalesLiters, amount: netSalesAmount },
+      testing: { liters: totalTestingLiters, amount: totalTestingAmount },
+      overallCreditorsAmount: totalCreditorsAmount,
+      prepaid: totalPrepaidAmount,
+      pumpExpenses: totalPumpExpenses,
+      personalExpenses: totalPersonalExpenses,
+      lubricantSales: lubricantSalesAmount,
+      transactions: { upi: overallUpi, pos: overallPos },
+      machines: {
+        overallMachineSales: {
+          liters: totalOverallSalesLiters,
+          amount: totalOverallSalesAmount,
+        },
+        nozzles: allNozzlesResult,
+      },
+    };
+  }
+
+  async getSalesReport(params: GetSalesReportParams) {
+    const { adminId, startDate, endDate } = params;
+
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    // ─── 1. Sab ek saath fetch karo ───
+    const [
+      machineCalculations,
+      fuelProductDetails,
+      digitalPayments,
+      allCreditors,
+      allPrepaids,
+      allPumpExpenses,
+      allPersonalExpenses,
+      allNonFuelSales,
+    ] = await Promise.all([
+      this.machineCalcModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+      this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+      this.digitalPaymentModel
+        .find({ adminId, date: { $gte: startDate, $lte: endDate } })
+        .lean(),
+      this.creditorModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+      this.prepaidModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+      this.pumpExpenseModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+      this.personalExpenseModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+      this.nonFuelSellModel
+        .find({ adminId, date: { $gte: start, $lte: end } })
+        .lean(),
+    ]);
+
+    // ─── 2. Digital Payments totals ───
+    const overallUpi = digitalPayments.reduce(
+      (sum, dp) =>
+        sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0),
+      0,
+    );
+    const overallPos = digitalPayments.reduce(
+      (sum, dp) =>
+        sum + dp.posPayments.reduce((s, p) => s + (p.amount || 0), 0),
+      0,
+    );
+
+    // ─── 3. Sales calculations ───
+    let totalOverallSalesLiters = 0;
+    let totalOverallSalesAmount = 0;
+    let totalTestingLiters = 0;
+    let totalTestingAmount = 0;
+
+    const allNozzlesResult: any[] = [];
+
+    const allNozzleNumbers = [
+      ...new Set([
+        ...allCreditors.map((c) => c.nozzleNumber),
+        ...allPrepaids.map((p) => p.nozzleNumber),
+        ...allPumpExpenses.map((e) => e.nozzleNumber),
+        ...allPersonalExpenses.map((e) => e.nozzleNumber),
+      ]),
+    ];
+
+    for (const nozzleNum of allNozzleNumbers) {
+      const nozzleCreditorsAmount = allCreditors
+        .filter((c) => c.nozzleNumber === nozzleNum)
+        .reduce((sum, c) => sum + (c.amount || 0), 0);
+
+      const nozzlePrepaidAmount = allPrepaids
+        .filter((p) => p.nozzleNumber === nozzleNum)
+        .reduce((sum, p) => sum + (p.amount || 0), 0);
+
+      const nozzlePumpExpenses = allPumpExpenses
+        .filter((e) => e.nozzleNumber === nozzleNum)
+        .reduce((sum, e) => sum + (e.amount || 0), 0);
+
+      const nozzlePersonalExpenses = allPersonalExpenses
+        .filter((e) => e.nozzleNumber === nozzleNum)
+        .reduce((sum, e) => sum + (e.amount || 0), 0);
+
+      let overallNozzleLiters = 0;
+      let overallNozzleAmount = 0;
+      let testingLiters = 0;
+      let testingAmount = 0;
+      let netSalesLiters = 0;
+      let netSalesAmount = 0;
+      let nozzleUpi = 0;
+      let nozzlePos = 0;
+      let staffId = null;
+      let fuelType = null;
+
+      for (const machine of machineCalculations) {
+        const matchedNozzle = machine.nozzles.find(
+          (n) => n.nozzleNumber === nozzleNum,
+        );
+        if (matchedNozzle) {
+          const product = fuelProductDetails?.products.find(
+            (p) =>
+              (p as FuelProductDetail)._id.toString() ===
+              matchedNozzle.fuelProductId.toString(),
+          );
+          const pricePerLiter = product?.price || 0;
+          fuelType = product?.fuelType;
+
+          const nozzleLiters =
+            (matchedNozzle.currentReading || 0) -
+            (matchedNozzle.lastReading || 0);
+          const nozzleTestingLiters =
+            (matchedNozzle.testingLiters || 0) +
+            (matchedNozzle.faultTestingLiters || 0);
+
+          overallNozzleLiters += nozzleLiters;
+          overallNozzleAmount += nozzleLiters * pricePerLiter;
+          testingLiters += nozzleTestingLiters;
+          testingAmount += nozzleTestingLiters * pricePerLiter;
+          netSalesLiters += nozzleLiters - nozzleTestingLiters;
+          netSalesAmount +=
+            (nozzleLiters - nozzleTestingLiters) * pricePerLiter;
+          nozzleUpi += matchedNozzle.upiAmount || 0;
+          nozzlePos += matchedNozzle.posAmount || 0;
+          staffId = matchedNozzle.staffId;
+
+          totalOverallSalesLiters += nozzleLiters;
+          totalOverallSalesAmount += nozzleLiters * pricePerLiter;
+          totalTestingLiters += nozzleTestingLiters;
+          totalTestingAmount += nozzleTestingLiters * pricePerLiter;
+        }
+      }
+
+      const nozzleLubricantSales = allNonFuelSales.reduce(
+        (sum, n) => sum + (n.amount || 0),
+        0,
+      );
+
+      allNozzlesResult.push({
+        staffId,
+        nozzleNumber: nozzleNum,
+        fuelType,
+        sales: { liters: overallNozzleLiters, amount: overallNozzleAmount },
+        netSales: { liters: netSalesLiters, amount: netSalesAmount },
+        testing: { liters: testingLiters, amount: testingAmount },
+        creditors: nozzleCreditorsAmount,
+        prepaid: nozzlePrepaidAmount,
+        lubricantSales: nozzleLubricantSales,
+        transactions: { upi: nozzleUpi, pos: nozzlePos },
+        pumpExpenses: nozzlePumpExpenses,
+        personalExpenses: nozzlePersonalExpenses,
+      });
+    }
+
+    // ─── 4. Totals ───
+    const totalCreditorsAmount = allCreditors.reduce(
+      (sum, c) => sum + (c.amount || 0),
+      0,
+    );
+    const totalPrepaidAmount = allPrepaids.reduce(
+      (sum, p) => sum + (p.amount || 0),
+      0,
+    );
+    const totalPumpExpenses = allPumpExpenses.reduce(
+      (sum, e) => sum + (e.amount || 0),
+      0,
+    );
+    const totalPersonalExpenses = allPersonalExpenses.reduce(
+      (sum, e) => sum + (e.amount || 0),
+      0,
+    );
+    const lubricantSalesAmount = allNonFuelSales.reduce(
+      (sum, n) => sum + (n.amount || 0),
+      0,
+    );
+
+    const netSalesLiters = totalOverallSalesLiters - totalTestingLiters;
+    const netSalesAmount = totalOverallSalesAmount - totalTestingAmount;
+
+    return {
+      filterType: params.filterType,
+      startDate,
+      endDate,
       overallSales: {
         liters: totalOverallSalesLiters,
         amount: totalOverallSalesAmount,

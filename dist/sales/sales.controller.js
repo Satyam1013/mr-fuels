@@ -32,6 +32,14 @@ let SalesController = class SalesController {
             nozzleNumber: nozzleNumber ? Number(nozzleNumber) : undefined,
         });
     }
+    async getSalesReport(filterType, startDate, endDate, adminId) {
+        return this.salesService.getSalesReport({
+            adminId,
+            filterType,
+            startDate,
+            endDate,
+        });
+    }
 };
 exports.SalesController = SalesController;
 __decorate([
@@ -51,6 +59,16 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getDashboardData", null);
+__decorate([
+    (0, common_1.Get)("sales-report"),
+    __param(0, (0, common_1.Query)("filterType")),
+    __param(1, (0, common_1.Query)("startDate")),
+    __param(2, (0, common_1.Query)("endDate")),
+    __param(3, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], SalesController.prototype, "getSalesReport", null);
 exports.SalesController = SalesController = __decorate([
     (0, common_1.Controller)("sales"),
     __metadata("design:paramtypes", [sales_service_1.SalesService])

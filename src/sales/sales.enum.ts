@@ -16,3 +16,12 @@ export interface GetDashboardDataParams {
   shiftNumber: number;
   nozzleNumber?: number;
 }
+
+export type FilterType = "weekly" | "monthly" | "custom";
+
+export interface GetSalesReportParams {
+  adminId: Types.ObjectId;
+  filterType: FilterType;
+  startDate: string; // "2026-03-10"
+  endDate: string; // "2026-03-15"
+}
