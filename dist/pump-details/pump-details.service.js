@@ -19,11 +19,13 @@ const mongoose_2 = require("mongoose");
 const pump_details_schema_1 = require("./pump-details.schema");
 const admin_schema_1 = require("../admin/admin.schema");
 const tank_details_schema_1 = require("../tank-details/tank-details.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let PumpDetailsService = class PumpDetailsService {
-    constructor(pumpDetailsModel, adminModel, tankModel) {
+    constructor(pumpDetailsModel, adminModel, tankModel, fuelProductDetailsModel) {
         this.pumpDetailsModel = pumpDetailsModel;
         this.adminModel = adminModel;
         this.tankModel = tankModel;
+        this.fuelProductDetailsModel = fuelProductDetailsModel;
     }
     async addPumpDetails(adminId, dto) {
         const adminExists = await this.adminModel.findById(adminId);
@@ -52,12 +54,27 @@ let PumpDetailsService = class PumpDetailsService {
         return this.pumpDetailsModel.create(payload);
     }
     async getPumpDetails(adminId) {
-        const pumpDetails = await this.pumpDetailsModel
-            .findOne({ adminId })
-            .populate("tank");
+        const [pumpDetails, tankDetails, fuelProductDetails] = await Promise.all([
+            this.pumpDetailsModel.findOne({ adminId }).lean(),
+            this.tankModel.findOne({ adminId }).lean(),
+            this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+        ]);
         if (!pumpDetails)
             throw new common_1.NotFoundException("Pump details not found");
-        return pumpDetails;
+        const tanks = tankDetails?.tanks.map((t) => {
+            const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                t.fuelProductId.toString());
+            return {
+                ...t,
+                fuelType: product?.fuelType ?? null,
+                price: product?.price ?? null,
+                purchasingPrice: product?.purchasingPrice ?? null,
+            };
+        }) ?? [];
+        return {
+            ...pumpDetails,
+            tanks,
+        };
     }
     async updatePumpDetails(adminId, dto) {
         const pumpDetails = await this.pumpDetailsModel.findOne({
@@ -105,7 +122,9 @@ exports.PumpDetailsService = PumpDetailsService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(pump_details_schema_1.PumpDetails.name)),
     __param(1, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
     __param(2, (0, mongoose_1.InjectModel)(tank_details_schema_1.TankDetails.name)),
+    __param(3, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])
 ], PumpDetailsService);

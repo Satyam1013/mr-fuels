@@ -8,6 +8,10 @@ import {
   TankDetails,
   TankDetailsSchema,
 } from "../tank-details/tank-details.schema";
+import {
+  FuelProductDetails,
+  FuelProductDetailsSchema,
+} from "../fuel-product/fuel-product.schema";
 
 @Module({
   imports: [
@@ -15,6 +19,7 @@ import {
       { name: PumpDetails.name, schema: PumpDetailsSchema },
       { name: Admin.name, schema: AdminSchema },
       { name: TankDetails.name, schema: TankDetailsSchema },
+      { name: FuelProductDetails.name, schema: FuelProductDetailsSchema },
     ]),
   ],
   controllers: [PumpDetailsController],

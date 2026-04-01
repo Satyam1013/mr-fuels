@@ -9,6 +9,10 @@ import { PumpDetails } from "./pump-details.schema";
 import { Admin } from "../admin/admin.schema";
 import { CreatePumpDetailsDto, UpdatePumpDetailsDto } from "./pump-details.dto";
 import { TankDetails } from "../tank-details/tank-details.schema";
+import {
+  FuelProductDetail,
+  FuelProductDetails,
+} from "../fuel-product/fuel-product.schema";
 
 @Injectable()
 export class PumpDetailsService {
@@ -21,6 +25,9 @@ export class PumpDetailsService {
 
     @InjectModel(TankDetails.name)
     private tankModel: Model<TankDetails>,
+
+    @InjectModel(FuelProductDetails.name)
+    private fuelProductDetailsModel: Model<FuelProductDetails>,
   ) {}
 
   async addPumpDetails(adminId: Types.ObjectId, dto: CreatePumpDetailsDto) {
@@ -60,13 +67,33 @@ export class PumpDetailsService {
   }
 
   async getPumpDetails(adminId: Types.ObjectId) {
-    const pumpDetails = await this.pumpDetailsModel
-      .findOne({ adminId })
-      .populate("tank");
+    const [pumpDetails, tankDetails, fuelProductDetails] = await Promise.all([
+      this.pumpDetailsModel.findOne({ adminId }).lean(),
+      this.tankModel.findOne({ adminId }).lean(),
+      this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+    ]);
 
     if (!pumpDetails) throw new NotFoundException("Pump details not found");
 
-    return pumpDetails;
+    const tanks =
+      tankDetails?.tanks.map((t) => {
+        const product = fuelProductDetails?.products.find(
+          (p) =>
+            (p as FuelProductDetail)._id.toString() ===
+            t.fuelProductId.toString(),
+        );
+        return {
+          ...t,
+          fuelType: product?.fuelType ?? null,
+          price: product?.price ?? null,
+          purchasingPrice: product?.purchasingPrice ?? null,
+        };
+      }) ?? [];
+
+    return {
+      ...pumpDetails,
+      tanks,
+    };
   }
 
   async updatePumpDetails(adminId: Types.ObjectId, dto: UpdatePumpDetailsDto) {
