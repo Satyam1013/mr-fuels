@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TransactionDetails } from "../transactions/transactions.schema";
@@ -21,6 +21,7 @@ import {
   FuelProductDetail,
   FuelProductDetails,
 } from "../fuel-product/fuel-product.schema";
+import { Sales } from "./sales.schema";
 
 @Injectable()
 export class SalesService {
@@ -60,6 +61,9 @@ export class SalesService {
 
     @InjectModel(FuelProductDetails.name)
     private fuelProductDetailsModel: Model<FuelProductDetails>,
+
+    @InjectModel(Sales.name)
+    private salesModel: Model<Sales>,
   ) {}
 
   async getDashboardSetup(adminId: Types.ObjectId) {
@@ -194,7 +198,29 @@ export class SalesService {
     };
   }
 
-  async getDashboardData(params: GetDashboardDataParams) {
+  async getDashboardData(params: {
+    adminId: Types.ObjectId;
+    date: string;
+    shiftNumber: number;
+  }) {
+    const record = await this.salesModel
+      .findOne({
+        adminId: params.adminId,
+        date: params.date,
+        shiftNumber: params.shiftNumber,
+      })
+      .lean();
+
+    if (!record) {
+      throw new NotFoundException(
+        `No sales data found for date ${params.date} shift ${params.shiftNumber}. Shift may not be closed yet.`,
+      );
+    }
+
+    return record;
+  }
+
+  async calculateDashboardData(params: GetDashboardDataParams) {
     const { adminId, date, shiftNumber, nozzleNumber } = params;
 
     const startOfDay = new Date(date);

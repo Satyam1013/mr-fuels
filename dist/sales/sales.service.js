@@ -28,8 +28,9 @@ const digital_payment_schema_1 = require("../digital-payment/digital-payment.sch
 const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
 const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
 const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
+const sales_schema_1 = require("./sales.schema");
 let SalesService = class SalesService {
-    constructor(machineModel, transactionModel, nonFuelModel, staffModel, machineCalcModel, creditorModel, prepaidModel, nonFuelSellModel, digitalPaymentModel, pumpExpenseModel, personalExpenseModel, fuelProductDetailsModel) {
+    constructor(machineModel, transactionModel, nonFuelModel, staffModel, machineCalcModel, creditorModel, prepaidModel, nonFuelSellModel, digitalPaymentModel, pumpExpenseModel, personalExpenseModel, fuelProductDetailsModel, salesModel) {
         this.machineModel = machineModel;
         this.transactionModel = transactionModel;
         this.nonFuelModel = nonFuelModel;
@@ -42,6 +43,7 @@ let SalesService = class SalesService {
         this.pumpExpenseModel = pumpExpenseModel;
         this.personalExpenseModel = personalExpenseModel;
         this.fuelProductDetailsModel = fuelProductDetailsModel;
+        this.salesModel = salesModel;
     }
     async getDashboardSetup(adminId) {
         // =============================
@@ -158,6 +160,19 @@ let SalesService = class SalesService {
         };
     }
     async getDashboardData(params) {
+        const record = await this.salesModel
+            .findOne({
+            adminId: params.adminId,
+            date: params.date,
+            shiftNumber: params.shiftNumber,
+        })
+            .lean();
+        if (!record) {
+            throw new common_1.NotFoundException(`No sales data found for date ${params.date} shift ${params.shiftNumber}. Shift may not be closed yet.`);
+        }
+        return record;
+    }
+    async calculateDashboardData(params) {
         const { adminId, date, shiftNumber, nozzleNumber } = params;
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
@@ -490,7 +505,9 @@ exports.SalesService = SalesService = __decorate([
     __param(9, (0, mongoose_1.InjectModel)(pump_expense_schema_1.PumpExpense.name)),
     __param(10, (0, mongoose_1.InjectModel)(personal_expense_schema_1.PersonalExpense.name)),
     __param(11, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
+    __param(12, (0, mongoose_1.InjectModel)(sales_schema_1.Sales.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,

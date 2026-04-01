@@ -81,11 +81,10 @@ export class ShiftStatusService {
     // ── Completed shifts ke liye sales save karo ──
     for (const shift of shifts) {
       if (shift.status === ShiftStatusEnum.COMPLETED) {
-        const dashboardData = await this.salesService.getDashboardData({
+        const dashboardData = await this.salesService.calculateDashboardData({
           adminId,
           date: dto.date,
           shiftNumber: shift.shiftNumber,
-          nozzleNumber: undefined,
         });
 
         await this.salesModel.findOneAndUpdate(
@@ -454,11 +453,10 @@ export class ShiftStatusService {
 
         // ── Shift complete hone pe dashboard data save karo ──
         if (incomingShift.status === ShiftStatusEnum.COMPLETED) {
-          const dashboardData = await this.salesService.getDashboardData({
+          const dashboardData = await this.salesService.calculateDashboardData({
             adminId: existing.adminId,
             date: existing.date,
             shiftNumber: incomingShift.shiftNumber,
-            nozzleNumber: undefined,
           });
 
           // Upsert — same date+shift ka record update ya create

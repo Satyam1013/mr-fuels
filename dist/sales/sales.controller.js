@@ -24,12 +24,11 @@ let SalesController = class SalesController {
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getDashboardData(date, shiftNumber, nozzleNumber, adminId) {
+    async getDashboardData(date, shiftNumber, adminId) {
         return this.salesService.getDashboardData({
             adminId,
             date,
             shiftNumber: Number(shiftNumber),
-            nozzleNumber: nozzleNumber ? Number(nozzleNumber) : undefined,
         });
     }
     async getSalesReport(filterType, startDate, endDate, adminId) {
@@ -53,10 +52,9 @@ __decorate([
     (0, common_1.Get)("dashboard"),
     __param(0, (0, common_1.Query)("date")),
     __param(1, (0, common_1.Query)("shiftNumber")),
-    __param(2, (0, common_1.Query)("nozzleNumber")),
-    __param(3, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(2, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getDashboardData", null);
 __decorate([
