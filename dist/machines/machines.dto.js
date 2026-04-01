@@ -30,7 +30,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], NozzleDto.prototype, "isActive", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsMongoId)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], NozzleDto.prototype, "tankId", void 0);

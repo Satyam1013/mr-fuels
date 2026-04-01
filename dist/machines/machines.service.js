@@ -76,6 +76,14 @@ let MachineService = class MachineService {
         };
     }
     async updateMachine(machineId, dto) {
+        if (dto.nozzle) {
+            const nozzles = dto.nozzle.map((n) => ({
+                ...n,
+                fuelProductId: new mongoose_2.Types.ObjectId(n.fuelProductId),
+                tankId: new mongoose_2.Types.ObjectId(n.tankId),
+            }));
+            return this.machineModel.findByIdAndUpdate(machineId, { ...dto, nozzle: nozzles }, { new: true });
+        }
         return this.machineModel.findByIdAndUpdate(machineId, dto, { new: true });
     }
     async deleteMachine(machineId) {

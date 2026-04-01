@@ -5,7 +5,11 @@ import { TransactionDetails } from "../transactions/transactions.schema";
 import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
-import { GetDashboardDataParams, GetSalesReportParams } from "./sales.enum";
+import {
+  GetDashboardDataParams,
+  GetSalesReportParams,
+  NozzleLean,
+} from "./sales.enum";
 import { MachineCalculation } from "../machine-calculation/machine-calculation.schema";
 import { Creditor } from "../creditors/creditors.schema";
 import { Prepaid } from "../prepaid/prepaid.schema";
@@ -79,11 +83,12 @@ export class SalesService {
 
     machines.forEach((machine) => {
       if (!Array.isArray(machine.nozzle)) return;
-      machine.nozzle.forEach((n) => {
-        if (n.isActive && n.fuelProductId) {
-          const product = getProduct(n.fuelProductId);
-          if (product?.fuelType) {
-            fuelSet.add(product.fuelType.toLowerCase());
+      (machine.nozzle as NozzleLean[]).forEach((n) => {
+        if (n.isActive) {
+          const product = n.fuelProductId ? getProduct(n.fuelProductId) : null;
+          const fuelType = product?.fuelType || n.fuelType;
+          if (fuelType) {
+            fuelSet.add(fuelType.toLowerCase());
           }
         }
       });
@@ -137,15 +142,18 @@ export class SalesService {
       name: machine.machineNumber,
       machineId: machine._id,
       nozzles: Array.isArray(machine.nozzle)
-        ? machine.nozzle.map((n, index) => {
-            const product = getProduct(n.fuelProductId);
+        ? (machine.nozzle as NozzleLean[]).map((n, index) => {
+            const product = n.fuelProductId
+              ? getProduct(n.fuelProductId)
+              : null;
             return {
               nozzleName: `Nozzle ${index + 1}`,
               nozzleNumber: n?.nozzleNumber || 0,
               lastReading: 0,
               currentReading: 0,
-              fuelType: product?.fuelType || "",
-              fuelPrice: product?.price || 0,
+              fuelProductId: n.fuelProductId ?? null,
+              fuelType: product?.fuelType || n.fuelType || "",
+              fuelPrice: product?.price || n.price || 0,
               faultTesting: false,
               faultDesc: null,
               faultImg: null,

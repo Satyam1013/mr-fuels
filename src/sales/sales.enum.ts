@@ -25,3 +25,12 @@ export interface GetSalesReportParams {
   startDate: string; // "2026-03-10"
   endDate: string; // "2026-03-15"
 }
+
+export interface NozzleLean {
+  nozzleNumber: number;
+  fuelProductId?: Types.ObjectId;
+  fuelType?: string; // purana data fallback
+  price?: number; // purana data fallback
+  isActive: boolean;
+  tankId: Types.ObjectId;
+}

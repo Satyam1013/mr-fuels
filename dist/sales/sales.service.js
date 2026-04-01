@@ -59,10 +59,11 @@ let SalesService = class SalesService {
             if (!Array.isArray(machine.nozzle))
                 return;
             machine.nozzle.forEach((n) => {
-                if (n.isActive && n.fuelProductId) {
-                    const product = getProduct(n.fuelProductId);
-                    if (product?.fuelType) {
-                        fuelSet.add(product.fuelType.toLowerCase());
+                if (n.isActive) {
+                    const product = n.fuelProductId ? getProduct(n.fuelProductId) : null;
+                    const fuelType = product?.fuelType || n.fuelType;
+                    if (fuelType) {
+                        fuelSet.add(fuelType.toLowerCase());
                     }
                 }
             });
@@ -109,14 +110,17 @@ let SalesService = class SalesService {
             machineId: machine._id,
             nozzles: Array.isArray(machine.nozzle)
                 ? machine.nozzle.map((n, index) => {
-                    const product = getProduct(n.fuelProductId);
+                    const product = n.fuelProductId
+                        ? getProduct(n.fuelProductId)
+                        : null;
                     return {
                         nozzleName: `Nozzle ${index + 1}`,
                         nozzleNumber: n?.nozzleNumber || 0,
                         lastReading: 0,
                         currentReading: 0,
-                        fuelType: product?.fuelType || "",
-                        fuelPrice: product?.price || 0,
+                        fuelProductId: n.fuelProductId ?? null,
+                        fuelType: product?.fuelType || n.fuelType || "",
+                        fuelPrice: product?.price || n.price || 0,
                         faultTesting: false,
                         faultDesc: null,
                         faultImg: null,

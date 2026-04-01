@@ -83,6 +83,20 @@ export class MachineService {
   }
 
   async updateMachine(machineId: string, dto: Partial<CreateMachineDto>) {
+    if (dto.nozzle) {
+      const nozzles = dto.nozzle.map((n) => ({
+        ...n,
+        fuelProductId: new Types.ObjectId(n.fuelProductId),
+        tankId: new Types.ObjectId(n.tankId),
+      }));
+
+      return this.machineModel.findByIdAndUpdate(
+        machineId,
+        { ...dto, nozzle: nozzles },
+        { new: true },
+      );
+    }
+
     return this.machineModel.findByIdAndUpdate(machineId, dto, { new: true });
   }
 

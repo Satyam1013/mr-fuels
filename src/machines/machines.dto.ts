@@ -23,7 +23,7 @@ class NozzleDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   tankId!: string;
 }
