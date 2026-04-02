@@ -86,6 +86,37 @@ export class ShiftStatusService {
     }
   }
 
+  private buildTemplate(
+    pumpDetails: PumpDetailsLean,
+    date: string,
+    shiftId: number,
+  ) {
+    return {
+      date,
+      totalShifts: pumpDetails.numberOfShifts,
+
+      currentShift: {
+        shiftId: 1,
+        staffId: shiftId,
+        name: `Shift 1`,
+        startTime: pumpDetails.pumpTime.start,
+        endTime: "",
+        status: "Active",
+      },
+
+      shifts: [],
+
+      dailyProgress: {
+        completedShifts: 0,
+        pendingShifts: pumpDetails.numberOfShifts,
+        overallCompletionPercent: 0,
+      },
+
+      dailyClose: false,
+      pumpStatus: "open",
+    };
+  }
+
   async calculateDashboardData(params: GetDashboardDataParams) {
     const { adminId, date, shiftNumber, nozzleNumber } = params;
 
@@ -318,117 +349,6 @@ export class ShiftStatusService {
     };
   }
 
-  async create(user: AuthUser, dto: CreateShiftStatusDto) {
-    const adminId = new Types.ObjectId(user.adminId ?? user._id);
-
-    const existing = await this.shiftStatusModel.findOne({
-      adminId,
-      date: dto.date,
-    });
-
-    if (existing) {
-      throw new BadRequestException(
-        "Shift status already created for this date",
-      );
-    }
-
-    const now = new Date().toISOString();
-
-    const shifts = dto.shifts.map((shift) => ({
-      ...shift,
-      ...(shift.status === ShiftStatusEnum.COMPLETED && {
-        closedBy: new Types.ObjectId(user.adminId ?? user._id),
-        closedByModel: this.getRoleModel(user.role),
-        endTime: shift.endTime ?? now,
-      }),
-    }));
-
-    // ── Completed shifts ke liye sales save karo ──
-    for (const shift of shifts) {
-      if (shift.status === ShiftStatusEnum.COMPLETED) {
-        const dashboardData = await this.calculateDashboardData({
-          adminId,
-          date: dto.date,
-          shiftNumber: shift.shiftNumber,
-        });
-
-        await this.salesModel.findOneAndUpdate(
-          {
-            adminId,
-            date: dto.date,
-            shiftNumber: shift.shiftNumber,
-          },
-          {
-            adminId,
-            date: dto.date,
-            shiftNumber: shift.shiftNumber,
-            shiftStatus: ShiftStatusEnum.COMPLETED,
-            overallSales: dashboardData.overallSales,
-            netSales: dashboardData.netSales,
-            testing: dashboardData.testing,
-            overallCreditorsAmount: dashboardData.overallCreditorsAmount,
-            prepaid: dashboardData.prepaid,
-            pumpExpenses: dashboardData.pumpExpenses,
-            personalExpenses: dashboardData.personalExpenses,
-            lubricantSales: dashboardData.lubricantSales,
-            transactions: dashboardData.transactions,
-            machines: dashboardData.machines,
-          },
-          { upsert: true, new: true },
-        );
-      }
-    }
-
-    const lastShift = shifts[shifts.length - 1];
-
-    const currentShift =
-      lastShift?.status === ShiftStatusEnum.PENDING
-        ? lastShift
-        : {
-            shiftNumber: (lastShift?.shiftNumber || 0) + 1,
-            name: `Shift ${(lastShift?.shiftNumber || 0) + 1}`,
-            status: ShiftStatusEnum.PENDING,
-          };
-
-    return this.shiftStatusModel.create({
-      ...dto,
-      shifts,
-      adminId,
-      currentShift,
-    });
-  }
-
-  private buildTemplate(
-    pumpDetails: PumpDetailsLean,
-    date: string,
-    shiftId: number,
-  ) {
-    return {
-      date,
-      totalShifts: pumpDetails.numberOfShifts,
-
-      currentShift: {
-        shiftId: 1,
-        staffId: shiftId,
-        name: `Shift 1`,
-        startTime: pumpDetails.pumpTime.start,
-        endTime: "",
-        status: "Active",
-      },
-
-      shifts: [],
-
-      dailyProgress: {
-        completedShifts: 0,
-        pendingShifts: pumpDetails.numberOfShifts,
-        overallCompletionPercent: 0,
-      },
-
-      dailyClose: false,
-      pumpStatus: "open",
-    };
-  }
-
   async getByDate(adminId: Types.ObjectId, date: string) {
     const pumpDetails = await this.pumpDetailsModel.findOne({ adminId }).lean();
 
@@ -648,6 +568,86 @@ export class ShiftStatusService {
 
     // ----------- FUTURE TEMPLATE -----------
     return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+  }
+
+  async create(user: AuthUser, dto: CreateShiftStatusDto) {
+    const adminId = new Types.ObjectId(user.adminId ?? user._id);
+
+    const existing = await this.shiftStatusModel.findOne({
+      adminId,
+      date: dto.date,
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        "Shift status already created for this date",
+      );
+    }
+
+    const now = new Date().toISOString();
+
+    const shifts = dto.shifts.map((shift) => ({
+      ...shift,
+      ...(shift.status === ShiftStatusEnum.COMPLETED && {
+        closedBy: new Types.ObjectId(user.adminId ?? user._id),
+        closedByModel: this.getRoleModel(user.role),
+        endTime: shift.endTime ?? now,
+      }),
+    }));
+
+    // ── Completed shifts ke liye sales save karo ──
+    for (const shift of shifts) {
+      if (shift.status === ShiftStatusEnum.COMPLETED) {
+        const dashboardData = await this.calculateDashboardData({
+          adminId,
+          date: dto.date,
+          shiftNumber: shift.shiftNumber,
+        });
+
+        await this.salesModel.findOneAndUpdate(
+          {
+            adminId,
+            date: dto.date,
+            shiftNumber: shift.shiftNumber,
+          },
+          {
+            adminId,
+            date: dto.date,
+            shiftNumber: shift.shiftNumber,
+            shiftStatus: ShiftStatusEnum.COMPLETED,
+            overallSales: dashboardData.overallSales,
+            netSales: dashboardData.netSales,
+            testing: dashboardData.testing,
+            overallCreditorsAmount: dashboardData.overallCreditorsAmount,
+            prepaid: dashboardData.prepaid,
+            pumpExpenses: dashboardData.pumpExpenses,
+            personalExpenses: dashboardData.personalExpenses,
+            lubricantSales: dashboardData.lubricantSales,
+            transactions: dashboardData.transactions,
+            machines: dashboardData.machines,
+          },
+          { upsert: true, new: true },
+        );
+      }
+    }
+
+    const lastShift = shifts[shifts.length - 1];
+
+    const currentShift =
+      lastShift?.status === ShiftStatusEnum.PENDING
+        ? lastShift
+        : {
+            shiftNumber: (lastShift?.shiftNumber || 0) + 1,
+            name: `Shift ${(lastShift?.shiftNumber || 0) + 1}`,
+            status: ShiftStatusEnum.PENDING,
+          };
+
+    return this.shiftStatusModel.create({
+      ...dto,
+      shifts,
+      adminId,
+      currentShift,
+    });
   }
 
   async update(
