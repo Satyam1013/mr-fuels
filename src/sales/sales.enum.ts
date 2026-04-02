@@ -19,12 +19,20 @@ export interface GetDashboardDataParams {
 
 export type FilterType = "weekly" | "monthly" | "custom";
 
-export interface GetSalesReportParams {
-  adminId: Types.ObjectId;
-  filterType: FilterType;
-  startDate: string; // "2026-03-10"
-  endDate: string; // "2026-03-15"
-}
+export type GetSalesReportParams =
+  | {
+      adminId: Types.ObjectId;
+      type: "single";
+      date: string;
+      shiftNumber: number;
+    }
+  | {
+      adminId: Types.ObjectId;
+      type: "range";
+      filterType: FilterType;
+      startDate: string;
+      endDate: string;
+    };
 
 export interface NozzleLean {
   nozzleNumber: number;
@@ -33,4 +41,28 @@ export interface NozzleLean {
   price?: number; // purana data fallback
   isActive: boolean;
   tankId: Types.ObjectId;
+}
+
+export interface NozzleSnapshot {
+  nozzleNumber: number;
+  fuelType: string | null;
+  staffId: unknown;
+  sales: { liters: number; amount: number };
+  netSales: { liters: number; amount: number };
+  testing: { liters: number; amount: number };
+  creditors: number;
+  prepaid: number;
+  lubricantSales: number;
+  transactions: { upi: number; pos: number };
+  pumpExpenses: number;
+  personalExpenses: number;
+}
+
+export interface MachinesSnapshot {
+  nozzles: NozzleSnapshot[];
+}
+
+export interface TransactionsSnapshot {
+  upi: number;
+  pos: number;
 }

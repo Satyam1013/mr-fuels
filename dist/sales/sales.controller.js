@@ -24,16 +24,18 @@ let SalesController = class SalesController {
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getDashboardData(date, shiftNumber, adminId) {
-        return this.salesService.getDashboardData({
-            adminId,
-            date,
-            shiftNumber: Number(shiftNumber),
-        });
-    }
-    async getSalesReport(filterType, startDate, endDate, adminId) {
+    async getReport(date, shiftNumber, filterType, startDate, endDate, adminId) {
+        if (date && shiftNumber) {
+            return this.salesService.getSalesReport({
+                adminId,
+                type: "single",
+                date,
+                shiftNumber: Number(shiftNumber),
+            });
+        }
         return this.salesService.getSalesReport({
             adminId,
+            type: "range",
             filterType,
             startDate,
             endDate,
@@ -49,24 +51,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getDashboardSetup", null);
 __decorate([
-    (0, common_1.Get)("dashboard"),
+    (0, common_1.Get)("report"),
     __param(0, (0, common_1.Query)("date")),
     __param(1, (0, common_1.Query)("shiftNumber")),
-    __param(2, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(2, (0, common_1.Query)("filterType")),
+    __param(3, (0, common_1.Query)("startDate")),
+    __param(4, (0, common_1.Query)("endDate")),
+    __param(5, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [String, String, String, String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
-], SalesController.prototype, "getDashboardData", null);
-__decorate([
-    (0, common_1.Get)("sales-report"),
-    __param(0, (0, common_1.Query)("filterType")),
-    __param(1, (0, common_1.Query)("startDate")),
-    __param(2, (0, common_1.Query)("endDate")),
-    __param(3, (0, get_user_decoration_1.GetUser)("adminId")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, mongoose_1.Types.ObjectId]),
-    __metadata("design:returntype", Promise)
-], SalesController.prototype, "getSalesReport", null);
+], SalesController.prototype, "getReport", null);
 exports.SalesController = SalesController = __decorate([
     (0, common_1.Controller)("sales"),
     __metadata("design:paramtypes", [sales_service_1.SalesService])

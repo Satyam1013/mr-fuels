@@ -13,28 +13,27 @@ export class SalesController {
     return this.salesService.getDashboardSetup(adminId);
   }
 
-  @Get("dashboard")
-  async getDashboardData(
+  @Get("report")
+  async getReport(
     @Query("date") date: string,
     @Query("shiftNumber") shiftNumber: string,
-    @GetUser("adminId") adminId: Types.ObjectId,
-  ) {
-    return this.salesService.getDashboardData({
-      adminId,
-      date,
-      shiftNumber: Number(shiftNumber),
-    });
-  }
-
-  @Get("sales-report")
-  async getSalesReport(
     @Query("filterType") filterType: FilterType,
     @Query("startDate") startDate: string,
     @Query("endDate") endDate: string,
     @GetUser("adminId") adminId: Types.ObjectId,
   ) {
+    if (date && shiftNumber) {
+      return this.salesService.getSalesReport({
+        adminId,
+        type: "single",
+        date,
+        shiftNumber: Number(shiftNumber),
+      });
+    }
+
     return this.salesService.getSalesReport({
       adminId,
+      type: "range",
       filterType,
       startDate,
       endDate,
