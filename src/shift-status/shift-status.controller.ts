@@ -17,17 +17,17 @@ import { AuthUser } from "../admin/admin.enum";
 export class ShiftStatusController {
   constructor(private readonly service: ShiftStatusService) {}
 
-  @Post()
-  create(@GetUser() user: AuthUser, @Body() dto: CreateShiftStatusDto) {
-    return this.service.create(user, dto);
-  }
-
   @Get()
   getByDate(
     @GetUser("adminId") adminId: Types.ObjectId,
     @Query("date") date: string,
   ) {
     return this.service.getByDate(adminId, date);
+  }
+
+  @Post()
+  create(@GetUser() user: AuthUser, @Body() dto: CreateShiftStatusDto) {
+    return this.service.create(user, dto);
   }
 
   @Patch(":id")
