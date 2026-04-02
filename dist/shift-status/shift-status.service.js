@@ -23,15 +23,29 @@ const admin_enum_1 = require("../admin/admin.enum");
 const managers_schema_1 = require("../managers/managers.schema");
 const admin_schema_1 = require("../admin/admin.schema");
 const sales_schema_1 = require("../sales/sales.schema");
-const sales_service_1 = require("../sales/sales.service");
+const machine_calculation_schema_1 = require("../machine-calculation/machine-calculation.schema");
+const creditors_schema_1 = require("../creditors/creditors.schema");
+const prepaid_schema_1 = require("../prepaid/prepaid.schema");
+const non_fuel_product_sales_schema_1 = require("../non-fuel-product-sales/non-fuel-product-sales.schema");
+const digital_payment_schema_1 = require("../digital-payment/digital-payment.schema");
+const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
+const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
+const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
 let ShiftStatusService = class ShiftStatusService {
-    constructor(shiftStatusModel, pumpDetailsModel, adminModel, managerModel, salesModel, salesService) {
+    constructor(shiftStatusModel, pumpDetailsModel, adminModel, managerModel, salesModel, machineCalcModel, creditorModel, prepaidModel, nonFuelSellModel, digitalPaymentModel, pumpExpenseModel, personalExpenseModel, fuelProductDetailsModel) {
         this.shiftStatusModel = shiftStatusModel;
         this.pumpDetailsModel = pumpDetailsModel;
         this.adminModel = adminModel;
         this.managerModel = managerModel;
         this.salesModel = salesModel;
-        this.salesService = salesService;
+        this.machineCalcModel = machineCalcModel;
+        this.creditorModel = creditorModel;
+        this.prepaidModel = prepaidModel;
+        this.nonFuelSellModel = nonFuelSellModel;
+        this.digitalPaymentModel = digitalPaymentModel;
+        this.pumpExpenseModel = pumpExpenseModel;
+        this.personalExpenseModel = personalExpenseModel;
+        this.fuelProductDetailsModel = fuelProductDetailsModel;
     }
     getRoleModel(role) {
         switch (role.toLowerCase()) {
@@ -42,6 +56,176 @@ let ShiftStatusService = class ShiftStatusService {
             default:
                 return admin_enum_1.Role.MANAGER;
         }
+    }
+    async calculateDashboardData(params) {
+        const { adminId, date, shiftNumber, nozzleNumber } = params;
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+        // ─── 1. Sab ek saath fetch karo ───
+        const [machineCalculations, fuelProductDetails, digitalPayments, allCreditors, allPrepaids, allPumpExpenses, allPersonalExpenses, allNonFuelSales,] = await Promise.all([
+            this.machineCalcModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.fuelProductDetailsModel.findOne({ adminId }).lean(),
+            this.digitalPaymentModel.find({ adminId, date, shiftNumber }).lean(),
+            this.creditorModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.prepaidModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.pumpExpenseModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.personalExpenseModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+            this.nonFuelSellModel
+                .find({
+                adminId,
+                shiftNumber,
+                date: { $gte: startOfDay, $lte: endOfDay },
+            })
+                .lean(),
+        ]);
+        // ─── 2. Digital Payments totals ───
+        const overallUpi = digitalPayments.reduce((sum, dp) => sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0), 0);
+        const overallPos = digitalPayments.reduce((sum, dp) => sum + dp.posPayments.reduce((s, p) => s + (p.amount || 0), 0), 0);
+        // ─── 3. Nozzles result — creditors/prepaid se directly banao ───
+        let totalOverallSalesLiters = 0;
+        let totalOverallSalesAmount = 0;
+        let totalTestingLiters = 0;
+        let totalTestingAmount = 0;
+        const allNozzlesResult = [];
+        // Saare unique nozzleNumbers nikalo from creditors/prepaid/expenses
+        const allNozzleNumbers = [
+            ...new Set([
+                ...allCreditors.map((c) => c.nozzleNumber),
+                ...allPrepaids.map((p) => p.nozzleNumber),
+                ...allPumpExpenses.map((e) => e.nozzleNumber),
+                ...allPersonalExpenses.map((e) => e.nozzleNumber),
+            ]),
+        ].filter((n) => (nozzleNumber ? n === nozzleNumber : true)); // filter if nozzleNumber provided
+        for (const nozzleNum of allNozzleNumbers) {
+            const nozzleCreditorsAmount = allCreditors
+                .filter((c) => c.nozzleNumber === nozzleNum)
+                .reduce((sum, c) => sum + (c.amount || 0), 0);
+            const nozzlePrepaidAmount = allPrepaids
+                .filter((p) => p.nozzleNumber === nozzleNum)
+                .reduce((sum, p) => sum + (p.amount || 0), 0);
+            const nozzlePumpExpenses = allPumpExpenses
+                .filter((e) => e.nozzleNumber === nozzleNum)
+                .reduce((sum, e) => sum + (e.amount || 0), 0);
+            const nozzlePersonalExpenses = allPersonalExpenses
+                .filter((e) => e.nozzleNumber === nozzleNum)
+                .reduce((sum, e) => sum + (e.amount || 0), 0);
+            // MachineCalculation se sales nikalo agar available ho
+            let overallNozzleLiters = 0;
+            let overallNozzleAmount = 0;
+            let testingLiters = 0;
+            let testingAmount = 0;
+            let netSalesLiters = 0;
+            let netSalesAmount = 0;
+            let nozzleUpi = 0;
+            let nozzlePos = 0;
+            let staffId = null;
+            let fuelType = null;
+            for (const machine of machineCalculations) {
+                const matchedNozzle = machine.nozzles.find((n) => n.nozzleNumber === nozzleNum);
+                if (matchedNozzle) {
+                    const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                        matchedNozzle.fuelProductId.toString());
+                    const pricePerLiter = product?.price || 0;
+                    fuelType = product?.fuelType;
+                    overallNozzleLiters =
+                        (matchedNozzle.currentReading || 0) -
+                            (matchedNozzle.lastReading || 0);
+                    overallNozzleAmount = overallNozzleLiters * pricePerLiter;
+                    testingLiters =
+                        (matchedNozzle.testingLiters || 0) +
+                            (matchedNozzle.faultTestingLiters || 0);
+                    testingAmount = testingLiters * pricePerLiter;
+                    netSalesLiters = overallNozzleLiters - testingLiters;
+                    netSalesAmount = netSalesLiters * pricePerLiter;
+                    nozzleUpi = matchedNozzle.upiAmount || 0;
+                    nozzlePos = matchedNozzle.posAmount || 0;
+                    staffId = matchedNozzle.staffId;
+                    totalOverallSalesLiters += overallNozzleLiters;
+                    totalOverallSalesAmount += overallNozzleAmount;
+                    totalTestingLiters += testingLiters;
+                    totalTestingAmount += testingAmount;
+                }
+            }
+            const nozzleLubricantSales = allNonFuelSales.reduce((sum, n) => sum + (n.amount || 0), 0);
+            allNozzlesResult.push({
+                staffId,
+                nozzleNumber: nozzleNum,
+                fuelType,
+                sales: { liters: overallNozzleLiters, amount: overallNozzleAmount },
+                netSales: { liters: netSalesLiters, amount: netSalesAmount },
+                testing: { liters: testingLiters, amount: testingAmount },
+                creditors: nozzleCreditorsAmount,
+                prepaid: nozzlePrepaidAmount,
+                lubricantSales: nozzleLubricantSales,
+                transactions: { upi: nozzleUpi, pos: nozzlePos },
+                pumpExpenses: nozzlePumpExpenses,
+                personalExpenses: nozzlePersonalExpenses,
+            });
+        }
+        // ─── 4. Totals — loop se independent ───
+        const totalCreditorsAmount = allCreditors.reduce((sum, c) => sum + (c.amount || 0), 0);
+        const totalPrepaidAmount = allPrepaids.reduce((sum, p) => sum + (p.amount || 0), 0);
+        const totalPumpExpenses = allPumpExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+        const totalPersonalExpenses = allPersonalExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+        const lubricantSalesAmount = allNonFuelSales.reduce((sum, n) => sum + (n.amount || 0), 0);
+        const netSalesLiters = totalOverallSalesLiters - totalTestingLiters;
+        const netSalesAmount = totalOverallSalesAmount - totalTestingAmount;
+        return {
+            date,
+            shiftNumber,
+            nozzleNumber,
+            overallSales: {
+                liters: totalOverallSalesLiters,
+                amount: totalOverallSalesAmount,
+            },
+            netSales: { liters: netSalesLiters, amount: netSalesAmount },
+            testing: { liters: totalTestingLiters, amount: totalTestingAmount },
+            overallCreditorsAmount: totalCreditorsAmount,
+            prepaid: totalPrepaidAmount,
+            pumpExpenses: totalPumpExpenses,
+            personalExpenses: totalPersonalExpenses,
+            lubricantSales: lubricantSalesAmount,
+            transactions: { upi: overallUpi, pos: overallPos },
+            machines: {
+                overallMachineSales: {
+                    liters: totalOverallSalesLiters,
+                    amount: totalOverallSalesAmount,
+                },
+                nozzles: allNozzlesResult,
+            },
+        };
     }
     async create(user, dto) {
         const adminId = new mongoose_2.Types.ObjectId(user.adminId ?? user._id);
@@ -64,7 +248,7 @@ let ShiftStatusService = class ShiftStatusService {
         // ── Completed shifts ke liye sales save karo ──
         for (const shift of shifts) {
             if (shift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
-                const dashboardData = await this.salesService.calculateDashboardData({
+                const dashboardData = await this.calculateDashboardData({
                     adminId,
                     date: dto.date,
                     shiftNumber: shift.shiftNumber,
@@ -345,7 +529,7 @@ let ShiftStatusService = class ShiftStatusService {
                 }
                 // ── Shift complete hone pe dashboard data save karo ──
                 if (incomingShift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED) {
-                    const dashboardData = await this.salesService.calculateDashboardData({
+                    const dashboardData = await this.calculateDashboardData({
                         adminId: existing.adminId,
                         date: existing.date,
                         shiftNumber: incomingShift.shiftNumber,
@@ -428,10 +612,25 @@ exports.ShiftStatusService = ShiftStatusService = __decorate([
     __param(2, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
     __param(3, (0, mongoose_1.InjectModel)(managers_schema_1.Manager.name)),
     __param(4, (0, mongoose_1.InjectModel)(sales_schema_1.Sales.name)),
+    __param(5, (0, mongoose_1.InjectModel)(machine_calculation_schema_1.MachineCalculation.name)),
+    __param(6, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
+    __param(7, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
+    __param(8, (0, mongoose_1.InjectModel)(non_fuel_product_sales_schema_1.NonFuelSellProduct.name)),
+    __param(9, (0, mongoose_1.InjectModel)(digital_payment_schema_1.DigitalPayment.name)),
+    __param(10, (0, mongoose_1.InjectModel)(pump_expense_schema_1.PumpExpense.name)),
+    __param(11, (0, mongoose_1.InjectModel)(personal_expense_schema_1.PersonalExpense.name)),
+    __param(12, (0, mongoose_1.InjectModel)(fuel_product_schema_1.FuelProductDetails.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
-        sales_service_1.SalesService])
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model])
 ], ShiftStatusService);
