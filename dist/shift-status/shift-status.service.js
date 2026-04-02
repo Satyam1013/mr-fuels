@@ -85,7 +85,6 @@ let ShiftStatusService = class ShiftStatusService {
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date(date);
         endOfDay.setHours(23, 59, 59, 999);
-        // ─── 1. Sab ek saath fetch karo ───
         const [machineCalculations, fuelProductDetails, digitalPayments, allCreditors, allPrepaids, allPumpExpenses, allPersonalExpenses, allNonFuelSales,] = await Promise.all([
             this.machineCalcModel
                 .find({
@@ -95,7 +94,13 @@ let ShiftStatusService = class ShiftStatusService {
             })
                 .lean(),
             this.fuelProductDetailsModel.findOne({ adminId }).lean(),
-            this.digitalPaymentModel.find({ adminId, date, shiftNumber }).lean(),
+            this.digitalPaymentModel
+                .find({
+                adminId,
+                shiftNumber,
+                date,
+            })
+                .lean(),
             this.creditorModel
                 .find({
                 adminId,
@@ -132,24 +137,31 @@ let ShiftStatusService = class ShiftStatusService {
             })
                 .lean(),
         ]);
-        // ─── 2. Digital Payments totals ───
+        // ─── Digital Payments totals ───
         const overallUpi = digitalPayments.reduce((sum, dp) => sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0), 0);
         const overallPos = digitalPayments.reduce((sum, dp) => sum + dp.posPayments.reduce((s, p) => s + (p.amount || 0), 0), 0);
-        // ─── 3. Nozzles result — creditors/prepaid se directly banao ───
         let totalOverallSalesLiters = 0;
         let totalOverallSalesAmount = 0;
         let totalTestingLiters = 0;
         let totalTestingAmount = 0;
         const allNozzlesResult = [];
-        // Saare unique nozzleNumbers nikalo from creditors/prepaid/expenses
-        const allNozzleNumbers = [
+        // ✅ Bug 2 Fix — nozzle numbers machine calculations SE nikalo
+        // creditors/prepaid empty hone pe bhi loop chalega
+        const machineNozzleNumbers = [
+            ...new Set(machineCalculations.flatMap((m) => m.nozzles.map((n) => n.nozzleNumber))),
+        ];
+        const otherNozzleNumbers = [
             ...new Set([
                 ...allCreditors.map((c) => c.nozzleNumber),
                 ...allPrepaids.map((p) => p.nozzleNumber),
                 ...allPumpExpenses.map((e) => e.nozzleNumber),
                 ...allPersonalExpenses.map((e) => e.nozzleNumber),
             ]),
-        ].filter((n) => (nozzleNumber ? n === nozzleNumber : true)); // filter if nozzleNumber provided
+        ];
+        // ✅ Dono sources merge karo — koi nozzle miss na ho
+        const allNozzleNumbers = [
+            ...new Set([...machineNozzleNumbers, ...otherNozzleNumbers]),
+        ].filter((n) => (nozzleNumber ? n === nozzleNumber : true));
         for (const nozzleNum of allNozzleNumbers) {
             const nozzleCreditorsAmount = allCreditors
                 .filter((c) => c.nozzleNumber === nozzleNum)
@@ -163,7 +175,6 @@ let ShiftStatusService = class ShiftStatusService {
             const nozzlePersonalExpenses = allPersonalExpenses
                 .filter((e) => e.nozzleNumber === nozzleNum)
                 .reduce((sum, e) => sum + (e.amount || 0), 0);
-            // MachineCalculation se sales nikalo agar available ho
             let overallNozzleLiters = 0;
             let overallNozzleAmount = 0;
             let testingLiters = 0;
@@ -216,7 +227,7 @@ let ShiftStatusService = class ShiftStatusService {
                 personalExpenses: nozzlePersonalExpenses,
             });
         }
-        // ─── 4. Totals — loop se independent ───
+        // ─── Totals ───
         const totalCreditorsAmount = allCreditors.reduce((sum, c) => sum + (c.amount || 0), 0);
         const totalPrepaidAmount = allPrepaids.reduce((sum, p) => sum + (p.amount || 0), 0);
         const totalPumpExpenses = allPumpExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);

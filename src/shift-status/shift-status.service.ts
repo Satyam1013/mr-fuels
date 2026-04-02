@@ -126,7 +126,6 @@ export class ShiftStatusService {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    // ─── 1. Sab ek saath fetch karo ───
     const [
       machineCalculations,
       fuelProductDetails,
@@ -145,7 +144,13 @@ export class ShiftStatusService {
         })
         .lean(),
       this.fuelProductDetailsModel.findOne({ adminId }).lean(),
-      this.digitalPaymentModel.find({ adminId, date, shiftNumber }).lean(),
+      this.digitalPaymentModel
+        .find({
+          adminId,
+          shiftNumber,
+          date,
+        })
+        .lean(),
       this.creditorModel
         .find({
           adminId,
@@ -183,7 +188,7 @@ export class ShiftStatusService {
         .lean(),
     ]);
 
-    // ─── 2. Digital Payments totals ───
+    // ─── Digital Payments totals ───
     const overallUpi = digitalPayments.reduce(
       (sum, dp) =>
         sum + dp.upiPayments.reduce((s, u) => s + (u.amount || 0), 0),
@@ -195,8 +200,6 @@ export class ShiftStatusService {
       0,
     );
 
-    // ─── 3. Nozzles result — creditors/prepaid se directly banao ───
-
     let totalOverallSalesLiters = 0;
     let totalOverallSalesAmount = 0;
     let totalTestingLiters = 0;
@@ -204,15 +207,29 @@ export class ShiftStatusService {
 
     const allNozzlesResult: any[] = [];
 
-    // Saare unique nozzleNumbers nikalo from creditors/prepaid/expenses
-    const allNozzleNumbers = [
+    // ✅ Bug 2 Fix — nozzle numbers machine calculations SE nikalo
+    // creditors/prepaid empty hone pe bhi loop chalega
+    const machineNozzleNumbers = [
+      ...new Set(
+        machineCalculations.flatMap((m) =>
+          m.nozzles.map((n) => n.nozzleNumber),
+        ),
+      ),
+    ];
+
+    const otherNozzleNumbers = [
       ...new Set([
         ...allCreditors.map((c) => c.nozzleNumber),
         ...allPrepaids.map((p) => p.nozzleNumber),
         ...allPumpExpenses.map((e) => e.nozzleNumber),
         ...allPersonalExpenses.map((e) => e.nozzleNumber),
       ]),
-    ].filter((n) => (nozzleNumber ? n === nozzleNumber : true)); // filter if nozzleNumber provided
+    ];
+
+    // ✅ Dono sources merge karo — koi nozzle miss na ho
+    const allNozzleNumbers = [
+      ...new Set([...machineNozzleNumbers, ...otherNozzleNumbers]),
+    ].filter((n) => (nozzleNumber ? n === nozzleNumber : true));
 
     for (const nozzleNum of allNozzleNumbers) {
       const nozzleCreditorsAmount = allCreditors
@@ -231,7 +248,6 @@ export class ShiftStatusService {
         .filter((e) => e.nozzleNumber === nozzleNum)
         .reduce((sum, e) => sum + (e.amount || 0), 0);
 
-      // MachineCalculation se sales nikalo agar available ho
       let overallNozzleLiters = 0;
       let overallNozzleAmount = 0;
       let testingLiters = 0;
@@ -298,7 +314,7 @@ export class ShiftStatusService {
       });
     }
 
-    // ─── 4. Totals — loop se independent ───
+    // ─── Totals ───
     const totalCreditorsAmount = allCreditors.reduce(
       (sum, c) => sum + (c.amount || 0),
       0,
