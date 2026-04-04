@@ -118,7 +118,7 @@ export class ShiftStatusService {
   }
 
   async calculateDashboardData(params: GetDashboardDataParams) {
-    const { adminId, date, shiftNumber, nozzleNumber } = params;
+    const { adminId, date, shiftNumber } = params;
 
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
@@ -226,10 +226,9 @@ export class ShiftStatusService {
       ]),
     ];
 
-    // ✅ Dono sources merge karo — koi nozzle miss na ho
     const allNozzleNumbers = [
       ...new Set([...machineNozzleNumbers, ...otherNozzleNumbers]),
-    ].filter((n) => (nozzleNumber ? n === nozzleNumber : true));
+    ];
 
     for (const nozzleNum of allNozzleNumbers) {
       const nozzleCreditorsAmount = allCreditors
@@ -282,9 +281,14 @@ export class ShiftStatusService {
           testingAmount = testingLiters * pricePerLiter;
           netSalesLiters = overallNozzleLiters - testingLiters;
           netSalesAmount = netSalesLiters * pricePerLiter;
-          nozzleUpi = matchedNozzle.upiAmount || 0;
-          nozzlePos = matchedNozzle.posAmount || 0;
           staffId = matchedNozzle.staffId;
+
+          // ── UPI/POS — StaffAssignment se nikalo ──
+          const assignedStaff = machine.staff.find((s) =>
+            s.assignedNozzleNumbers.includes(nozzleNum),
+          );
+          nozzleUpi = assignedStaff?.upiAmount || 0;
+          nozzlePos = assignedStaff?.posAmount || 0;
 
           totalOverallSalesLiters += overallNozzleLiters;
           totalOverallSalesAmount += overallNozzleAmount;
@@ -342,7 +346,6 @@ export class ShiftStatusService {
     return {
       date,
       shiftNumber,
-      nozzleNumber,
       overallSales: {
         liters: totalOverallSalesLiters,
         amount: totalOverallSalesAmount,

@@ -46,18 +46,9 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "faultTestingLiters", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", Number)
-], NozzleCalculation.prototype, "upiAmount", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", Number)
-], NozzleCalculation.prototype, "posAmount", void 0);
 NozzleCalculation = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], NozzleCalculation);
-// ── Staff Assignment — alag sub-schema ──
 let StaffAssignment = class StaffAssignment {
 };
 __decorate([

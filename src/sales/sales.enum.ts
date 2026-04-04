@@ -14,7 +14,6 @@ export interface GetDashboardDataParams {
   adminId: Types.ObjectId;
   date: string;
   shiftNumber: number;
-  nozzleNumber?: number;
 }
 
 export type FilterType = "weekly" | "monthly" | "custom";

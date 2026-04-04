@@ -26,15 +26,8 @@ class NozzleCalculation {
 
   @Prop()
   faultTestingLiters!: number;
-
-  @Prop({ default: 0 })
-  upiAmount!: number;
-
-  @Prop({ default: 0 })
-  posAmount!: number;
 }
 
-// ── Staff Assignment — alag sub-schema ──
 @Schema({ _id: false })
 class StaffAssignment {
   @Prop({ type: Types.ObjectId, ref: "Staff", required: true })
