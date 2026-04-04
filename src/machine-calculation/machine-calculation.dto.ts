@@ -8,6 +8,21 @@ import {
   ValidateNested,
 } from "class-validator";
 
+export class StaffAssignmentDto {
+  @IsMongoId()
+  staffId!: string;
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  assignedNozzleNumbers!: number[];
+
+  @IsNumber()
+  upiAmount!: number;
+
+  @IsNumber()
+  posAmount!: number;
+}
+
 export class NozzleDto {
   @IsString()
   nozzleName!: string;
@@ -29,15 +44,6 @@ export class NozzleDto {
 
   @IsNumber()
   faultTestingLiters!: number;
-
-  @IsNumber()
-  upiAmount!: number;
-
-  @IsNumber()
-  posAmount!: number;
-
-  @IsMongoId()
-  staffId!: string;
 }
 
 export class CreateMachineCalculationDto {
@@ -54,6 +60,11 @@ export class CreateMachineCalculationDto {
   @ValidateNested({ each: true })
   @Type(() => NozzleDto)
   nozzles!: NozzleDto[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StaffAssignmentDto)
+  staff!: StaffAssignmentDto[];
 }
 
 export class GetNozzleDetailsDto {

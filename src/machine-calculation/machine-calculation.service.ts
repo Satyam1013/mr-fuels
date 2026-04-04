@@ -43,18 +43,27 @@ export class MachineCalculationService {
   }
 
   async create(adminId: Types.ObjectId, dto: CreateMachineCalculationDto) {
-    const nozzles = dto.nozzles.map((nozzle) => ({
-      nozzleName: nozzle.nozzleName,
-      nozzleNumber: nozzle.nozzleNumber,
-      fuelProductId: new Types.ObjectId(nozzle.fuelProductId),
-      lastReading: nozzle.lastReading,
-      currentReading: nozzle.currentReading,
-      testingLiters: nozzle.testingLiters,
-      faultTestingLiters: nozzle.faultTestingLiters,
-      upiAmount: nozzle.upiAmount,
-      posAmount: nozzle.posAmount,
-      staffId: new Types.ObjectId(nozzle.staffId),
-    }));
+    const nozzles = dto.nozzles.map((nozzle) => {
+      // Is nozzle ka staff dhundo
+      const assignedStaff = dto.staff.find((s) =>
+        s.assignedNozzleNumbers.includes(nozzle.nozzleNumber),
+      );
+
+      return {
+        nozzleName: nozzle.nozzleName,
+        nozzleNumber: nozzle.nozzleNumber,
+        fuelProductId: new Types.ObjectId(nozzle.fuelProductId),
+        lastReading: nozzle.lastReading,
+        currentReading: nozzle.currentReading,
+        testingLiters: nozzle.testingLiters,
+        faultTestingLiters: nozzle.faultTestingLiters,
+        upiAmount: assignedStaff?.upiAmount || 0,
+        posAmount: assignedStaff?.posAmount || 0,
+        staffId: assignedStaff
+          ? new Types.ObjectId(assignedStaff.staffId)
+          : undefined,
+      };
+    });
 
     const calculation = new this.machineCalcModel({
       adminId,
@@ -62,6 +71,12 @@ export class MachineCalculationService {
       date: new Date(dto.date),
       shiftNumber: dto.shiftNumber,
       nozzles,
+      staff: dto.staff.map((s) => ({
+        staffId: new Types.ObjectId(s.staffId),
+        assignedNozzleNumbers: s.assignedNozzleNumbers,
+        upiAmount: s.upiAmount,
+        posAmount: s.posAmount,
+      })),
     });
 
     return calculation.save();

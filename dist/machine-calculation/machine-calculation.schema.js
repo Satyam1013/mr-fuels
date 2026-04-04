@@ -47,16 +47,38 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "faultTestingLiters", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "upiAmount", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "posAmount", void 0);
 NozzleCalculation = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], NozzleCalculation);
+// ── Staff Assignment — alag sub-schema ──
+let StaffAssignment = class StaffAssignment {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], StaffAssignment.prototype, "staffId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [Number], default: [] }),
+    __metadata("design:type", Array)
+], StaffAssignment.prototype, "assignedNozzleNumbers", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], StaffAssignment.prototype, "upiAmount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], StaffAssignment.prototype, "posAmount", void 0);
+StaffAssignment = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], StaffAssignment);
 let MachineCalculation = class MachineCalculation extends mongoose_2.Document {
 };
 exports.MachineCalculation = MachineCalculation;
@@ -80,6 +102,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: [NozzleCalculation], default: [] }),
     __metadata("design:type", Array)
 ], MachineCalculation.prototype, "nozzles", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [StaffAssignment], default: [] }),
+    __metadata("design:type", Array)
+], MachineCalculation.prototype, "staff", void 0);
 exports.MachineCalculation = MachineCalculation = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], MachineCalculation);

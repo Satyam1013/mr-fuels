@@ -27,10 +27,26 @@ class NozzleCalculation {
   @Prop()
   faultTestingLiters!: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   upiAmount!: number;
 
-  @Prop()
+  @Prop({ default: 0 })
+  posAmount!: number;
+}
+
+// ── Staff Assignment — alag sub-schema ──
+@Schema({ _id: false })
+class StaffAssignment {
+  @Prop({ type: Types.ObjectId, ref: "Staff", required: true })
+  staffId!: Types.ObjectId;
+
+  @Prop({ type: [Number], default: [] })
+  assignedNozzleNumbers!: number[];
+
+  @Prop({ default: 0 })
+  upiAmount!: number;
+
+  @Prop({ default: 0 })
   posAmount!: number;
 }
 
@@ -50,6 +66,9 @@ export class MachineCalculation extends Document {
 
   @Prop({ type: [NozzleCalculation], default: [] })
   nozzles!: NozzleCalculation[];
+
+  @Prop({ type: [StaffAssignment], default: [] })
+  staff!: StaffAssignment[];
 }
 
 export const MachineCalculationSchema =
