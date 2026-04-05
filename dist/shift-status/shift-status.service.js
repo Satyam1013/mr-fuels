@@ -410,7 +410,12 @@ let ShiftStatusService = class ShiftStatusService {
                     // ✅ No gap — bilkul agla din hai, fresh template return karo
                     return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
                 }
-                // ❌ Gap hai — beech ki dates missing hain
+                // ✅ But agar requested date aaj ki hai, toh bhi fresh template do
+                const todayNormalized = new Date(todayObj);
+                todayNormalized.setHours(0, 0, 0, 0);
+                if (reqNormalized.getTime() === todayNormalized.getTime()) {
+                    return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+                }
                 return {
                     message: "No data available for this date",
                     date: requestedDate,
