@@ -41,6 +41,8 @@ export class FuelProductService {
       ...p,
       oldPrice: p.oldPrice ?? p.price,
       updatedPriceFrom: new Date(),
+      shiftId: p.shiftId ?? null,
+      shiftNumber: p.shiftNumber ?? null,
     }));
 
     const result = await this.fuelProductDetailsModel.findOneAndUpdate(
@@ -87,7 +89,6 @@ export class FuelProductService {
       const product = record.products.find((p) => p.fuelType === item.fuelType);
 
       if (product) {
-        // Existing — update karo
         if (item.price !== undefined) {
           product.oldPrice = product.price;
           product.price = item.price;
@@ -96,8 +97,14 @@ export class FuelProductService {
         if (item.purchasingPrice !== undefined) {
           product.purchasingPrice = item.purchasingPrice;
         }
+        // ✅ Shift info update karo
+        if (item.shiftId !== undefined) {
+          product.shiftId = item.shiftId;
+        }
+        if (item.shiftNumber !== undefined) {
+          product.shiftNumber = item.shiftNumber;
+        }
       } else {
-        // Naya — push karo
         record.products.push({
           _id: new Types.ObjectId(),
           fuelType: item.fuelType,
@@ -105,6 +112,8 @@ export class FuelProductService {
           oldPrice: item.price!,
           purchasingPrice: item.purchasingPrice!,
           updatedPriceFrom: new Date(),
+          shiftId: item.shiftId ?? null, // ✅
+          shiftNumber: item.shiftNumber ?? null, // ✅
         });
       }
     }

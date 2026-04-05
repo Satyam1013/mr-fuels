@@ -20,6 +20,12 @@ export class FuelProductDetail {
 
   @Prop({ required: true })
   updatedPriceFrom!: Date;
+
+  @Prop({ type: Types.ObjectId, ref: "ShiftStatus", default: null })
+  shiftId?: Types.ObjectId | null;
+
+  @Prop({ default: null })
+  shiftNumber?: number | null;
 }
 
 @Schema({ timestamps: true })

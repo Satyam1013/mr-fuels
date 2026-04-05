@@ -36,6 +36,14 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
 ], FuelProductDetail.prototype, "updatedPriceFrom", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "ShiftStatus", default: null }),
+    __metadata("design:type", Object)
+], FuelProductDetail.prototype, "shiftId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", Object)
+], FuelProductDetail.prototype, "shiftNumber", void 0);
 exports.FuelProductDetail = FuelProductDetail = __decorate([
     (0, mongoose_1.Schema)({ _id: true })
 ], FuelProductDetail);
