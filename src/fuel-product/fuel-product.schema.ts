@@ -24,7 +24,7 @@ export class FuelProductDetail {
   @Prop({ type: Types.ObjectId, ref: "ShiftStatus", default: null })
   shiftId?: Types.ObjectId | null;
 
-  @Prop({ default: null })
+  @Prop({ type: Number, default: null })
   shiftNumber?: number | null;
 }
 

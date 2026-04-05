@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Object)
 ], FuelProductDetail.prototype, "shiftId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: null }),
+    (0, mongoose_1.Prop)({ type: Number, default: null }),
     __metadata("design:type", Object)
 ], FuelProductDetail.prototype, "shiftNumber", void 0);
 exports.FuelProductDetail = FuelProductDetail = __decorate([
