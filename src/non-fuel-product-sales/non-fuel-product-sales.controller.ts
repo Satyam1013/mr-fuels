@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Body, Delete, Param } from "@nestjs/common";
-import { CreateNonFuelSellProductDto } from "./non-fuel-product-sales.dto";
+import { CreateNonFuelSellProductsDto } from "./non-fuel-product-sales.dto";
 import { NonFuelProductSellService } from "./non-fuel-product-sales.service";
 import { Types } from "mongoose";
 import { GetUser } from "../auth/get-user.decoration";
@@ -11,9 +11,9 @@ export class NonFuelProductSellController {
   @Post()
   addProducts(
     @GetUser("adminId") adminId: Types.ObjectId,
-    @Body() dtos: CreateNonFuelSellProductDto[],
+    @Body() dtos: CreateNonFuelSellProductsDto,
   ) {
-    return this.nonFuelSellService.addProducts(adminId, dtos);
+    return this.nonFuelSellService.addProducts(adminId, dtos.products);
   }
 
   @Get()

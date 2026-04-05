@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NonFuelProductSellController = void 0;
 const common_1 = require("@nestjs/common");
+const non_fuel_product_sales_dto_1 = require("./non-fuel-product-sales.dto");
 const non_fuel_product_sales_service_1 = require("./non-fuel-product-sales.service");
 const mongoose_1 = require("mongoose");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
@@ -22,7 +23,7 @@ let NonFuelProductSellController = class NonFuelProductSellController {
         this.nonFuelSellService = nonFuelSellService;
     }
     addProducts(adminId, dtos) {
-        return this.nonFuelSellService.addProducts(adminId, dtos);
+        return this.nonFuelSellService.addProducts(adminId, dtos.products);
     }
     async getProducts(adminId) {
         return this.nonFuelSellService.getProducts(adminId);
@@ -37,7 +38,7 @@ __decorate([
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, Array]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, non_fuel_product_sales_dto_1.CreateNonFuelSellProductsDto]),
     __metadata("design:returntype", void 0)
 ], NonFuelProductSellController.prototype, "addProducts", null);
 __decorate([

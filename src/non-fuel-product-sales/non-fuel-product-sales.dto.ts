@@ -5,8 +5,11 @@ import {
   IsMongoId,
   IsOptional,
   IsDateString,
+  IsArray,
+  ValidateNested,
 } from "class-validator";
 import { CreditBy } from "../creditors/creditors.enum";
+import { Type } from "class-transformer";
 
 export class CreateNonFuelSellProductDto {
   @IsMongoId()
@@ -43,4 +46,11 @@ export class CreateNonFuelSellProductDto {
   @IsOptional()
   @IsString()
   photoUrl?: string;
+}
+
+export class CreateNonFuelSellProductsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateNonFuelSellProductDto)
+  products!: CreateNonFuelSellProductDto[];
 }

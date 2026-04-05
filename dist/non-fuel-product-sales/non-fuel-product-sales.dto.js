@@ -9,9 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateNonFuelSellProductDto = void 0;
+exports.CreateNonFuelSellProductsDto = exports.CreateNonFuelSellProductDto = void 0;
 const class_validator_1 = require("class-validator");
 const creditors_enum_1 = require("../creditors/creditors.enum");
+const class_transformer_1 = require("class-transformer");
 class CreateNonFuelSellProductDto {
 }
 exports.CreateNonFuelSellProductDto = CreateNonFuelSellProductDto;
@@ -61,3 +62,12 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateNonFuelSellProductDto.prototype, "photoUrl", void 0);
+class CreateNonFuelSellProductsDto {
+}
+exports.CreateNonFuelSellProductsDto = CreateNonFuelSellProductsDto;
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CreateNonFuelSellProductDto),
+    __metadata("design:type", Array)
+], CreateNonFuelSellProductsDto.prototype, "products", void 0);
