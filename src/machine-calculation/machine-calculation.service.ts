@@ -236,7 +236,7 @@ export class MachineCalculationService {
         .lean();
     }
 
-    let filteredMachineData = machineCalcWithPrice; // machineCalcData → machineCalcWithPrice
+    let filteredMachineData = machineCalcWithPrice;
 
     if (nozzleNumber) {
       filteredMachineData = machineCalcWithPrice.map((item) => ({
