@@ -207,6 +207,12 @@ export class SalesService {
       })
       .lean();
 
+    if (!salesRecords.length) {
+      throw new NotFoundException(
+        `No sales data found for ${filterType} range ${startDate} to ${endDate}.`,
+      );
+    }
+
     // Saare records ka data aggregate karo
     let totalOverallSalesLiters = 0;
     let totalOverallSalesAmount = 0;

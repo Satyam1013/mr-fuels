@@ -182,7 +182,7 @@ let MachineCalculationService = class MachineCalculationService {
                 .sort({ date: -1, shiftNumber: -1 })
                 .lean();
         }
-        let filteredMachineData = machineCalcWithPrice; // machineCalcData → machineCalcWithPrice
+        let filteredMachineData = machineCalcWithPrice;
         if (nozzleNumber) {
             filteredMachineData = machineCalcWithPrice.map((item) => ({
                 ...item,

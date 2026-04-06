@@ -37,10 +37,6 @@ __decorate([
 ], CreateFuelProductDto.prototype, "purchasingPrice", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Object)
-], CreateFuelProductDto.prototype, "shiftId", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Object)
 ], CreateFuelProductDto.prototype, "shiftNumber", void 0);
@@ -72,10 +68,6 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateFuelProductDto.prototype, "purchasingPrice", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Object)
-], UpdateFuelProductDto.prototype, "shiftId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),

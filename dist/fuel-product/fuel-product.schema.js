@@ -37,10 +37,6 @@ __decorate([
     __metadata("design:type", Date)
 ], FuelProductDetail.prototype, "updatedPriceFrom", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "ShiftStatus", default: null }),
-    __metadata("design:type", Object)
-], FuelProductDetail.prototype, "shiftId", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ type: Number, default: null }),
     __metadata("design:type", Object)
 ], FuelProductDetail.prototype, "shiftNumber", void 0);

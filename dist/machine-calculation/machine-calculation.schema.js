@@ -46,6 +46,14 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], NozzleCalculation.prototype, "faultTestingLiters", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], NozzleCalculation.prototype, "changeReading", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Boolean)
+], NozzleCalculation.prototype, "isPriceChanged", void 0);
 NozzleCalculation = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], NozzleCalculation);

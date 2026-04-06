@@ -171,6 +171,9 @@ let SalesService = class SalesService {
             shiftStatus: shift_status_enum_1.ShiftStatusEnum.COMPLETED,
         })
             .lean();
+        if (!salesRecords.length) {
+            throw new common_1.NotFoundException(`No sales data found for ${filterType} range ${startDate} to ${endDate}.`);
+        }
         // Saare records ka data aggregate karo
         let totalOverallSalesLiters = 0;
         let totalOverallSalesAmount = 0;
