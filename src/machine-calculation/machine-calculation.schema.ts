@@ -26,6 +26,9 @@ class NozzleCalculation {
 
   @Prop()
   faultTestingLiters!: number;
+
+  @Prop()
+  isPriceChanged?: boolean;
 }
 
 @Schema({ _id: false })

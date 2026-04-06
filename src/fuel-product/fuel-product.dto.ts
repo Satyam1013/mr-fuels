@@ -8,7 +8,6 @@ import {
 } from "class-validator";
 import { FuelType } from "../common/enums/fuel-type.enum";
 import { Type } from "class-transformer";
-import { Types } from "mongoose";
 
 export class CreateFuelProductDto {
   @IsEnum(FuelType)
@@ -25,9 +24,6 @@ export class CreateFuelProductDto {
   @IsNumber()
   @Min(0)
   purchasingPrice!: number;
-
-  @IsOptional()
-  shiftId?: Types.ObjectId | null;
 
   @IsOptional()
   @IsNumber()
@@ -54,9 +50,6 @@ export class UpdateFuelProductDto {
   @Min(0)
   @IsOptional()
   purchasingPrice?: number;
-
-  @IsOptional()
-  shiftId?: Types.ObjectId | null;
 
   @IsOptional()
   @IsNumber()

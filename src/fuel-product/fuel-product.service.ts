@@ -41,7 +41,6 @@ export class FuelProductService {
       ...p,
       oldPrice: p.oldPrice ?? p.price,
       updatedPriceFrom: new Date(),
-      shiftId: p.shiftId ?? null,
       shiftNumber: p.shiftNumber ?? null,
     }));
 
@@ -97,10 +96,7 @@ export class FuelProductService {
         if (item.purchasingPrice !== undefined) {
           product.purchasingPrice = item.purchasingPrice;
         }
-        // ✅ Shift info update karo
-        if (item.shiftId !== undefined) {
-          product.shiftId = item.shiftId;
-        }
+
         if (item.shiftNumber !== undefined) {
           product.shiftNumber = item.shiftNumber;
         }
@@ -112,8 +108,7 @@ export class FuelProductService {
           oldPrice: item.price!,
           purchasingPrice: item.purchasingPrice!,
           updatedPriceFrom: new Date(),
-          shiftId: item.shiftId ?? null, // ✅
-          shiftNumber: item.shiftNumber ?? null, // ✅
+          shiftNumber: item.shiftNumber ?? null,
         });
       }
     }

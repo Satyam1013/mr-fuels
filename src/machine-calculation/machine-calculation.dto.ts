@@ -1,9 +1,11 @@
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsMongoId,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
@@ -44,6 +46,10 @@ export class NozzleDto {
 
   @IsNumber()
   faultTestingLiters!: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isPriceChanged?: boolean;
 }
 
 export class CreateMachineCalculationDto {
