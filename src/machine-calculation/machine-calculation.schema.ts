@@ -28,6 +28,9 @@ class NozzleCalculation {
   faultTestingLiters!: number;
 
   @Prop()
+  changeReading!: number;
+
+  @Prop()
   isPriceChanged?: boolean;
 }
 
