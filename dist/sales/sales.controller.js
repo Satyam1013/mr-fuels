@@ -24,7 +24,8 @@ let SalesController = class SalesController {
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
     }
-    async getReport(date, shiftNumber, filterType, startDate, endDate, adminId) {
+    async getReport(date, shiftNumber, filterType, startDate, endDate, calculationMode, adminId) {
+        // Single shift
         if (date && shiftNumber) {
             return this.salesService.getSalesReport({
                 adminId,
@@ -33,12 +34,25 @@ let SalesController = class SalesController {
                 shiftNumber: Number(shiftNumber),
             });
         }
+        // Daily
+        if (filterType === "daily") {
+            return this.salesService.getSalesReport({
+                adminId,
+                type: "range",
+                filterType,
+                startDate: date,
+                endDate: date,
+                calculationMode,
+            });
+        }
+        // Weekly / Monthly / Custom
         return this.salesService.getSalesReport({
             adminId,
             type: "range",
             filterType,
             startDate,
             endDate,
+            calculationMode,
         });
     }
 };
@@ -57,9 +71,10 @@ __decorate([
     __param(2, (0, common_1.Query)("filterType")),
     __param(3, (0, common_1.Query)("startDate")),
     __param(4, (0, common_1.Query)("endDate")),
-    __param(5, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(5, (0, common_1.Query)("calculationMode")),
+    __param(6, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, String, mongoose_1.Types.ObjectId]),
+    __metadata("design:paramtypes", [String, String, String, String, String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getReport", null);
 exports.SalesController = SalesController = __decorate([

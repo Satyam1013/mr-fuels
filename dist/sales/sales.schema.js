@@ -69,6 +69,10 @@ __decorate([
     __metadata("design:type", Object)
 ], Sales.prototype, "machines", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: Array, default: [] }),
+    __metadata("design:type", Array)
+], Sales.prototype, "staff", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ enum: shift_status_enum_1.ShiftStatusEnum, default: shift_status_enum_1.ShiftStatusEnum.PENDING }),
     __metadata("design:type", String)
 ], Sales.prototype, "shiftStatus", void 0);

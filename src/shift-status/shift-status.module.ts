@@ -36,6 +36,7 @@ import {
   FuelProductDetails,
   FuelProductDetailsSchema,
 } from "../fuel-product/fuel-product.schema";
+import { Staff, StaffSchema } from "../staff/staff.schema";
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import {
       { name: PumpExpense.name, schema: PumpExpenseSchema },
       { name: PersonalExpense.name, schema: PersonalExpenseSchema },
       { name: FuelProductDetails.name, schema: FuelProductDetailsSchema },
+      { name: Staff.name, schema: StaffSchema },
     ]),
   ],
   controllers: [ShiftStatusController],

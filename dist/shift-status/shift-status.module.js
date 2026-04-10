@@ -24,6 +24,7 @@ const digital_payment_schema_1 = require("../digital-payment/digital-payment.sch
 const pump_expense_schema_1 = require("../pump-expense/pump-expense.schema");
 const personal_expense_schema_1 = require("../personal-expense/personal-expense.schema");
 const fuel_product_schema_1 = require("../fuel-product/fuel-product.schema");
+const staff_schema_1 = require("../staff/staff.schema");
 let ShiftStatusModule = class ShiftStatusModule {
 };
 exports.ShiftStatusModule = ShiftStatusModule;
@@ -44,6 +45,7 @@ exports.ShiftStatusModule = ShiftStatusModule = __decorate([
                 { name: pump_expense_schema_1.PumpExpense.name, schema: pump_expense_schema_1.PumpExpenseSchema },
                 { name: personal_expense_schema_1.PersonalExpense.name, schema: personal_expense_schema_1.PersonalExpenseSchema },
                 { name: fuel_product_schema_1.FuelProductDetails.name, schema: fuel_product_schema_1.FuelProductDetailsSchema },
+                { name: staff_schema_1.Staff.name, schema: staff_schema_1.StaffSchema },
             ]),
         ],
         controllers: [shift_status_controller_1.ShiftStatusController],

@@ -20,8 +20,10 @@ export class SalesController {
     @Query("filterType") filterType: FilterType,
     @Query("startDate") startDate: string,
     @Query("endDate") endDate: string,
+    @Query("calculationMode") calculationMode: "shiftwise" | "dailyCalculation",
     @GetUser("adminId") adminId: Types.ObjectId,
   ) {
+    // Single shift
     if (date && shiftNumber) {
       return this.salesService.getSalesReport({
         adminId,
@@ -31,12 +33,26 @@ export class SalesController {
       });
     }
 
+    // Daily
+    if (filterType === "daily") {
+      return this.salesService.getSalesReport({
+        adminId,
+        type: "range",
+        filterType,
+        startDate: date,
+        endDate: date,
+        calculationMode,
+      });
+    }
+
+    // Weekly / Monthly / Custom
     return this.salesService.getSalesReport({
       adminId,
       type: "range",
       filterType,
       startDate,
       endDate,
+      calculationMode,
     });
   }
 }

@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { StaffEntry } from "../shift-status/shift-status.enum";
 
 export enum ShiftStatus {
   OPEN = "open",
@@ -16,28 +17,13 @@ export interface GetDashboardDataParams {
   shiftNumber: number;
 }
 
-export type FilterType = "weekly" | "monthly" | "custom";
-
-export type GetSalesReportParams =
-  | {
-      adminId: Types.ObjectId;
-      type: "single";
-      date: string;
-      shiftNumber: number;
-    }
-  | {
-      adminId: Types.ObjectId;
-      type: "range";
-      filterType: FilterType;
-      startDate: string;
-      endDate: string;
-    };
+export type FilterType = "weekly" | "monthly" | "custom" | "daily";
 
 export interface NozzleLean {
   nozzleNumber: number;
   fuelProductId?: Types.ObjectId;
-  fuelType?: string; // purana data fallback
-  price?: number; // purana data fallback
+  fuelType?: string;
+  price?: number;
   isActive: boolean;
   tankId: Types.ObjectId;
 }
@@ -64,4 +50,51 @@ export interface MachinesSnapshot {
 export interface TransactionsSnapshot {
   upi: number;
   pos: number;
+}
+
+export interface DailyRecord {
+  date: string;
+  shifts: { shiftNumber: number; shiftStatus: string }[];
+  overallSales: { liters: number; amount: number };
+  netSales: { liters: number; amount: number };
+  testing: { liters: number; amount: number };
+  overallCreditorsAmount: number;
+  prepaid: number;
+  pumpExpenses: number;
+  personalExpenses: number;
+  lubricantSales: number;
+  transactions: { upi: number; pos: number };
+  nozzleMap: Map<number, NozzleSnapshot>;
+}
+
+export type GetSalesReportParams =
+  | {
+      type: "single";
+      adminId: Types.ObjectId;
+      date: string;
+      shiftNumber: number;
+    }
+  | {
+      type: "range";
+      adminId: Types.ObjectId;
+      filterType: FilterType;
+      startDate: string;
+      endDate: string;
+      calculationMode: "shiftwise" | "dailyCalculation";
+    };
+
+export interface DailyRecord {
+  date: string;
+  shifts: { shiftNumber: number; shiftStatus: string }[];
+  overallSales: { liters: number; amount: number };
+  netSales: { liters: number; amount: number };
+  testing: { liters: number; amount: number };
+  overallCreditorsAmount: number;
+  prepaid: number;
+  pumpExpenses: number;
+  personalExpenses: number;
+  lubricantSales: number;
+  transactions: { upi: number; pos: number };
+  nozzleMap: Map<number, NozzleSnapshot>;
+  staffMap: Map<string, StaffEntry>;
 }

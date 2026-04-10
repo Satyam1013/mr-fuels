@@ -13,7 +13,6 @@ export class Sales extends Document {
   @Prop({ required: true })
   date!: string;
 
-  // Dashboard data snapshot
   @Prop({ type: Object })
   overallSales!: { liters: number; amount: number };
 
@@ -43,6 +42,9 @@ export class Sales extends Document {
 
   @Prop({ type: Object })
   machines!: object;
+
+  @Prop({ type: Array, default: [] })
+  staff!: object[];
 
   @Prop({ enum: ShiftStatusEnum, default: ShiftStatusEnum.PENDING })
   shiftStatus!: ShiftStatusEnum;

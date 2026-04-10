@@ -9,7 +9,11 @@ import { Model, Types, UpdateQuery } from "mongoose";
 import { ShiftStatus } from "./shift-status.schema";
 import { CreateShiftStatusDto } from "./shift-status.dto";
 import { PumpDetails } from "../pump-details/pump-details.schema";
-import { PumpStatusEnum, ShiftStatusEnum } from "./shift-status.enum";
+import {
+  PumpStatusEnum,
+  ShiftStatusEnum,
+  StaffEntry,
+} from "./shift-status.enum";
 import {
   PopulatedShift,
   PumpDetailsLean,
@@ -31,6 +35,7 @@ import {
   FuelProductDetail,
   FuelProductDetails,
 } from "../fuel-product/fuel-product.schema";
+import { Staff } from "../staff/staff.schema";
 
 @Injectable()
 export class ShiftStatusService {
@@ -73,6 +78,9 @@ export class ShiftStatusService {
 
     @InjectModel(FuelProductDetails.name)
     private fuelProductDetailsModel: Model<FuelProductDetails>,
+
+    @InjectModel(Staff.name)
+    private staffModel: Model<Staff>,
   ) {}
 
   private getRoleModel(role: string): Role {
@@ -135,6 +143,7 @@ export class ShiftStatusService {
       allPumpExpenses,
       allPersonalExpenses,
       allNonFuelSales,
+      allStaffs,
     ] = await Promise.all([
       this.machineCalcModel
         .find({
@@ -144,13 +153,7 @@ export class ShiftStatusService {
         })
         .lean(),
       this.fuelProductDetailsModel.findOne({ adminId }).lean(),
-      this.digitalPaymentModel
-        .find({
-          adminId,
-          shiftNumber,
-          date,
-        })
-        .lean(),
+      this.digitalPaymentModel.find({ adminId, shiftNumber, date }).lean(),
       this.creditorModel
         .find({
           adminId,
@@ -186,6 +189,7 @@ export class ShiftStatusService {
           date: { $gte: startOfDay, $lte: endOfDay },
         })
         .lean(),
+      this.staffModel.find({ adminId }).select("staffName _id").lean(),
     ]);
 
     // ─── Digital Payments totals ───
@@ -200,15 +204,24 @@ export class ShiftStatusService {
       0,
     );
 
+    // ─── machineCalculation.staff se overall UPI/POS (agar digitalPayments nahi) ───
+    let machineUpiTotal = 0;
+    let machinePosTotal = 0;
+    for (const machine of machineCalculations) {
+      for (const s of machine.staff) {
+        machineUpiTotal += s.upiAmount || 0;
+        machinePosTotal += s.posAmount || 0;
+      }
+    }
+
     let totalOverallSalesLiters = 0;
     let totalOverallSalesAmount = 0;
     let totalTestingLiters = 0;
     let totalTestingAmount = 0;
 
     const allNozzlesResult: any[] = [];
+    const staffMap = new Map<string, StaffEntry>();
 
-    // ✅ Bug 2 Fix — nozzle numbers machine calculations SE nikalo
-    // creditors/prepaid empty hone pe bhi loop chalega
     const machineNozzleNumbers = [
       ...new Set(
         machineCalculations.flatMap((m) =>
@@ -247,6 +260,11 @@ export class ShiftStatusService {
         .filter((e) => e.nozzleNumber === nozzleNum)
         .reduce((sum, e) => sum + (e.amount || 0), 0);
 
+      const nozzleLubricantSales = allNonFuelSales.reduce(
+        (sum, n) => sum + (n.amount || 0),
+        0,
+      );
+
       let overallNozzleLiters = 0;
       let overallNozzleAmount = 0;
       let testingLiters = 0;
@@ -269,7 +287,7 @@ export class ShiftStatusService {
               matchedNozzle.fuelProductId.toString(),
           );
           const pricePerLiter = product?.price || 0;
-          fuelType = product?.fuelType;
+          fuelType = product?.fuelType || null;
 
           overallNozzleLiters =
             (matchedNozzle.currentReading || 0) -
@@ -281,9 +299,9 @@ export class ShiftStatusService {
           testingAmount = testingLiters * pricePerLiter;
           netSalesLiters = overallNozzleLiters - testingLiters;
           netSalesAmount = netSalesLiters * pricePerLiter;
-          staffId = matchedNozzle.staffId;
+          staffId = matchedNozzle.staffId || null;
 
-          // ── UPI/POS — StaffAssignment se nikalo ──
+          // ✅ UPI/POS — machineCalculation.staff se (assignedNozzleNumbers match karke)
           const assignedStaff = machine.staff.find((s) =>
             s.assignedNozzleNumbers.includes(nozzleNum),
           );
@@ -294,13 +312,52 @@ export class ShiftStatusService {
           totalOverallSalesAmount += overallNozzleAmount;
           totalTestingLiters += testingLiters;
           totalTestingAmount += testingAmount;
+
+          // ─── Staff map mein aggregate karo ───
+
+          if (staffId) {
+            const staffIdStr = staffId.toString();
+            const staffInfo = allStaffs.find(
+              (s) => (s._id as Types.ObjectId).toString() === staffIdStr,
+            );
+
+            if (!staffMap.has(staffIdStr)) {
+              staffMap.set(staffIdStr, {
+                staffId: new Types.ObjectId(staffIdStr),
+                machineId: machine.machineId,
+                staffName: staffInfo?.staffName || "",
+                nozzleNumber: nozzleNum,
+                fuelType: fuelType || null,
+                sales: { liters: 0, amount: 0 },
+                netSales: { liters: 0, amount: 0 },
+                testing: { liters: 0, amount: 0 },
+                creditors: 0,
+                prepaid: 0,
+                lubricantSales: 0,
+                transactions: { upi: 0, pos: 0 },
+                pumpExpenses: 0,
+                personalExpenses: 0,
+              });
+            }
+
+            const staffEntry = staffMap.get(staffIdStr)!;
+            staffEntry.sales.liters += overallNozzleLiters;
+            staffEntry.sales.amount += overallNozzleAmount;
+            staffEntry.netSales.liters += netSalesLiters;
+            staffEntry.netSales.amount += netSalesAmount;
+            staffEntry.testing.liters += testingLiters;
+            staffEntry.testing.amount += testingAmount;
+            staffEntry.creditors += nozzleCreditorsAmount;
+            staffEntry.prepaid += nozzlePrepaidAmount;
+            staffEntry.lubricantSales += nozzleLubricantSales;
+            // ✅ Staff transactions — machineCalculation.staff se
+            staffEntry.transactions.upi += nozzleUpi;
+            staffEntry.transactions.pos += nozzlePos;
+            staffEntry.pumpExpenses += nozzlePumpExpenses;
+            staffEntry.personalExpenses += nozzlePersonalExpenses;
+          }
         }
       }
-
-      const nozzleLubricantSales = allNonFuelSales.reduce(
-        (sum, n) => sum + (n.amount || 0),
-        0,
-      );
 
       allNozzlesResult.push({
         staffId,
@@ -309,12 +366,6 @@ export class ShiftStatusService {
         sales: { liters: overallNozzleLiters, amount: overallNozzleAmount },
         netSales: { liters: netSalesLiters, amount: netSalesAmount },
         testing: { liters: testingLiters, amount: testingAmount },
-        creditors: nozzleCreditorsAmount,
-        prepaid: nozzlePrepaidAmount,
-        lubricantSales: nozzleLubricantSales,
-        transactions: { upi: nozzleUpi, pos: nozzlePos },
-        pumpExpenses: nozzlePumpExpenses,
-        personalExpenses: nozzlePersonalExpenses,
       });
     }
 
@@ -357,7 +408,11 @@ export class ShiftStatusService {
       pumpExpenses: totalPumpExpenses,
       personalExpenses: totalPersonalExpenses,
       lubricantSales: lubricantSalesAmount,
-      transactions: { upi: overallUpi, pos: overallPos },
+      // ✅ digitalPayments se aaya to wo, warna machineCalculation.staff se
+      transactions: {
+        upi: overallUpi > 0 ? overallUpi : machineUpiTotal,
+        pos: overallPos > 0 ? overallPos : machinePosTotal,
+      },
       machines: {
         overallMachineSales: {
           liters: totalOverallSalesLiters,
@@ -365,6 +420,7 @@ export class ShiftStatusService {
         },
         nozzles: allNozzlesResult,
       },
+      staff: Array.from(staffMap.values()),
     };
   }
 
@@ -655,6 +711,7 @@ export class ShiftStatusService {
             lubricantSales: dashboardData.lubricantSales,
             transactions: dashboardData.transactions,
             machines: dashboardData.machines,
+            staff: dashboardData.staff,
           },
           { upsert: true, new: true },
         );
@@ -776,6 +833,7 @@ export class ShiftStatusService {
               lubricantSales: dashboardData.lubricantSales,
               transactions: dashboardData.transactions,
               machines: dashboardData.machines,
+              staff: dashboardData.staff,
             },
             { upsert: true, new: true },
           );

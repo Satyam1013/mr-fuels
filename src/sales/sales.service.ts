@@ -6,6 +6,7 @@ import { Machine } from "../machines/machines.schema";
 import { Staff } from "../staff/staff.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import {
+  DailyRecord,
   GetSalesReportParams,
   MachinesSnapshot,
   NozzleLean,
@@ -18,7 +19,7 @@ import {
   FuelProductDetails,
 } from "../fuel-product/fuel-product.schema";
 import { Sales } from "./sales.schema";
-import { ShiftStatusEnum } from "../shift-status/shift-status.enum";
+import { ShiftStatusEnum, StaffEntry } from "../shift-status/shift-status.enum";
 
 @Injectable()
 export class SalesService {
@@ -196,15 +197,15 @@ export class SalesService {
       return record;
     }
 
-    const { filterType, startDate, endDate } = params;
+    const { filterType, startDate, endDate, calculationMode } = params;
 
-    // Sales collection se saare records fetch karo date range me
     const salesRecords = await this.salesModel
       .find({
         adminId,
         date: { $gte: startDate, $lte: endDate },
         shiftStatus: ShiftStatusEnum.COMPLETED,
       })
+      .sort({ date: 1, shiftNumber: 1 })
       .lean();
 
     if (!salesRecords.length) {
@@ -213,46 +214,85 @@ export class SalesService {
       );
     }
 
-    // Saare records ka data aggregate karo
-    let totalOverallSalesLiters = 0;
-    let totalOverallSalesAmount = 0;
-    let totalNetSalesLiters = 0;
-    let totalNetSalesAmount = 0;
-    let totalTestingLiters = 0;
-    let totalTestingAmount = 0;
-    let totalCreditorsAmount = 0;
-    let totalPrepaidAmount = 0;
-    let totalPumpExpenses = 0;
-    let totalPersonalExpenses = 0;
-    let totalLubricantSales = 0;
-    let totalUpi = 0;
-    let totalPos = 0;
+    // ─── SHIFTWISE → har shift alag alag ───
+    if (calculationMode === "shiftwise") {
+      const data = salesRecords.map((record) => ({
+        date: record.date,
+        shiftNumber: record.shiftNumber,
+        shiftStatus: record.shiftStatus,
+        overallSales: record.overallSales,
+        netSales: record.netSales,
+        testing: record.testing,
+        overallCreditorsAmount: record.overallCreditorsAmount,
+        prepaid: record.prepaid,
+        pumpExpenses: record.pumpExpenses,
+        personalExpenses: record.personalExpenses,
+        lubricantSales: record.lubricantSales,
+        transactions: record.transactions,
+        machines: record.machines,
+        staff: record.staff || [], // ✅ staff add
+      }));
 
-    // Nozzle wise aggregate
-    const nozzleMap = new Map<number, any>();
+      return {
+        filterType,
+        startDate,
+        endDate,
+        calculationMode,
+        totalShifts: data.length,
+        data,
+      };
+    }
+
+    const dailyMap = new Map<string, DailyRecord>();
 
     for (const record of salesRecords) {
-      totalOverallSalesLiters += record.overallSales?.liters || 0;
-      totalOverallSalesAmount += record.overallSales?.amount || 0;
-      totalNetSalesLiters += record.netSales?.liters || 0;
-      totalNetSalesAmount += record.netSales?.amount || 0;
-      totalTestingLiters += record.testing?.liters || 0;
-      totalTestingAmount += record.testing?.amount || 0;
-      totalCreditorsAmount += record.overallCreditorsAmount || 0;
-      totalPrepaidAmount += record.prepaid || 0;
-      totalPumpExpenses += record.pumpExpenses || 0;
-      totalPersonalExpenses += record.personalExpenses || 0;
-      totalLubricantSales += record.lubricantSales || 0;
-      totalUpi += (record.transactions as TransactionsSnapshot)?.upi || 0;
-      totalPos += (record.transactions as TransactionsSnapshot)?.pos || 0;
+      const key = record.date;
 
+      if (!dailyMap.has(key)) {
+        dailyMap.set(key, {
+          date: record.date,
+          shifts: [],
+          overallSales: { liters: 0, amount: 0 },
+          netSales: { liters: 0, amount: 0 },
+          testing: { liters: 0, amount: 0 },
+          overallCreditorsAmount: 0,
+          prepaid: 0,
+          pumpExpenses: 0,
+          personalExpenses: 0,
+          lubricantSales: 0,
+          transactions: { upi: 0, pos: 0 },
+          nozzleMap: new Map<number, NozzleSnapshot>(),
+          staffMap: new Map<string, StaffEntry>(), // ✅
+        });
+      }
+
+      const day = dailyMap.get(key)!;
+
+      day.shifts.push({
+        shiftNumber: record.shiftNumber,
+        shiftStatus: record.shiftStatus,
+      });
+
+      day.overallSales.liters += record.overallSales?.liters || 0;
+      day.overallSales.amount += record.overallSales?.amount || 0;
+      day.netSales.liters += record.netSales?.liters || 0;
+      day.netSales.amount += record.netSales?.amount || 0;
+      day.testing.liters += record.testing?.liters || 0;
+      day.testing.amount += record.testing?.amount || 0;
+      day.overallCreditorsAmount += record.overallCreditorsAmount || 0;
+      day.prepaid += record.prepaid || 0;
+      day.pumpExpenses += record.pumpExpenses || 0;
+      day.personalExpenses += record.personalExpenses || 0;
+      day.lubricantSales += record.lubricantSales || 0;
+      day.transactions.upi +=
+        (record.transactions as TransactionsSnapshot)?.upi || 0;
+      day.transactions.pos +=
+        (record.transactions as TransactionsSnapshot)?.pos || 0;
+
+      // ─── Nozzle aggregate ───
       const nozzles = (record.machines as MachinesSnapshot)?.nozzles || [];
-
       for (const nozzle of nozzles) {
-        const existing = nozzleMap.get(nozzle.nozzleNumber) as
-          | NozzleSnapshot
-          | undefined;
-
+        const existing = day.nozzleMap.get(nozzle.nozzleNumber);
         if (existing) {
           existing.sales.liters += nozzle.sales?.liters || 0;
           existing.sales.amount += nozzle.sales?.amount || 0;
@@ -260,15 +300,8 @@ export class SalesService {
           existing.netSales.amount += nozzle.netSales?.amount || 0;
           existing.testing.liters += nozzle.testing?.liters || 0;
           existing.testing.amount += nozzle.testing?.amount || 0;
-          existing.creditors += nozzle.creditors || 0;
-          existing.prepaid += nozzle.prepaid || 0;
-          existing.lubricantSales += nozzle.lubricantSales || 0;
-          existing.transactions.upi += nozzle.transactions?.upi || 0;
-          existing.transactions.pos += nozzle.transactions?.pos || 0;
-          existing.pumpExpenses += nozzle.pumpExpenses || 0;
-          existing.personalExpenses += nozzle.personalExpenses || 0;
         } else {
-          nozzleMap.set(nozzle.nozzleNumber, {
+          day.nozzleMap.set(nozzle.nozzleNumber, {
             nozzleNumber: nozzle.nozzleNumber,
             fuelType: nozzle.fuelType,
             staffId: nozzle.staffId,
@@ -284,44 +317,78 @@ export class SalesService {
               liters: nozzle.testing?.liters || 0,
               amount: nozzle.testing?.amount || 0,
             },
-            creditors: nozzle.creditors || 0,
-            prepaid: nozzle.prepaid || 0,
-            lubricantSales: nozzle.lubricantSales || 0,
-            transactions: {
-              upi: nozzle.transactions?.upi || 0,
-              pos: nozzle.transactions?.pos || 0,
-            },
-            pumpExpenses: nozzle.pumpExpenses || 0,
-            personalExpenses: nozzle.personalExpenses || 0,
           } as NozzleSnapshot);
         }
       }
+
+      // ─── Staff aggregate ✅ ───
+      const staffList = (record.staff as StaffEntry[]) || [];
+      for (const staff of staffList) {
+        const staffIdStr = String(staff.staffId);
+        if (!staffIdStr) continue;
+
+        if (!day.staffMap.has(staffIdStr)) {
+          day.staffMap.set(staffIdStr, {
+            staffId: new Types.ObjectId(staffIdStr),
+            staffName: staff.staffName || "",
+            machineId: staff.machineId,
+            nozzleNumber: staff.nozzleNumber,
+            fuelType: staff.fuelType || null,
+            sales: { liters: 0, amount: 0 },
+            netSales: { liters: 0, amount: 0 },
+            testing: { liters: 0, amount: 0 },
+            creditors: 0,
+            prepaid: 0,
+            lubricantSales: 0,
+            transactions: { upi: 0, pos: 0 },
+            pumpExpenses: 0,
+            personalExpenses: 0,
+          });
+        }
+
+        const staffEntry = day.staffMap.get(staffIdStr)!;
+        staffEntry.sales.liters += staff.sales?.liters || 0;
+        staffEntry.sales.amount += staff.sales?.amount || 0;
+        staffEntry.netSales.liters += staff.netSales?.liters || 0;
+        staffEntry.netSales.amount += staff.netSales?.amount || 0;
+        staffEntry.testing.liters += staff.testing?.liters || 0;
+        staffEntry.testing.amount += staff.testing?.amount || 0;
+        staffEntry.creditors += staff.creditors || 0;
+        staffEntry.prepaid += staff.prepaid || 0;
+        staffEntry.lubricantSales += staff.lubricantSales || 0;
+        staffEntry.transactions.upi += staff.transactions?.upi || 0;
+        staffEntry.transactions.pos += staff.transactions?.pos || 0;
+        staffEntry.pumpExpenses += staff.pumpExpenses || 0;
+        staffEntry.personalExpenses += staff.personalExpenses || 0;
+      }
     }
+
+    const dailyData = Array.from(dailyMap.values()).map((day) => ({
+      date: day.date,
+      shifts: day.shifts,
+      overallSales: day.overallSales,
+      netSales: day.netSales,
+      testing: day.testing,
+      overallCreditorsAmount: day.overallCreditorsAmount,
+      prepaid: day.prepaid,
+      pumpExpenses: day.pumpExpenses,
+      personalExpenses: day.personalExpenses,
+      lubricantSales: day.lubricantSales,
+      transactions: day.transactions,
+      machines: {
+        nozzles: Array.from(day.nozzleMap.values()),
+      },
+      staff: Array.from(day.staffMap.values()), // ✅
+    }));
 
     return {
       filterType,
       startDate,
       endDate,
+      calculationMode,
+      totalDays: dailyData.length,
       totalShifts: salesRecords.length,
-      overallSales: {
-        liters: totalOverallSalesLiters,
-        amount: totalOverallSalesAmount,
-      },
-      netSales: { liters: totalNetSalesLiters, amount: totalNetSalesAmount },
-      testing: { liters: totalTestingLiters, amount: totalTestingAmount },
-      overallCreditorsAmount: totalCreditorsAmount,
-      prepaid: totalPrepaidAmount,
-      pumpExpenses: totalPumpExpenses,
-      personalExpenses: totalPersonalExpenses,
-      lubricantSales: totalLubricantSales,
-      transactions: { upi: totalUpi, pos: totalPos },
-      machines: {
-        overallMachineSales: {
-          liters: totalOverallSalesLiters,
-          amount: totalOverallSalesAmount,
-        },
-        nozzles: Array.from(nozzleMap.values()),
-      },
+      data: dailyData,
     };
   }
 }
