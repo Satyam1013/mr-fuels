@@ -230,7 +230,7 @@ export class SalesService {
         lubricantSales: record.lubricantSales,
         transactions: record.transactions,
         machines: record.machines,
-        staff: record.staff || [], // ✅ staff add
+        staff: record.staff || [],
       }));
 
       return {
@@ -262,7 +262,7 @@ export class SalesService {
           lubricantSales: 0,
           transactions: { upi: 0, pos: 0 },
           nozzleMap: new Map<number, NozzleSnapshot>(),
-          staffMap: new Map<string, StaffEntry>(), // ✅
+          staffMap: new Map<string, StaffEntry>(),
         });
       }
 
@@ -378,7 +378,7 @@ export class SalesService {
       machines: {
         nozzles: Array.from(day.nozzleMap.values()),
       },
-      staff: Array.from(day.staffMap.values()), // ✅
+      staff: Array.from(day.staffMap.values()),
     }));
 
     return {

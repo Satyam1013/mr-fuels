@@ -197,9 +197,8 @@ let ShiftStatusService = class ShiftStatusService {
                         matchedNozzle.fuelProductId.toString());
                     const pricePerLiter = product?.price || 0;
                     fuelType = product?.fuelType || null;
-                    overallNozzleLiters =
-                        (matchedNozzle.currentReading || 0) -
-                            (matchedNozzle.lastReading || 0);
+                    overallNozzleLiters = Math.max((matchedNozzle.currentReading || 0) -
+                        (matchedNozzle.lastReading || 0), 0);
                     overallNozzleAmount = overallNozzleLiters * pricePerLiter;
                     testingLiters =
                         (matchedNozzle.testingLiters || 0) +
