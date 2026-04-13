@@ -204,16 +204,6 @@ export class ShiftStatusService {
       0,
     );
 
-    // ─── machineCalculation.staff se overall UPI/POS (agar digitalPayments nahi) ───
-    let machineUpiTotal = 0;
-    let machinePosTotal = 0;
-    for (const machine of machineCalculations) {
-      for (const s of machine.staff) {
-        machineUpiTotal += s.upiAmount || 0;
-        machinePosTotal += s.posAmount || 0;
-      }
-    }
-
     let totalOverallSalesLiters = 0;
     let totalOverallSalesAmount = 0;
     let totalTestingLiters = 0;
@@ -412,8 +402,8 @@ export class ShiftStatusService {
       lubricantSales: lubricantSalesAmount,
       // ✅ digitalPayments se aaya to wo, warna machineCalculation.staff se
       transactions: {
-        upi: overallUpi > 0 ? overallUpi : machineUpiTotal,
-        pos: overallPos > 0 ? overallPos : machinePosTotal,
+        upi: overallUpi,
+        pos: overallPos,
       },
       machines: {
         overallMachineSales: {
