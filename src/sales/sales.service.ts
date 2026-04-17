@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { TransactionDetails } from "../transactions/transactions.schema";
@@ -20,6 +24,7 @@ import {
 } from "../fuel-product/fuel-product.schema";
 import { Sales } from "./sales.schema";
 import { ShiftStatusEnum, StaffEntry } from "../shift-status/shift-status.enum";
+import { CreateSaleDto } from "./sales.dto";
 
 @Injectable()
 export class SalesService {
@@ -42,6 +47,28 @@ export class SalesService {
     @InjectModel(Sales.name)
     private salesModel: Model<Sales>,
   ) {}
+
+  async createSale(adminId: Types.ObjectId, dto: CreateSaleDto) {
+    const existing = await this.salesModel.findOne({
+      adminId,
+      date: dto.date,
+      shiftNumber: dto.shiftNumber,
+    });
+
+    if (existing) {
+      throw new ConflictException(
+        `Shift ${dto.shiftNumber} for date ${dto.date} already exists.`,
+      );
+    }
+
+    const sale = await this.salesModel.create({
+      adminId,
+      ...dto,
+      shiftStatus: dto.shiftStatus ?? ShiftStatusEnum.COMPLETED,
+    });
+
+    return sale;
+  }
 
   async getDashboardSetup(adminId: Types.ObjectId) {
     // =============================

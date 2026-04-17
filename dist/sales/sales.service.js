@@ -32,6 +32,22 @@ let SalesService = class SalesService {
         this.fuelProductDetailsModel = fuelProductDetailsModel;
         this.salesModel = salesModel;
     }
+    async createSale(adminId, dto) {
+        const existing = await this.salesModel.findOne({
+            adminId,
+            date: dto.date,
+            shiftNumber: dto.shiftNumber,
+        });
+        if (existing) {
+            throw new common_1.ConflictException(`Shift ${dto.shiftNumber} for date ${dto.date} already exists.`);
+        }
+        const sale = await this.salesModel.create({
+            adminId,
+            ...dto,
+            shiftStatus: dto.shiftStatus ?? shift_status_enum_1.ShiftStatusEnum.COMPLETED,
+        });
+        return sale;
+    }
     async getDashboardSetup(adminId) {
         // =============================
         // 1️⃣ Machines + FuelProductDetails

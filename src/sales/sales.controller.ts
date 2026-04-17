@@ -1,12 +1,21 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { SalesService } from "./sales.service";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 import { FilterType } from "./sales.enum";
+import { CreateSaleDto } from "./sales.dto";
 
 @Controller("sales")
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
+
+  @Post()
+  async createSale(
+    @Body() dto: CreateSaleDto,
+    @GetUser("adminId") adminId: Types.ObjectId,
+  ) {
+    return this.salesService.createSale(adminId, dto);
+  }
 
   @Get("dashboard-setup")
   async getDashboardSetup(@GetUser("adminId") adminId: Types.ObjectId) {

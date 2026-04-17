@@ -17,9 +17,13 @@ const common_1 = require("@nestjs/common");
 const sales_service_1 = require("./sales.service");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
 const mongoose_1 = require("mongoose");
+const sales_dto_1 = require("./sales.dto");
 let SalesController = class SalesController {
     constructor(salesService) {
         this.salesService = salesService;
+    }
+    async createSale(dto, adminId) {
+        return this.salesService.createSale(adminId, dto);
     }
     async getDashboardSetup(adminId) {
         return this.salesService.getDashboardSetup(adminId);
@@ -57,6 +61,14 @@ let SalesController = class SalesController {
     }
 };
 exports.SalesController = SalesController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [sales_dto_1.CreateSaleDto, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], SalesController.prototype, "createSale", null);
 __decorate([
     (0, common_1.Get)("dashboard-setup"),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
