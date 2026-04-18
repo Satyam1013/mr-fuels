@@ -16,13 +16,9 @@ class CreatePrepaidDto {
 }
 exports.CreatePrepaidDto = CreatePrepaidDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
-], CreatePrepaidDto.prototype, "partyName", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePrepaidDto.prototype, "phoneNumber", void 0);
+], CreatePrepaidDto.prototype, "customerId", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

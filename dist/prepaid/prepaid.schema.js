@@ -30,14 +30,6 @@ __decorate([
 ], Prepaid.prototype, "customerId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Prepaid.prototype, "partyName", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Prepaid.prototype, "phoneNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Prepaid.prototype, "amount", void 0);
 __decorate([

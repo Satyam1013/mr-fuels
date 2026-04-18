@@ -5,7 +5,6 @@ import {
   IsEnum,
   IsMongoId,
   IsDateString,
-  IsNotEmpty,
 } from "class-validator";
 import { CreditBy, CreditStatusEnum } from "./creditors.enum";
 
@@ -29,10 +28,6 @@ export class CreateCreditorDto {
 
   @IsEnum(CreditBy)
   creditBy!: CreditBy;
-
-  @IsNotEmpty()
-  @IsString()
-  phoneNumber!: string;
 
   @IsOptional()
   @IsString()

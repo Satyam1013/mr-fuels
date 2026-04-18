@@ -9,11 +9,8 @@ import {
 import { CreditBy } from "../creditors/creditors.enum";
 
 export class CreatePrepaidDto {
-  @IsString()
-  partyName!: string;
-
-  @IsString()
-  phoneNumber!: string;
+  @IsMongoId()
+  customerId!: string;
 
   @IsNumber()
   amount!: number;

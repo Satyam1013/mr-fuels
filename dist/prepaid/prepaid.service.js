@@ -37,14 +37,13 @@ let PrepaidService = class PrepaidService {
         if (!nozzle) {
             throw new common_1.BadRequestException("Invalid nozzle number");
         }
-        const customer = await this.customerService.findOrCreateCustomer(adminId, dto.partyName, dto.phoneNumber);
+        // customerId se directly customer dhundo
+        const customer = await this.customerService.findCustomerById(adminId, dto.customerId);
         const saved = await this.prepaidModel.create({
             adminId,
             customerId: customer._id,
             machineId: new mongoose_2.Types.ObjectId(dto.machineId),
             nozzleNumber: dto.nozzleNumber,
-            partyName: dto.partyName,
-            phoneNumber: dto.phoneNumber,
             amount: dto.amount,
             date: new Date(dto.date),
             shiftNumber: dto.shiftNumber,
@@ -58,9 +57,10 @@ let PrepaidService = class PrepaidService {
         };
     }
     async findAll(adminId) {
-        return this.prepaidModel.find({
-            adminId,
-        });
+        return this.prepaidModel
+            .find({ adminId })
+            .populate("customerId", "name phoneNumber")
+            .lean();
     }
 };
 exports.PrepaidService = PrepaidService;

@@ -14,12 +14,6 @@ export class Prepaid extends Document {
   customerId!: Types.ObjectId;
 
   @Prop({ required: true })
-  partyName!: string;
-
-  @Prop({ required: true })
-  phoneNumber!: string;
-
-  @Prop({ required: true })
   amount!: number;
 
   @Prop({ required: true })

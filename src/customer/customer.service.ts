@@ -50,22 +50,11 @@ export class CustomerService {
     return { message: "Customer deleted successfully" };
   }
 
-  async findOrCreateCustomer(
-    adminId: Types.ObjectId,
-    customerId: string,
-    phoneNumber: string,
-  ) {
-    let customer = await this.customerModel.findOne({
+  async findCustomerById(adminId: Types.ObjectId, customerId: string) {
+    const customer = await this.customerModel.findOne({
       _id: new Types.ObjectId(customerId),
       adminId,
     });
-
-    if (!customer) {
-      customer = await this.customerModel.findOne({
-        adminId,
-        phoneNumber,
-      });
-    }
 
     if (!customer) {
       throw new BadRequestException(

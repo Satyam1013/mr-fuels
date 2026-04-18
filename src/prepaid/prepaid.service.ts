@@ -36,10 +36,10 @@ export class PrepaidService {
       throw new BadRequestException("Invalid nozzle number");
     }
 
-    const customer = await this.customerService.findOrCreateCustomer(
+    // customerId se directly customer dhundo
+    const customer = await this.customerService.findCustomerById(
       adminId,
-      dto.partyName,
-      dto.phoneNumber,
+      dto.customerId,
     );
 
     const saved = await this.prepaidModel.create({
@@ -47,8 +47,6 @@ export class PrepaidService {
       customerId: customer._id,
       machineId: new Types.ObjectId(dto.machineId),
       nozzleNumber: dto.nozzleNumber,
-      partyName: dto.partyName,
-      phoneNumber: dto.phoneNumber,
       amount: dto.amount,
       date: new Date(dto.date),
       shiftNumber: dto.shiftNumber,
@@ -64,8 +62,9 @@ export class PrepaidService {
   }
 
   async findAll(adminId: Types.ObjectId) {
-    return this.prepaidModel.find({
-      adminId,
-    });
+    return this.prepaidModel
+      .find({ adminId })
+      .populate("customerId", "name phoneNumber")
+      .lean();
   }
 }

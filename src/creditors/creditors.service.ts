@@ -38,16 +38,10 @@ export class CreditorService {
         throw new BadRequestException("Invalid nozzle number");
       }
 
-      // customerId se customer dhundo — naam wahan se aayega
-      const customer = await this.customerService.findOrCreateCustomer(
+      const customer = await this.customerService.findCustomerById(
         adminId,
         dto.customerId,
-        dto.phoneNumber,
       );
-
-      if (!customer) {
-        throw new BadRequestException("Customer not found");
-      }
 
       const saved = await this.creditorModel.create({
         adminId,
@@ -59,7 +53,6 @@ export class CreditorService {
         shiftNumber: dto.shiftNumber,
         amount: dto.amount,
         creditBy: dto.creditBy,
-        phoneNumber: dto.phoneNumber,
         narration: dto.narration,
         photoUrl: dto.photoUrl,
         creditStatus: dto.creditStatus ?? CreditStatusEnum.TAKEN,
