@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Customer } from "./customer.schema";
@@ -48,20 +52,25 @@ export class CustomerService {
 
   async findOrCreateCustomer(
     adminId: Types.ObjectId,
-    name: string,
+    customerId: string,
     phoneNumber: string,
   ) {
     let customer = await this.customerModel.findOne({
+      _id: new Types.ObjectId(customerId),
       adminId,
-      phoneNumber: phoneNumber,
     });
 
     if (!customer) {
-      customer = await this.customerModel.create({
+      customer = await this.customerModel.findOne({
         adminId,
-        name,
         phoneNumber,
       });
+    }
+
+    if (!customer) {
+      throw new BadRequestException(
+        "Customer not found. Pehle customer create karo.",
+      );
     }
 
     return customer;

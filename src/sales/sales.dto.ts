@@ -41,6 +41,21 @@ export class BulkCreateStaffDto {
   staff!: CreateStaffDto[];
 }
 
+class ReturnCreditTotalsDto {
+  @IsNumber() upi!: number;
+  @IsNumber() cash!: number;
+  @IsNumber() accountPay!: number;
+}
+
+class DifferenceSummaryDto {
+  @IsNumber() mainDifference!: number;
+  @IsNumber() overallShortage!: number;
+  @IsNumber() overallPumpSalesShortage!: number;
+  @IsNumber() overallShortageMoneyReceived!: number;
+  @IsNumber() inHandCash!: number;
+  @IsNumber() moneyDeposited!: number;
+}
+
 class SalesAmountDto {
   @IsNumber() liters!: number;
   @IsNumber() amount!: number;
@@ -56,7 +71,7 @@ export class CreateSaleDto {
   shiftNumber!: number;
 
   @IsString()
-  date!: string; // "YYYY-MM-DD"
+  date!: string;
 
   @ValidateNested()
   @Type(() => SalesAmountDto)
@@ -80,7 +95,8 @@ export class CreateSaleDto {
   @Type(() => TransactionsDto)
   transactions!: TransactionsDto;
 
-  @IsObject() machines!: object;
+  @IsObject()
+  machines!: object;
 
   @IsArray()
   @IsOptional()
@@ -89,4 +105,31 @@ export class CreateSaleDto {
   @IsEnum(ShiftStatusEnum)
   @IsOptional()
   shiftStatus?: ShiftStatusEnum;
+
+  // ── Return Credit ──
+  @ValidateNested()
+  @Type(() => ReturnCreditTotalsDto)
+  @IsOptional()
+  returnCreditTotals?: ReturnCreditTotalsDto;
+
+  @IsNumber() @IsOptional() returnCreditUpi?: number;
+  @IsNumber() @IsOptional() returnCreditCash?: number;
+  @IsNumber() @IsOptional() returnCreditAccountPay?: number;
+
+  // ── Deposit ──
+  @IsNumber() @IsOptional() remainingDepositedAmount?: number;
+  @IsNumber() @IsOptional() depositAmount?: number;
+  @IsNumber() @IsOptional() additionalDepositAmount?: number;
+  @IsNumber() @IsOptional() moneyDeposited?: number;
+
+  // ── Cash Summary ──
+  @IsNumber() @IsOptional() inHandCash?: number;
+  @IsNumber() @IsOptional() overallAmountGeneratedByPump?: number;
+  @IsNumber() @IsOptional() amountReceivedToPump?: number;
+
+  // ── Difference Summary ──
+  @ValidateNested()
+  @Type(() => DifferenceSummaryDto)
+  @IsOptional()
+  differenceSummary?: DifferenceSummaryDto;
 }

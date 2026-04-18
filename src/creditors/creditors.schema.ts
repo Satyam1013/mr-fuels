@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { CreditBy } from "./creditors.enum";
+import { CreditBy, CreditStatusEnum } from "./creditors.enum";
 
 @Schema({ timestamps: true })
 export class Creditor extends Document {
@@ -13,11 +13,11 @@ export class Creditor extends Document {
   @Prop({ type: Types.ObjectId, ref: "Customer", required: true })
   customerId!: Types.ObjectId;
 
-  @Prop({ required: true })
-  creditorName!: string;
+  @Prop()
+  creditDate?: Date;
 
-  @Prop({ required: true })
-  date!: Date;
+  @Prop()
+  returnDate?: Date;
 
   @Prop({ required: true })
   shiftNumber!: number;
@@ -39,6 +39,13 @@ export class Creditor extends Document {
 
   @Prop({ required: true })
   nozzleNumber!: number;
+
+  @Prop({
+    enum: CreditStatusEnum,
+    default: CreditStatusEnum.TAKEN,
+    required: true,
+  })
+  creditStatus!: CreditStatusEnum;
 }
 
 export const CreditorSchema = SchemaFactory.createForClass(Creditor);

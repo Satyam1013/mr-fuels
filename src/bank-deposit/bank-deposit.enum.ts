@@ -3,8 +3,3 @@ export enum CreditBy {
   MANAGER = "manager",
   ADMIN = "admin",
 }
-
-export enum CreditStatusEnum {
-  TAKEN = "taken",
-  RETURNED = "returned",
-}

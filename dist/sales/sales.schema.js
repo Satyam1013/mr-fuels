@@ -76,6 +76,64 @@ __decorate([
     (0, mongoose_1.Prop)({ enum: shift_status_enum_1.ShiftStatusEnum, default: shift_status_enum_1.ShiftStatusEnum.PENDING }),
     __metadata("design:type", String)
 ], Sales.prototype, "shiftStatus", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Object, default: { upi: 0, cash: 0, accountPay: 0 } }),
+    __metadata("design:type", Object)
+], Sales.prototype, "returnCreditTotals", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "returnCreditUpi", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "returnCreditCash", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "returnCreditAccountPay", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "remainingDepositedAmount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "depositAmount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "additionalDepositAmount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "moneyDeposited", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "inHandCash", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "overallAmountGeneratedByPump", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Sales.prototype, "amountReceivedToPump", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: Object,
+        default: {
+            mainDifference: 0,
+            overallShortage: 0,
+            overallPumpSalesShortage: 0,
+            overallShortageMoneyReceived: 0,
+            inHandCash: 0,
+            moneyDeposited: 0,
+        },
+    }),
+    __metadata("design:type", Object)
+], Sales.prototype, "differenceSummary", void 0);
 exports.Sales = Sales = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Sales);

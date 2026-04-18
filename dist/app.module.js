@@ -37,6 +37,7 @@ const non_fuel_product_sales_module_1 = require("./non-fuel-product-sales/non-fu
 const shift_status_module_1 = require("./shift-status/shift-status.module");
 const customer_module_1 = require("./customer/customer.module");
 const fuel_product_module_1 = require("./fuel-product/fuel-product.module");
+const bank_deposit_module_1 = require("./bank-deposit/bank-deposit.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -72,6 +73,7 @@ exports.AppModule = AppModule = __decorate([
             shift_status_module_1.ShiftStatusModule,
             customer_module_1.CustomerModule,
             fuel_product_module_1.FuelProductModule,
+            bank_deposit_module_1.BankDepositModule,
         ],
         providers: [],
     })

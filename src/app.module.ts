@@ -29,6 +29,7 @@ import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-prod
 import { ShiftStatusModule } from "./shift-status/shift-status.module";
 import { CustomerModule } from "./customer/customer.module";
 import { FuelProductModule } from "./fuel-product/fuel-product.module";
+import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { FuelProductModule } from "./fuel-product/fuel-product.module";
     ShiftStatusModule,
     CustomerModule,
     FuelProductModule,
+    BankDepositModule,
   ],
   providers: [],
 })

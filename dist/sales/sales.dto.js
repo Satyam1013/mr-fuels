@@ -55,6 +55,46 @@ __decorate([
     (0, class_transformer_1.Type)(() => CreateStaffDto),
     __metadata("design:type", Array)
 ], BulkCreateStaffDto.prototype, "staff", void 0);
+class ReturnCreditTotalsDto {
+}
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ReturnCreditTotalsDto.prototype, "upi", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ReturnCreditTotalsDto.prototype, "cash", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ReturnCreditTotalsDto.prototype, "accountPay", void 0);
+class DifferenceSummaryDto {
+}
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "mainDifference", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "overallShortage", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "overallPumpSalesShortage", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "overallShortageMoneyReceived", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "inHandCash", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "moneyDeposited", void 0);
 class SalesAmountDto {
 }
 __decorate([
@@ -140,3 +180,65 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateSaleDto.prototype, "shiftStatus", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => ReturnCreditTotalsDto),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", ReturnCreditTotalsDto)
+], CreateSaleDto.prototype, "returnCreditTotals", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "returnCreditUpi", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "returnCreditCash", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "returnCreditAccountPay", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "remainingDepositedAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "depositAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "additionalDepositAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "moneyDeposited", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "inHandCash", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "overallAmountGeneratedByPump", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateSaleDto.prototype, "amountReceivedToPump", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => DifferenceSummaryDto),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", DifferenceSummaryDto)
+], CreateSaleDto.prototype, "differenceSummary", void 0);

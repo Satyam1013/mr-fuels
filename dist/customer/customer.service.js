@@ -52,17 +52,19 @@ let CustomerService = class CustomerService {
             throw new common_1.NotFoundException("Customer not found");
         return { message: "Customer deleted successfully" };
     }
-    async findOrCreateCustomer(adminId, name, phoneNumber) {
+    async findOrCreateCustomer(adminId, customerId, phoneNumber) {
         let customer = await this.customerModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(customerId),
             adminId,
-            phoneNumber: phoneNumber,
         });
         if (!customer) {
-            customer = await this.customerModel.create({
+            customer = await this.customerModel.findOne({
                 adminId,
-                name,
                 phoneNumber,
             });
+        }
+        if (!customer) {
+            throw new common_1.BadRequestException("Customer not found. Pehle customer create karo.");
         }
         return customer;
     }

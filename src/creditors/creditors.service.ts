@@ -5,6 +5,7 @@ import { Creditor } from "./creditors.schema";
 import { CreateCreditorDto } from "./creditors.dto";
 import { Machine } from "../machines/machines.schema";
 import { CustomerService } from "../customer/customer.service";
+import { CreditStatusEnum } from "./creditors.enum";
 
 @Injectable()
 export class CreditorService {
@@ -37,25 +38,31 @@ export class CreditorService {
         throw new BadRequestException("Invalid nozzle number");
       }
 
+      // customerId se customer dhundo — naam wahan se aayega
       const customer = await this.customerService.findOrCreateCustomer(
         adminId,
-        dto.creditorName,
+        dto.customerId,
         dto.phoneNumber,
       );
+
+      if (!customer) {
+        throw new BadRequestException("Customer not found");
+      }
 
       const saved = await this.creditorModel.create({
         adminId,
         customerId: customer._id,
         machineId: new Types.ObjectId(dto.machineId),
         nozzleNumber: dto.nozzleNumber,
-        creditorName: dto.creditorName,
-        date: new Date(dto.date),
+        creditDate: dto.creditDate ? new Date(dto.creditDate) : new Date(),
+        returnDate: dto.returnDate ? new Date(dto.returnDate) : undefined,
         shiftNumber: dto.shiftNumber,
         amount: dto.amount,
         creditBy: dto.creditBy,
         phoneNumber: dto.phoneNumber,
         narration: dto.narration,
         photoUrl: dto.photoUrl,
+        creditStatus: dto.creditStatus ?? CreditStatusEnum.TAKEN,
       });
 
       return {
@@ -69,8 +76,9 @@ export class CreditorService {
   }
 
   async findAll(adminId: Types.ObjectId) {
-    return this.creditorModel.find({
-      adminId,
-    });
+    return this.creditorModel
+      .find({ adminId })
+      .populate("customerId", "name phoneNumber")
+      .lean();
   }
 }

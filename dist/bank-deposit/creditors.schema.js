@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreditorSchema = exports.Creditor = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
@@ -29,13 +30,13 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Creditor.prototype, "customerId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Date)
-], Creditor.prototype, "creditDate", void 0);
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Creditor.prototype, "creditorName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], Creditor.prototype, "returnDate", void 0);
+], Creditor.prototype, "date", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
@@ -46,7 +47,7 @@ __decorate([
 ], Creditor.prototype, "amount", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
-    __metadata("design:type", String)
+    __metadata("design:type", typeof (_a = typeof creditors_enum_1.CreditBy !== "undefined" && creditors_enum_1.CreditBy) === "function" ? _a : Object)
 ], Creditor.prototype, "creditBy", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
@@ -64,14 +65,6 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Creditor.prototype, "nozzleNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
-        enum: creditors_enum_1.CreditStatusEnum,
-        default: creditors_enum_1.CreditStatusEnum.TAKEN,
-        required: true,
-    }),
-    __metadata("design:type", String)
-], Creditor.prototype, "creditStatus", void 0);
 exports.Creditor = Creditor = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Creditor);

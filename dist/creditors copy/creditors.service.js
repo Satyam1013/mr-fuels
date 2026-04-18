@@ -19,7 +19,6 @@ const mongoose_2 = require("mongoose");
 const creditors_schema_1 = require("./creditors.schema");
 const machines_schema_1 = require("../machines/machines.schema");
 const customer_service_1 = require("../customer/customer.service");
-const creditors_enum_1 = require("./creditors.enum");
 let CreditorService = class CreditorService {
     constructor(creditorModel, machineModel, customerService) {
         this.creditorModel = creditorModel;
@@ -39,25 +38,20 @@ let CreditorService = class CreditorService {
             if (!nozzle) {
                 throw new common_1.BadRequestException("Invalid nozzle number");
             }
-            // customerId se customer dhundo — naam wahan se aayega
-            const customer = await this.customerService.findOrCreateCustomer(adminId, dto.customerId, dto.phoneNumber);
-            if (!customer) {
-                throw new common_1.BadRequestException("Customer not found");
-            }
+            const customer = await this.customerService.findOrCreateCustomer(adminId, dto.creditorName, dto.phoneNumber);
             const saved = await this.creditorModel.create({
                 adminId,
                 customerId: customer._id,
                 machineId: new mongoose_2.Types.ObjectId(dto.machineId),
                 nozzleNumber: dto.nozzleNumber,
-                creditDate: dto.creditDate ? new Date(dto.creditDate) : new Date(),
-                returnDate: dto.returnDate ? new Date(dto.returnDate) : undefined,
+                creditorName: dto.creditorName,
+                date: new Date(dto.date),
                 shiftNumber: dto.shiftNumber,
                 amount: dto.amount,
                 creditBy: dto.creditBy,
                 phoneNumber: dto.phoneNumber,
                 narration: dto.narration,
                 photoUrl: dto.photoUrl,
-                creditStatus: dto.creditStatus ?? creditors_enum_1.CreditStatusEnum.TAKEN,
             });
             return {
                 message: "Credit entry added successfully",
@@ -70,10 +64,9 @@ let CreditorService = class CreditorService {
         }
     }
     async findAll(adminId) {
-        return this.creditorModel
-            .find({ adminId })
-            .populate("customerId", "name phoneNumber")
-            .lean();
+        return this.creditorModel.find({
+            adminId,
+        });
     }
 };
 exports.CreditorService = CreditorService;

@@ -29,13 +29,13 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Creditor.prototype, "customerId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Date)
-], Creditor.prototype, "creditDate", void 0);
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Creditor.prototype, "creditorName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], Creditor.prototype, "returnDate", void 0);
+], Creditor.prototype, "date", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
@@ -64,14 +64,6 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], Creditor.prototype, "nozzleNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
-        enum: creditors_enum_1.CreditStatusEnum,
-        default: creditors_enum_1.CreditStatusEnum.TAKEN,
-        required: true,
-    }),
-    __metadata("design:type", String)
-], Creditor.prototype, "creditStatus", void 0);
 exports.Creditor = Creditor = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Creditor);

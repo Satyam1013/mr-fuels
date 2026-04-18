@@ -7,14 +7,19 @@ import {
   IsDateString,
   IsNotEmpty,
 } from "class-validator";
-import { CreditBy } from "./creditors.enum";
+import { CreditBy, CreditStatusEnum } from "./creditors.enum";
 
 export class CreateCreditorDto {
-  @IsString()
-  creditorName!: string;
+  @IsMongoId()
+  customerId!: string;
 
+  @IsOptional()
   @IsDateString()
-  date!: string;
+  creditDate?: string;
+
+  @IsOptional()
+  @IsDateString()
+  returnDate?: string;
 
   @IsNumber()
   shiftNumber!: number;
@@ -42,4 +47,8 @@ export class CreateCreditorDto {
 
   @IsNumber()
   nozzleNumber!: number;
+
+  @IsOptional()
+  @IsEnum(CreditStatusEnum)
+  creditStatus?: CreditStatusEnum;
 }

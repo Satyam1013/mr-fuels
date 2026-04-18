@@ -16,19 +16,13 @@ class CreateCreditorDto {
 }
 exports.CreateCreditorDto = CreateCreditorDto;
 __decorate([
-    (0, class_validator_1.IsMongoId)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCreditorDto.prototype, "customerId", void 0);
+], CreateCreditorDto.prototype, "creditorName", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateCreditorDto.prototype, "creditDate", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], CreateCreditorDto.prototype, "returnDate", void 0);
+], CreateCreditorDto.prototype, "date", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
@@ -64,8 +58,3 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateCreditorDto.prototype, "nozzleNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(creditors_enum_1.CreditStatusEnum),
-    __metadata("design:type", String)
-], CreateCreditorDto.prototype, "creditStatus", void 0);
