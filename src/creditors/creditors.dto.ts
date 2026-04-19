@@ -6,7 +6,7 @@ import {
   IsMongoId,
   IsDateString,
 } from "class-validator";
-import { CreditBy, CreditStatusEnum } from "./creditors.enum";
+import { CreditStatusEnum } from "./creditors.enum";
 
 export class CreateCreditorDto {
   @IsMongoId()
@@ -26,8 +26,8 @@ export class CreateCreditorDto {
   @IsNumber()
   amount!: number;
 
-  @IsEnum(CreditBy)
-  creditBy!: CreditBy;
+  @IsMongoId()
+  creditBy!: string;
 
   @IsOptional()
   @IsString()
@@ -36,12 +36,6 @@ export class CreateCreditorDto {
   @IsOptional()
   @IsString()
   photoUrl?: string;
-
-  @IsMongoId()
-  machineId!: string;
-
-  @IsNumber()
-  nozzleNumber!: number;
 
   @IsOptional()
   @IsEnum(CreditStatusEnum)

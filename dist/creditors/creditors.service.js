@@ -17,39 +17,24 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const creditors_schema_1 = require("./creditors.schema");
-const machines_schema_1 = require("../machines/machines.schema");
 const customer_service_1 = require("../customer/customer.service");
 const creditors_enum_1 = require("./creditors.enum");
 let CreditorService = class CreditorService {
-    constructor(creditorModel, machineModel, customerService) {
+    constructor(creditorModel, customerService) {
         this.creditorModel = creditorModel;
-        this.machineModel = machineModel;
         this.customerService = customerService;
     }
     async create(adminId, dto) {
         try {
-            const machine = await this.machineModel.findOne({
-                _id: new mongoose_2.Types.ObjectId(dto.machineId),
-                adminId,
-            });
-            if (!machine) {
-                throw new common_1.BadRequestException("Machine not found");
-            }
-            const nozzle = machine.nozzle.find((n) => n.nozzleNumber === dto.nozzleNumber && n.isActive);
-            if (!nozzle) {
-                throw new common_1.BadRequestException("Invalid nozzle number");
-            }
             const customer = await this.customerService.findCustomerById(adminId, dto.customerId);
             const saved = await this.creditorModel.create({
                 adminId,
                 customerId: customer._id,
-                machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-                nozzleNumber: dto.nozzleNumber,
                 creditDate: dto.creditDate ? new Date(dto.creditDate) : new Date(),
                 returnDate: dto.returnDate ? new Date(dto.returnDate) : undefined,
                 shiftNumber: dto.shiftNumber,
                 amount: dto.amount,
-                creditBy: dto.creditBy,
+                creditBy: new mongoose_2.Types.ObjectId(dto.creditBy),
                 narration: dto.narration,
                 photoUrl: dto.photoUrl,
                 creditStatus: dto.creditStatus ?? creditors_enum_1.CreditStatusEnum.TAKEN,
@@ -75,8 +60,6 @@ exports.CreditorService = CreditorService;
 exports.CreditorService = CreditorService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(creditors_schema_1.Creditor.name)),
-    __param(1, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
         customer_service_1.CustomerService])
 ], CreditorService);

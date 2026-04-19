@@ -12,7 +12,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const creditors_schema_1 = require("./creditors.schema");
 const creditors_service_1 = require("./creditors.service");
 const creditors_controller_1 = require("./creditors.controller");
-const machines_schema_1 = require("../machines/machines.schema");
 const customer_module_1 = require("../customer/customer.module");
 let CreditorModule = class CreditorModule {
 };
@@ -22,7 +21,6 @@ exports.CreditorModule = CreditorModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: creditors_schema_1.Creditor.name, schema: creditors_schema_1.CreditorSchema },
-                { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
             ]),
             customer_module_1.CustomerModule,
         ],

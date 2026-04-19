@@ -38,7 +38,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateCreditorDto.prototype, "amount", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(creditors_enum_1.CreditBy),
+    (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreateCreditorDto.prototype, "creditBy", void 0);
 __decorate([
@@ -51,14 +51,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCreditorDto.prototype, "photoUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreateCreditorDto.prototype, "machineId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateCreditorDto.prototype, "nozzleNumber", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(creditors_enum_1.CreditStatusEnum),
