@@ -23,7 +23,12 @@ export class NonFuelProductSellService {
     adminId: Types.ObjectId,
     dtos: CreateNonFuelSellProductDto[],
   ) {
+    const session = await this.nonFuelSellModel.db.startSession();
+    session.startTransaction();
+
     try {
+      const productsToSave = [];
+
       for (const dto of dtos) {
         const machineId = new Types.ObjectId(dto.machineId);
         const productId = new Types.ObjectId(dto.productId);
@@ -45,18 +50,44 @@ export class NonFuelProductSellService {
         if (!product) {
           throw new Error("Product not found for this admin");
         }
+
+        // ❗ Stock validation
+        if (product.totalStock < dto.quantity) {
+          throw new Error(
+            `Insufficient stock for product ${product.productName}`,
+          );
+        }
+
+        // ✅ Update product (stock - , amountCollected +)
+        await this.nonFuelProductsModel.updateOne(
+          { _id: productId },
+          {
+            $inc: {
+              totalStock: -dto.quantity,
+              amountCollected: dto.amount,
+            },
+          },
+          { session },
+        );
+
+        productsToSave.push({
+          ...dto,
+          adminId,
+          machineId,
+          productId,
+        });
       }
 
-      const productsToSave = dtos.map((dto) => ({
-        ...dto,
-        adminId,
-        machineId: new Types.ObjectId(dto.machineId),
-        productId: new Types.ObjectId(dto.productId),
-      }));
+      const result = await this.nonFuelSellModel.insertMany(productsToSave, {
+        session,
+      });
 
-      return this.nonFuelSellModel.insertMany(productsToSave);
+      await session.commitTransaction();
+      await session.endSession();
+      return result;
     } catch (error) {
-      console.error("SELL ERROR:", error);
+      await session.abortTransaction();
+      await session.endSession();
       throw error;
     }
   }
