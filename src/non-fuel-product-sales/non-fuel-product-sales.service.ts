@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { NonFuelSellProduct } from "./non-fuel-product-sales.schema";
-import { CreateNonFuelSellProductDto } from "./non-fuel-product-sales.dto";
+import { NonFuelSaleProduct } from "./non-fuel-product-sales.schema";
+import { CreateNonFuelSaleProductDto } from "./non-fuel-product-sales.dto";
 import { Machine } from "../machines/machines.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 
 @Injectable()
-export class NonFuelProductSellService {
+export class NonFuelProductSaleService {
   constructor(
-    @InjectModel(NonFuelSellProduct.name)
-    private nonFuelSellModel: Model<NonFuelSellProduct>,
+    @InjectModel(NonFuelSaleProduct.name)
+    private nonFuelSaleModel: Model<NonFuelSaleProduct>,
 
     @InjectModel(Machine.name)
     private machineModel: Model<Machine>,
@@ -21,9 +21,9 @@ export class NonFuelProductSellService {
 
   async addProducts(
     adminId: Types.ObjectId,
-    dtos: CreateNonFuelSellProductDto[],
+    dtos: CreateNonFuelSaleProductDto[],
   ) {
-    const session = await this.nonFuelSellModel.db.startSession();
+    const session = await this.nonFuelSaleModel.db.startSession();
     session.startTransaction();
 
     try {
@@ -78,7 +78,7 @@ export class NonFuelProductSellService {
         });
       }
 
-      const result = await this.nonFuelSellModel.insertMany(productsToSave, {
+      const result = await this.nonFuelSaleModel.insertMany(productsToSave, {
         session,
       });
 
@@ -93,13 +93,13 @@ export class NonFuelProductSellService {
   }
 
   async getProducts(adminId: Types.ObjectId) {
-    return this.nonFuelSellModel
+    return this.nonFuelSaleModel
       .find({ adminId })
       .populate("productId")
       .populate("machineId");
   }
 
   async deleteProduct(productId: string) {
-    return this.nonFuelSellModel.findByIdAndDelete(productId);
+    return this.nonFuelSaleModel.findByIdAndDelete(productId);
   }
 }

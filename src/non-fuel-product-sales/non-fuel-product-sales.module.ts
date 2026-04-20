@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { NonFuelProductSellController } from "./non-fuel-product-sales.controller";
-import { NonFuelProductSellService } from "./non-fuel-product-sales.service";
+import { NonFuelProductSaleController } from "./non-fuel-product-sales.controller";
+import { NonFuelProductSaleService } from "./non-fuel-product-sales.service";
 import {
-  NonFuelSellProduct,
-  NonFuelSellProductSchema,
+  NonFuelSaleProduct,
+  NonFuelSaleProductSchema,
 } from "./non-fuel-product-sales.schema";
 import { Machine, MachineSchema } from "../machines/machines.schema";
 import {
@@ -15,12 +15,12 @@ import {
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: NonFuelSellProduct.name, schema: NonFuelSellProductSchema },
+      { name: NonFuelSaleProduct.name, schema: NonFuelSaleProductSchema },
       { name: Machine.name, schema: MachineSchema },
       { name: NonFuelProducts.name, schema: NonFuelProductsSchema },
     ]),
   ],
-  controllers: [NonFuelProductSellController],
-  providers: [NonFuelProductSellService],
+  controllers: [NonFuelProductSaleController],
+  providers: [NonFuelProductSaleService],
 })
-export class NonFuelProductSellModule {}
+export class NonFuelProductSaleModule {}

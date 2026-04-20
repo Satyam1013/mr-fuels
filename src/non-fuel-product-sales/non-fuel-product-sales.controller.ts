@@ -1,28 +1,28 @@
 import { Controller, Post, Get, Body, Delete, Param } from "@nestjs/common";
-import { CreateNonFuelSellProductsDto } from "./non-fuel-product-sales.dto";
-import { NonFuelProductSellService } from "./non-fuel-product-sales.service";
+import { CreateNonFuelSaleProductsDto } from "./non-fuel-product-sales.dto";
+import { NonFuelProductSaleService } from "./non-fuel-product-sales.service";
 import { Types } from "mongoose";
 import { GetUser } from "../auth/get-user.decoration";
 
 @Controller("non-fuel-product-sales")
-export class NonFuelProductSellController {
-  constructor(private readonly nonFuelSellService: NonFuelProductSellService) {}
+export class NonFuelProductSaleController {
+  constructor(private readonly nonFuelSaleService: NonFuelProductSaleService) {}
 
   @Post()
   addProducts(
     @GetUser("adminId") adminId: Types.ObjectId,
-    @Body() dtos: CreateNonFuelSellProductsDto,
+    @Body() dtos: CreateNonFuelSaleProductsDto,
   ) {
-    return this.nonFuelSellService.addProducts(adminId, dtos.products);
+    return this.nonFuelSaleService.addProducts(adminId, dtos.products);
   }
 
   @Get()
   async getProducts(@GetUser("adminId") adminId: Types.ObjectId) {
-    return this.nonFuelSellService.getProducts(adminId);
+    return this.nonFuelSaleService.getProducts(adminId);
   }
 
   @Delete(":id")
   async deleteProduct(@Param("id") id: string) {
-    return this.nonFuelSellService.deleteProduct(id);
+    return this.nonFuelSaleService.deleteProduct(id);
   }
 }

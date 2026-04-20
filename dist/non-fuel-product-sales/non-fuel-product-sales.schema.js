@@ -9,58 +9,58 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelSellProductSchema = exports.NonFuelSellProduct = void 0;
+exports.NonFuelSaleProductSchema = exports.NonFuelSaleProduct = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const creditors_enum_1 = require("../creditors/creditors.enum");
-let NonFuelSellProduct = class NonFuelSellProduct extends mongoose_2.Document {
+let NonFuelSaleProduct = class NonFuelSaleProduct extends mongoose_2.Document {
 };
-exports.NonFuelSellProduct = NonFuelSellProduct;
+exports.NonFuelSaleProduct = NonFuelSaleProduct;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], NonFuelSellProduct.prototype, "adminId", void 0);
+], NonFuelSaleProduct.prototype, "adminId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], NonFuelSellProduct.prototype, "machineId", void 0);
+], NonFuelSaleProduct.prototype, "machineId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "NonFuelProducts", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], NonFuelSellProduct.prototype, "productId", void 0);
+], NonFuelSaleProduct.prototype, "productId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelSellProduct.prototype, "quantity", void 0);
+], NonFuelSaleProduct.prototype, "quantity", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelSellProduct.prototype, "pricePerUnit", void 0);
+], NonFuelSaleProduct.prototype, "pricePerUnit", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelSellProduct.prototype, "amount", void 0);
+], NonFuelSaleProduct.prototype, "amount", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
     __metadata("design:type", String)
-], NonFuelSellProduct.prototype, "creditBy", void 0);
+], NonFuelSaleProduct.prototype, "creditBy", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], NonFuelSellProduct.prototype, "date", void 0);
+], NonFuelSaleProduct.prototype, "date", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], NonFuelSellProduct.prototype, "shiftNumber", void 0);
+], NonFuelSaleProduct.prototype, "shiftNumber", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], NonFuelSellProduct.prototype, "narration", void 0);
+], NonFuelSaleProduct.prototype, "narration", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], NonFuelSellProduct.prototype, "photoUrl", void 0);
-exports.NonFuelSellProduct = NonFuelSellProduct = __decorate([
+], NonFuelSaleProduct.prototype, "photoUrl", void 0);
+exports.NonFuelSaleProduct = NonFuelSaleProduct = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], NonFuelSellProduct);
-exports.NonFuelSellProductSchema = mongoose_1.SchemaFactory.createForClass(NonFuelSellProduct);
+], NonFuelSaleProduct);
+exports.NonFuelSaleProductSchema = mongoose_1.SchemaFactory.createForClass(NonFuelSaleProduct);

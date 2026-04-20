@@ -29,19 +29,19 @@ export class ShiftMachineService {
     let totalMachineAmount = 0;
 
     const calculatedNozzles = dto.nozzles.map((n) => {
-      const totalSellLiters =
+      const totalSaleLiters =
         n.currentReading -
         n.lastReading -
         n.testingLiters -
         n.faultTestingLiters;
 
-      const totalAmount = totalSellLiters * n.pricePerLiter;
+      const totalAmount = totalSaleLiters * n.pricePerLiter;
 
       totalMachineAmount += totalAmount;
 
       return {
         ...n,
-        totalSellLiters,
+        totalSaleLiters,
         totalAmount,
       };
     });

@@ -11,7 +11,7 @@ import {
 import { CreditBy } from "../creditors/creditors.enum";
 import { Type } from "class-transformer";
 
-export class CreateNonFuelSellProductDto {
+export class CreateNonFuelSaleProductDto {
   @IsMongoId()
   machineId!: string;
 
@@ -48,9 +48,9 @@ export class CreateNonFuelSellProductDto {
   photoUrl?: string;
 }
 
-export class CreateNonFuelSellProductsDto {
+export class CreateNonFuelSaleProductsDto {
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateNonFuelSellProductDto)
-  products!: CreateNonFuelSellProductDto[];
+  @Type(() => CreateNonFuelSaleProductDto)
+  products!: CreateNonFuelSaleProductDto[];
 }

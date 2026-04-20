@@ -25,7 +25,7 @@ import { PrepaidModule } from "./prepaid/prepaid.module";
 import { CashCollectionModule } from "./cash-collection/cash-collection.module";
 import { DigitalPaymentModule } from "./digital-payment/digital-payment.module";
 import { MachineCalculationModule } from "./machine-calculation/machine-calculation.module";
-import { NonFuelProductSellModule } from "./non-fuel-product-sales/non-fuel-product-sales.module";
+import { NonFuelProductSaleModule } from "./non-fuel-product-sales/non-fuel-product-sales.module";
 import { ShiftStatusModule } from "./shift-status/shift-status.module";
 import { CustomerModule } from "./customer/customer.module";
 import { FuelProductModule } from "./fuel-product/fuel-product.module";
@@ -58,7 +58,7 @@ import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
     CashCollectionModule,
     DigitalPaymentModule,
     MachineCalculationModule,
-    NonFuelProductSellModule,
+    NonFuelProductSaleModule,
     ShiftStatusModule,
     CustomerModule,
     FuelProductModule,

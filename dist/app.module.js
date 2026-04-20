@@ -69,7 +69,7 @@ exports.AppModule = AppModule = __decorate([
             cash_collection_module_1.CashCollectionModule,
             digital_payment_module_1.DigitalPaymentModule,
             machine_calculation_module_1.MachineCalculationModule,
-            non_fuel_product_sales_module_1.NonFuelProductSellModule,
+            non_fuel_product_sales_module_1.NonFuelProductSaleModule,
             shift_status_module_1.ShiftStatusModule,
             customer_module_1.CustomerModule,
             fuel_product_module_1.FuelProductModule,

@@ -12,50 +12,50 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonFuelProductSellController = void 0;
+exports.NonFuelProductSaleController = void 0;
 const common_1 = require("@nestjs/common");
 const non_fuel_product_sales_dto_1 = require("./non-fuel-product-sales.dto");
 const non_fuel_product_sales_service_1 = require("./non-fuel-product-sales.service");
 const mongoose_1 = require("mongoose");
 const get_user_decoration_1 = require("../auth/get-user.decoration");
-let NonFuelProductSellController = class NonFuelProductSellController {
-    constructor(nonFuelSellService) {
-        this.nonFuelSellService = nonFuelSellService;
+let NonFuelProductSaleController = class NonFuelProductSaleController {
+    constructor(nonFuelSaleService) {
+        this.nonFuelSaleService = nonFuelSaleService;
     }
     addProducts(adminId, dtos) {
-        return this.nonFuelSellService.addProducts(adminId, dtos.products);
+        return this.nonFuelSaleService.addProducts(adminId, dtos.products);
     }
     async getProducts(adminId) {
-        return this.nonFuelSellService.getProducts(adminId);
+        return this.nonFuelSaleService.getProducts(adminId);
     }
     async deleteProduct(id) {
-        return this.nonFuelSellService.deleteProduct(id);
+        return this.nonFuelSaleService.deleteProduct(id);
     }
 };
-exports.NonFuelProductSellController = NonFuelProductSellController;
+exports.NonFuelProductSaleController = NonFuelProductSaleController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, non_fuel_product_sales_dto_1.CreateNonFuelSellProductsDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, non_fuel_product_sales_dto_1.CreateNonFuelSaleProductsDto]),
     __metadata("design:returntype", void 0)
-], NonFuelProductSellController.prototype, "addProducts", null);
+], NonFuelProductSaleController.prototype, "addProducts", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
-], NonFuelProductSellController.prototype, "getProducts", null);
+], NonFuelProductSaleController.prototype, "getProducts", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], NonFuelProductSellController.prototype, "deleteProduct", null);
-exports.NonFuelProductSellController = NonFuelProductSellController = __decorate([
+], NonFuelProductSaleController.prototype, "deleteProduct", null);
+exports.NonFuelProductSaleController = NonFuelProductSaleController = __decorate([
     (0, common_1.Controller)("non-fuel-product-sales"),
-    __metadata("design:paramtypes", [non_fuel_product_sales_service_1.NonFuelProductSellService])
-], NonFuelProductSellController);
+    __metadata("design:paramtypes", [non_fuel_product_sales_service_1.NonFuelProductSaleService])
+], NonFuelProductSaleController);

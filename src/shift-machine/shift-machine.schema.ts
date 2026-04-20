@@ -28,7 +28,7 @@ class NozzleReading {
   narration?: string;
 
   @Prop()
-  totalSellLiters?: number;
+  totalSaleLiters?: number;
 
   @Prop()
   totalAmount?: number;

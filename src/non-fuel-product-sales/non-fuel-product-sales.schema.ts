@@ -3,7 +3,7 @@ import { Document, Types } from "mongoose";
 import { CreditBy } from "../creditors/creditors.enum";
 
 @Schema({ timestamps: true })
-export class NonFuelSellProduct extends Document {
+export class NonFuelSaleProduct extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
@@ -38,5 +38,5 @@ export class NonFuelSellProduct extends Document {
   photoUrl?: string;
 }
 
-export const NonFuelSellProductSchema =
-  SchemaFactory.createForClass(NonFuelSellProduct);
+export const NonFuelSaleProductSchema =
+  SchemaFactory.createForClass(NonFuelSaleProduct);
