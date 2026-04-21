@@ -39,22 +39,30 @@ let ShiftStatusService = class ShiftStatusService {
                 return admin_enum_1.Role.MANAGER;
         }
     }
-    buildTemplate(pumpDetails, date, shiftId) {
+    buildTemplate(pumpDetails, date) {
+        const totalShifts = pumpDetails.numberOfShifts || 0;
+        const shifts = Array.from({ length: totalShifts }, (_, i) => ({
+            shiftNumber: i + 1,
+            name: `Shift ${i + 1}`,
+            status: shift_status_enum_1.ShiftStatusEnum.PENDING,
+            closedBy: null,
+        }));
+        const firstShift = shifts[0] ?? null;
         return {
             date,
-            totalShifts: pumpDetails.numberOfShifts,
-            currentShift: {
-                shiftId: 1,
-                staffId: shiftId,
-                name: `Shift 1`,
-                startTime: pumpDetails.pumpTime.start,
-                endTime: "",
-                status: "Active",
-            },
-            shifts: [],
+            totalShifts,
+            currentShift: firstShift
+                ? {
+                    shiftNumber: firstShift.shiftNumber,
+                    name: firstShift.name,
+                    status: shift_status_enum_1.ShiftStatusEnum.PENDING,
+                    closedBy: null,
+                }
+                : null,
+            shifts,
             dailyProgress: {
                 completedShifts: 0,
-                pendingShifts: pumpDetails.numberOfShifts,
+                pendingShifts: totalShifts,
                 overallCompletionPercent: 0,
             },
             dailyClose: false,
@@ -68,7 +76,6 @@ let ShiftStatusService = class ShiftStatusService {
         }
         const today = new Date().toISOString().split("T")[0];
         const requestedDate = date || today;
-        const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
         const reqDateObj = new Date(requestedDate);
         const todayObj = new Date(today);
         // ---------------- HELPERS ----------------
@@ -127,6 +134,10 @@ let ShiftStatusService = class ShiftStatusService {
             const totalShifts = pumpDetails.numberOfShifts || 0;
             const pendingShifts = totalShifts - completedShifts;
             const percent = totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
+            // ✅ currentShift compute karo — DB pe depend mat karo
+            const computedCurrentShift = data.shifts.find((s) => s.status === shift_status_enum_1.ShiftStatusEnum.ACTIVE) ??
+                data.shifts.find((s) => s.status === shift_status_enum_1.ShiftStatusEnum.PENDING) ??
+                null;
             // Map shifts with closedBy info
             const shiftsWithClosedBy = [];
             for (const s of data.shifts || []) {
@@ -135,10 +146,11 @@ let ShiftStatusService = class ShiftStatusService {
                     closedBy: await mapClosedBy(s),
                 });
             }
-            const currentShiftWithClosedBy = data.currentShift
+            // ✅ DB ka currentShift nahi, computed wala use karo
+            const currentShiftWithClosedBy = computedCurrentShift
                 ? {
-                    ...data.currentShift,
-                    closedBy: await mapClosedBy(data.currentShift),
+                    ...computedCurrentShift,
+                    closedBy: await mapClosedBy(computedCurrentShift),
                 }
                 : null;
             return {
@@ -169,7 +181,7 @@ let ShiftStatusService = class ShiftStatusService {
             .sort({ date: -1 })
             .lean();
         if (!latest) {
-            return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+            return this.buildTemplate(pumpDetails, requestedDate);
         }
         const latestDateObj = new Date(latest.date);
         // ----------- FIRST RECORD -----------
@@ -178,7 +190,7 @@ let ShiftStatusService = class ShiftStatusService {
             .sort({ date: 1 })
             .lean();
         if (!first) {
-            return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+            return this.buildTemplate(pumpDetails, requestedDate);
         }
         const firstDateObj = new Date(first.date);
         if (reqDateObj < firstDateObj) {
@@ -209,13 +221,13 @@ let ShiftStatusService = class ShiftStatusService {
                 reqNormalized.setHours(0, 0, 0, 0);
                 if (reqNormalized.getTime() === dayAfterLatest.getTime()) {
                     // ✅ No gap — bilkul agla din hai, fresh template return karo
-                    return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+                    return this.buildTemplate(pumpDetails, requestedDate);
                 }
                 // ✅ But agar requested date aaj ki hai, toh bhi fresh template do
                 const todayNormalized = new Date(todayObj);
                 todayNormalized.setHours(0, 0, 0, 0);
                 if (reqNormalized.getTime() === todayNormalized.getTime()) {
-                    return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+                    return this.buildTemplate(pumpDetails, requestedDate);
                 }
                 return {
                     message: "No data available for this date",
@@ -229,7 +241,7 @@ let ShiftStatusService = class ShiftStatusService {
             };
         }
         // ----------- FUTURE TEMPLATE -----------
-        return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+        return this.buildTemplate(pumpDetails, requestedDate);
     }
     async create(user, dto) {
         const adminId = new mongoose_2.Types.ObjectId(user.adminId ?? user._id);

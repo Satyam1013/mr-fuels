@@ -46,29 +46,36 @@ export class ShiftStatusService {
     }
   }
 
-  private buildTemplate(
-    pumpDetails: PumpDetailsLean,
-    date: string,
-    shiftId: number,
-  ) {
+  private buildTemplate(pumpDetails: PumpDetailsLean, date: string) {
+    const totalShifts = pumpDetails.numberOfShifts || 0;
+
+    const shifts = Array.from({ length: totalShifts }, (_, i) => ({
+      shiftNumber: i + 1,
+      name: `Shift ${i + 1}`,
+      status: ShiftStatusEnum.PENDING,
+      closedBy: null,
+    }));
+
+    const firstShift = shifts[0] ?? null;
+
     return {
       date,
-      totalShifts: pumpDetails.numberOfShifts,
+      totalShifts,
 
-      currentShift: {
-        shiftId: 1,
-        staffId: shiftId,
-        name: `Shift 1`,
-        startTime: pumpDetails.pumpTime.start,
-        endTime: "",
-        status: "Active",
-      },
+      currentShift: firstShift
+        ? {
+            shiftNumber: firstShift.shiftNumber,
+            name: firstShift.name,
+            status: ShiftStatusEnum.PENDING,
+            closedBy: null,
+          }
+        : null,
 
-      shifts: [],
+      shifts,
 
       dailyProgress: {
         completedShifts: 0,
-        pendingShifts: pumpDetails.numberOfShifts,
+        pendingShifts: totalShifts,
         overallCompletionPercent: 0,
       },
 
@@ -86,8 +93,6 @@ export class ShiftStatusService {
 
     const today = new Date().toISOString().split("T")[0];
     const requestedDate = date || today;
-
-    const formattedNumberDate = Number(requestedDate.replace(/-/g, "") + "01");
 
     const reqDateObj = new Date(requestedDate);
     const todayObj = new Date(today);
@@ -167,6 +172,12 @@ export class ShiftStatusService {
       const percent =
         totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
 
+      // ✅ currentShift compute karo — DB pe depend mat karo
+      const computedCurrentShift =
+        data.shifts.find((s) => s.status === ShiftStatusEnum.ACTIVE) ??
+        data.shifts.find((s) => s.status === ShiftStatusEnum.PENDING) ??
+        null;
+
       // Map shifts with closedBy info
       const shiftsWithClosedBy = [];
       for (const s of data.shifts || []) {
@@ -176,10 +187,11 @@ export class ShiftStatusService {
         });
       }
 
-      const currentShiftWithClosedBy = data.currentShift
+      // ✅ DB ka currentShift nahi, computed wala use karo
+      const currentShiftWithClosedBy = computedCurrentShift
         ? {
-            ...data.currentShift,
-            closedBy: await mapClosedBy(data.currentShift),
+            ...computedCurrentShift,
+            closedBy: await mapClosedBy(computedCurrentShift),
           }
         : null;
 
@@ -215,11 +227,7 @@ export class ShiftStatusService {
       .lean<ShiftStatusPopulated>();
 
     if (!latest) {
-      return this.buildTemplate(
-        pumpDetails,
-        requestedDate,
-        formattedNumberDate,
-      );
+      return this.buildTemplate(pumpDetails, requestedDate);
     }
 
     const latestDateObj = new Date(latest.date);
@@ -231,11 +239,7 @@ export class ShiftStatusService {
       .lean();
 
     if (!first) {
-      return this.buildTemplate(
-        pumpDetails,
-        requestedDate,
-        formattedNumberDate,
-      );
+      return this.buildTemplate(pumpDetails, requestedDate);
     }
 
     const firstDateObj = new Date(first.date);
@@ -273,11 +277,7 @@ export class ShiftStatusService {
 
         if (reqNormalized.getTime() === dayAfterLatest.getTime()) {
           // ✅ No gap — bilkul agla din hai, fresh template return karo
-          return this.buildTemplate(
-            pumpDetails,
-            requestedDate,
-            formattedNumberDate,
-          );
+          return this.buildTemplate(pumpDetails, requestedDate);
         }
 
         // ✅ But agar requested date aaj ki hai, toh bhi fresh template do
@@ -285,11 +285,7 @@ export class ShiftStatusService {
         todayNormalized.setHours(0, 0, 0, 0);
 
         if (reqNormalized.getTime() === todayNormalized.getTime()) {
-          return this.buildTemplate(
-            pumpDetails,
-            requestedDate,
-            formattedNumberDate,
-          );
+          return this.buildTemplate(pumpDetails, requestedDate);
         }
 
         return {
@@ -306,7 +302,7 @@ export class ShiftStatusService {
     }
 
     // ----------- FUTURE TEMPLATE -----------
-    return this.buildTemplate(pumpDetails, requestedDate, formattedNumberDate);
+    return this.buildTemplate(pumpDetails, requestedDate);
   }
 
   async create(user: AuthUser, dto: CreateShiftStatusDto) {
