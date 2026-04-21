@@ -60,6 +60,10 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Creditor.prototype, "creditStatus", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: creditors_enum_1.ReturnPaymentModeEnum, default: null }),
+    __metadata("design:type", String)
+], Creditor.prototype, "returnPaymentMode", void 0);
 exports.Creditor = Creditor = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Creditor);

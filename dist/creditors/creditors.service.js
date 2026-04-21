@@ -38,6 +38,7 @@ let CreditorService = class CreditorService {
                 narration: dto.narration,
                 photoUrl: dto.photoUrl,
                 creditStatus: dto.creditStatus ?? creditors_enum_1.CreditStatusEnum.TAKEN,
+                returnPaymentMode: dto.returnPaymentMode ?? null,
             });
             return {
                 message: "Credit entry added successfully",

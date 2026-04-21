@@ -33,6 +33,7 @@ export class CreditorService {
         narration: dto.narration,
         photoUrl: dto.photoUrl,
         creditStatus: dto.creditStatus ?? CreditStatusEnum.TAKEN,
+        returnPaymentMode: dto.returnPaymentMode ?? null,
       });
 
       return {

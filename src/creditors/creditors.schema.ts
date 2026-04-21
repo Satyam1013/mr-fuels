@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { CreditStatusEnum } from "./creditors.enum";
+import { CreditStatusEnum, ReturnPaymentModeEnum } from "./creditors.enum";
 
 @Schema({ timestamps: true })
 export class Creditor extends Document {
@@ -37,6 +37,9 @@ export class Creditor extends Document {
     required: true,
   })
   creditStatus!: CreditStatusEnum;
+
+  @Prop({ enum: ReturnPaymentModeEnum, default: null })
+  returnPaymentMode?: ReturnPaymentModeEnum;
 }
 
 export const CreditorSchema = SchemaFactory.createForClass(Creditor);

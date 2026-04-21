@@ -56,3 +56,8 @@ __decorate([
     (0, class_validator_1.IsEnum)(creditors_enum_1.CreditStatusEnum),
     __metadata("design:type", String)
 ], CreateCreditorDto.prototype, "creditStatus", void 0);
+__decorate([
+    (0, class_validator_1.ValidateIf)((o) => o.creditStatus === creditors_enum_1.CreditStatusEnum.RETURNED),
+    (0, class_validator_1.IsEnum)(creditors_enum_1.ReturnPaymentModeEnum),
+    __metadata("design:type", String)
+], CreateCreditorDto.prototype, "returnPaymentMode", void 0);

@@ -5,8 +5,9 @@ import {
   IsEnum,
   IsMongoId,
   IsDateString,
+  ValidateIf,
 } from "class-validator";
-import { CreditStatusEnum } from "./creditors.enum";
+import { CreditStatusEnum, ReturnPaymentModeEnum } from "./creditors.enum";
 
 export class CreateCreditorDto {
   @IsMongoId()
@@ -40,4 +41,10 @@ export class CreateCreditorDto {
   @IsOptional()
   @IsEnum(CreditStatusEnum)
   creditStatus?: CreditStatusEnum;
+
+  @ValidateIf(
+    (o: CreateCreditorDto) => o.creditStatus === CreditStatusEnum.RETURNED,
+  )
+  @IsEnum(ReturnPaymentModeEnum)
+  returnPaymentMode?: ReturnPaymentModeEnum;
 }

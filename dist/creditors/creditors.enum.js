@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreditStatusEnum = exports.CreditBy = void 0;
+exports.ReturnPaymentModeEnum = exports.CreditStatusEnum = exports.CreditBy = void 0;
 var CreditBy;
 (function (CreditBy) {
     CreditBy["STAFF"] = "staff";
@@ -12,3 +12,9 @@ var CreditStatusEnum;
     CreditStatusEnum["TAKEN"] = "taken";
     CreditStatusEnum["RETURNED"] = "returned";
 })(CreditStatusEnum || (exports.CreditStatusEnum = CreditStatusEnum = {}));
+var ReturnPaymentModeEnum;
+(function (ReturnPaymentModeEnum) {
+    ReturnPaymentModeEnum["UPI"] = "upi";
+    ReturnPaymentModeEnum["POS"] = "pos";
+    ReturnPaymentModeEnum["CASH"] = "cash";
+})(ReturnPaymentModeEnum || (exports.ReturnPaymentModeEnum = ReturnPaymentModeEnum = {}));
