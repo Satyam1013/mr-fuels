@@ -115,6 +115,69 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], TransactionsDto.prototype, "pos", void 0);
+class StaffSaleDto {
+}
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], StaffSaleDto.prototype, "staffId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], StaffSaleDto.prototype, "staffName", void 0);
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], StaffSaleDto.prototype, "machineId", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "nozzleNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], StaffSaleDto.prototype, "fuelType", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => SalesAmountDto),
+    __metadata("design:type", SalesAmountDto)
+], StaffSaleDto.prototype, "sales", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => SalesAmountDto),
+    __metadata("design:type", SalesAmountDto)
+], StaffSaleDto.prototype, "netSales", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => SalesAmountDto),
+    __metadata("design:type", SalesAmountDto)
+], StaffSaleDto.prototype, "testing", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "creditors", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "prepaid", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "lubricantSales", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => TransactionsDto),
+    __metadata("design:type", TransactionsDto)
+], StaffSaleDto.prototype, "transactions", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "pumpExpenses", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "personalExpenses", void 0);
 class CreateSaleDto {
 }
 exports.CreateSaleDto = CreateSaleDto;
@@ -172,6 +235,8 @@ __decorate([
 ], CreateSaleDto.prototype, "machines", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => StaffSaleDto),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], CreateSaleDto.prototype, "staff", void 0);

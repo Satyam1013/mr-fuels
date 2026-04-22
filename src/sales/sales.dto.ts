@@ -2,6 +2,7 @@ import { Type } from "class-transformer";
 import {
   IsArray,
   IsEnum,
+  IsMongoId,
   IsNumber,
   IsObject,
   IsOptional,
@@ -66,6 +67,37 @@ class TransactionsDto {
   @IsNumber() pos!: number;
 }
 
+class StaffSaleDto {
+  @IsMongoId() staffId!: string;
+  @IsString() staffName!: string;
+  @IsMongoId() machineId!: string;
+  @IsNumber() nozzleNumber!: number;
+  @IsOptional() @IsString() fuelType?: string;
+
+  @ValidateNested()
+  @Type(() => SalesAmountDto)
+  sales!: SalesAmountDto;
+
+  @ValidateNested()
+  @Type(() => SalesAmountDto)
+  netSales!: SalesAmountDto;
+
+  @ValidateNested()
+  @Type(() => SalesAmountDto)
+  testing!: SalesAmountDto;
+
+  @IsNumber() creditors!: number;
+  @IsNumber() prepaid!: number;
+  @IsNumber() lubricantSales!: number;
+
+  @ValidateNested()
+  @Type(() => TransactionsDto)
+  transactions!: TransactionsDto;
+
+  @IsNumber() pumpExpenses!: number;
+  @IsNumber() personalExpenses!: number;
+}
+
 export class CreateSaleDto {
   @IsNumber()
   shiftNumber!: number;
@@ -99,8 +131,10 @@ export class CreateSaleDto {
   machines!: object;
 
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StaffSaleDto)
   @IsOptional()
-  staff?: object[];
+  staff?: StaffSaleDto[];
 
   @IsEnum(ShiftStatusEnum)
   @IsOptional()
