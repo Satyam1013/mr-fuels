@@ -14,9 +14,9 @@ export enum PumpStatusEnum {
 
 export interface StaffEntry {
   staffId: Types.ObjectId;
-  machineId: Types.ObjectId;
   staffName: string;
-  nozzleNumber: number;
+  machineId: Types.ObjectId;
+  assignedNozzleNumbers: number[];
   fuelType: string | null;
   sales: { liters: number; amount: number };
   netSales: { liters: number; amount: number };

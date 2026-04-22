@@ -71,7 +71,11 @@ class StaffSaleDto {
   @IsMongoId() staffId!: string;
   @IsString() staffName!: string;
   @IsMongoId() machineId!: string;
-  @IsNumber() nozzleNumber!: number;
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  assignedNozzleNumbers!: number[];
+
   @IsOptional() @IsString() fuelType?: string;
 
   @ValidateNested()

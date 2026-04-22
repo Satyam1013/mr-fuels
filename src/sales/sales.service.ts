@@ -359,7 +359,7 @@ export class SalesService {
             staffId: new Types.ObjectId(staffIdStr),
             staffName: staff.staffName || "",
             machineId: staff.machineId,
-            nozzleNumber: staff.nozzleNumber,
+            assignedNozzleNumbers: staff.assignedNozzleNumbers || [],
             fuelType: staff.fuelType || null,
             sales: { liters: 0, amount: 0 },
             netSales: { liters: 0, amount: 0 },
