@@ -1,12 +1,10 @@
 import {
   IsDateString,
-  IsEnum,
   IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
 } from "class-validator";
-import { CreditBy } from "../creditors/creditors.enum";
 
 export class CreatePumpExpenseDto {
   @IsString()
@@ -24,8 +22,8 @@ export class CreatePumpExpenseDto {
   @IsString()
   category!: string;
 
-  @IsEnum(CreditBy)
-  creditBy!: CreditBy;
+  @IsMongoId()
+  creditBy!: string;
 
   @IsOptional()
   @IsString()
@@ -34,10 +32,4 @@ export class CreatePumpExpenseDto {
   @IsOptional()
   @IsString()
   photoUrl?: string;
-
-  @IsMongoId()
-  machineId!: string;
-
-  @IsNumber()
-  nozzleNumber!: number;
 }

@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
 import {
   IsArray,
@@ -47,8 +48,12 @@ export class NozzleDto {
   @IsNumber()
   faultTestingLiters!: number;
 
+  @IsNumber()
   @IsOptional()
+  changeReading?: number;
+
   @IsBoolean()
+  @IsOptional()
   isPriceChanged?: boolean;
 }
 
@@ -77,3 +82,7 @@ export class GetNozzleDetailsDto {
   @IsMongoId()
   machineId!: string;
 }
+
+export class UpdateMachineCalculationDto extends PartialType(
+  CreateMachineCalculationDto,
+) {}

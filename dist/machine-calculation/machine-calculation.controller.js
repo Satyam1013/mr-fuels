@@ -37,6 +37,9 @@ let MachineCalculationController = class MachineCalculationController {
     getById(id) {
         return this.machineCalculationService.getById(id);
     }
+    update(id, adminId, dto) {
+        return this.machineCalculationService.update(adminId, id, dto);
+    }
     remove(id) {
         return this.machineCalculationService.remove(id);
     }
@@ -83,6 +86,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], MachineCalculationController.prototype, "getById", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, mongoose_1.Types.ObjectId, machine_calculation_dto_1.UpdateMachineCalculationDto]),
+    __metadata("design:returntype", void 0)
+], MachineCalculationController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),

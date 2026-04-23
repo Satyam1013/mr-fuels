@@ -1,14 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { CreditBy } from "../creditors/creditors.enum";
 
 @Schema({ timestamps: true })
 export class PersonalExpense extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
-  machineId!: Types.ObjectId;
 
   @Prop({ required: true })
   name!: string;
@@ -25,17 +21,14 @@ export class PersonalExpense extends Document {
   @Prop({ required: true })
   category!: string;
 
-  @Prop({ enum: CreditBy, required: true })
-  creditBy!: CreditBy;
+  @Prop({ type: Types.ObjectId, required: true })
+  creditBy!: Types.ObjectId;
 
   @Prop()
   narration?: string;
 
   @Prop()
   photoUrl?: string;
-
-  @Prop({ required: true })
-  nozzleNumber!: number;
 }
 
 export const PersonalExpenseSchema =

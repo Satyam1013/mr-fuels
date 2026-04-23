@@ -9,7 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetNozzleDetailsDto = exports.CreateMachineCalculationDto = exports.NozzleDto = exports.StaffAssignmentDto = void 0;
+exports.UpdateMachineCalculationDto = exports.GetNozzleDetailsDto = exports.CreateMachineCalculationDto = exports.NozzleDto = exports.StaffAssignmentDto = void 0;
+const mapped_types_1 = require("@nestjs/mapped-types");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class StaffAssignmentDto {
@@ -64,8 +65,13 @@ __decorate([
     __metadata("design:type", Number)
 ], NozzleDto.prototype, "faultTestingLiters", void 0);
 __decorate([
+    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], NozzleDto.prototype, "changeReading", void 0);
+__decorate([
     (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], NozzleDto.prototype, "isPriceChanged", void 0);
 class CreateMachineCalculationDto {
@@ -102,3 +108,6 @@ __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], GetNozzleDetailsDto.prototype, "machineId", void 0);
+class UpdateMachineCalculationDto extends (0, mapped_types_1.PartialType)(CreateMachineCalculationDto) {
+}
+exports.UpdateMachineCalculationDto = UpdateMachineCalculationDto;

@@ -15,21 +15,19 @@ export class PumpExpenseService {
     const expense = new this.pumpExpenseModel({
       ...dto,
       adminId,
-      machineId: new Types.ObjectId(dto.machineId),
+      creditBy: new Types.ObjectId(dto.creditBy),
+      date: new Date(dto.date),
     });
 
     return expense.save();
   }
 
   async findAll(adminId: Types.ObjectId) {
-    return this.pumpExpenseModel
-      .find({ adminId })
-      .populate("machineId")
-      .sort({ createdAt: -1 });
+    return this.pumpExpenseModel.find({ adminId }).sort({ createdAt: -1 });
   }
 
   async findOne(id: string) {
-    return this.pumpExpenseModel.findById(id).populate("machineId");
+    return this.pumpExpenseModel.findById(id);
   }
 
   async remove(id: string) {

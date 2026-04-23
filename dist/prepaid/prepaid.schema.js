@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrepaidSchema = exports.Prepaid = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const creditors_enum_1 = require("../creditors/creditors.enum");
+const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
+const prepaid_enum_1 = require("./prepaid.enum");
 let Prepaid = class Prepaid extends mongoose_2.Document {
 };
 exports.Prepaid = Prepaid;
@@ -20,10 +21,6 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Prepaid.prototype, "adminId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true, index: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Prepaid.prototype, "machineId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Customer", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
@@ -41,9 +38,29 @@ __decorate([
     __metadata("design:type", Number)
 ], Prepaid.prototype, "shiftNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Prepaid.prototype, "creditBy", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: prepaid_enum_1.PrepaidModeEnum, required: true }),
+    __metadata("design:type", String)
+], Prepaid.prototype, "mode", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: prepaid_enum_1.PrepaidProductTypeEnum, default: null }),
+    __metadata("design:type", String)
+], Prepaid.prototype, "productType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: fuel_type_enum_1.FuelType, default: null }),
+    __metadata("design:type", String)
+], Prepaid.prototype, "fuelType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "NonFuelProducts", default: null }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Prepaid.prototype, "nonFuelProductId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", Number)
+], Prepaid.prototype, "quantity", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
@@ -52,10 +69,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Prepaid.prototype, "photoUrl", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], Prepaid.prototype, "nozzleNumber", void 0);
 exports.Prepaid = Prepaid = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Prepaid);

@@ -17,37 +17,28 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const prepaid_schema_1 = require("./prepaid.schema");
-const machines_schema_1 = require("../machines/machines.schema");
 const customer_service_1 = require("../customer/customer.service");
 let PrepaidService = class PrepaidService {
-    constructor(prepaidModel, machineModel, customerService) {
+    constructor(prepaidModel, customerService) {
         this.prepaidModel = prepaidModel;
-        this.machineModel = machineModel;
         this.customerService = customerService;
     }
     async create(adminId, dto) {
-        const machine = await this.machineModel.findOne({
-            _id: new mongoose_2.Types.ObjectId(dto.machineId),
-            adminId,
-        });
-        if (!machine) {
-            throw new common_1.BadRequestException("Machine not found");
-        }
-        const nozzle = machine.nozzle.find((n) => n.nozzleNumber === dto.nozzleNumber && n.isActive);
-        if (!nozzle) {
-            throw new common_1.BadRequestException("Invalid nozzle number");
-        }
-        // customerId se directly customer dhundo
         const customer = await this.customerService.findCustomerById(adminId, dto.customerId);
         const saved = await this.prepaidModel.create({
             adminId,
             customerId: customer._id,
-            machineId: new mongoose_2.Types.ObjectId(dto.machineId),
-            nozzleNumber: dto.nozzleNumber,
             amount: dto.amount,
             date: new Date(dto.date),
             shiftNumber: dto.shiftNumber,
-            creditBy: dto.creditBy,
+            creditBy: new mongoose_2.Types.ObjectId(dto.creditBy),
+            mode: dto.mode,
+            productType: dto.productType ?? null,
+            fuelType: dto.fuelType ?? null,
+            nonFuelProductId: dto.nonFuelProductId
+                ? new mongoose_2.Types.ObjectId(dto.nonFuelProductId)
+                : null,
+            quantity: dto.quantity ?? null,
             narration: dto.narration,
             photoUrl: dto.photoUrl,
         });
@@ -67,8 +58,6 @@ exports.PrepaidService = PrepaidService;
 exports.PrepaidService = PrepaidService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(prepaid_schema_1.Prepaid.name)),
-    __param(1, (0, mongoose_1.InjectModel)(machines_schema_1.Machine.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
         customer_service_1.CustomerService])
 ], PrepaidService);

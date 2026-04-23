@@ -213,6 +213,53 @@ let MachineCalculationService = class MachineCalculationService {
     async getById(id) {
         return this.machineCalcModel.findById(id);
     }
+    async update(adminId, id, dto) {
+        const existing = await this.machineCalcModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.NotFoundException(`Machine calculation ${id} not found.`);
+        }
+        if (dto.nozzles) {
+            existing.nozzles = dto.nozzles.map((nozzle) => {
+                const assignedStaff = (dto.staff ?? existing.staff)?.find((s) => s.assignedNozzleNumbers.includes(nozzle.nozzleNumber));
+                return {
+                    nozzleName: nozzle.nozzleName,
+                    nozzleNumber: nozzle.nozzleNumber,
+                    fuelProductId: new mongoose_2.Types.ObjectId(nozzle.fuelProductId),
+                    lastReading: nozzle.lastReading,
+                    currentReading: nozzle.currentReading,
+                    testingLiters: nozzle.testingLiters,
+                    faultTestingLiters: nozzle.faultTestingLiters,
+                    changeReading: nozzle.changeReading ?? 0, // ✅
+                    isPriceChanged: nozzle.isPriceChanged ?? false, // ✅
+                    upiAmount: assignedStaff?.upiAmount || 0,
+                    posAmount: assignedStaff?.posAmount || 0,
+                    staffId: assignedStaff
+                        ? new mongoose_2.Types.ObjectId(assignedStaff.staffId)
+                        : undefined,
+                };
+            });
+        }
+        // Staff update karo agar bheje hain
+        if (dto.staff) {
+            existing.staff = dto.staff.map((s) => ({
+                staffId: new mongoose_2.Types.ObjectId(s.staffId),
+                assignedNozzleNumbers: s.assignedNozzleNumbers,
+                upiAmount: s.upiAmount,
+                posAmount: s.posAmount,
+            }));
+        }
+        // Baaki fields update karo
+        if (dto.date)
+            existing.date = new Date(dto.date);
+        if (dto.shiftNumber)
+            existing.shiftNumber = dto.shiftNumber;
+        if (dto.machineId)
+            existing.machineId = new mongoose_2.Types.ObjectId(dto.machineId);
+        return existing.save();
+    }
     async remove(id) {
         return this.machineCalcModel.findByIdAndDelete(id);
     }

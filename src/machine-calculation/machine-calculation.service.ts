@@ -6,7 +6,10 @@ import { PumpExpense } from "../pump-expense/pump-expense.schema";
 import { Prepaid } from "../prepaid/prepaid.schema";
 import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import { Creditor } from "../creditors/creditors.schema";
-import { CreateMachineCalculationDto } from "./machine-calculation.dto";
+import {
+  CreateMachineCalculationDto,
+  UpdateMachineCalculationDto,
+} from "./machine-calculation.dto";
 import { PersonalExpense } from "../personal-expense/personal-expense.schema";
 import {
   FuelProductDetail,
@@ -274,6 +277,63 @@ export class MachineCalculationService {
 
   async getById(id: string) {
     return this.machineCalcModel.findById(id);
+  }
+
+  async update(
+    adminId: Types.ObjectId,
+    id: string,
+    dto: UpdateMachineCalculationDto,
+  ) {
+    const existing = await this.machineCalcModel.findOne({
+      _id: new Types.ObjectId(id),
+      adminId,
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Machine calculation ${id} not found.`);
+    }
+
+    if (dto.nozzles) {
+      existing.nozzles = dto.nozzles.map((nozzle) => {
+        const assignedStaff = (dto.staff ?? existing.staff)?.find((s) =>
+          s.assignedNozzleNumbers.includes(nozzle.nozzleNumber),
+        );
+
+        return {
+          nozzleName: nozzle.nozzleName,
+          nozzleNumber: nozzle.nozzleNumber,
+          fuelProductId: new Types.ObjectId(nozzle.fuelProductId),
+          lastReading: nozzle.lastReading,
+          currentReading: nozzle.currentReading,
+          testingLiters: nozzle.testingLiters,
+          faultTestingLiters: nozzle.faultTestingLiters,
+          changeReading: nozzle.changeReading ?? 0, // ✅
+          isPriceChanged: nozzle.isPriceChanged ?? false, // ✅
+          upiAmount: assignedStaff?.upiAmount || 0,
+          posAmount: assignedStaff?.posAmount || 0,
+          staffId: assignedStaff
+            ? new Types.ObjectId(assignedStaff.staffId)
+            : undefined,
+        };
+      });
+    }
+
+    // Staff update karo agar bheje hain
+    if (dto.staff) {
+      existing.staff = dto.staff.map((s) => ({
+        staffId: new Types.ObjectId(s.staffId),
+        assignedNozzleNumbers: s.assignedNozzleNumbers,
+        upiAmount: s.upiAmount,
+        posAmount: s.posAmount,
+      }));
+    }
+
+    // Baaki fields update karo
+    if (dto.date) existing.date = new Date(dto.date);
+    if (dto.shiftNumber) existing.shiftNumber = dto.shiftNumber;
+    if (dto.machineId) existing.machineId = new Types.ObjectId(dto.machineId);
+
+    return existing.save();
   }
 
   async remove(id: string) {

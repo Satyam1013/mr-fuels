@@ -6,11 +6,13 @@ import {
   Param,
   Delete,
   Query,
+  Patch,
 } from "@nestjs/common";
 import { MachineCalculationService } from "./machine-calculation.service";
 import {
   CreateMachineCalculationDto,
   GetNozzleDetailsDto,
+  UpdateMachineCalculationDto,
 } from "./machine-calculation.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
@@ -65,6 +67,15 @@ export class MachineCalculationController {
   @Get(":id")
   getById(@Param("id") id: string) {
     return this.machineCalculationService.getById(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id") id: string,
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Body() dto: UpdateMachineCalculationDto,
+  ) {
+    return this.machineCalculationService.update(adminId, id, dto);
   }
 
   @Delete(":id")

@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpExpenseSchema = exports.PumpExpense = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const creditors_enum_1 = require("../creditors/creditors.enum");
 let PumpExpense = class PumpExpense extends mongoose_2.Document {
 };
 exports.PumpExpense = PumpExpense;
@@ -20,10 +19,6 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpExpense.prototype, "adminId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], PumpExpense.prototype, "machineId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
@@ -45,8 +40,8 @@ __decorate([
     __metadata("design:type", String)
 ], PumpExpense.prototype, "category", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: creditors_enum_1.CreditBy, required: true }),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpExpense.prototype, "creditBy", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
@@ -56,10 +51,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], PumpExpense.prototype, "photoUrl", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], PumpExpense.prototype, "nozzleNumber", void 0);
 exports.PumpExpense = PumpExpense = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], PumpExpense);

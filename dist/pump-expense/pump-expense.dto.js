@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePumpExpenseDto = void 0;
 const class_validator_1 = require("class-validator");
-const creditors_enum_1 = require("../creditors/creditors.enum");
 class CreatePumpExpenseDto {
 }
 exports.CreatePumpExpenseDto = CreatePumpExpenseDto;
@@ -36,7 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePumpExpenseDto.prototype, "category", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(creditors_enum_1.CreditBy),
+    (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreatePumpExpenseDto.prototype, "creditBy", void 0);
 __decorate([
@@ -49,11 +48,3 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePumpExpenseDto.prototype, "photoUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreatePumpExpenseDto.prototype, "machineId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreatePumpExpenseDto.prototype, "nozzleNumber", void 0);

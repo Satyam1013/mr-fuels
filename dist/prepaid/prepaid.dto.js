@@ -11,7 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePrepaidDto = void 0;
 const class_validator_1 = require("class-validator");
-const creditors_enum_1 = require("../creditors/creditors.enum");
+const prepaid_enum_1 = require("./prepaid.enum");
+const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
 class CreatePrepaidDto {
 }
 exports.CreatePrepaidDto = CreatePrepaidDto;
@@ -32,9 +33,33 @@ __decorate([
     __metadata("design:type", Number)
 ], CreatePrepaidDto.prototype, "shiftNumber", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(creditors_enum_1.CreditBy),
+    (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreatePrepaidDto.prototype, "creditBy", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(prepaid_enum_1.PrepaidModeEnum),
+    __metadata("design:type", String)
+], CreatePrepaidDto.prototype, "mode", void 0);
+__decorate([
+    (0, class_validator_1.ValidateIf)((o) => o.mode === prepaid_enum_1.PrepaidModeEnum.TRANSIT),
+    (0, class_validator_1.IsEnum)(prepaid_enum_1.PrepaidProductTypeEnum),
+    __metadata("design:type", String)
+], CreatePrepaidDto.prototype, "productType", void 0);
+__decorate([
+    (0, class_validator_1.ValidateIf)((o) => o.productType === prepaid_enum_1.PrepaidProductTypeEnum.FUEL),
+    (0, class_validator_1.IsEnum)(fuel_type_enum_1.FuelType),
+    __metadata("design:type", String)
+], CreatePrepaidDto.prototype, "fuelType", void 0);
+__decorate([
+    (0, class_validator_1.ValidateIf)((o) => o.productType === prepaid_enum_1.PrepaidProductTypeEnum.NON_FUEL),
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], CreatePrepaidDto.prototype, "nonFuelProductId", void 0);
+__decorate([
+    (0, class_validator_1.ValidateIf)((o) => o.mode === prepaid_enum_1.PrepaidModeEnum.TRANSIT),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePrepaidDto.prototype, "quantity", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -45,11 +70,3 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePrepaidDto.prototype, "photoUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsMongoId)(),
-    __metadata("design:type", String)
-], CreatePrepaidDto.prototype, "machineId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreatePrepaidDto.prototype, "nozzleNumber", void 0);

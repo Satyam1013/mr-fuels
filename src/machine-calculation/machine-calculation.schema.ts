@@ -13,7 +13,7 @@ class NozzleCalculation {
   fuelProductId!: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: "Staff" })
-  staffId!: Types.ObjectId;
+  staffId?: Types.ObjectId;
 
   @Prop()
   lastReading!: number;
