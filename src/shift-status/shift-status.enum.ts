@@ -27,4 +27,5 @@ export interface StaffEntry {
   transactions: { upi: number; pos: number };
   pumpExpenses: number;
   personalExpenses: number;
+  cashCollected: number;
 }

@@ -12,6 +12,7 @@ import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import {
   DailyRecord,
   GetSalesReportParams,
+  MachineSpecificSnapshot,
   MachinesSnapshot,
   NozzleLean,
   NozzleSnapshot,
@@ -241,7 +242,7 @@ export class SalesService {
       );
     }
 
-    // ─── SHIFTWISE → har shift alag alag ───
+    // ─── SHIFTWISE ───
     if (calculationMode === "shiftwise") {
       const data = salesRecords.map((record) => ({
         date: record.date,
@@ -290,6 +291,7 @@ export class SalesService {
           transactions: { upi: 0, pos: 0 },
           nozzleMap: new Map<number, NozzleSnapshot>(),
           staffMap: new Map<string, StaffEntry>(),
+          machineSpecificMap: new Map<string, MachineSpecificSnapshot>(), // ✅
         });
       }
 
@@ -348,7 +350,26 @@ export class SalesService {
         }
       }
 
-      // ─── Staff aggregate ✅ ───
+      // ─── MachineSpecific aggregate ✅ ───
+      const machineSpecificList =
+        (record.machines as MachinesSnapshot)?.machineSpecific || [];
+      for (const ms of machineSpecificList) {
+        const msIdStr = ms.machineId?.toString();
+        if (!msIdStr) continue;
+
+        if (!day.machineSpecificMap.has(msIdStr)) {
+          day.machineSpecificMap.set(msIdStr, {
+            machineId: ms.machineId,
+            machineName: ms.machineName,
+            cashCollected: 0,
+          });
+        }
+
+        const msEntry = day.machineSpecificMap.get(msIdStr)!;
+        msEntry.cashCollected += ms.cashCollected || 0;
+      }
+
+      // ─── Staff aggregate ───
       const staffList = (record.staff as StaffEntry[]) || [];
       for (const staff of staffList) {
         const staffIdStr = String(staff.staffId);
@@ -370,6 +391,7 @@ export class SalesService {
             transactions: { upi: 0, pos: 0 },
             pumpExpenses: 0,
             personalExpenses: 0,
+            cashCollected: 0,
           });
         }
 
@@ -387,6 +409,7 @@ export class SalesService {
         staffEntry.transactions.pos += staff.transactions?.pos || 0;
         staffEntry.pumpExpenses += staff.pumpExpenses || 0;
         staffEntry.personalExpenses += staff.personalExpenses || 0;
+        staffEntry.cashCollected += staff.cashCollected || 0; // ✅
       }
     }
 
@@ -404,6 +427,7 @@ export class SalesService {
       transactions: day.transactions,
       machines: {
         nozzles: Array.from(day.nozzleMap.values()),
+        machineSpecific: Array.from(day.machineSpecificMap.values()), // ✅
       },
       staff: Array.from(day.staffMap.values()),
     }));

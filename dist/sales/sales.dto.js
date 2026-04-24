@@ -13,6 +13,16 @@ exports.CreateSaleDto = exports.BulkCreateStaffDto = exports.CreateStaffDto = vo
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const shift_status_enum_1 = require("../shift-status/shift-status.enum");
+class NozzleSaleDto {
+}
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleSaleDto.prototype, "liters", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], NozzleSaleDto.prototype, "amount", void 0);
 class CreateStaffDto {
 }
 exports.CreateStaffDto = CreateStaffDto;
@@ -115,6 +125,88 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], TransactionsDto.prototype, "pos", void 0);
+class SalesNozzleDto {
+}
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], SalesNozzleDto.prototype, "nozzleNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SalesNozzleDto.prototype, "fuelType", void 0);
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SalesNozzleDto.prototype, "staffId", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], SalesNozzleDto.prototype, "lastReading", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], SalesNozzleDto.prototype, "currentReading", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => NozzleSaleDto),
+    __metadata("design:type", NozzleSaleDto)
+], SalesNozzleDto.prototype, "sales", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => NozzleSaleDto),
+    __metadata("design:type", NozzleSaleDto)
+], SalesNozzleDto.prototype, "netSales", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => NozzleSaleDto),
+    __metadata("design:type", NozzleSaleDto)
+], SalesNozzleDto.prototype, "testing", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Boolean)
+], SalesNozzleDto.prototype, "faultTesting", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
+], SalesNozzleDto.prototype, "faultDesc", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
+], SalesNozzleDto.prototype, "faultImg", void 0);
+class MachineSpecificDto {
+}
+__decorate([
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], MachineSpecificDto.prototype, "machineId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], MachineSpecificDto.prototype, "machineName", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], MachineSpecificDto.prototype, "cashCollected", void 0);
+class MachinesDto {
+}
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => SalesNozzleDto),
+    __metadata("design:type", Array)
+], MachinesDto.prototype, "nozzles", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => MachineSpecificDto),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], MachinesDto.prototype, "machineSpecific", void 0);
 class StaffSaleDto {
 }
 __decorate([
@@ -179,6 +271,11 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], StaffSaleDto.prototype, "personalExpenses", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], StaffSaleDto.prototype, "cashCollected", void 0);
 class CreateSaleDto {
 }
 exports.CreateSaleDto = CreateSaleDto;
@@ -231,8 +328,9 @@ __decorate([
     __metadata("design:type", TransactionsDto)
 ], CreateSaleDto.prototype, "transactions", void 0);
 __decorate([
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => MachinesDto),
+    __metadata("design:type", MachinesDto)
 ], CreateSaleDto.prototype, "machines", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),

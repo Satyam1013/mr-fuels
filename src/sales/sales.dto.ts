@@ -1,15 +1,20 @@
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsMongoId,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
 import { ShiftStatusEnum } from "../shift-status/shift-status.enum";
+
+class NozzleSaleDto {
+  @IsNumber() liters!: number;
+  @IsNumber() amount!: number;
+}
 
 export class CreateStaffDto {
   @IsString()
@@ -67,6 +72,39 @@ class TransactionsDto {
   @IsNumber() pos!: number;
 }
 
+class SalesNozzleDto {
+  @IsNumber() nozzleNumber!: number;
+  @IsString() fuelType!: string;
+  @IsMongoId() @IsOptional() staffId?: string;
+  @IsNumber() lastReading!: number;
+  @IsNumber() currentReading!: number;
+  @ValidateNested() @Type(() => NozzleSaleDto) sales!: NozzleSaleDto;
+  @ValidateNested() @Type(() => NozzleSaleDto) netSales!: NozzleSaleDto;
+  @ValidateNested() @Type(() => NozzleSaleDto) testing!: NozzleSaleDto;
+  @IsBoolean() @IsOptional() faultTesting?: boolean;
+  @IsString() @IsOptional() faultDesc?: string | null;
+  @IsString() @IsOptional() faultImg?: string | null;
+}
+
+class MachineSpecificDto {
+  @IsMongoId() machineId!: string;
+  @IsString() machineName!: string;
+  @IsNumber() cashCollected!: number;
+}
+
+class MachinesDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SalesNozzleDto)
+  nozzles!: SalesNozzleDto[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MachineSpecificDto)
+  @IsOptional()
+  machineSpecific?: MachineSpecificDto[];
+}
+
 class StaffSaleDto {
   @IsMongoId() staffId!: string;
   @IsString() staffName!: string;
@@ -78,48 +116,29 @@ class StaffSaleDto {
 
   @IsOptional() @IsString() fuelType?: string;
 
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  sales!: SalesAmountDto;
-
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  netSales!: SalesAmountDto;
-
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  testing!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) sales!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) netSales!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) testing!: SalesAmountDto;
 
   @IsNumber() creditors!: number;
   @IsNumber() prepaid!: number;
   @IsNumber() lubricantSales!: number;
 
-  @ValidateNested()
-  @Type(() => TransactionsDto)
-  transactions!: TransactionsDto;
+  @ValidateNested() @Type(() => TransactionsDto) transactions!: TransactionsDto;
 
   @IsNumber() pumpExpenses!: number;
   @IsNumber() personalExpenses!: number;
+
+  @IsNumber() @IsOptional() cashCollected?: number;
 }
 
 export class CreateSaleDto {
-  @IsNumber()
-  shiftNumber!: number;
+  @IsNumber() shiftNumber!: number;
+  @IsString() date!: string;
 
-  @IsString()
-  date!: string;
-
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  overallSales!: SalesAmountDto;
-
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  netSales!: SalesAmountDto;
-
-  @ValidateNested()
-  @Type(() => SalesAmountDto)
-  testing!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) overallSales!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) netSales!: SalesAmountDto;
+  @ValidateNested() @Type(() => SalesAmountDto) testing!: SalesAmountDto;
 
   @IsNumber() overallCreditorsAmount!: number;
   @IsNumber() prepaid!: number;
@@ -127,12 +146,11 @@ export class CreateSaleDto {
   @IsNumber() personalExpenses!: number;
   @IsNumber() lubricantSales!: number;
 
-  @ValidateNested()
-  @Type(() => TransactionsDto)
-  transactions!: TransactionsDto;
+  @ValidateNested() @Type(() => TransactionsDto) transactions!: TransactionsDto;
 
-  @IsObject()
-  machines!: object;
+  @ValidateNested()
+  @Type(() => MachinesDto)
+  machines!: MachinesDto;
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -140,9 +158,7 @@ export class CreateSaleDto {
   @IsOptional()
   staff?: StaffSaleDto[];
 
-  @IsEnum(ShiftStatusEnum)
-  @IsOptional()
-  shiftStatus?: ShiftStatusEnum;
+  @IsEnum(ShiftStatusEnum) @IsOptional() shiftStatus?: ShiftStatusEnum;
 
   // ── Return Credit ──
   @ValidateNested()

@@ -30,17 +30,16 @@ export interface NozzleLean {
 
 export interface NozzleSnapshot {
   nozzleNumber: number;
-  fuelType: string | null;
-  staffId: unknown;
+  fuelType: string;
+  staffId?: Types.ObjectId;
+  lastReading: number;
+  currentReading: number;
   sales: { liters: number; amount: number };
   netSales: { liters: number; amount: number };
   testing: { liters: number; amount: number };
-  creditors: number;
-  prepaid: number;
-  lubricantSales: number;
-  transactions: { upi: number; pos: number };
-  pumpExpenses: number;
-  personalExpenses: number;
+  faultTesting?: boolean;
+  faultDesc?: string | null;
+  faultImg?: string | null;
 }
 
 export interface MachinesSnapshot {
@@ -97,4 +96,35 @@ export interface DailyRecord {
   transactions: { upi: number; pos: number };
   nozzleMap: Map<number, NozzleSnapshot>;
   staffMap: Map<string, StaffEntry>;
+}
+
+// MachineSpecific snapshot type add karo
+export interface MachineSpecificSnapshot {
+  machineId: Types.ObjectId;
+  machineName: string;
+  cashCollected: number;
+}
+
+// DailyRecord mein machineSpecificMap add karo
+export interface DailyRecord {
+  date: string;
+  shifts: { shiftNumber: number; shiftStatus: string }[];
+  overallSales: { liters: number; amount: number };
+  netSales: { liters: number; amount: number };
+  testing: { liters: number; amount: number };
+  overallCreditorsAmount: number;
+  prepaid: number;
+  pumpExpenses: number;
+  personalExpenses: number;
+  lubricantSales: number;
+  transactions: { upi: number; pos: number };
+  nozzleMap: Map<number, NozzleSnapshot>;
+  staffMap: Map<string, StaffEntry>;
+  machineSpecificMap: Map<string, MachineSpecificSnapshot>; // ✅
+}
+
+// MachinesSnapshot mein machineSpecific add karo
+export interface MachinesSnapshot {
+  nozzles: NozzleSnapshot[];
+  machineSpecific: MachineSpecificSnapshot[]; // ✅
 }
