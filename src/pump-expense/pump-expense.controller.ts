@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Post, Param, Delete } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Patch,
+} from "@nestjs/common";
 import { PumpExpenseService } from "./pump-expense.service";
-import { CreatePumpExpenseDto } from "./pump-expense.dto";
+import { CreatePumpExpenseDto, UpdatePumpExpenseDto } from "./pump-expense.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -22,12 +30,24 @@ export class PumpExpenseController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.pumpExpenseService.findOne(id);
+  findOne(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+  ) {
+    return this.pumpExpenseService.findOne(adminId, id);
+  }
+
+  @Patch(":id")
+  update(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+    @Body() dto: UpdatePumpExpenseDto,
+  ) {
+    return this.pumpExpenseService.update(adminId, id, dto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.pumpExpenseService.remove(id);
+  remove(@GetUser("adminId") adminId: Types.ObjectId, @Param("id") id: string) {
+    return this.pumpExpenseService.remove(adminId, id);
   }
 }

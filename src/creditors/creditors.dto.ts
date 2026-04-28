@@ -8,6 +8,7 @@ import {
   ValidateIf,
 } from "class-validator";
 import { CreditStatusEnum, ReturnPaymentModeEnum } from "./creditors.enum";
+import { PartialType } from "@nestjs/mapped-types";
 
 export class CreateCreditorDto {
   @IsMongoId()
@@ -48,3 +49,5 @@ export class CreateCreditorDto {
   @IsEnum(ReturnPaymentModeEnum)
   returnPaymentMode?: ReturnPaymentModeEnum;
 }
+
+export class UpdateCreditorDto extends PartialType(CreateCreditorDto) {}

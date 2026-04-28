@@ -28,11 +28,14 @@ let PersonalExpenseController = class PersonalExpenseController {
     findAll(adminId) {
         return this.personalExpenseService.findAll(adminId);
     }
-    findOne(id) {
-        return this.personalExpenseService.findOne(id);
+    findOne(adminId, id) {
+        return this.personalExpenseService.findOne(adminId, id);
     }
-    remove(id) {
-        return this.personalExpenseService.remove(id);
+    update(adminId, id, dto) {
+        return this.personalExpenseService.patch(adminId, id, dto);
+    }
+    remove(adminId, id) {
+        return this.personalExpenseService.remove(adminId, id);
     }
 };
 exports.PersonalExpenseController = PersonalExpenseController;
@@ -53,16 +56,27 @@ __decorate([
 ], PersonalExpenseController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
 ], PersonalExpenseController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, personal_expense_dto_1.UpdatePersonalExpenseDto]),
+    __metadata("design:returntype", void 0)
+], PersonalExpenseController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
 ], PersonalExpenseController.prototype, "remove", null);
 exports.PersonalExpenseController = PersonalExpenseController = __decorate([

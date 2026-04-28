@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Post, Param, Delete } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Patch,
+} from "@nestjs/common";
 import { PersonalExpenseService } from "./personal-expense.service";
-import { CreatePersonalExpenseDto } from "./personal-expense.dto";
+import {
+  CreatePersonalExpenseDto,
+  UpdatePersonalExpenseDto,
+} from "./personal-expense.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -24,12 +35,24 @@ export class PersonalExpenseController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.personalExpenseService.findOne(id);
+  findOne(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+  ) {
+    return this.personalExpenseService.findOne(adminId, id);
+  }
+
+  @Patch(":id")
+  update(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+    @Body() dto: UpdatePersonalExpenseDto,
+  ) {
+    return this.personalExpenseService.patch(adminId, id, dto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.personalExpenseService.remove(id);
+  remove(@GetUser("adminId") adminId: Types.ObjectId, @Param("id") id: string) {
+    return this.personalExpenseService.remove(adminId, id);
   }
 }

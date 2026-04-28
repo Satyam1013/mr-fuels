@@ -56,6 +56,52 @@ let CreditorService = class CreditorService {
             .populate("customerId", "name phoneNumber")
             .lean();
     }
+    async update(adminId, id, dto) {
+        const existing = await this.creditorModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.NotFoundException(`Creditor entry ${id} not found.`);
+        }
+        if (dto.customerId) {
+            await this.customerService.findCustomerById(adminId, dto.customerId);
+        }
+        const updated = await this.creditorModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
+            $set: {
+                ...(dto.customerId && {
+                    customerId: new mongoose_2.Types.ObjectId(dto.customerId),
+                }),
+                ...(dto.creditDate && { creditDate: new Date(dto.creditDate) }),
+                ...(dto.returnDate && { returnDate: new Date(dto.returnDate) }),
+                ...(dto.shiftNumber && { shiftNumber: dto.shiftNumber }),
+                ...(dto.amount && { amount: dto.amount }),
+                ...(dto.creditBy && { creditBy: new mongoose_2.Types.ObjectId(dto.creditBy) }),
+                ...(dto.narration !== undefined && { narration: dto.narration }),
+                ...(dto.photoUrl !== undefined && { photoUrl: dto.photoUrl }),
+                ...(dto.creditStatus && { creditStatus: dto.creditStatus }),
+                ...(dto.returnPaymentMode !== undefined && {
+                    returnPaymentMode: dto.returnPaymentMode,
+                }),
+            },
+        }, { new: true });
+        return {
+            message: "Credit entry updated successfully",
+            data: updated,
+        };
+    }
+    async remove(adminId, id) {
+        const existing = await this.creditorModel.findOneAndDelete({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.NotFoundException(`Creditor entry ${id} not found.`);
+        }
+        return {
+            message: "Credit entry deleted successfully",
+        };
+    }
 };
 exports.CreditorService = CreditorService;
 exports.CreditorService = CreditorService = __decorate([

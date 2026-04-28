@@ -31,13 +31,52 @@ let PumpExpenseService = class PumpExpenseService {
         return expense.save();
     }
     async findAll(adminId) {
-        return this.pumpExpenseModel.find({ adminId }).sort({ createdAt: -1 });
+        return this.pumpExpenseModel
+            .find({ adminId })
+            .sort({ createdAt: -1 })
+            .lean();
     }
-    async findOne(id) {
-        return this.pumpExpenseModel.findById(id);
+    async findOne(adminId, id) {
+        const record = await this.pumpExpenseModel
+            .findOne({ _id: new mongoose_2.Types.ObjectId(id), adminId })
+            .lean();
+        if (!record) {
+            throw new common_1.NotFoundException(`Pump expense ${id} not found.`);
+        }
+        return record;
     }
-    async remove(id) {
-        return this.pumpExpenseModel.findByIdAndDelete(id);
+    async update(adminId, id, dto) {
+        const updated = await this.pumpExpenseModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
+            $set: {
+                ...(dto.name && { name: dto.name }),
+                ...(dto.date && { date: new Date(dto.date) }),
+                ...(dto.shiftNumber && { shiftNumber: dto.shiftNumber }),
+                ...(dto.amount && { amount: dto.amount }),
+                ...(dto.category && { category: dto.category }),
+                ...(dto.creditBy && {
+                    creditBy: new mongoose_2.Types.ObjectId(dto.creditBy),
+                }),
+                ...(dto.narration !== undefined && { narration: dto.narration }),
+                ...(dto.photoUrl !== undefined && { photoUrl: dto.photoUrl }),
+            },
+        }, { new: true });
+        if (!updated) {
+            throw new common_1.NotFoundException(`Pump expense ${id} not found.`);
+        }
+        return {
+            message: "Pump expense updated successfully",
+            data: updated,
+        };
+    }
+    async remove(adminId, id) {
+        const deleted = await this.pumpExpenseModel.findOneAndDelete({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!deleted) {
+            throw new common_1.NotFoundException(`Pump expense ${id} not found.`);
+        }
+        return { message: "Pump expense deleted successfully" };
     }
 };
 exports.PumpExpenseService = PumpExpenseService;

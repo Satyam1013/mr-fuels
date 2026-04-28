@@ -31,13 +31,52 @@ let PersonalExpenseService = class PersonalExpenseService {
         return expense.save();
     }
     async findAll(adminId) {
-        return this.personalExpenseModel.find({ adminId }).sort({ createdAt: -1 });
+        return this.personalExpenseModel
+            .find({ adminId })
+            .sort({ createdAt: -1 })
+            .lean();
     }
-    async findOne(id) {
-        return this.personalExpenseModel.findById(id);
+    async findOne(adminId, id) {
+        const record = await this.personalExpenseModel
+            .findOne({ _id: new mongoose_2.Types.ObjectId(id), adminId })
+            .lean();
+        if (!record) {
+            throw new common_1.NotFoundException(`Personal expense ${id} not found.`);
+        }
+        return record;
     }
-    async remove(id) {
-        return this.personalExpenseModel.findByIdAndDelete(id);
+    async patch(adminId, id, dto) {
+        const updated = await this.personalExpenseModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
+            $set: {
+                ...(dto.name && { name: dto.name }),
+                ...(dto.date && { date: new Date(dto.date) }),
+                ...(dto.shiftNumber && { shiftNumber: dto.shiftNumber }),
+                ...(dto.amount && { amount: dto.amount }),
+                ...(dto.category && { category: dto.category }),
+                ...(dto.creditBy && {
+                    creditBy: new mongoose_2.Types.ObjectId(dto.creditBy),
+                }),
+                ...(dto.narration !== undefined && { narration: dto.narration }),
+                ...(dto.photoUrl !== undefined && { photoUrl: dto.photoUrl }),
+            },
+        }, { new: true });
+        if (!updated) {
+            throw new common_1.NotFoundException(`Personal expense ${id} not found.`);
+        }
+        return {
+            message: "Personal expense updated successfully",
+            data: updated,
+        };
+    }
+    async remove(adminId, id) {
+        const deleted = await this.personalExpenseModel.findOneAndDelete({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!deleted) {
+            throw new common_1.NotFoundException(`Personal expense ${id} not found.`);
+        }
+        return { message: "Personal expense deleted successfully" };
     }
 };
 exports.PersonalExpenseService = PersonalExpenseService;

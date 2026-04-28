@@ -1,6 +1,14 @@
-import { Controller, Post, Body, Get } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
 import { CreditorService } from "./creditors.service";
-import { CreateCreditorDto } from "./creditors.dto";
+import { CreateCreditorDto, UpdateCreditorDto } from "./creditors.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -19,5 +27,22 @@ export class CreditorController {
   @Get()
   async findAll(@GetUser("adminId") adminId: Types.ObjectId) {
     return this.service.findAll(adminId);
+  }
+
+  @Patch(":id")
+  async update(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+    @Body() dto: UpdateCreditorDto,
+  ) {
+    return this.service.update(adminId, id, dto);
+  }
+
+  @Delete(":id")
+  async remove(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Param("id") id: string,
+  ) {
+    return this.service.remove(adminId, id);
   }
 }

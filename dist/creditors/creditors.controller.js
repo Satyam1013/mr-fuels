@@ -28,6 +28,12 @@ let CreditorController = class CreditorController {
     async findAll(adminId) {
         return this.service.findAll(adminId);
     }
+    async update(adminId, id, dto) {
+        return this.service.update(adminId, id, dto);
+    }
+    async remove(adminId, id) {
+        return this.service.remove(adminId, id);
+    }
 };
 exports.CreditorController = CreditorController;
 __decorate([
@@ -45,6 +51,23 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], CreditorController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, creditors_dto_1.UpdateCreditorDto]),
+    __metadata("design:returntype", Promise)
+], CreditorController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
+    __metadata("design:returntype", Promise)
+], CreditorController.prototype, "remove", null);
 exports.CreditorController = CreditorController = __decorate([
     (0, common_1.Controller)("creditors"),
     __metadata("design:paramtypes", [creditors_service_1.CreditorService])

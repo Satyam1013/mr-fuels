@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import {
   IsDateString,
   IsMongoId,
@@ -33,3 +34,5 @@ export class CreatePumpExpenseDto {
   @IsString()
   photoUrl?: string;
 }
+
+export class UpdatePumpExpenseDto extends PartialType(CreatePumpExpenseDto) {}

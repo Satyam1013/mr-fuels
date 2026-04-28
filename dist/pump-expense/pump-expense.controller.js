@@ -28,11 +28,14 @@ let PumpExpenseController = class PumpExpenseController {
     findAll(adminId) {
         return this.pumpExpenseService.findAll(adminId);
     }
-    findOne(id) {
-        return this.pumpExpenseService.findOne(id);
+    findOne(adminId, id) {
+        return this.pumpExpenseService.findOne(adminId, id);
     }
-    remove(id) {
-        return this.pumpExpenseService.remove(id);
+    update(adminId, id, dto) {
+        return this.pumpExpenseService.update(adminId, id, dto);
+    }
+    remove(adminId, id) {
+        return this.pumpExpenseService.remove(adminId, id);
     }
 };
 exports.PumpExpenseController = PumpExpenseController;
@@ -53,16 +56,27 @@ __decorate([
 ], PumpExpenseController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, pump_expense_dto_1.UpdatePumpExpenseDto]),
+    __metadata("design:returntype", void 0)
+], PumpExpenseController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
 ], PumpExpenseController.prototype, "remove", null);
 exports.PumpExpenseController = PumpExpenseController = __decorate([

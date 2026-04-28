@@ -9,9 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateCreditorDto = void 0;
+exports.UpdateCreditorDto = exports.CreateCreditorDto = void 0;
 const class_validator_1 = require("class-validator");
 const creditors_enum_1 = require("./creditors.enum");
+const mapped_types_1 = require("@nestjs/mapped-types");
 class CreateCreditorDto {
 }
 exports.CreateCreditorDto = CreateCreditorDto;
@@ -61,3 +62,6 @@ __decorate([
     (0, class_validator_1.IsEnum)(creditors_enum_1.ReturnPaymentModeEnum),
     __metadata("design:type", String)
 ], CreateCreditorDto.prototype, "returnPaymentMode", void 0);
+class UpdateCreditorDto extends (0, mapped_types_1.PartialType)(CreateCreditorDto) {
+}
+exports.UpdateCreditorDto = UpdateCreditorDto;
