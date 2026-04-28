@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { CashCollectionService } from "./cash-collection.service";
 import {
@@ -30,6 +31,15 @@ export class CashCollectionController {
   @Get()
   findAll(@GetUser("adminId") adminId: Types.ObjectId) {
     return this.service.findAll(adminId);
+  }
+
+  @Get("by-shift")
+  findByShift(
+    @GetUser("adminId") adminId: Types.ObjectId,
+    @Query("date") date: string,
+    @Query("shiftNumber") shiftNumber: string,
+  ) {
+    return this.service.findByShift(adminId, date, Number(shiftNumber));
   }
 
   @Get(":id")

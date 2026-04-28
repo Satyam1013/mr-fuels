@@ -40,6 +40,31 @@ export class CashCollectionService {
     return { message: "Cash collections fetched successfully", data };
   }
 
+  async findByShift(
+    adminId: Types.ObjectId,
+    date: string,
+    shiftNumber: number,
+  ) {
+    const data = await this.cashCollectionModel
+      .find({
+        adminId,
+        date: new Date(date),
+        shiftNumber,
+      })
+      .populate("staffId", "staffName")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return {
+      message: "Cash collections fetched successfully",
+      date,
+      shiftNumber,
+      totalEntries: data.length,
+      totalCash: data.reduce((sum, d) => sum + (d.totalAmount || 0), 0),
+      data,
+    };
+  }
+
   async findOne(adminId: Types.ObjectId, id: string) {
     const data = await this.cashCollectionModel
       .findOne({ _id: new Types.ObjectId(id), adminId })
