@@ -217,6 +217,7 @@ let SalesService = class SalesService {
                 data,
             };
         }
+        // ─── DAILY CALCULATION ───
         const dailyMap = new Map();
         for (const record of salesRecords) {
             const key = record.date;
@@ -235,7 +236,7 @@ let SalesService = class SalesService {
                     transactions: { upi: 0, pos: 0 },
                     nozzleMap: new Map(),
                     staffMap: new Map(),
-                    machineSpecificMap: new Map(), // ✅
+                    machineSpecificMap: new Map(),
                 });
             }
             const day = dailyMap.get(key);
@@ -275,6 +276,8 @@ let SalesService = class SalesService {
                         nozzleNumber: nozzle.nozzleNumber,
                         fuelType: nozzle.fuelType,
                         staffId: nozzle.staffId,
+                        lastReading: nozzle.lastReading,
+                        currentReading: nozzle.currentReading,
                         sales: {
                             liters: nozzle.sales?.liters || 0,
                             amount: nozzle.sales?.amount || 0,
@@ -287,10 +290,13 @@ let SalesService = class SalesService {
                             liters: nozzle.testing?.liters || 0,
                             amount: nozzle.testing?.amount || 0,
                         },
+                        faultTesting: nozzle.faultTesting,
+                        faultDesc: nozzle.faultDesc,
+                        faultImg: nozzle.faultImg,
                     });
                 }
             }
-            // ─── MachineSpecific aggregate ✅ ───
+            // ─── MachineSpecific aggregate ───
             const machineSpecificList = record.machines?.machineSpecific || [];
             for (const ms of machineSpecificList) {
                 const msIdStr = ms.machineId?.toString();
@@ -345,9 +351,10 @@ let SalesService = class SalesService {
                 staffEntry.transactions.pos += staff.transactions?.pos || 0;
                 staffEntry.pumpExpenses += staff.pumpExpenses || 0;
                 staffEntry.personalExpenses += staff.personalExpenses || 0;
-                staffEntry.cashCollected += staff.cashCollected || 0; // ✅
+                staffEntry.cashCollected += staff.cashCollected || 0;
             }
         }
+        // ─── dailyMap → array ───
         const dailyData = Array.from(dailyMap.values()).map((day) => ({
             date: day.date,
             shifts: day.shifts,
@@ -362,10 +369,25 @@ let SalesService = class SalesService {
             transactions: day.transactions,
             machines: {
                 nozzles: Array.from(day.nozzleMap.values()),
-                machineSpecific: Array.from(day.machineSpecificMap.values()), // ✅
+                machineSpecific: Array.from(day.machineSpecificMap.values()),
             },
             staff: Array.from(day.staffMap.values()),
         }));
+        // ─── DAILY → single combined object ───
+        if (filterType === "daily") {
+            const dayData = dailyData[0];
+            if (!dayData) {
+                throw new common_1.NotFoundException(`No sales data found for date ${startDate}.`);
+            }
+            return {
+                filterType,
+                date: startDate,
+                calculationMode,
+                totalShifts: salesRecords.length,
+                data: dayData, // ✅ single object
+            };
+        }
+        // ─── WEEKLY / MONTHLY / CUSTOM → array ───
         return {
             filterType,
             startDate,
@@ -373,7 +395,7 @@ let SalesService = class SalesService {
             calculationMode,
             totalDays: dailyData.length,
             totalShifts: salesRecords.length,
-            data: dailyData,
+            data: dailyData, // ✅ array
         };
     }
 };

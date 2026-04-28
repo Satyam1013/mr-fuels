@@ -38,7 +38,6 @@ let SalesController = class SalesController {
                 shiftNumber: Number(shiftNumber),
             });
         }
-        // Daily
         if (filterType === "daily") {
             return this.salesService.getSalesReport({
                 adminId,
@@ -46,10 +45,10 @@ let SalesController = class SalesController {
                 filterType,
                 startDate: date,
                 endDate: date,
-                calculationMode,
+                calculationMode: "dailyCalculation",
             });
         }
-        // Weekly / Monthly / Custom
+        // Weekly / Monthly / Custom — as is
         return this.salesService.getSalesReport({
             adminId,
             type: "range",

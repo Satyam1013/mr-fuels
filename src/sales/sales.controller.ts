@@ -42,7 +42,6 @@ export class SalesController {
       });
     }
 
-    // Daily
     if (filterType === "daily") {
       return this.salesService.getSalesReport({
         adminId,
@@ -50,11 +49,11 @@ export class SalesController {
         filterType,
         startDate: date,
         endDate: date,
-        calculationMode,
+        calculationMode: "dailyCalculation",
       });
     }
 
-    // Weekly / Monthly / Custom
+    // Weekly / Monthly / Custom — as is
     return this.salesService.getSalesReport({
       adminId,
       type: "range",

@@ -43,6 +43,25 @@ let CashCollectionService = class CashCollectionService {
             .lean();
         return { message: "Cash collections fetched successfully", data };
     }
+    async findByShift(adminId, date, shiftNumber) {
+        const data = await this.cashCollectionModel
+            .find({
+            adminId,
+            date: new Date(date),
+            shiftNumber,
+        })
+            .populate("staffId", "staffName")
+            .sort({ createdAt: -1 })
+            .lean();
+        return {
+            message: "Cash collections fetched successfully",
+            date,
+            shiftNumber,
+            totalEntries: data.length,
+            totalCash: data.reduce((sum, d) => sum + (d.totalAmount || 0), 0),
+            data,
+        };
+    }
     async findOne(adminId, id) {
         const data = await this.cashCollectionModel
             .findOne({ _id: new mongoose_2.Types.ObjectId(id), adminId })

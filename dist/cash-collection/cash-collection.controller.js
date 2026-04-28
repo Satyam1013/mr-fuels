@@ -28,6 +28,9 @@ let CashCollectionController = class CashCollectionController {
     findAll(adminId) {
         return this.service.findAll(adminId);
     }
+    findByShift(adminId, date, shiftNumber) {
+        return this.service.findByShift(adminId, date, Number(shiftNumber));
+    }
     findOne(adminId, id) {
         return this.service.findOne(adminId, id);
     }
@@ -54,6 +57,15 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
 ], CashCollectionController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("by-shift"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Query)("date")),
+    __param(2, (0, common_1.Query)("shiftNumber")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, String]),
+    __metadata("design:returntype", void 0)
+], CashCollectionController.prototype, "findByShift", null);
 __decorate([
     (0, common_1.Get)(":id"),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
