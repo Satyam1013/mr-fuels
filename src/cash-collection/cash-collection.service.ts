@@ -1,8 +1,7 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { CashCollection } from "./cash-collection.schema";
-import { Machine } from "../machines/machines.schema";
 import {
   CreateCashCollectionDto,
   UpdateCashCollectionDto,
@@ -13,33 +12,12 @@ export class CashCollectionService {
   constructor(
     @InjectModel(CashCollection.name)
     private cashCollectionModel: Model<CashCollection>,
-
-    @InjectModel(Machine.name)
-    private machineModel: Model<Machine>,
   ) {}
 
   async create(adminId: Types.ObjectId, dto: CreateCashCollectionDto) {
-    const machine = await this.machineModel.findOne({
-      _id: new Types.ObjectId(dto.machineId),
-      adminId,
-    });
-
-    if (!machine) {
-      throw new BadRequestException("Machine not found");
-    }
-
-    const nozzle = machine.nozzle.find(
-      (n) => n.nozzleNumber === dto.nozzleNumber && n.isActive,
-    );
-
-    if (!nozzle) {
-      throw new BadRequestException("Invalid nozzle number");
-    }
-
     const cash = await this.cashCollectionModel.create({
       adminId,
-      machineId: new Types.ObjectId(dto.machineId),
-      nozzleNumber: dto.nozzleNumber,
+      staffId: new Types.ObjectId(dto.staffId),
       shiftNumber: dto.shiftNumber,
       date: new Date(dto.date),
       denominations: dto.denominations,
@@ -54,31 +32,25 @@ export class CashCollectionService {
 
   async findAll(adminId: Types.ObjectId) {
     const data = await this.cashCollectionModel
-      .find({
-        adminId,
-      })
-      .sort({ createdAt: -1 });
+      .find({ adminId })
+      .populate("staffId", "staffName")
+      .sort({ createdAt: -1 })
+      .lean();
 
-    return {
-      message: "Cash collections fetched successfully",
-      data,
-    };
+    return { message: "Cash collections fetched successfully", data };
   }
 
   async findOne(adminId: Types.ObjectId, id: string) {
-    const data = await this.cashCollectionModel.findOne({
-      _id: new Types.ObjectId(id),
-      adminId,
-    });
+    const data = await this.cashCollectionModel
+      .findOne({ _id: new Types.ObjectId(id), adminId })
+      .populate("staffId", "staffName")
+      .lean();
 
     if (!data) {
-      throw new BadRequestException("Cash collection not found");
+      throw new NotFoundException("Cash collection not found");
     }
 
-    return {
-      message: "Cash collection fetched successfully",
-      data,
-    };
+    return { message: "Cash collection fetched successfully", data };
   }
 
   async update(
@@ -86,45 +58,37 @@ export class CashCollectionService {
     id: string,
     dto: UpdateCashCollectionDto,
   ) {
-    const existing = await this.cashCollectionModel.findOne({
-      _id: new Types.ObjectId(id),
-      adminId,
-    });
-
-    if (!existing) {
-      throw new BadRequestException("Cash collection not found");
-    }
-
-    const updated = await this.cashCollectionModel.findByIdAndUpdate(
-      id,
+    const updated = await this.cashCollectionModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id), adminId },
       {
-        ...dto,
-        ...(dto.machineId && { machineId: new Types.ObjectId(dto.machineId) }),
-        ...(dto.date && { date: new Date(dto.date) }),
+        $set: {
+          ...(dto.staffId && { staffId: new Types.ObjectId(dto.staffId) }),
+          ...(dto.shiftNumber && { shiftNumber: dto.shiftNumber }),
+          ...(dto.date && { date: new Date(dto.date) }),
+          ...(dto.denominations && { denominations: dto.denominations }),
+          ...(dto.totalAmount && { totalAmount: dto.totalAmount }),
+        },
       },
       { new: true },
     );
 
-    return {
-      message: "Cash collection updated successfully",
-      data: updated,
-    };
+    if (!updated) {
+      throw new NotFoundException("Cash collection not found");
+    }
+
+    return { message: "Cash collection updated successfully", data: updated };
   }
 
   async remove(adminId: Types.ObjectId, id: string) {
-    const existing = await this.cashCollectionModel.findOne({
+    const deleted = await this.cashCollectionModel.findOneAndDelete({
       _id: new Types.ObjectId(id),
       adminId,
     });
 
-    if (!existing) {
-      throw new BadRequestException("Cash collection not found");
+    if (!deleted) {
+      throw new NotFoundException("Cash collection not found");
     }
 
-    await this.cashCollectionModel.findByIdAndDelete(id);
-
-    return {
-      message: "Cash collection deleted successfully",
-    };
+    return { message: "Cash collection deleted successfully" };
   }
 }

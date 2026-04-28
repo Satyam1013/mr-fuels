@@ -21,10 +21,7 @@ class DenominationDto {
 
 export class CreateCashCollectionDto {
   @IsMongoId()
-  machineId!: string;
-
-  @IsNumber()
-  nozzleNumber!: number;
+  staffId!: string;
 
   @IsNumber()
   shiftNumber!: number;

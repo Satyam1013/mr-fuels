@@ -33,11 +33,7 @@ exports.CreateCashCollectionDto = CreateCashCollectionDto;
 __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
-], CreateCashCollectionDto.prototype, "machineId", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateCashCollectionDto.prototype, "nozzleNumber", void 0);
+], CreateCashCollectionDto.prototype, "staffId", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

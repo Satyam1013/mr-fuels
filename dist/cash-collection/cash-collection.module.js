@@ -12,7 +12,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const cash_collection_schema_1 = require("./cash-collection.schema");
 const cash_collection_service_1 = require("./cash-collection.service");
 const cash_collection_controller_1 = require("./cash-collection.controller");
-const machines_schema_1 = require("../machines/machines.schema");
 let CashCollectionModule = class CashCollectionModule {
 };
 exports.CashCollectionModule = CashCollectionModule;
@@ -21,7 +20,6 @@ exports.CashCollectionModule = CashCollectionModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: cash_collection_schema_1.CashCollection.name, schema: cash_collection_schema_1.CashCollectionSchema },
-                { name: machines_schema_1.Machine.name, schema: machines_schema_1.MachineSchema },
             ]),
         ],
         controllers: [cash_collection_controller_1.CashCollectionController],

@@ -34,13 +34,9 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], CashCollection.prototype, "adminId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Machine", required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], CashCollection.prototype, "machineId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], CashCollection.prototype, "nozzleNumber", void 0);
+], CashCollection.prototype, "staffId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)

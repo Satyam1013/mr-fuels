@@ -17,11 +17,8 @@ export class CashCollection extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
   adminId!: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: "Machine", required: true })
-  machineId!: Types.ObjectId;
-
-  @Prop({ required: true })
-  nozzleNumber!: number;
+  @Prop({ type: Types.ObjectId, ref: "Staff", required: true })
+  staffId!: Types.ObjectId;
 
   @Prop({ required: true })
   shiftNumber!: number;
