@@ -4,6 +4,7 @@ import { Model, Types } from "mongoose";
 import { Prepaid } from "./prepaid.schema";
 import { CreatePrepaidDto } from "./prepaid.dto";
 import { CustomerService } from "../customer/customer.service";
+import { PrepaidModeEnum } from "./prepaid.enum";
 
 @Injectable()
 export class PrepaidService {
@@ -37,6 +38,23 @@ export class PrepaidService {
       narration: dto.narration,
       photoUrl: dto.photoUrl,
     });
+
+    // ✅ Mode ke hisaab se balance update
+    if (dto.mode === PrepaidModeEnum.DEPOSIT) {
+      // Paisa deposit hua → prepaidBalance badha
+      await this.customerService.incrementPrepaidBalance(
+        adminId,
+        new Types.ObjectId(String(customer._id)),
+        dto.amount,
+      );
+    } else if (dto.mode === PrepaidModeEnum.TRANSIT) {
+      // Fuel/NonFuel use hua → prepaidBalance ghata
+      await this.customerService.decrementPrepaidBalance(
+        adminId,
+        new Types.ObjectId(String(customer._id)),
+        dto.amount,
+      );
+    }
 
     return {
       message: "Prepaid entry added successfully",

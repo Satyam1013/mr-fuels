@@ -64,4 +64,48 @@ export class CustomerService {
 
     return customer;
   }
+
+  async incrementCreditBalance(
+    adminId: Types.ObjectId,
+    customerId: Types.ObjectId,
+    amount: number,
+  ) {
+    await this.customerModel.findOneAndUpdate(
+      { _id: customerId, adminId },
+      { $inc: { creditBalance: amount } },
+    );
+  }
+
+  async decrementCreditBalance(
+    adminId: Types.ObjectId,
+    customerId: Types.ObjectId,
+    amount: number,
+  ) {
+    await this.customerModel.findOneAndUpdate(
+      { _id: customerId, adminId },
+      { $inc: { creditBalance: -amount } },
+    );
+  }
+
+  async incrementPrepaidBalance(
+    adminId: Types.ObjectId,
+    customerId: Types.ObjectId,
+    amount: number,
+  ) {
+    await this.customerModel.findOneAndUpdate(
+      { _id: customerId, adminId },
+      { $inc: { prepaidBalance: amount } },
+    );
+  }
+
+  async decrementPrepaidBalance(
+    adminId: Types.ObjectId,
+    customerId: Types.ObjectId,
+    amount: number,
+  ) {
+    await this.customerModel.findOneAndUpdate(
+      { _id: customerId, adminId },
+      { $inc: { prepaidBalance: -amount } },
+    );
+  }
 }

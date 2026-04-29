@@ -62,6 +62,18 @@ let CustomerService = class CustomerService {
         }
         return customer;
     }
+    async incrementCreditBalance(adminId, customerId, amount) {
+        await this.customerModel.findOneAndUpdate({ _id: customerId, adminId }, { $inc: { creditBalance: amount } });
+    }
+    async decrementCreditBalance(adminId, customerId, amount) {
+        await this.customerModel.findOneAndUpdate({ _id: customerId, adminId }, { $inc: { creditBalance: -amount } });
+    }
+    async incrementPrepaidBalance(adminId, customerId, amount) {
+        await this.customerModel.findOneAndUpdate({ _id: customerId, adminId }, { $inc: { prepaidBalance: amount } });
+    }
+    async decrementPrepaidBalance(adminId, customerId, amount) {
+        await this.customerModel.findOneAndUpdate({ _id: customerId, adminId }, { $inc: { prepaidBalance: -amount } });
+    }
 };
 exports.CustomerService = CustomerService;
 exports.CustomerService = CustomerService = __decorate([

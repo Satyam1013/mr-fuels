@@ -27,6 +27,7 @@ let CreditorService = class CreditorService {
     async create(adminId, dto) {
         try {
             const customer = await this.customerService.findCustomerById(adminId, dto.customerId);
+            const creditStatus = dto.creditStatus ?? creditors_enum_1.CreditStatusEnum.TAKEN;
             const saved = await this.creditorModel.create({
                 adminId,
                 customerId: customer._id,
@@ -37,9 +38,16 @@ let CreditorService = class CreditorService {
                 creditBy: new mongoose_2.Types.ObjectId(dto.creditBy),
                 narration: dto.narration,
                 photoUrl: dto.photoUrl,
-                creditStatus: dto.creditStatus ?? creditors_enum_1.CreditStatusEnum.TAKEN,
+                creditStatus,
                 returnPaymentMode: dto.returnPaymentMode ?? null,
             });
+            // ✅ Balance update
+            if (creditStatus === creditors_enum_1.CreditStatusEnum.TAKEN) {
+                await this.customerService.incrementCreditBalance(adminId, customer._id, dto.amount);
+            }
+            else if (creditStatus === creditors_enum_1.CreditStatusEnum.RETURNED) {
+                await this.customerService.decrementCreditBalance(adminId, customer._id, dto.amount);
+            }
             return {
                 message: "Credit entry added successfully",
                 data: saved,
@@ -66,6 +74,20 @@ let CreditorService = class CreditorService {
         }
         if (dto.customerId) {
             await this.customerService.findCustomerById(adminId, dto.customerId);
+        }
+        // ✅ Status change hua → balance adjust karo
+        if (dto.creditStatus && dto.creditStatus !== existing.creditStatus) {
+            const amount = dto.amount ?? existing.amount;
+            if (existing.creditStatus === creditors_enum_1.CreditStatusEnum.TAKEN &&
+                dto.creditStatus === creditors_enum_1.CreditStatusEnum.RETURNED) {
+                // TAKEN → RETURNED: taken wala undo + returned apply
+                await this.customerService.decrementCreditBalance(adminId, existing.customerId, amount);
+            }
+            else if (existing.creditStatus === creditors_enum_1.CreditStatusEnum.RETURNED &&
+                dto.creditStatus === creditors_enum_1.CreditStatusEnum.TAKEN) {
+                // RETURNED → TAKEN: returned wala undo + taken apply
+                await this.customerService.incrementCreditBalance(adminId, existing.customerId, amount);
+            }
         }
         const updated = await this.creditorModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
             $set: {
@@ -97,6 +119,13 @@ let CreditorService = class CreditorService {
         });
         if (!existing) {
             throw new common_1.NotFoundException(`Creditor entry ${id} not found.`);
+        }
+        // ✅ Delete pe bhi balance reverse karo
+        if (existing.creditStatus === creditors_enum_1.CreditStatusEnum.TAKEN) {
+            await this.customerService.decrementCreditBalance(adminId, existing.customerId, existing.amount);
+        }
+        else if (existing.creditStatus === creditors_enum_1.CreditStatusEnum.RETURNED) {
+            await this.customerService.incrementCreditBalance(adminId, existing.customerId, existing.amount);
         }
         return {
             message: "Credit entry deleted successfully",

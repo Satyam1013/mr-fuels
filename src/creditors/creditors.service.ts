@@ -22,6 +22,8 @@ export class CreditorService {
         dto.customerId,
       );
 
+      const creditStatus = dto.creditStatus ?? CreditStatusEnum.TAKEN;
+
       const saved = await this.creditorModel.create({
         adminId,
         customerId: customer._id,
@@ -32,9 +34,24 @@ export class CreditorService {
         creditBy: new Types.ObjectId(dto.creditBy),
         narration: dto.narration,
         photoUrl: dto.photoUrl,
-        creditStatus: dto.creditStatus ?? CreditStatusEnum.TAKEN,
+        creditStatus,
         returnPaymentMode: dto.returnPaymentMode ?? null,
       });
+
+      // ✅ Balance update
+      if (creditStatus === CreditStatusEnum.TAKEN) {
+        await this.customerService.incrementCreditBalance(
+          adminId,
+          customer._id as Types.ObjectId,
+          dto.amount,
+        );
+      } else if (creditStatus === CreditStatusEnum.RETURNED) {
+        await this.customerService.decrementCreditBalance(
+          adminId,
+          customer._id as Types.ObjectId,
+          dto.amount,
+        );
+      }
 
       return {
         message: "Credit entry added successfully",
@@ -65,6 +82,33 @@ export class CreditorService {
 
     if (dto.customerId) {
       await this.customerService.findCustomerById(adminId, dto.customerId);
+    }
+
+    // ✅ Status change hua → balance adjust karo
+    if (dto.creditStatus && dto.creditStatus !== existing.creditStatus) {
+      const amount = dto.amount ?? existing.amount;
+
+      if (
+        existing.creditStatus === CreditStatusEnum.TAKEN &&
+        dto.creditStatus === CreditStatusEnum.RETURNED
+      ) {
+        // TAKEN → RETURNED: taken wala undo + returned apply
+        await this.customerService.decrementCreditBalance(
+          adminId,
+          existing.customerId,
+          amount,
+        );
+      } else if (
+        existing.creditStatus === CreditStatusEnum.RETURNED &&
+        dto.creditStatus === CreditStatusEnum.TAKEN
+      ) {
+        // RETURNED → TAKEN: returned wala undo + taken apply
+        await this.customerService.incrementCreditBalance(
+          adminId,
+          existing.customerId,
+          amount,
+        );
+      }
     }
 
     const updated = await this.creditorModel.findOneAndUpdate(
@@ -104,6 +148,21 @@ export class CreditorService {
 
     if (!existing) {
       throw new NotFoundException(`Creditor entry ${id} not found.`);
+    }
+
+    // ✅ Delete pe bhi balance reverse karo
+    if (existing.creditStatus === CreditStatusEnum.TAKEN) {
+      await this.customerService.decrementCreditBalance(
+        adminId,
+        existing.customerId,
+        existing.amount,
+      );
+    } else if (existing.creditStatus === CreditStatusEnum.RETURNED) {
+      await this.customerService.incrementCreditBalance(
+        adminId,
+        existing.customerId,
+        existing.amount,
+      );
     }
 
     return {

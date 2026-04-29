@@ -18,6 +18,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const prepaid_schema_1 = require("./prepaid.schema");
 const customer_service_1 = require("../customer/customer.service");
+const prepaid_enum_1 = require("./prepaid.enum");
 let PrepaidService = class PrepaidService {
     constructor(prepaidModel, customerService) {
         this.prepaidModel = prepaidModel;
@@ -42,6 +43,15 @@ let PrepaidService = class PrepaidService {
             narration: dto.narration,
             photoUrl: dto.photoUrl,
         });
+        // ✅ Mode ke hisaab se balance update
+        if (dto.mode === prepaid_enum_1.PrepaidModeEnum.DEPOSIT) {
+            // Paisa deposit hua → prepaidBalance badha
+            await this.customerService.incrementPrepaidBalance(adminId, new mongoose_2.Types.ObjectId(String(customer._id)), dto.amount);
+        }
+        else if (dto.mode === prepaid_enum_1.PrepaidModeEnum.TRANSIT) {
+            // Fuel/NonFuel use hua → prepaidBalance ghata
+            await this.customerService.decrementPrepaidBalance(adminId, new mongoose_2.Types.ObjectId(String(customer._id)), dto.amount);
+        }
         return {
             message: "Prepaid entry added successfully",
             data: saved,
