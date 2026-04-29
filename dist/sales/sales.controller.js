@@ -58,6 +58,12 @@ let SalesController = class SalesController {
             calculationMode,
         });
     }
+    async updateSale(id, dto, adminId) {
+        return this.salesService.updateSale(adminId, id, dto);
+    }
+    async deleteSale(id, adminId) {
+        return this.salesService.deleteSale(adminId, id);
+    }
 };
 exports.SalesController = SalesController;
 __decorate([
@@ -88,6 +94,23 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String, String, String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], SalesController.prototype, "getReport", null);
+__decorate([
+    (0, common_1.Patch)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, sales_dto_1.UpdateSaleDto, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], SalesController.prototype, "updateSale", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], SalesController.prototype, "deleteSale", null);
 exports.SalesController = SalesController = __decorate([
     (0, common_1.Controller)("sales"),
     __metadata("design:paramtypes", [sales_service_1.SalesService])

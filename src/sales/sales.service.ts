@@ -25,7 +25,7 @@ import {
 } from "../fuel-product/fuel-product.schema";
 import { Sales } from "./sales.schema";
 import { ShiftStatusEnum, StaffEntry } from "../shift-status/shift-status.enum";
-import { CreateSaleDto } from "./sales.dto";
+import { CreateSaleDto, UpdateSaleDto } from "./sales.dto";
 
 @Injectable()
 export class SalesService {
@@ -468,6 +468,49 @@ export class SalesService {
       totalDays: dailyData.length,
       totalShifts: salesRecords.length,
       data: dailyData, // ✅ array
+    };
+  }
+
+  async updateSale(adminId: Types.ObjectId, id: string, dto: UpdateSaleDto) {
+    const existing = await this.salesModel.findOne({
+      _id: new Types.ObjectId(id),
+      adminId,
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Sale record ${id} not found.`);
+    }
+
+    // Already completed hai toh update allow karo but warn karo
+    const updated = await this.salesModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id), adminId },
+      {
+        $set: {
+          ...dto,
+          ...(dto.shiftStatus && { shiftStatus: dto.shiftStatus }),
+        },
+      },
+      { new: true },
+    );
+
+    return {
+      message: "Sale record updated successfully",
+      data: updated,
+    };
+  }
+
+  async deleteSale(adminId: Types.ObjectId, id: string) {
+    const deleted = await this.salesModel.findOneAndDelete({
+      _id: new Types.ObjectId(id),
+      adminId,
+    });
+
+    if (!deleted) {
+      throw new NotFoundException(`Sale record ${id} not found.`);
+    }
+
+    return {
+      message: "Sale record deleted successfully",
     };
   }
 }

@@ -398,6 +398,38 @@ let SalesService = class SalesService {
             data: dailyData, // ✅ array
         };
     }
+    async updateSale(adminId, id, dto) {
+        const existing = await this.salesModel.findOne({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!existing) {
+            throw new common_1.NotFoundException(`Sale record ${id} not found.`);
+        }
+        // Already completed hai toh update allow karo but warn karo
+        const updated = await this.salesModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
+            $set: {
+                ...dto,
+                ...(dto.shiftStatus && { shiftStatus: dto.shiftStatus }),
+            },
+        }, { new: true });
+        return {
+            message: "Sale record updated successfully",
+            data: updated,
+        };
+    }
+    async deleteSale(adminId, id) {
+        const deleted = await this.salesModel.findOneAndDelete({
+            _id: new mongoose_2.Types.ObjectId(id),
+            adminId,
+        });
+        if (!deleted) {
+            throw new common_1.NotFoundException(`Sale record ${id} not found.`);
+        }
+        return {
+            message: "Sale record deleted successfully",
+        };
+    }
 };
 exports.SalesService = SalesService;
 exports.SalesService = SalesService = __decorate([

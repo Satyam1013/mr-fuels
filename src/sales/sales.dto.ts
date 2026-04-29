@@ -10,6 +10,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { ShiftStatusEnum } from "../shift-status/shift-status.enum";
+import { PartialType } from "@nestjs/mapped-types";
 
 class NozzleSaleDto {
   @IsNumber() liters!: number;
@@ -187,3 +188,5 @@ export class CreateSaleDto {
   @IsOptional()
   differenceSummary?: DifferenceSummaryDto;
 }
+
+export class UpdateSaleDto extends PartialType(CreateSaleDto) {}

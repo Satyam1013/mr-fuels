@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { SalesService } from "./sales.service";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 import { FilterType } from "./sales.enum";
-import { CreateSaleDto } from "./sales.dto";
+import { CreateSaleDto, UpdateSaleDto } from "./sales.dto";
 
 @Controller("sales")
 export class SalesController {
@@ -62,5 +71,22 @@ export class SalesController {
       endDate,
       calculationMode,
     });
+  }
+
+  @Patch(":id")
+  async updateSale(
+    @Param("id") id: string,
+    @Body() dto: UpdateSaleDto,
+    @GetUser("adminId") adminId: Types.ObjectId,
+  ) {
+    return this.salesService.updateSale(adminId, id, dto);
+  }
+
+  @Delete(":id")
+  async deleteSale(
+    @Param("id") id: string,
+    @GetUser("adminId") adminId: Types.ObjectId,
+  ) {
+    return this.salesService.deleteSale(adminId, id);
   }
 }

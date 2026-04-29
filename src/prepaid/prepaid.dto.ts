@@ -9,6 +9,7 @@ import {
 } from "class-validator";
 import { PrepaidModeEnum, PrepaidProductTypeEnum } from "./prepaid.enum";
 import { FuelType } from "../common/enums/fuel-type.enum";
+import { PartialType } from "@nestjs/mapped-types";
 
 export class CreatePrepaidDto {
   @IsMongoId()
@@ -61,3 +62,5 @@ export class CreatePrepaidDto {
   @IsString()
   photoUrl?: string;
 }
+
+export class UpdatePrepaidDto extends PartialType(CreatePrepaidDto) {}

@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePrepaidDto = void 0;
+exports.UpdatePrepaidDto = exports.CreatePrepaidDto = void 0;
 const class_validator_1 = require("class-validator");
 const prepaid_enum_1 = require("./prepaid.enum");
 const fuel_type_enum_1 = require("../common/enums/fuel-type.enum");
+const mapped_types_1 = require("@nestjs/mapped-types");
 class CreatePrepaidDto {
 }
 exports.CreatePrepaidDto = CreatePrepaidDto;
@@ -70,3 +71,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePrepaidDto.prototype, "photoUrl", void 0);
+class UpdatePrepaidDto extends (0, mapped_types_1.PartialType)(CreatePrepaidDto) {
+}
+exports.UpdatePrepaidDto = UpdatePrepaidDto;
