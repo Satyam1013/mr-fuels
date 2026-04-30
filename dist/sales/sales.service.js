@@ -229,7 +229,13 @@ let SalesService = class SalesService {
                     netSales: { liters: 0, amount: 0 },
                     testing: { liters: 0, amount: 0 },
                     overallCreditorsAmount: 0,
-                    prepaid: 0,
+                    prepaid: {
+                        totalPrepaidDeposit: 0,
+                        prepaidCash: 0,
+                        prepaidPos: 0,
+                        prepaidUpi: 0,
+                        prepaidDirectAccount: 0,
+                    },
                     pumpExpenses: 0,
                     personalExpenses: 0,
                     lubricantSales: 0,
@@ -251,7 +257,6 @@ let SalesService = class SalesService {
             day.testing.liters += record.testing?.liters || 0;
             day.testing.amount += record.testing?.amount || 0;
             day.overallCreditorsAmount += record.overallCreditorsAmount || 0;
-            day.prepaid += record.prepaid || 0;
             day.pumpExpenses += record.pumpExpenses || 0;
             day.personalExpenses += record.personalExpenses || 0;
             day.lubricantSales += record.lubricantSales || 0;
@@ -259,6 +264,13 @@ let SalesService = class SalesService {
                 record.transactions?.upi || 0;
             day.transactions.pos +=
                 record.transactions?.pos || 0;
+            // ✅ Prepaid object aggregate
+            const prepaid = record.prepaid;
+            day.prepaid.totalPrepaidDeposit += prepaid?.totalPrepaidDeposit || 0;
+            day.prepaid.prepaidCash += prepaid?.prepaidCash || 0;
+            day.prepaid.prepaidPos += prepaid?.prepaidPos || 0;
+            day.prepaid.prepaidUpi += prepaid?.prepaidUpi || 0;
+            day.prepaid.prepaidDirectAccount += prepaid?.prepaidDirectAccount || 0;
             // ─── Nozzle aggregate ───
             const nozzles = record.machines?.nozzles || [];
             for (const nozzle of nozzles) {
@@ -384,7 +396,7 @@ let SalesService = class SalesService {
                 date: startDate,
                 calculationMode,
                 totalShifts: salesRecords.length,
-                data: dayData, // ✅ single object
+                data: dayData,
             };
         }
         // ─── WEEKLY / MONTHLY / CUSTOM → array ───
@@ -395,7 +407,7 @@ let SalesService = class SalesService {
             calculationMode,
             totalDays: dailyData.length,
             totalShifts: salesRecords.length,
-            data: dailyData, // ✅ array
+            data: dailyData,
         };
     }
     async updateSale(adminId, id, dto) {
@@ -406,7 +418,6 @@ let SalesService = class SalesService {
         if (!existing) {
             throw new common_1.NotFoundException(`Sale record ${id} not found.`);
         }
-        // Already completed hai toh update allow karo but warn karo
         const updated = await this.salesModel.findOneAndUpdate({ _id: new mongoose_2.Types.ObjectId(id), adminId }, {
             $set: {
                 ...dto,

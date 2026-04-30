@@ -80,6 +80,33 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ReturnCreditTotalsDto.prototype, "accountPay", void 0);
+class PrepaidDepositDto {
+}
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrepaidDepositDto.prototype, "totalPrepaidDeposit", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrepaidDepositDto.prototype, "prepaidCash", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrepaidDepositDto.prototype, "prepaidPos", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrepaidDepositDto.prototype, "prepaidUpi", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrepaidDepositDto.prototype, "prepaidDirectAccount", void 0);
 class DifferenceSummaryDto {
 }
 __decorate([
@@ -106,6 +133,10 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], DifferenceSummaryDto.prototype, "moneyDeposited", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], DifferenceSummaryDto.prototype, "overallCash", void 0);
 class SalesAmountDto {
 }
 __decorate([
@@ -308,8 +339,10 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateSaleDto.prototype, "overallCreditorsAmount", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => PrepaidDepositDto),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", PrepaidDepositDto)
 ], CreateSaleDto.prototype, "prepaid", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),

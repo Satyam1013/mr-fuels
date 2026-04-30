@@ -285,7 +285,13 @@ export class SalesService {
           netSales: { liters: 0, amount: 0 },
           testing: { liters: 0, amount: 0 },
           overallCreditorsAmount: 0,
-          prepaid: 0,
+          prepaid: {
+            totalPrepaidDeposit: 0,
+            prepaidCash: 0,
+            prepaidPos: 0,
+            prepaidUpi: 0,
+            prepaidDirectAccount: 0,
+          },
           pumpExpenses: 0,
           personalExpenses: 0,
           lubricantSales: 0,
@@ -310,7 +316,6 @@ export class SalesService {
       day.testing.liters += record.testing?.liters || 0;
       day.testing.amount += record.testing?.amount || 0;
       day.overallCreditorsAmount += record.overallCreditorsAmount || 0;
-      day.prepaid += record.prepaid || 0;
       day.pumpExpenses += record.pumpExpenses || 0;
       day.personalExpenses += record.personalExpenses || 0;
       day.lubricantSales += record.lubricantSales || 0;
@@ -318,6 +323,20 @@ export class SalesService {
         (record.transactions as TransactionsSnapshot)?.upi || 0;
       day.transactions.pos +=
         (record.transactions as TransactionsSnapshot)?.pos || 0;
+
+      // ✅ Prepaid object aggregate
+      const prepaid = record.prepaid as unknown as {
+        totalPrepaidDeposit?: number;
+        prepaidCash?: number;
+        prepaidPos?: number;
+        prepaidUpi?: number;
+        prepaidDirectAccount?: number;
+      };
+      day.prepaid.totalPrepaidDeposit += prepaid?.totalPrepaidDeposit || 0;
+      day.prepaid.prepaidCash += prepaid?.prepaidCash || 0;
+      day.prepaid.prepaidPos += prepaid?.prepaidPos || 0;
+      day.prepaid.prepaidUpi += prepaid?.prepaidUpi || 0;
+      day.prepaid.prepaidDirectAccount += prepaid?.prepaidDirectAccount || 0;
 
       // ─── Nozzle aggregate ───
       const nozzles =
@@ -455,7 +474,7 @@ export class SalesService {
         date: startDate,
         calculationMode,
         totalShifts: salesRecords.length,
-        data: dayData, // ✅ single object
+        data: dayData,
       };
     }
 
@@ -467,7 +486,7 @@ export class SalesService {
       calculationMode,
       totalDays: dailyData.length,
       totalShifts: salesRecords.length,
-      data: dailyData, // ✅ array
+      data: dailyData,
     };
   }
 
@@ -481,7 +500,6 @@ export class SalesService {
       throw new NotFoundException(`Sale record ${id} not found.`);
     }
 
-    // Already completed hai toh update allow karo but warn karo
     const updated = await this.salesModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id), adminId },
       {

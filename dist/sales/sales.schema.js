@@ -196,6 +196,31 @@ __decorate([
 SalesStaff = __decorate([
     (0, mongoose_1.Schema)({ _id: false })
 ], SalesStaff);
+let PrepaidDeposit = class PrepaidDeposit {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], PrepaidDeposit.prototype, "totalPrepaidDeposit", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], PrepaidDeposit.prototype, "prepaidCash", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], PrepaidDeposit.prototype, "prepaidPos", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], PrepaidDeposit.prototype, "prepaidUpi", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], PrepaidDeposit.prototype, "prepaidDirectAccount", void 0);
+PrepaidDeposit = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], PrepaidDeposit);
 let Sales = class Sales extends mongoose_2.Document {
 };
 exports.Sales = Sales;
@@ -228,8 +253,17 @@ __decorate([
     __metadata("design:type", Number)
 ], Sales.prototype, "overallCreditorsAmount", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", Number)
+    (0, mongoose_1.Prop)({
+        type: PrepaidDeposit,
+        default: {
+            totalPrepaidDeposit: 0,
+            prepaidCash: 0,
+            prepaidPos: 0,
+            prepaidUpi: 0,
+            prepaidDirectAccount: 0,
+        },
+    }),
+    __metadata("design:type", PrepaidDeposit)
 ], Sales.prototype, "prepaid", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

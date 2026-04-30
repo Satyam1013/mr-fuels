@@ -54,6 +54,14 @@ class ReturnCreditTotalsDto {
   @IsNumber() accountPay!: number;
 }
 
+class PrepaidDepositDto {
+  @IsNumber() @IsOptional() totalPrepaidDeposit?: number;
+  @IsNumber() @IsOptional() prepaidCash?: number;
+  @IsNumber() @IsOptional() prepaidPos?: number;
+  @IsNumber() @IsOptional() prepaidUpi?: number;
+  @IsNumber() @IsOptional() prepaidDirectAccount?: number;
+}
+
 class DifferenceSummaryDto {
   @IsNumber() mainDifference!: number;
   @IsNumber() overallShortage!: number;
@@ -61,6 +69,7 @@ class DifferenceSummaryDto {
   @IsNumber() overallShortageMoneyReceived!: number;
   @IsNumber() inHandCash!: number;
   @IsNumber() moneyDeposited!: number;
+  @IsNumber() overallCash!: number;
 }
 
 class SalesAmountDto {
@@ -142,7 +151,12 @@ export class CreateSaleDto {
   @ValidateNested() @Type(() => SalesAmountDto) testing!: SalesAmountDto;
 
   @IsNumber() overallCreditorsAmount!: number;
-  @IsNumber() prepaid!: number;
+
+  @ValidateNested()
+  @Type(() => PrepaidDepositDto)
+  @IsOptional()
+  prepaid?: PrepaidDepositDto;
+
   @IsNumber() pumpExpenses!: number;
   @IsNumber() personalExpenses!: number;
   @IsNumber() lubricantSales!: number;

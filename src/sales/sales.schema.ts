@@ -98,6 +98,15 @@ class SalesStaff {
   @Prop({ default: 0 }) cashCollected?: number;
 }
 
+@Schema({ _id: false })
+class PrepaidDeposit {
+  @Prop({ default: 0 }) totalPrepaidDeposit!: number;
+  @Prop({ default: 0 }) prepaidCash!: number;
+  @Prop({ default: 0 }) prepaidPos!: number;
+  @Prop({ default: 0 }) prepaidUpi!: number;
+  @Prop({ default: 0 }) prepaidDirectAccount!: number;
+}
+
 @Schema({ timestamps: true })
 export class Sales extends Document {
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true, index: true })
@@ -111,7 +120,19 @@ export class Sales extends Document {
   @Prop({ type: Object }) testing!: { liters: number; amount: number };
 
   @Prop() overallCreditorsAmount!: number;
-  @Prop() prepaid!: number;
+
+  @Prop({
+    type: PrepaidDeposit,
+    default: {
+      totalPrepaidDeposit: 0,
+      prepaidCash: 0,
+      prepaidPos: 0,
+      prepaidUpi: 0,
+      prepaidDirectAccount: 0,
+    },
+  })
+  prepaid!: PrepaidDeposit;
+
   @Prop() pumpExpenses!: number;
   @Prop() personalExpenses!: number;
   @Prop() lubricantSales!: number;
@@ -165,6 +186,7 @@ export class Sales extends Document {
     overallShortageMoneyReceived: number;
     inHandCash: number;
     moneyDeposited: number;
+    overallCash: number;
   };
 }
 

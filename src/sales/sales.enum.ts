@@ -42,13 +42,28 @@ export interface NozzleSnapshot {
   faultImg?: string | null;
 }
 
+export interface MachineSpecificSnapshot {
+  machineId: Types.ObjectId;
+  machineName: string;
+  cashCollected: number;
+}
+
 export interface MachinesSnapshot {
   nozzles: NozzleSnapshot[];
+  machineSpecific: MachineSpecificSnapshot[];
 }
 
 export interface TransactionsSnapshot {
   upi: number;
   pos: number;
+}
+
+export interface PrepaidDepositSnapshot {
+  totalPrepaidDeposit: number;
+  prepaidCash: number;
+  prepaidPos: number;
+  prepaidUpi: number;
+  prepaidDirectAccount: number;
 }
 
 export interface DailyRecord {
@@ -58,12 +73,14 @@ export interface DailyRecord {
   netSales: { liters: number; amount: number };
   testing: { liters: number; amount: number };
   overallCreditorsAmount: number;
-  prepaid: number;
+  prepaid: PrepaidDepositSnapshot;
   pumpExpenses: number;
   personalExpenses: number;
   lubricantSales: number;
   transactions: { upi: number; pos: number };
   nozzleMap: Map<number, NozzleSnapshot>;
+  staffMap: Map<string, StaffEntry>;
+  machineSpecificMap: Map<string, MachineSpecificSnapshot>;
 }
 
 export type GetSalesReportParams =
@@ -81,50 +98,3 @@ export type GetSalesReportParams =
       endDate: string;
       calculationMode: "shiftwise" | "dailyCalculation";
     };
-
-export interface DailyRecord {
-  date: string;
-  shifts: { shiftNumber: number; shiftStatus: string }[];
-  overallSales: { liters: number; amount: number };
-  netSales: { liters: number; amount: number };
-  testing: { liters: number; amount: number };
-  overallCreditorsAmount: number;
-  prepaid: number;
-  pumpExpenses: number;
-  personalExpenses: number;
-  lubricantSales: number;
-  transactions: { upi: number; pos: number };
-  nozzleMap: Map<number, NozzleSnapshot>;
-  staffMap: Map<string, StaffEntry>;
-}
-
-// MachineSpecific snapshot type add karo
-export interface MachineSpecificSnapshot {
-  machineId: Types.ObjectId;
-  machineName: string;
-  cashCollected: number;
-}
-
-// DailyRecord mein machineSpecificMap add karo
-export interface DailyRecord {
-  date: string;
-  shifts: { shiftNumber: number; shiftStatus: string }[];
-  overallSales: { liters: number; amount: number };
-  netSales: { liters: number; amount: number };
-  testing: { liters: number; amount: number };
-  overallCreditorsAmount: number;
-  prepaid: number;
-  pumpExpenses: number;
-  personalExpenses: number;
-  lubricantSales: number;
-  transactions: { upi: number; pos: number };
-  nozzleMap: Map<number, NozzleSnapshot>;
-  staffMap: Map<string, StaffEntry>;
-  machineSpecificMap: Map<string, MachineSpecificSnapshot>; // ✅
-}
-
-// MachinesSnapshot mein machineSpecific add karo
-export interface MachinesSnapshot {
-  nozzles: NozzleSnapshot[];
-  machineSpecific: MachineSpecificSnapshot[]; // ✅
-}
