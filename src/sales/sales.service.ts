@@ -12,10 +12,8 @@ import { NonFuelProducts } from "../non-fuel-product/non-fuel-product.schema";
 import {
   DailyRecord,
   GetSalesReportParams,
-  MachineSpecificSnapshot,
   MachinesSnapshot,
   NozzleLean,
-  NozzleSnapshot,
   TransactionsSnapshot,
 } from "./sales.enum";
 
@@ -296,9 +294,29 @@ export class SalesService {
           personalExpenses: 0,
           lubricantSales: 0,
           transactions: { upi: 0, pos: 0 },
-          nozzleMap: new Map<number, NozzleSnapshot>(),
-          staffMap: new Map<string, StaffEntry>(),
-          machineSpecificMap: new Map<string, MachineSpecificSnapshot>(),
+          returnCreditTotals: { upi: 0, cash: 0, accountPay: 0 },
+          returnCreditUpi: 0,
+          returnCreditCash: 0,
+          returnCreditAccountPay: 0,
+          remainingDepositedAmount: 0,
+          depositAmount: 0,
+          additionalDepositAmount: 0,
+          moneyDeposited: 0,
+          inHandCash: 0,
+          overallAmountGeneratedByPump: 0,
+          amountReceivedToPump: 0,
+          differenceSummary: {
+            mainDifference: 0,
+            overallShortage: 0,
+            overallPumpSalesShortage: 0,
+            overallShortageMoneyReceived: 0,
+            overallCash: 0,
+            inHandCash: 0,
+            moneyDeposited: 0,
+          },
+          nozzleMap: new Map(),
+          staffMap: new Map(),
+          machineSpecificMap: new Map(),
         });
       }
 
@@ -323,6 +341,46 @@ export class SalesService {
         (record.transactions as TransactionsSnapshot)?.upi || 0;
       day.transactions.pos +=
         (record.transactions as TransactionsSnapshot)?.pos || 0;
+      day.returnCreditUpi += record.returnCreditUpi || 0;
+      day.returnCreditCash += record.returnCreditCash || 0;
+      day.returnCreditAccountPay += record.returnCreditAccountPay || 0;
+      day.remainingDepositedAmount += record.remainingDepositedAmount || 0;
+      day.depositAmount += record.depositAmount || 0;
+      day.additionalDepositAmount += record.additionalDepositAmount || 0;
+      day.moneyDeposited += record.moneyDeposited || 0;
+      day.inHandCash += record.inHandCash || 0;
+      day.overallAmountGeneratedByPump +=
+        record.overallAmountGeneratedByPump || 0;
+      day.amountReceivedToPump += record.amountReceivedToPump || 0;
+
+      // returnCreditTotals object
+      const rct = record.returnCreditTotals as
+        | { upi?: number; cash?: number; accountPay?: number }
+        | undefined;
+      day.returnCreditTotals.upi += rct?.upi || 0;
+      day.returnCreditTotals.cash += rct?.cash || 0;
+      day.returnCreditTotals.accountPay += rct?.accountPay || 0;
+
+      const ds = record.differenceSummary as
+        | {
+            mainDifference?: number;
+            overallShortage?: number;
+            overallPumpSalesShortage?: number;
+            overallShortageMoneyReceived?: number;
+            overallCash?: number;
+            inHandCash?: number;
+            moneyDeposited?: number;
+          }
+        | undefined;
+      day.differenceSummary.mainDifference += ds?.mainDifference || 0;
+      day.differenceSummary.overallShortage += ds?.overallShortage || 0;
+      day.differenceSummary.overallPumpSalesShortage +=
+        ds?.overallPumpSalesShortage || 0;
+      day.differenceSummary.overallShortageMoneyReceived +=
+        ds?.overallShortageMoneyReceived || 0;
+      day.differenceSummary.overallCash += ds?.overallCash || 0;
+      day.differenceSummary.inHandCash += ds?.inHandCash || 0;
+      day.differenceSummary.moneyDeposited += ds?.moneyDeposited || 0;
 
       // ✅ Prepaid object aggregate
       const prepaid = record.prepaid as unknown as {
@@ -452,6 +510,19 @@ export class SalesService {
       personalExpenses: day.personalExpenses,
       lubricantSales: day.lubricantSales,
       transactions: day.transactions,
+      returnCreditTotals: day.returnCreditTotals,
+      returnCreditUpi: day.returnCreditUpi,
+      returnCreditCash: day.returnCreditCash,
+      returnCreditAccountPay: day.returnCreditAccountPay,
+      remainingDepositedAmount: day.remainingDepositedAmount,
+      depositAmount: day.depositAmount,
+      additionalDepositAmount: day.additionalDepositAmount,
+      moneyDeposited: day.moneyDeposited,
+      inHandCash: day.inHandCash,
+      overallAmountGeneratedByPump: day.overallAmountGeneratedByPump,
+      amountReceivedToPump: day.amountReceivedToPump,
+      differenceSummary: day.differenceSummary,
+      // ──────────────
       machines: {
         nozzles: Array.from(day.nozzleMap.values()),
         machineSpecific: Array.from(day.machineSpecificMap.values()),

@@ -81,6 +81,26 @@ export interface DailyRecord {
   nozzleMap: Map<number, NozzleSnapshot>;
   staffMap: Map<string, StaffEntry>;
   machineSpecificMap: Map<string, MachineSpecificSnapshot>;
+  returnCreditTotals: { upi: number; cash: number; accountPay: number };
+  returnCreditUpi: number;
+  returnCreditCash: number;
+  returnCreditAccountPay: number;
+  remainingDepositedAmount: number;
+  depositAmount: number;
+  additionalDepositAmount: number;
+  moneyDeposited: number;
+  inHandCash: number;
+  overallAmountGeneratedByPump: number;
+  amountReceivedToPump: number;
+  differenceSummary: {
+    mainDifference: number;
+    overallShortage: number;
+    overallPumpSalesShortage: number;
+    overallShortageMoneyReceived: number;
+    overallCash: number;
+    inHandCash: number;
+    moneyDeposited: number;
+  };
 }
 
 export type GetSalesReportParams =
