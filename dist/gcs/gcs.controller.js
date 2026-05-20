@@ -13,42 +13,61 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GcsController = void 0;
-// gcs.controller.ts
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const gcs_service_1 = require("./gcs.service");
-const public_decorator_1 = require("../auth/public.decorator");
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const mongoose_1 = require("mongoose");
+const multerOptions = {
+    storage: (0, multer_1.memoryStorage)(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+};
 let GcsController = class GcsController {
     constructor(gcsService) {
         this.gcsService = gcsService;
     }
-    async upload(file) {
-        const url = await this.gcsService.uploadFile(file);
+    async uploadReading(file, pumpId) {
+        const url = await this.gcsService.uploadReading(file, pumpId.toString());
         return { success: true, url };
     }
-    async delete(url) {
-        await this.gcsService.deleteFile(url);
-        return { success: true };
+    async uploadDsr(file, pumpId) {
+        const url = await this.gcsService.uploadDsr(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadReport(file, pumpId) {
+        const url = await this.gcsService.uploadReport(file, pumpId.toString());
+        return { success: true, url };
     }
 };
 exports.GcsController = GcsController;
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)("upload"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", { storage: (0, multer_1.memoryStorage)() })),
+    (0, common_1.Post)("readings"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
     __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
-], GcsController.prototype, "upload", null);
+], GcsController.prototype, "uploadReading", null);
 __decorate([
-    (0, common_1.Delete)("delete"),
-    __param(0, (0, common_1.Body)("url")),
+    (0, common_1.Post)("dsr"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
-], GcsController.prototype, "delete", null);
+], GcsController.prototype, "uploadDsr", null);
+__decorate([
+    (0, common_1.Post)("reports"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadReport", null);
 exports.GcsController = GcsController = __decorate([
     (0, common_1.Controller)("files"),
     __metadata("design:paramtypes", [gcs_service_1.GcsService])
