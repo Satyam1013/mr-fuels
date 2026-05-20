@@ -30,6 +30,7 @@ import { ShiftStatusModule } from "./shift-status/shift-status.module";
 import { CustomerModule } from "./customer/customer.module";
 import { FuelProductModule } from "./fuel-product/fuel-product.module";
 import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
+import { GcsModule } from "./gcs/gcs.module";
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
     CustomerModule,
     FuelProductModule,
     BankDepositModule,
+    GcsModule,
   ],
   providers: [],
 })
