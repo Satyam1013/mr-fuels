@@ -13,7 +13,7 @@ let GcsService = class GcsService {
     constructor() {
         this.storage = new storage_1.Storage({
             projectId: process.env.GCS_PROJECT_ID,
-            keyFilename: process.env.GCS_KEY_FILE,
+            credentials: JSON.parse(process.env.GCS_KEY_JSON),
         });
         this.bucket = this.storage.bucket(process.env.GCS_BUCKET_NAME);
     }

@@ -11,7 +11,10 @@ export type UploadFolder =
 export class GcsService {
   private storage = new Storage({
     projectId: process.env.GCS_PROJECT_ID,
-    keyFilename: process.env.GCS_KEY_FILE,
+    credentials: JSON.parse(process.env.GCS_KEY_JSON!) as {
+      client_email: string;
+      private_key: string;
+    },
   });
 
   private bucket = this.storage.bucket(process.env.GCS_BUCKET_NAME!);
