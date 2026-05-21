@@ -1,5 +1,7 @@
 import {
+  Body,
   Controller,
+  Delete,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -18,6 +20,13 @@ const multerOptions = {
 @Controller("files")
 export class GcsController {
   constructor(private readonly gcsService: GcsService) {}
+
+  @Post("upload")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const url = await this.gcsService.uploadFile(file);
+    return { success: true, url };
+  }
 
   @Post("readings")
   @UseInterceptors(FileInterceptor("file", multerOptions))
@@ -47,5 +56,11 @@ export class GcsController {
   ) {
     const url = await this.gcsService.uploadReport(file, pumpId.toString());
     return { success: true, url };
+  }
+
+  @Delete("delete")
+  async delete(@Body("url") url: string) {
+    await this.gcsService.deleteFile(url);
+    return { success: true };
   }
 }

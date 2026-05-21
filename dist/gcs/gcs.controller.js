@@ -27,6 +27,10 @@ let GcsController = class GcsController {
     constructor(gcsService) {
         this.gcsService = gcsService;
     }
+    async uploadFile(file) {
+        const url = await this.gcsService.uploadFile(file);
+        return { success: true, url };
+    }
     async uploadReading(file, pumpId) {
         const url = await this.gcsService.uploadReading(file, pumpId.toString());
         return { success: true, url };
@@ -39,8 +43,20 @@ let GcsController = class GcsController {
         const url = await this.gcsService.uploadReport(file, pumpId.toString());
         return { success: true, url };
     }
+    async delete(url) {
+        await this.gcsService.deleteFile(url);
+        return { success: true };
+    }
 };
 exports.GcsController = GcsController;
+__decorate([
+    (0, common_1.Post)("upload"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadFile", null);
 __decorate([
     (0, common_1.Post)("readings"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
@@ -68,6 +84,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], GcsController.prototype, "uploadReport", null);
+__decorate([
+    (0, common_1.Delete)("delete"),
+    __param(0, (0, common_1.Body)("url")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "delete", null);
 exports.GcsController = GcsController = __decorate([
     (0, common_1.Controller)("files"),
     __metadata("design:paramtypes", [gcs_service_1.GcsService])
