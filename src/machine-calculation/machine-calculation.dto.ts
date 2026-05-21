@@ -55,6 +55,18 @@ export class NozzleDto {
   @IsBoolean()
   @IsOptional()
   isPriceChanged?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readingImg?: string;
+
+  @IsString()
+  @IsOptional()
+  testingImg?: string;
+
+  @IsString()
+  @IsOptional()
+  faultImg?: string;
 }
 
 export class CreateMachineCalculationDto {

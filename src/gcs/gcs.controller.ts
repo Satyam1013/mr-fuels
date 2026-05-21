@@ -21,10 +21,23 @@ const multerOptions = {
 export class GcsController {
   constructor(private readonly gcsService: GcsService) {}
 
-  @Post("upload")
+  @Post("others")
   @UseInterceptors(FileInterceptor("file", multerOptions))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     const url = await this.gcsService.uploadFile(file);
+    return { success: true, url };
+  }
+
+  @Post("transactions")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadTransaction(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadTransaction(
+      file,
+      pumpId.toString(),
+    );
     return { success: true, url };
   }
 

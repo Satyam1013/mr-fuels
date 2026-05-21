@@ -13,8 +13,15 @@ export class GcsService {
 
   private bucket = this.storage.bucket(process.env.GCS_BUCKET_NAME!);
 
+  async uploadTransaction(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `transactions/${pumpId}`);
+  }
+
   async uploadFile(file: Express.Multer.File): Promise<string> {
-    return this.upload(file, "common");
+    return this.upload(file, "others");
   }
 
   async uploadReading(

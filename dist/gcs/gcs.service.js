@@ -17,8 +17,11 @@ let GcsService = class GcsService {
         });
         this.bucket = this.storage.bucket(process.env.GCS_BUCKET_NAME);
     }
+    async uploadTransaction(file, pumpId) {
+        return this.upload(file, `transactions/${pumpId}`);
+    }
     async uploadFile(file) {
-        return this.upload(file, "common");
+        return this.upload(file, "others");
     }
     async uploadReading(file, pumpId) {
         return this.upload(file, `readings/${pumpId}`);

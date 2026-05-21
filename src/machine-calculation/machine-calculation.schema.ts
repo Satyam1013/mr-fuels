@@ -32,6 +32,15 @@ class NozzleCalculation {
 
   @Prop()
   isPriceChanged?: boolean;
+
+  @Prop()
+  readingImg?: string;
+
+  @Prop()
+  testingImg?: string;
+
+  @Prop()
+  faultImg?: string;
 }
 
 @Schema({ _id: false })

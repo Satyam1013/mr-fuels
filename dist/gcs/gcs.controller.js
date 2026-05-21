@@ -31,6 +31,10 @@ let GcsController = class GcsController {
         const url = await this.gcsService.uploadFile(file);
         return { success: true, url };
     }
+    async uploadTransaction(file, pumpId) {
+        const url = await this.gcsService.uploadTransaction(file, pumpId.toString());
+        return { success: true, url };
+    }
     async uploadReading(file, pumpId) {
         const url = await this.gcsService.uploadReading(file, pumpId.toString());
         return { success: true, url };
@@ -50,13 +54,22 @@ let GcsController = class GcsController {
 };
 exports.GcsController = GcsController;
 __decorate([
-    (0, common_1.Post)("upload"),
+    (0, common_1.Post)("others"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
     __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], GcsController.prototype, "uploadFile", null);
+__decorate([
+    (0, common_1.Post)("transactions"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadTransaction", null);
 __decorate([
     (0, common_1.Post)("readings"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),

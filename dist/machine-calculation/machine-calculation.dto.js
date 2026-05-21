@@ -74,6 +74,21 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], NozzleDto.prototype, "isPriceChanged", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], NozzleDto.prototype, "readingImg", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], NozzleDto.prototype, "testingImg", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], NozzleDto.prototype, "faultImg", void 0);
 class CreateMachineCalculationDto {
 }
 exports.CreateMachineCalculationDto = CreateMachineCalculationDto;
