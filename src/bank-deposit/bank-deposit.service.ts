@@ -80,7 +80,10 @@ export class BankDepositService {
 
   async getRemainingAmount(adminId: Types.ObjectId) {
     const latest = await this.bankDepositModel
-      .findOne({ adminId, isLatest: true })
+      .findOne({
+        adminId: new Types.ObjectId(adminId),
+        isLatest: true,
+      })
       .sort({ createdAt: -1 })
       .lean();
 

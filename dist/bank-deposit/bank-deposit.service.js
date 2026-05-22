@@ -76,7 +76,10 @@ let BankDepositService = class BankDepositService {
     }
     async getRemainingAmount(adminId) {
         const latest = await this.bankDepositModel
-            .findOne({ adminId, isLatest: true })
+            .findOne({
+            adminId: new mongoose_2.Types.ObjectId(adminId),
+            isLatest: true,
+        })
             .sort({ createdAt: -1 })
             .lean();
         if (!latest) {
