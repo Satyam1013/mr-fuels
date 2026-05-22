@@ -42,30 +42,6 @@ export class GcsService {
     return this.upload(file, `reports/${pumpId}`);
   }
 
-  private async upload(
-    file: Express.Multer.File,
-    folder: string,
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const destination = `${folder}/${Date.now()}-${file.originalname}`;
-      const blob = this.bucket.file(destination);
-
-      const stream = blob.createWriteStream({
-        resumable: false,
-        contentType: file.mimetype,
-      });
-
-      stream.on("error", reject);
-      stream.on("finish", () => {
-        resolve(
-          `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${destination}`,
-        );
-      });
-
-      stream.end(file.buffer);
-    });
-  }
-
   async uploadCreditor(
     file: Express.Multer.File,
     pumpId: string,
@@ -106,6 +82,30 @@ export class GcsService {
     pumpId: string,
   ): Promise<string> {
     return this.upload(file, `documents/${pumpId}`);
+  }
+
+  private async upload(
+    file: Express.Multer.File,
+    folder: string,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const destination = `${folder}/${Date.now()}-${file.originalname}`;
+      const blob = this.bucket.file(destination);
+
+      const stream = blob.createWriteStream({
+        resumable: false,
+        contentType: file.mimetype,
+      });
+
+      stream.on("error", reject);
+      stream.on("finish", () => {
+        resolve(
+          `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${destination}`,
+        );
+      });
+
+      stream.end(file.buffer);
+    });
   }
 
   async deleteFile(fileUrl: string): Promise<void> {

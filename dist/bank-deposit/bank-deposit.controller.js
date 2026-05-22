@@ -31,6 +31,9 @@ let BankDepositController = class BankDepositController {
     async findAll(date, shiftNumber, adminId) {
         return this.bankDepositService.findAll(adminId, date, Number(shiftNumber));
     }
+    async getRemaining(adminId) {
+        return this.bankDepositService.getRemainingAmount(adminId);
+    }
     // PATCH /bank-deposit/:id
     async update(id, dto, adminId) {
         return this.bankDepositService.update(adminId, id, dto);
@@ -54,6 +57,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], BankDepositController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("remaining"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], BankDepositController.prototype, "getRemaining", null);
 __decorate([
     (0, common_1.Patch)(":id"),
     __param(0, (0, common_1.Param)("id")),

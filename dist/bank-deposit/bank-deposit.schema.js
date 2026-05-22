@@ -77,5 +77,4 @@ exports.BankDeposit = BankDeposit = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], BankDeposit);
 exports.BankDepositSchema = mongoose_1.SchemaFactory.createForClass(BankDeposit);
-// Compound index — date + shift ke saare docs quickly milein
 exports.BankDepositSchema.index({ adminId: 1, date: 1, shiftNumber: 1 });

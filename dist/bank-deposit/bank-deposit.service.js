@@ -74,6 +74,20 @@ let BankDepositService = class BankDepositService {
             history: entries,
         };
     }
+    async getRemainingAmount(adminId) {
+        const latest = await this.bankDepositModel
+            .findOne({ adminId, isLatest: true })
+            .sort({ createdAt: -1 })
+            .lean();
+        if (!latest) {
+            return { remainingAmount: 0 };
+        }
+        return {
+            remainingAmount: latest.remainingAmount,
+            date: latest.date,
+            shiftNumber: latest.shiftNumber,
+        };
+    }
     // ─── PATCH ──────────────────────────────────────────────
     async update(adminId, id, dto) {
         const existing = await this.bankDepositModel.findOne({

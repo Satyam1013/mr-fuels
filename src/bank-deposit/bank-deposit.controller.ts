@@ -36,6 +36,11 @@ export class BankDepositController {
     return this.bankDepositService.findAll(adminId, date, Number(shiftNumber));
   }
 
+  @Get("remaining")
+  async getRemaining(@GetUser("adminId") adminId: Types.ObjectId) {
+    return this.bankDepositService.getRemainingAmount(adminId);
+  }
+
   // PATCH /bank-deposit/:id
   @Patch(":id")
   async update(

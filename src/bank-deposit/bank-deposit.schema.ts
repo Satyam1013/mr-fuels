@@ -43,7 +43,6 @@ export class BankDeposit extends Document {
   @Prop({ type: Types.ObjectId, ref: "Staff", default: null })
   staffId!: Types.ObjectId | null;
 
-  // Version track karne ke liye — latest doc ka isLatest = true
   @Prop({ default: true })
   isLatest!: boolean;
 
@@ -57,5 +56,4 @@ export class BankDeposit extends Document {
 
 export const BankDepositSchema = SchemaFactory.createForClass(BankDeposit);
 
-// Compound index — date + shift ke saare docs quickly milein
 BankDepositSchema.index({ adminId: 1, date: 1, shiftNumber: 1 });

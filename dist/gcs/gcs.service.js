@@ -32,21 +32,6 @@ let GcsService = class GcsService {
     async uploadReport(file, pumpId) {
         return this.upload(file, `reports/${pumpId}`);
     }
-    async upload(file, folder) {
-        return new Promise((resolve, reject) => {
-            const destination = `${folder}/${Date.now()}-${file.originalname}`;
-            const blob = this.bucket.file(destination);
-            const stream = blob.createWriteStream({
-                resumable: false,
-                contentType: file.mimetype,
-            });
-            stream.on("error", reject);
-            stream.on("finish", () => {
-                resolve(`https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${destination}`);
-            });
-            stream.end(file.buffer);
-        });
-    }
     async uploadCreditor(file, pumpId) {
         return this.upload(file, `creditors/${pumpId}`);
     }
@@ -64,6 +49,21 @@ let GcsService = class GcsService {
     }
     async uploadDocument(file, pumpId) {
         return this.upload(file, `documents/${pumpId}`);
+    }
+    async upload(file, folder) {
+        return new Promise((resolve, reject) => {
+            const destination = `${folder}/${Date.now()}-${file.originalname}`;
+            const blob = this.bucket.file(destination);
+            const stream = blob.createWriteStream({
+                resumable: false,
+                contentType: file.mimetype,
+            });
+            stream.on("error", reject);
+            stream.on("finish", () => {
+                resolve(`https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${destination}`);
+            });
+            stream.end(file.buffer);
+        });
     }
     async deleteFile(fileUrl) {
         const filePath = fileUrl.replace(`https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/`, "");

@@ -78,6 +78,23 @@ export class BankDepositService {
     };
   }
 
+  async getRemainingAmount(adminId: Types.ObjectId) {
+    const latest = await this.bankDepositModel
+      .findOne({ adminId, isLatest: true })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!latest) {
+      return { remainingAmount: 0 };
+    }
+
+    return {
+      remainingAmount: latest.remainingAmount,
+      date: latest.date,
+      shiftNumber: latest.shiftNumber,
+    };
+  }
+
   // ─── PATCH ──────────────────────────────────────────────
   async update(adminId: Types.ObjectId, id: string, dto: UpdateBankDepositDto) {
     const existing = await this.bankDepositModel.findOne({
