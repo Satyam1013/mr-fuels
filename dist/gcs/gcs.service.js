@@ -47,6 +47,24 @@ let GcsService = class GcsService {
             stream.end(file.buffer);
         });
     }
+    async uploadCreditor(file, pumpId) {
+        return this.upload(file, `creditors/${pumpId}`);
+    }
+    async uploadPumpExpense(file, pumpId) {
+        return this.upload(file, `pumpexpenses/${pumpId}`);
+    }
+    async uploadPersonalExpense(file, pumpId) {
+        return this.upload(file, `personalexpenses/${pumpId}`);
+    }
+    async uploadPrepaid(file, pumpId) {
+        return this.upload(file, `prepaid/${pumpId}`);
+    }
+    async uploadLubricant(file, pumpId) {
+        return this.upload(file, `lubricants/${pumpId}`);
+    }
+    async uploadDocument(file, pumpId) {
+        return this.upload(file, `documents/${pumpId}`);
+    }
     async deleteFile(fileUrl) {
         const filePath = fileUrl.replace(`https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/`, "");
         await this.bucket.file(filePath).delete({ ignoreNotFound: true });

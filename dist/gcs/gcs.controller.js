@@ -47,6 +47,30 @@ let GcsController = class GcsController {
         const url = await this.gcsService.uploadReport(file, pumpId.toString());
         return { success: true, url };
     }
+    async uploadCreditor(file, pumpId) {
+        const url = await this.gcsService.uploadCreditor(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadPumpExpense(file, pumpId) {
+        const url = await this.gcsService.uploadPumpExpense(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadPersonalExpense(file, pumpId) {
+        const url = await this.gcsService.uploadPersonalExpense(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadPrepaid(file, pumpId) {
+        const url = await this.gcsService.uploadPrepaid(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadLubricant(file, pumpId) {
+        const url = await this.gcsService.uploadLubricant(file, pumpId.toString());
+        return { success: true, url };
+    }
+    async uploadDocument(file, pumpId) {
+        const url = await this.gcsService.uploadDocument(file, pumpId.toString());
+        return { success: true, url };
+    }
     async delete(url) {
         await this.gcsService.deleteFile(url);
         return { success: true };
@@ -97,6 +121,60 @@ __decorate([
     __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], GcsController.prototype, "uploadReport", null);
+__decorate([
+    (0, common_1.Post)("creditors"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadCreditor", null);
+__decorate([
+    (0, common_1.Post)("pumpexpenses"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadPumpExpense", null);
+__decorate([
+    (0, common_1.Post)("personalexpenses"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadPersonalExpense", null);
+__decorate([
+    (0, common_1.Post)("prepaid"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadPrepaid", null);
+__decorate([
+    (0, common_1.Post)("lubricants"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadLubricant", null);
+__decorate([
+    (0, common_1.Post)("documents"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", multerOptions)),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, get_user_decoration_1.GetUser)("adminId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GcsController.prototype, "uploadDocument", null);
 __decorate([
     (0, common_1.Delete)("delete"),
     __param(0, (0, common_1.Body)("url")),

@@ -71,6 +71,72 @@ export class GcsController {
     return { success: true, url };
   }
 
+  @Post("creditors")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadCreditor(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadCreditor(file, pumpId.toString());
+    return { success: true, url };
+  }
+
+  @Post("pumpexpenses")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadPumpExpense(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadPumpExpense(
+      file,
+      pumpId.toString(),
+    );
+    return { success: true, url };
+  }
+
+  @Post("personalexpenses")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadPersonalExpense(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadPersonalExpense(
+      file,
+      pumpId.toString(),
+    );
+    return { success: true, url };
+  }
+
+  @Post("prepaid")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadPrepaid(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadPrepaid(file, pumpId.toString());
+    return { success: true, url };
+  }
+
+  @Post("lubricants")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadLubricant(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadLubricant(file, pumpId.toString());
+    return { success: true, url };
+  }
+
+  @Post("documents")
+  @UseInterceptors(FileInterceptor("file", multerOptions))
+  async uploadDocument(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser("adminId") pumpId: Types.ObjectId,
+  ) {
+    const url = await this.gcsService.uploadDocument(file, pumpId.toString());
+    return { success: true, url };
+  }
+
   @Delete("delete")
   async delete(@Body("url") url: string) {
     await this.gcsService.deleteFile(url);

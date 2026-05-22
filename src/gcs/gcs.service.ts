@@ -66,6 +66,48 @@ export class GcsService {
     });
   }
 
+  async uploadCreditor(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `creditors/${pumpId}`);
+  }
+
+  async uploadPumpExpense(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `pumpexpenses/${pumpId}`);
+  }
+
+  async uploadPersonalExpense(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `personalexpenses/${pumpId}`);
+  }
+
+  async uploadPrepaid(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `prepaid/${pumpId}`);
+  }
+
+  async uploadLubricant(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `lubricants/${pumpId}`);
+  }
+
+  async uploadDocument(
+    file: Express.Multer.File,
+    pumpId: string,
+  ): Promise<string> {
+    return this.upload(file, `documents/${pumpId}`);
+  }
+
   async deleteFile(fileUrl: string): Promise<void> {
     const filePath = fileUrl.replace(
       `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/`,
