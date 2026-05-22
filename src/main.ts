@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { webcrypto } from "crypto";
-// @ts-expect-error: Node 18 mein globalThis.crypto missing hai
-globalThis.crypto = webcrypto;
+Object.defineProperty(global, "crypto", { value: webcrypto });
+
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
@@ -33,4 +32,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
