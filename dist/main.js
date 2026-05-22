@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-floating-promises */
+const crypto_1 = require("crypto");
+// @ts-expect-error: Node 18 mein globalThis.crypto missing hai
+globalThis.crypto = crypto_1.webcrypto;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");

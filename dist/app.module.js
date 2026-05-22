@@ -39,6 +39,7 @@ const customer_module_1 = require("./customer/customer.module");
 const fuel_product_module_1 = require("./fuel-product/fuel-product.module");
 const bank_deposit_module_1 = require("./bank-deposit/bank-deposit.module");
 const gcs_module_1 = require("./gcs/gcs.module");
+const subscription_module_1 = require("./subscription/subscription.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -76,6 +77,7 @@ exports.AppModule = AppModule = __decorate([
             fuel_product_module_1.FuelProductModule,
             bank_deposit_module_1.BankDepositModule,
             gcs_module_1.GcsModule,
+            subscription_module_1.SubscriptionModule,
         ],
         providers: [],
     })

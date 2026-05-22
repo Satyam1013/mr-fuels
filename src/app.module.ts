@@ -31,6 +31,7 @@ import { CustomerModule } from "./customer/customer.module";
 import { FuelProductModule } from "./fuel-product/fuel-product.module";
 import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
 import { GcsModule } from "./gcs/gcs.module";
+import { SubscriptionModule } from "./subscription/subscription.module";
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { GcsModule } from "./gcs/gcs.module";
     FuelProductModule,
     BankDepositModule,
     GcsModule,
+    SubscriptionModule,
   ],
   providers: [],
 })

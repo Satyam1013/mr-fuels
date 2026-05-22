@@ -10,6 +10,7 @@ exports.SubscriptionModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const subscription_schema_1 = require("./subscription.schema");
+const subscription_scheduler_1 = require("./subscription.scheduler");
 let SubscriptionModule = class SubscriptionModule {
 };
 exports.SubscriptionModule = SubscriptionModule;
@@ -20,7 +21,7 @@ exports.SubscriptionModule = SubscriptionModule = __decorate([
                 { name: subscription_schema_1.Subscription.name, schema: subscription_schema_1.SubscriptionSchema },
             ]),
         ],
-        providers: [],
-        controllers: [],
+        providers: [subscription_scheduler_1.SubscriptionScheduler],
+        exports: [mongoose_1.MongooseModule],
     })
 ], SubscriptionModule);
