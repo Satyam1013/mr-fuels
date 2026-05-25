@@ -9,7 +9,7 @@ import {
   Param,
 } from "@nestjs/common";
 import { PumpStatusService } from "./pump-status.service";
-import { CreatePumpStatusDto } from "./pump-status.dto";
+import { CreatePumpStatusDto, UpdatePumpStatusDto } from "./pump-status.dto";
 import { GetUser } from "../auth/get-user.decoration";
 import { Types } from "mongoose";
 
@@ -30,9 +30,9 @@ export class PumpStatusController {
     return this.service.findAll(adminId);
   }
 
-  @Patch(":id/:status")
-  updateStatus(@Param("id") id: string, @Param("status") status: string) {
-    return this.service.updateStatus(id, status);
+  @Patch(":id")
+  updateStatus(@Param("id") id: string, @Body() dto: UpdatePumpStatusDto) {
+    return this.service.updateStatus(id, dto);
   }
 
   @Delete(":id")

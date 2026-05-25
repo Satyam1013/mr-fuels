@@ -35,9 +35,17 @@ __decorate([
     __metadata("design:type", String)
 ], PumpStatus.prototype, "status", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Staff", required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, refPath: "handledByModel", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], PumpStatus.prototype, "handledBy", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: ["Admin", "Manager", "Staff"], required: true }),
+    __metadata("design:type", String)
+], PumpStatus.prototype, "handledByModel", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, default: null }),
+    __metadata("design:type", Object)
+], PumpStatus.prototype, "lastUpdatedAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)

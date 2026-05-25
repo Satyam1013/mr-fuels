@@ -26,19 +26,18 @@ let PumpStatusService = class PumpStatusService {
             ...dto,
             adminId,
             handledBy: new mongoose_2.Types.ObjectId(dto.handledBy),
+            lastUpdatedAt: new Date().toISOString(),
         });
     }
     async findAll(adminId) {
-        return this.pumpModel
-            .find({ adminId })
-            .populate({
-            path: "handledBy",
-            model: "Staff",
-        })
-            .lean();
+        return this.pumpModel.find({ adminId }).populate("handledBy").lean();
     }
-    async updateStatus(id, status) {
-        return this.pumpModel.findByIdAndUpdate(id, { status }, { new: true });
+    async updateStatus(id, dto) {
+        return this.pumpModel.findByIdAndUpdate(id, {
+            ...dto,
+            ...(dto.handledBy && { handledBy: new mongoose_2.Types.ObjectId(dto.handledBy) }),
+            lastUpdatedAt: new Date().toISOString(),
+        }, { new: true });
     }
     async delete(id) {
         return this.pumpModel.findByIdAndDelete(id);

@@ -12,14 +12,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PumpStatusController = void 0;
-// pump-status.controller.ts
+exports.ShiftAllotmentController = void 0;
 const common_1 = require("@nestjs/common");
-const pump_status_service_1 = require("./pump-status.service");
-const pump_status_dto_1 = require("./pump-status.dto");
-const get_user_decoration_1 = require("../auth/get-user.decoration");
 const mongoose_1 = require("mongoose");
-let PumpStatusController = class PumpStatusController {
+const get_user_decoration_1 = require("../auth/get-user.decoration");
+const shift_allotment_service_1 = require("./shift-allotment.service");
+const shift_allotment_dto_1 = require("./shift-allotment.dto");
+let ShiftAllotmentController = class ShiftAllotmentController {
     constructor(service) {
         this.service = service;
     }
@@ -29,45 +28,58 @@ let PumpStatusController = class PumpStatusController {
     findAll(adminId) {
         return this.service.findAll(adminId);
     }
-    updateStatus(id, dto) {
-        return this.service.updateStatus(id, dto);
+    findOne(adminId, id) {
+        return this.service.findOne(adminId, id);
     }
-    remove(id) {
-        return this.service.delete(id);
+    update(adminId, id, dto) {
+        return this.service.update(adminId, id, dto);
+    }
+    remove(adminId, id) {
+        return this.service.remove(adminId, id);
     }
 };
-exports.PumpStatusController = PumpStatusController;
+exports.ShiftAllotmentController = ShiftAllotmentController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, pump_status_dto_1.CreatePumpStatusDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, shift_allotment_dto_1.CreateShiftAllotmentDto]),
     __metadata("design:returntype", void 0)
-], PumpStatusController.prototype, "create", null);
+], ShiftAllotmentController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", void 0)
-], PumpStatusController.prototype, "findAll", null);
+], ShiftAllotmentController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
+    __metadata("design:returntype", void 0)
+], ShiftAllotmentController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, pump_status_dto_1.UpdatePumpStatusDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String, shift_allotment_dto_1.UpdateShiftAllotmentDto]),
     __metadata("design:returntype", void 0)
-], PumpStatusController.prototype, "updateStatus", null);
+], ShiftAllotmentController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, get_user_decoration_1.GetUser)("adminId")),
+    __param(1, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
     __metadata("design:returntype", void 0)
-], PumpStatusController.prototype, "remove", null);
-exports.PumpStatusController = PumpStatusController = __decorate([
-    (0, common_1.Controller)("pump-status"),
-    __metadata("design:paramtypes", [pump_status_service_1.PumpStatusService])
-], PumpStatusController);
+], ShiftAllotmentController.prototype, "remove", null);
+exports.ShiftAllotmentController = ShiftAllotmentController = __decorate([
+    (0, common_1.Controller)("shift-allotment"),
+    __metadata("design:paramtypes", [shift_allotment_service_1.ShiftAllotmentService])
+], ShiftAllotmentController);

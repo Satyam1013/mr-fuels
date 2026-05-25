@@ -20,8 +20,14 @@ export class PumpStatus {
   })
   status!: string;
 
-  @Prop({ type: Types.ObjectId, ref: "Staff", required: true })
+  @Prop({ type: Types.ObjectId, refPath: "handledByModel", required: true })
   handledBy!: Types.ObjectId;
+
+  @Prop({ enum: ["Admin", "Manager", "Staff"], required: true })
+  handledByModel!: string;
+
+  @Prop({ type: String, default: null })
+  lastUpdatedAt!: string | null;
 
   @Prop({ type: Types.ObjectId, ref: "Admin", required: true })
   adminId!: Types.ObjectId;

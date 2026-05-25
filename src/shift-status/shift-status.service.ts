@@ -56,20 +56,11 @@ export class ShiftStatusService {
       closedBy: null,
     }));
 
-    const firstShift = shifts[0] ?? null;
-
     return {
       date,
       totalShifts,
 
-      currentShift: firstShift
-        ? {
-            shiftNumber: firstShift.shiftNumber,
-            name: firstShift.name,
-            status: ShiftStatusEnum.PENDING,
-            closedBy: null,
-          }
-        : null,
+      currentShift: null,
 
       shifts,
 

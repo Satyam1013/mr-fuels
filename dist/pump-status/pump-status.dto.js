@@ -9,7 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePumpStatusDto = void 0;
+exports.UpdatePumpStatusDto = exports.CreatePumpStatusDto = void 0;
+const mapped_types_1 = require("@nestjs/mapped-types");
 const class_validator_1 = require("class-validator");
 class CreatePumpStatusDto {
 }
@@ -34,3 +35,15 @@ __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreatePumpStatusDto.prototype, "handledBy", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(["Admin", "Manager", "Staff"]),
+    __metadata("design:type", String)
+], CreatePumpStatusDto.prototype, "handledByModel", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePumpStatusDto.prototype, "lastUpdatedAt", void 0);
+class UpdatePumpStatusDto extends (0, mapped_types_1.PartialType)(CreatePumpStatusDto) {
+}
+exports.UpdatePumpStatusDto = UpdatePumpStatusDto;

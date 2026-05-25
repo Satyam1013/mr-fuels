@@ -32,6 +32,7 @@ import { FuelProductModule } from "./fuel-product/fuel-product.module";
 import { BankDepositModule } from "./bank-deposit/bank-deposit.module";
 import { GcsModule } from "./gcs/gcs.module";
 import { SubscriptionModule } from "./subscription/subscription.module";
+import { ShiftAllotmentModule } from "./shift-allotment/shift-allotment.module";
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { SubscriptionModule } from "./subscription/subscription.module";
     BankDepositModule,
     GcsModule,
     SubscriptionModule,
+    ShiftAllotmentModule,
   ],
   providers: [],
 })

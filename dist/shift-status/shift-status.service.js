@@ -47,18 +47,10 @@ let ShiftStatusService = class ShiftStatusService {
             status: shift_status_enum_1.ShiftStatusEnum.PENDING,
             closedBy: null,
         }));
-        const firstShift = shifts[0] ?? null;
         return {
             date,
             totalShifts,
-            currentShift: firstShift
-                ? {
-                    shiftNumber: firstShift.shiftNumber,
-                    name: firstShift.name,
-                    status: shift_status_enum_1.ShiftStatusEnum.PENDING,
-                    closedBy: null,
-                }
-                : null,
+            currentShift: null,
             shifts,
             dailyProgress: {
                 completedShifts: 0,
