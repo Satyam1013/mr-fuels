@@ -44,19 +44,216 @@ let ShiftAllotmentService = class ShiftAllotmentService {
         });
     }
     async findAll(adminId) {
-        return this.shiftAllotmentModel
-            .find({ adminId })
-            .populate("managers", "managerName phone")
-            .lean();
+        return this.shiftAllotmentModel.aggregate([
+            { $match: { adminId } },
+            ...this.populatePipeline(),
+        ]);
     }
     async findOne(adminId, id) {
-        const doc = await this.shiftAllotmentModel
-            .findOne({ _id: new mongoose_2.Types.ObjectId(id), adminId })
-            .populate("managers", "managerName phone")
-            .lean();
-        if (!doc)
+        const result = await this.shiftAllotmentModel.aggregate([
+            { $match: { _id: new mongoose_2.Types.ObjectId(id), adminId } },
+            ...this.populatePipeline(),
+        ]);
+        if (!result.length)
             throw new common_1.NotFoundException("Shift allotment not found");
-        return doc;
+        return result[0];
+    }
+    populatePipeline() {
+        return [
+            // shiftStatus lookup — "shiftstatuses" not "shiftstatus"
+            {
+                $lookup: {
+                    from: "shiftstatuses", // ✅ fixed
+                    let: { sid: { $toObjectId: "$shiftId" } },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", "$$sid"] } } },
+                        {
+                            $project: {
+                                date: 1,
+                                totalShifts: 1,
+                                currentShift: 1,
+                                shifts: 1,
+                                dailyClose: 1,
+                                pumpStatus: 1,
+                            },
+                        },
+                    ],
+                    as: "shiftInfo",
+                },
+            },
+            {
+                $addFields: {
+                    shiftInfo: { $arrayElemAt: ["$shiftInfo", 0] },
+                },
+            },
+            // managers
+            {
+                $lookup: {
+                    from: "managers",
+                    localField: "managers",
+                    foreignField: "_id",
+                    as: "managers",
+                    pipeline: [{ $project: { managerName: 1, phone: 1, shift: 1 } }],
+                },
+            },
+            // machines
+            {
+                $lookup: {
+                    from: "machines",
+                    let: { machineIds: "$machines.machineId" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $in: [{ $toString: "$_id" }, "$$machineIds"] },
+                            },
+                        },
+                        { $project: { machineName: 1, machineNumber: 1, nozzle: 1 } },
+                    ],
+                    as: "machineDetails",
+                },
+            },
+            // staff — "staffs" not "staff"
+            {
+                $lookup: {
+                    from: "staffs", // ✅ fixed
+                    let: {
+                        staffIds: {
+                            $reduce: {
+                                input: "$machines",
+                                initialValue: [],
+                                in: {
+                                    $concatArrays: [
+                                        "$$value",
+                                        {
+                                            $map: {
+                                                input: "$$this.nozzles",
+                                                as: "n",
+                                                in: "$$n.staffId",
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    },
+                    pipeline: [
+                        { $match: { $expr: { $in: ["$_id", "$$staffIds"] } } },
+                        { $project: { staffName: 1, staffNumber: 1, shift: 1 } },
+                    ],
+                    as: "staffDetails",
+                },
+            },
+            // machines rebuild (same as before)
+            {
+                $addFields: {
+                    machines: {
+                        $map: {
+                            input: "$machines",
+                            as: "m",
+                            in: {
+                                machineId: "$$m.machineId",
+                                machineInfo: {
+                                    $let: {
+                                        vars: {
+                                            mDetail: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$machineDetails",
+                                                            as: "md",
+                                                            cond: {
+                                                                $eq: [
+                                                                    { $toString: "$$md._id" },
+                                                                    "$$m.machineId",
+                                                                ],
+                                                            },
+                                                        },
+                                                    },
+                                                    0,
+                                                ],
+                                            },
+                                        },
+                                        in: {
+                                            _id: "$$mDetail._id",
+                                            machineName: "$$mDetail.machineName",
+                                            machineNumber: "$$mDetail.machineNumber",
+                                            nozzle: {
+                                                $map: {
+                                                    input: "$$mDetail.nozzle",
+                                                    as: "nz",
+                                                    in: {
+                                                        $let: {
+                                                            vars: {
+                                                                allotment: {
+                                                                    $arrayElemAt: [
+                                                                        {
+                                                                            $filter: {
+                                                                                input: "$$m.nozzles",
+                                                                                as: "a",
+                                                                                cond: {
+                                                                                    $eq: [
+                                                                                        "$$a.nozzleId",
+                                                                                        { $toString: "$$nz._id" },
+                                                                                    ],
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        0,
+                                                                    ],
+                                                                },
+                                                            },
+                                                            in: {
+                                                                _id: "$$nz._id",
+                                                                nozzleNumber: "$$nz.nozzleNumber",
+                                                                fuelProductId: "$$nz.fuelProductId",
+                                                                isActive: "$$nz.isActive",
+                                                                tankId: "$$nz.tankId",
+                                                                nozzleStatus: {
+                                                                    $ifNull: ["$$allotment.nozzleStatus", null],
+                                                                },
+                                                                inactiveStatus: {
+                                                                    $ifNull: ["$$allotment.inactiveStatus", null],
+                                                                },
+                                                                staffId: {
+                                                                    $ifNull: ["$$allotment.staffId", null],
+                                                                },
+                                                                staffInfo: {
+                                                                    $ifNull: [
+                                                                        {
+                                                                            $arrayElemAt: [
+                                                                                {
+                                                                                    $filter: {
+                                                                                        input: "$staffDetails",
+                                                                                        as: "s",
+                                                                                        cond: {
+                                                                                            $eq: [
+                                                                                                "$$s._id",
+                                                                                                "$$allotment.staffId",
+                                                                                            ],
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                0,
+                                                                            ],
+                                                                        },
+                                                                        null,
+                                                                    ],
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            { $project: { machineDetails: 0, staffDetails: 0 } },
+        ];
     }
     async update(adminId, id, dto) {
         const existing = await this.shiftAllotmentModel.findOne({
