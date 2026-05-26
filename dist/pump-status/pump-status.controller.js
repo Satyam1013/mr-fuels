@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PumpStatusController = void 0;
-// pump-status.controller.ts
 const common_1 = require("@nestjs/common");
 const pump_status_service_1 = require("./pump-status.service");
 const pump_status_dto_1 = require("./pump-status.dto");

@@ -1,22 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
-import {
-  IsNumber,
-  IsString,
-  IsEnum,
-  IsMongoId,
-  IsOptional,
-} from "class-validator";
+import { IsString, IsEnum, IsMongoId, IsOptional } from "class-validator";
 
 export class CreatePumpStatusDto {
-  @IsNumber()
-  machineNo!: number;
-
-  @IsString()
-  nozzleNumber!: string;
-
-  @IsString()
-  fuelType!: string;
-
   @IsEnum(["active", "inactive", "maintenance"])
   status!: string;
 

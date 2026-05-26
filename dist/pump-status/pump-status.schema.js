@@ -16,17 +16,9 @@ let PumpStatus = class PumpStatus {
 };
 exports.PumpStatus = PumpStatus;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Number)
-], PumpStatus.prototype, "machineNo", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], PumpStatus.prototype, "nozzleNumber", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], PumpStatus.prototype, "fuelType", void 0);
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], PumpStatus.prototype, "adminId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         enum: ["active", "inactive", "maintenance"],
@@ -46,10 +38,6 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String, default: null }),
     __metadata("design:type", Object)
 ], PumpStatus.prototype, "lastUpdatedAt", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Admin", required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], PumpStatus.prototype, "adminId", void 0);
 exports.PumpStatus = PumpStatus = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], PumpStatus);
