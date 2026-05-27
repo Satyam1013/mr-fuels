@@ -13,6 +13,7 @@ exports.UpdateManagerDto = exports.BulkCreateManagerDto = exports.CreateManagerD
 const mapped_types_1 = require("@nestjs/mapped-types");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
+const types_1 = require("../common/types");
 class CreateManagerDto {
 }
 exports.CreateManagerDto = CreateManagerDto;
@@ -24,6 +25,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateManagerDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(types_1.Gender),
+    __metadata("design:type", String)
+], CreateManagerDto.prototype, "gender", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),

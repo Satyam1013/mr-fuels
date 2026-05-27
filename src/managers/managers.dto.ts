@@ -2,11 +2,13 @@ import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from "class-validator";
+import { Gender } from "../common/types";
 
 export class CreateManagerDto {
   @IsString()
@@ -14,6 +16,10 @@ export class CreateManagerDto {
 
   @IsString()
   phone!: string;
+
+  @IsOptional()
+  @IsEnum(Gender)
+  gender?: Gender;
 
   @IsOptional()
   @IsString()

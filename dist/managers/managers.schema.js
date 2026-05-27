@@ -13,6 +13,7 @@ exports.ManagerSchema = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const admin_enum_1 = require("../admin/admin.enum");
+const types_1 = require("../common/types");
 let Manager = class Manager extends mongoose_2.Document {
 };
 exports.Manager = Manager;
@@ -28,6 +29,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Manager.prototype, "phone", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: types_1.Gender }),
+    __metadata("design:type", String)
+], Manager.prototype, "gender", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
