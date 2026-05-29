@@ -12,8 +12,8 @@ export class NonFuelProductsService {
   ) {}
 
   async create(adminId: Types.ObjectId, products: NonFuelProductDto[]) {
-    const data = products.map((p) => ({
-      ...p,
+    const data = products.map((product) => ({
+      ...product,
       adminId,
     }));
 

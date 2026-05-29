@@ -18,13 +18,13 @@ export class MachineService {
   ) {}
 
   async createMachines(adminId: Types.ObjectId, machines: CreateMachineDto[]) {
-    const docs = machines.map((m) => ({
-      ...m,
+    const docs = machines.map((machine) => ({
+      ...machine,
       adminId,
-      nozzle: m.nozzle.map((n) => ({
-        ...n,
-        fuelProductId: new Types.ObjectId(n.fuelProductId),
-        tankId: new Types.ObjectId(n.tankId),
+      nozzle: machine.nozzle.map((nozzle) => ({
+        ...nozzle,
+        fuelProductId: new Types.ObjectId(nozzle.fuelProductId),
+        tankId: new Types.ObjectId(nozzle.tankId),
       })),
     }));
 
@@ -41,8 +41,8 @@ export class MachineService {
       ...machine,
       nozzle: machine.nozzle.map((nozzle) => {
         const product = fuelProductDetails?.products.find(
-          (p) =>
-            (p as FuelProductDetail)._id.toString() ===
+          (product) =>
+            (product as FuelProductDetail)._id.toString() ===
             nozzle.fuelProductId.toString(),
         );
         return {
@@ -68,8 +68,8 @@ export class MachineService {
       ...machine,
       nozzle: machine.nozzle.map((nozzle) => {
         const product = fuelProductDetails?.products.find(
-          (p) =>
-            (p as FuelProductDetail)._id.toString() ===
+          (product) =>
+            (product as FuelProductDetail)._id.toString() ===
             nozzle.fuelProductId.toString(),
         );
         return {
@@ -84,10 +84,10 @@ export class MachineService {
 
   async updateMachine(machineId: string, dto: Partial<CreateMachineDto>) {
     if (dto.nozzle) {
-      const nozzles = dto.nozzle.map((n) => ({
-        ...n,
-        fuelProductId: new Types.ObjectId(n.fuelProductId),
-        tankId: new Types.ObjectId(n.tankId),
+      const nozzles = dto.nozzle.map((nozzle) => ({
+        ...nozzle,
+        fuelProductId: new Types.ObjectId(nozzle.fuelProductId),
+        tankId: new Types.ObjectId(nozzle.tankId),
       }));
 
       return this.machineModel.findByIdAndUpdate(

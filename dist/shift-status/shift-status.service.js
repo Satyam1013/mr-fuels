@@ -122,20 +122,20 @@ let ShiftStatusService = class ShiftStatusService {
             return fetchClosedByInfo(shift.closedBy);
         };
         const mapResponse = async (data) => {
-            const completedShifts = data.shifts.filter((s) => s.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
+            const completedShifts = data.shifts.filter((shift) => shift.status === shift_status_enum_1.ShiftStatusEnum.COMPLETED).length;
             const totalShifts = pumpDetails.numberOfShifts || 0;
             const pendingShifts = totalShifts - completedShifts;
             const percent = totalShifts > 0 ? (completedShifts / totalShifts) * 100 : 0;
             // ✅ currentShift compute karo — DB pe depend mat karo
-            const computedCurrentShift = data.shifts.find((s) => s.status === shift_status_enum_1.ShiftStatusEnum.ACTIVE) ??
-                data.shifts.find((s) => s.status === shift_status_enum_1.ShiftStatusEnum.PENDING) ??
+            const computedCurrentShift = data.shifts.find((shift) => shift.status === shift_status_enum_1.ShiftStatusEnum.ACTIVE) ??
+                data.shifts.find((shift) => shift.status === shift_status_enum_1.ShiftStatusEnum.PENDING) ??
                 null;
             // Map shifts with closedBy info
             const shiftsWithClosedBy = [];
-            for (const s of data.shifts || []) {
+            for (const shift of data.shifts || []) {
                 shiftsWithClosedBy.push({
-                    ...s,
-                    closedBy: await mapClosedBy(s),
+                    ...shift,
+                    closedBy: await mapClosedBy(shift),
                 });
             }
             // ✅ DB ka currentShift nahi, computed wala use karo

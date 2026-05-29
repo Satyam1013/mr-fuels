@@ -70,7 +70,7 @@ export class ShiftAllotmentService {
       // shiftStatus lookup — "shiftstatuses" not "shiftstatus"
       {
         $lookup: {
-          from: "shiftstatuses", // ✅ fixed
+          from: "shiftstatuses",
           let: { sid: { $toObjectId: "$shiftId" } },
           pipeline: [
             { $match: { $expr: { $eq: ["$_id", "$$sid"] } } },
@@ -125,7 +125,7 @@ export class ShiftAllotmentService {
       // staff — "staffs" not "staff"
       {
         $lookup: {
-          from: "staffs", // ✅ fixed
+          from: "staffs",
           let: {
             staffIds: {
               $reduce: {

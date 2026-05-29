@@ -235,8 +235,8 @@ let MachineCalculationService = class MachineCalculationService {
                     currentReading: nozzle.currentReading,
                     testingLiters: nozzle.testingLiters,
                     faultTestingLiters: nozzle.faultTestingLiters,
-                    changeReading: nozzle.changeReading ?? 0, // ✅
-                    isPriceChanged: nozzle.isPriceChanged ?? false, // ✅
+                    changeReading: nozzle.changeReading ?? 0,
+                    isPriceChanged: nozzle.isPriceChanged ?? false,
                     readingImg: nozzle.readingImg,
                     testingImg: nozzle.testingImg,
                     faultImg: nozzle.faultImg,

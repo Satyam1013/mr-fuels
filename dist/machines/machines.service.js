@@ -24,13 +24,13 @@ let MachineService = class MachineService {
         this.fuelProductDetailsModel = fuelProductDetailsModel;
     }
     async createMachines(adminId, machines) {
-        const docs = machines.map((m) => ({
-            ...m,
+        const docs = machines.map((machine) => ({
+            ...machine,
             adminId,
-            nozzle: m.nozzle.map((n) => ({
-                ...n,
-                fuelProductId: new mongoose_2.Types.ObjectId(n.fuelProductId),
-                tankId: new mongoose_2.Types.ObjectId(n.tankId),
+            nozzle: machine.nozzle.map((nozzle) => ({
+                ...nozzle,
+                fuelProductId: new mongoose_2.Types.ObjectId(nozzle.fuelProductId),
+                tankId: new mongoose_2.Types.ObjectId(nozzle.tankId),
             })),
         }));
         return this.machineModel.insertMany(docs);
@@ -43,7 +43,7 @@ let MachineService = class MachineService {
         return machines.map((machine) => ({
             ...machine,
             nozzle: machine.nozzle.map((nozzle) => {
-                const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                const product = fuelProductDetails?.products.find((product) => product._id.toString() ===
                     nozzle.fuelProductId.toString());
                 return {
                     ...nozzle,
@@ -64,7 +64,7 @@ let MachineService = class MachineService {
         return {
             ...machine,
             nozzle: machine.nozzle.map((nozzle) => {
-                const product = fuelProductDetails?.products.find((p) => p._id.toString() ===
+                const product = fuelProductDetails?.products.find((product) => product._id.toString() ===
                     nozzle.fuelProductId.toString());
                 return {
                     ...nozzle,
@@ -77,10 +77,10 @@ let MachineService = class MachineService {
     }
     async updateMachine(machineId, dto) {
         if (dto.nozzle) {
-            const nozzles = dto.nozzle.map((n) => ({
-                ...n,
-                fuelProductId: new mongoose_2.Types.ObjectId(n.fuelProductId),
-                tankId: new mongoose_2.Types.ObjectId(n.tankId),
+            const nozzles = dto.nozzle.map((nozzle) => ({
+                ...nozzle,
+                fuelProductId: new mongoose_2.Types.ObjectId(nozzle.fuelProductId),
+                tankId: new mongoose_2.Types.ObjectId(nozzle.tankId),
             }));
             return this.machineModel.findByIdAndUpdate(machineId, { ...dto, nozzle: nozzles }, { new: true });
         }

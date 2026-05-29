@@ -155,7 +155,7 @@ export class ShiftStatusService {
 
     const mapResponse = async (data: ShiftStatusPopulated) => {
       const completedShifts = data.shifts.filter(
-        (s) => s.status === ShiftStatusEnum.COMPLETED,
+        (shift) => shift.status === ShiftStatusEnum.COMPLETED,
       ).length;
 
       const totalShifts = pumpDetails.numberOfShifts || 0;
@@ -165,16 +165,16 @@ export class ShiftStatusService {
 
       // ✅ currentShift compute karo — DB pe depend mat karo
       const computedCurrentShift =
-        data.shifts.find((s) => s.status === ShiftStatusEnum.ACTIVE) ??
-        data.shifts.find((s) => s.status === ShiftStatusEnum.PENDING) ??
+        data.shifts.find((shift) => shift.status === ShiftStatusEnum.ACTIVE) ??
+        data.shifts.find((shift) => shift.status === ShiftStatusEnum.PENDING) ??
         null;
 
       // Map shifts with closedBy info
       const shiftsWithClosedBy = [];
-      for (const s of data.shifts || []) {
+      for (const shift of data.shifts || []) {
         shiftsWithClosedBy.push({
-          ...s,
-          closedBy: await mapClosedBy(s),
+          ...shift,
+          closedBy: await mapClosedBy(shift),
         });
       }
 

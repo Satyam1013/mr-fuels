@@ -22,8 +22,8 @@ let NonFuelProductsService = class NonFuelProductsService {
         this.nonFuelProductModel = nonFuelProductModel;
     }
     async create(adminId, products) {
-        const data = products.map((p) => ({
-            ...p,
+        const data = products.map((product) => ({
+            ...product,
             adminId,
         }));
         return this.nonFuelProductModel.insertMany(data);

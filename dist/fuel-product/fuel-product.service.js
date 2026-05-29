@@ -26,20 +26,22 @@ let FuelProductService = class FuelProductService {
         // Check karo koi bhi fuelType already exist to nahi karta
         const existing = await this.fuelProductDetailsModel.findOne({
             adminId,
-            "products.fuelType": { $in: dto.products.map((p) => p.fuelType) },
+            "products.fuelType": {
+                $in: dto.products.map((product) => product.fuelType),
+            },
         });
         if (existing) {
-            const existingTypes = existing.products.map((p) => p.fuelType);
+            const existingTypes = existing.products.map((product) => product.fuelType);
             const duplicates = dto.products
-                .map((p) => p.fuelType)
+                .map((product) => product.fuelType)
                 .filter((ft) => existingTypes.includes(ft));
             throw new common_1.BadRequestException(`${duplicates.join(", ")} already exists. Use update to change price.`);
         }
-        const productsWithDate = dto.products.map((p) => ({
-            ...p,
-            oldPrice: p.oldPrice ?? p.price,
+        const productsWithDate = dto.products.map((product) => ({
+            ...product,
+            oldPrice: product.oldPrice ?? product.price,
             updatedPriceFrom: new Date(),
-            shiftNumber: p.shiftNumber ?? null,
+            shiftNumber: product.shiftNumber ?? null,
         }));
         const result = await this.fuelProductDetailsModel.findOneAndUpdate({ adminId }, { $push: { products: { $each: productsWithDate } } }, { upsert: true, new: true });
         return result;
@@ -56,7 +58,7 @@ let FuelProductService = class FuelProductService {
         const record = await this.fuelProductDetailsModel
             .findOne({ adminId })
             .lean();
-        const product = record?.products?.find((p) => p.fuelType === fuelType);
+        const product = record?.products?.find((product) => product.fuelType === fuelType);
         if (!product) {
             throw new common_1.NotFoundException(`${fuelType} fuel product not found.`);
         }
@@ -68,7 +70,7 @@ let FuelProductService = class FuelProductService {
             throw new common_1.NotFoundException(`Fuel products not found.`);
         }
         for (const item of dto.products) {
-            const product = record.products.find((p) => p.fuelType === item.fuelType);
+            const product = record.products.find((product) => product.fuelType === item.fuelType);
             if (product) {
                 if (item.price !== undefined) {
                     product.oldPrice = product.price;
